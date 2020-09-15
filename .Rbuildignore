@@ -1,0 +1,3 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+usethis::use_data_raw()
