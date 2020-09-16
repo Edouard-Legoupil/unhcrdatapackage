@@ -4,7 +4,7 @@
 
 # Check that the usethis package is also installed. If not:
 #install.packages("usethis")
-builddatapackage <- function() {
+
 
 
 #install.packages("sinew")
@@ -102,4 +102,21 @@ sinew::makeOxygen(reference, add_fields = "source")
 
 devtools::document()
 
-}
+
+#install.packages("pkgdown")
+
+library("pkgdown")
+pkgdown::build_site()
+
+
+## a few other exploration of the package
+
+devtools::document()
+
+devtools::release()
+
+# devtools::build_win(version = c("R-release", "R-devel"))
+
+attachment::att_to_description()
+rhub::check_for_cran()
+rhub::check()

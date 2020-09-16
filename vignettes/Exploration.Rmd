@@ -1,0 +1,13 @@
+---
+title: "Initial Exploration"
+author: "Edouard Legoupil"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Data Anonymisation and disclosure risk measurement}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
