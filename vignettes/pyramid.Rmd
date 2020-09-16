@@ -1,0 +1,105 @@
+---
+title: "Age Pyramid"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Data Anonymisation and disclosure risk measurement}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+
+```{r cars}
+pacman::p_load(BBmisc, tidyverse, hablar, ggbump, sf, rnaturalearth, feather, janitor, lubridate, unhcrdatapackage)
+options(stringsAsFactors = F)
+
+
+
+
+```
+
+
+
+```{r piramid, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+demographics <-  unhcrdatapackage::demographics
+demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
+#names(demographics)
+pyramid <-  demographics[ demographics$Year == "2019",
+                          c("REGION_UN",
+                          "Female04",
+                              "Female511",
+                              "Female1217",
+                              "Female1859",
+                              "Female60ormore",
+                              "FemaleUnknown",
+                             # "FemaleTotal",
+                              "Male04",
+                              "Male511",
+                              "Male1217",
+                              "Male1859",
+                              "Male60ormore",
+                              "MaleUnknown"#,
+                             # "MaleTotal"       
+                             )]  
+
+
+pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) %>%
+  pivot_longer(
+    cols = Female04:MaleUnknown,
+    names_to = "Class",
+    #names_to = c("Class","REGION_UN" ),
+    #names_sep = "_",
+     #names_repair = "unique",
+    #names_prefix = "",
+    values_to = "Sum",
+    values_drop_na = TRUE
+  ) 
+
+pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
+                                          by = list(pyramid2$Class#, pyramid2$REGION_UN
+                                                    ),
+                                          sum))
+names(pyramid3)[1] <- "Class"
+names(pyramid3)[2] <- "Count"
+
+library(stringr)
+pyramid3 <- pyramid3 %>% 
+  mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
+                            str_detect(Class, "Female") ~ "Female")) %>% 
+  mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
+                         str_detect(Class, "511") ~ "5-11",
+                         str_detect(Class, "1217") ~ "12-17",
+                         str_detect(Class, "1859") ~ "18-59",
+                         str_detect(Class, "60") ~ "60+",
+                         str_detect(Class, "Unknown") ~ "Unknown")) 
+
+pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
+pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
+
+
+
+ggplot(pyramid3, aes(x = age, fill = gender,
+                 y = ifelse(test = gender == "Female",
+                            yes = -pc, no = pc))) + 
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
+  labs(title = "Population Pyramid", x = "Age", y = "Percent of population") +
+  scale_colour_manual(values = c("pink", "steelblue"),
+                      aesthetics = c("colour", "fill")) +
+  coord_flip()+
+  kobo_unhcr_style_bar()
+
+```  
+
+
+

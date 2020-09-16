@@ -33,11 +33,12 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Country of Asylum Code"="CountryAsylumCode", 
                                        "Country of Origin Name"="CountryOriginName",
                                        "Country of Asylum Name"="CountryAsylumName", 
-                                       "Internally Displaced Persons"="IDPs", 
-                                       "Asylum-seekers"="AsylumSeekers",
-                                       "Others of Concern to UNHCR"="OthersOfConcern",
-                                       "Stateless persons"="StatelessPersons",    
-                                        "Venezuelans Displaced Abroad"="VenezuelansDisplacedAbroad" ))
+                                       "Refugees"="REF", 
+                                       "Internally Displaced Persons"="IDP", 
+                                       "Asylum-seekers"="ASY",
+                                       "Others of Concern to UNHCR"="OOC",
+                                       "Stateless persons"="STA",    
+                                        "Venezuelans Displaced Abroad"="VDA" ))
 
 save(end_year_population_totals, file =  "data/end_year_population_totals.RData")
 
@@ -50,7 +51,7 @@ end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
                                            # ID variables - all the variables to keep but not split apart on
                                            id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
                                            # The source columns
-                                           measure.vars=c("Refugees","IDPs", "AsylumSeekers","OthersOfConcern","StatelessPersons","VenezuelansDisplacedAbroad"),
+                                           measure.vars=c("REF","IDP", "ASY","OOC","STA","VDA"),
                                            # Name of the destination column that will identify the original
                                            # column that the measurement came from
                                            variable.name="Population.type",
@@ -72,28 +73,115 @@ solutions_residing <- read_csv("data-raw/solutions_residing_world.csv",
 solutions_residing <- solutions_residing[-1,]
 sinew::makeOxygen(solutions_residing, add_fields = "source")
 # Rename column to have proper Variable names
-solutions_residing <- plyr::rename(solutions_residing, c("Country of Origin Code"="CountryOriginCode",
+solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="CountryOriginCode",
                                                                          "Country of Asylum Code"="CountryAsylumCode", 
                                                                          "Country of Origin Name"="CountryOriginName",
                                                                          "Country of Asylum Name"="CountryAsylumName", 
-                                                                         "Resettlement arrivals"="ResettlementArrivals",
-                                                                         "Refugee returns"="RefugeeReturns",
-                                                                         "IDP returns"="IDPReturns" ))
-save(solutions_residing, file =  "data/solutions_residing.RData")
+                                                                         "Resettlement arrivals"="RST",
+                                                                         "Refugee returns"="RET",
+                                                                         "Naturalisation"="NAT",
+                                                                         "IDP returns"="RDP" ))
+save(solutions, file =  "data/solutions.RData")
 
 
 
 url <- paste( 'https://s3.eu-central-1.amazonaws.com/hdx-ckan-filestore-prod/resources/295cd9e4-8464-43ee-ad17-47196991a1f7/demographics_residing_world.csv') 
 download.file(url, destfile = "data-raw/demographics_residing_world.csv" )
 
+demographics_residing <- read_csv("data-raw/demographics_residing_world.csv", 
+                                        col_types = cols(location = col_character(), 
+                                                         urbanRural = col_character(), accommodationType = col_character(), 
+                                                         `Female 0-4` = col_integer(), `Female 5-11` = col_integer(), 
+                                                         `Female 12-17` = col_integer(), `Female 18-59` = col_integer(), 
+                                                         `Female 60 or more` = col_integer(), 
+                                                         `Female Unknown` = col_integer(), 
+                                                         `Female Total` = col_integer(), `Male 0-4` = col_integer(), 
+                                                         `Male 5-11` = col_integer(), `Male 12-17` = col_integer(), 
+                                                         `Male 18-59` = col_integer(), `Male 60 or more` = col_integer(), 
+                                                         `Male Unknown` = col_integer(), `Male Total` = col_integer(), 
+                                                         Total = col_integer()))
+demographics_residing <- demographics_residing[-1,]
+sinew::makeOxygen(demographics_residing, add_fields = "source")
+# Rename column to have proper Variable names
+demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="CountryOriginCode",
+                                                         "Country of Asylum Code"="CountryAsylumCode", 
+                                                         "Country of Origin Name"="CountryOriginName",
+                                                         "Country of Asylum Name"="CountryAsylumName",  
+                                                         "Female 0-4"="Female04", 
+                                                         "Female 5-11"="Female511", 
+                                                         "Female 12-17"="Female1217", 
+                                                         "Female 18-59"="Female1859",
+                                                         "Female 60 or more"="Female60ormore",
+                                                         "Female Unknown"="FemaleUnknown",
+                                                         "Female Total"="FemaleTotal", 
+                                                         "Male 0-4"="Male04", 
+                                                         "Male 5-11"="Male511", 
+                                                         "Male 12-17"="Male1217", 
+                                                         "Male 18-59"="Male1859",
+                                                         "Male 60 or more"="Male60ormore",
+                                                         "Male Unknown"="MaleUnknown",
+                                                         "Male Total"="MaleTotal")
+                                                         )
+save(demographics, file =  "data/demographics.RData")
+
+
 url <- paste( 'https://s3.eu-central-1.amazonaws.com/hdx-ckan-filestore-prod/resources/6f7aded5-f5e7-482b-86d8-ccfe6994e261/asylum_decisions_residing_world.csv') 
 download.file(url, destfile = "data-raw/asylum_decisions__residing_world.csv" )
 
+asylum_decisions_residing <- read_csv("data-raw/asylum_decisions_residing_world.csv", 
+                                            col_types = cols(`Decisions Average Persons Per Case` = col_integer(), 
+                                                             Recognized = col_integer(), `Complementary Protection` = col_integer(), 
+                                                             `Otherwise Closed` = col_integer(), 
+                                                             Rejected = col_integer(), `Total Decided` = col_integer()))
+asylum_decisions_residing <- asylum_decisions_residing[-1,]
+sinew::makeOxygen(asylum_decisions_residing, add_fields = "source")
+# Rename column to have proper Variable names
+names(asylum_decisions_residing)
+asylum_decisions <- plyr::rename(asylum_decisions_residing, c("Country of Origin Code"="CountryOriginCode",
+                                                               "Country of Asylum Code"="CountryAsylumCode", 
+                                                               "Country of Origin Name"="CountryOriginName",
+                                                               "Country of Asylum Name"="CountryAsylumName", 
+                                                               "Procedure Type"="ProcedureType",                    
+                                                               "Procedure Name"="ProcedureName",                    
+                                                               "Decision Type Code"="DecisionTypeCode",                
+                                                               "Decision Data Type"="DecisionDataType",                
+                                                               "Decision Data"="DecisionData",                     
+                                                               "Decisions Average Persons Per Case"= "DecisionsAveragePersonsPerCase",
+                                                               "Complementary Protection"="ComplementaryProtection",          
+                                                               "Otherwise Closed" ="OtherwiseClosed",                
+                                                               "Total Decided" = "TotalDecided"
+                                                               )
+)
+save(asylum_decisions, file =  "data/asylum_decisions.RData")
+
+
+
 url <- paste( 'https://s3.eu-central-1.amazonaws.com/hdx-ckan-filestore-prod/resources/90aebc46-0557-4230-af47-081014a78c69/asylum_applications_residing_world.csv') 
 download.file(url, destfile = "data-raw/asylum_applications_residing_world.csv" )
+asylum_applications_residing <- read_csv("data-raw/asylum_applications_residing_world.csv", 
+                                               col_types = cols(`Application Average Persons Per Case` = col_integer(), 
+                                                                `Number of Applications` = col_integer()))
 
+asylum_applications_residing <- asylum_applications_residing[-1,]
+sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
 
-
+names(asylum_applications_residing)
+# Rename column to have proper Variable names
+asylum_applications <- plyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
+                                                                       "Country of Asylum Code"="CountryAsylumCode", 
+                                                                       "Country of Origin Name"="CountryOriginName",
+                                                                       "Country of Asylum Name"="CountryAsylumName", 
+                                                                       "Procedure Type"="ProcedureType",                      
+                                                                       "Procedure Name"="ProcedureName",                      
+                                                                       "Application Type Code"="ApplicationTypeCode",               
+                                                                       "Application Type"="ApplicationType",                    
+                                                                       "Application Data Type"="ApplicationDataType",               
+                                                                       "Application Data"="ApplicationData",                    
+                                                                       "Application Average Persons Per Case"="ApplicationAveragePersonsPerCase",
+                                                                       "Number of Applications"="NumberApplications" 
+)
+)
+save(asylum_applications, file =  "data/asylum_applications.RData")
 
 
 reference <- read_csv("data-raw/reference.csv")
@@ -120,3 +208,6 @@ devtools::release()
 attachment::att_to_description()
 rhub::check_for_cran()
 rhub::check()
+
+
+

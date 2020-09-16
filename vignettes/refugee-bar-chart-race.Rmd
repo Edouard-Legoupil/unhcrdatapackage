@@ -1,6 +1,5 @@
 ---
 title: "Bar Chart Race for Refugees"
-author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 
   rmarkdown::html_vignette:
@@ -119,30 +118,21 @@ Reshape the data to get the top 10 for each year using tidyverse
 
 ```{r reshapedata, message=FALSE, warning=FALSE}
 
-time_series <- read.csv("unhcr_popstats_export_time_series_all_data.csv", skip = 3) 
-## rename the country and make sure Value is a number...
-names(time_series)[2] <- "Country"
+time_series <-  unhcrdatapackage::end_year_population_totals
 
-## make sure Value is numeric
-time_series$Value <- as.integer(as.character(time_series$Value))
+reference <- unhcrdatapackage::reference
 
-## Check what population type we have there and subset accordingly
-#levels(time_series$Population.type)
-
-time_series2 <- time_series[ time_series$Population.type %in% c("Refugees (incl. refugee-like situations)", "Internally displaced persons" ), ]
-
-time_series2$Country <- as.character(time_series2$Country)
-time_series2$Country[time_series2$Country == "C\xf4te d'Ivoire"] <- "Cote d'Ivoire" 
-time_series2$Country <- as.factor(time_series2$Country)
-
-time_series$Population.type <- as.factor(as.character(time_series$Population.type))
-
-## Remove unknow countries or blanks
-time_series2 <- time_series2[ !(time_series2$Country %in% c("Various/Unknown" )), ]
-
-## Remove if value is 0 or NA
-time_series2 <- time_series2[ !(is.na(time_series2$Value)), ]
-time_series2 <- time_series2[ time_series2$Value != 0, ]
+time_series2 <- reshape2::melt(time_series,
+                                           # ID variables - all the variables to keep but not split apart on
+                                           id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
+                                           # The source columns
+                                           measure.vars=c("Refugees","IDPs",
+                                                          "AsylumSeekers","OthersOfConcern","StatelessPersons",
+                                                          "VenezuelansDisplacedAbroad"),
+                                           # Name of the destination column that will identify the original
+                                           # column that the measurement came from
+                                           variable.name="Population.type",
+                                           value.name="Value") 
 
 ## Now get the rank from high to low for all countries per  year and population type
 rank_data <- time_series2 %>%
