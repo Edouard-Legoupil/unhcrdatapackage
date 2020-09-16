@@ -1,13 +1,12 @@
 ---
 title: "Refugee Population Data Visualisation"
-author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 
   rmarkdown::html_vignette:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Data Anonymisation and disclosure risk measurement}
+  %\VignetteIndexEntry{Refugee Population Data Visualisation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -127,120 +126,24 @@ theme_map <- function(...) {
 ```{r data, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 
 # Time series
-url <- paste( 'http://popstats.unhcr.org/en/time_series.csv') 
-download.file(url, destfile = "unhcr_popstats_export_time_series_all_data.csv" )
+time_series <-  unhcrdatapackage::end_year_population_totals
 
-# http://popstats.unhcr.org/en/time_series.csv
-data <- read.csv("unhcr_popstats_export_time_series_all_data.csv", 
-                 skip = 3 #,comment.char = "#", header = TRUE, as.is = TRUE, fileEncoding = "UTF8"
-                 )
+reference <- unhcrdatapackage::reference
 
-names(data)[2] <- "Asylum"
-data$Value <- as.numeric(data$Value)
-data$Year <- as.integer(data$Year)
+time_series2 <- reshape2::melt(time_series,
+                                           # ID variables - all the variables to keep but not split apart on
+                                           id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
+                                           # The source columns
+                                           measure.vars=c("REF","IDP", "ASY","OOC","STA","VDA"),
+                                           # Name of the destination column that will identify the original
+                                           # column that the measurement came from
+                                           variable.name="Population.type",
+                                           value.name="Value") 
 
-ctry <- as.data.frame(unique(data$Asylum))
-ctry2 <- as.data.frame(unique(data$Origin))
-names(ctry)[1] <- "ctry"
-names(ctry2)[1] <- "ctry"
+data <- merge(x = time_series2, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
 
-ctryall <- unique(rbind(ctry, ctry2))
-
-#levels(ctryall$ctry)
-#rm(ctry, ctry2)
-ctryall$ctry2 <- ctryall$ctry
-#crtyall <- order(crtyall)
-
-### Rewrite country name to get the centroid
-ctryall$ctry <- as.character(ctryall$ctry)
-ctryall$ctry[ctryall$ctry == "Bolivia (Plurinational State of)"] <- "Bolivia, Plurinational State of" 
-ctryall$ctry[ctryall$ctry == "Bonaire"] <- "Bonaire, Sint Eustatius and Saba" 
-ctryall$ctry[ctryall$ctry == "British Virgin Islands"] <- "Virgin Islands, British" 
-ctryall$ctry[ctryall$ctry == "Cabo Verde"] <- "Cape Verde" 
-ctryall$ctry[ctryall$ctry == "Central African Rep."] <- "Central African Republic" 
-ctryall$ctry[ctryall$ctry == "China, Hong Kong SAR"] <- "Hong Kong" 
-ctryall$ctry[ctryall$ctry == "China, Macao SAR"] <- "Macao" 
-ctryall$ctry[ctryall$ctry == "Côte d'Ivoire"] <- "Cote d'Ivoire" 
-# C<f4>te d'Ivoire
-ctryall$ctry[ctryall$ctry == "C\xf4te d'Ivoire"] <- "Cote d'Ivoire" 
-# Cura<e7>ao
-ctryall$ctry[ctryall$ctry == "Curaçao"] <- "Curacao" 
-ctryall$ctry[ctryall$ctry == "Cura\xe7ao"] <- "Curacao" 
-
-ctryall$ctry[ctryall$ctry == "Czech Rep."] <- "Czech Republic" 
-ctryall$ctry[ctryall$ctry == "Dem. Rep. of the Congo"] <- "Congo, The Democratic Republic of the" 
-ctryall$ctry[ctryall$ctry == "Dominican Rep."] <- "Dominican Republic" 
-ctryall$ctry[ctryall$ctry == "Iran (Islamic Rep. of)"] <- "Iran, Islamic Republic of" 
-ctryall$ctry[ctryall$ctry == "Lao People's Dem. Rep."] <- "Lao People's Democratic Republic" 
-ctryall$ctry[ctryall$ctry == "Libya"] <- "Libyan Arab Jamahiriya" 
-ctryall$ctry[ctryall$ctry == "Micronesia (Federated States of)"] <- "Micronesia, Federated States of" 
-ctryall$ctry[ctryall$ctry == "Rep. of Korea"] <- "Korea, Republic of" 
-ctryall$ctry[ctryall$ctry == "Rep. of Moldova"] <- "Moldova, Republic of" 
-ctryall$ctry[ctryall$ctry == "Saint Vincent and the Grenadines"] <- "Saint Vincent and The Grenadines" 
-ctryall$ctry[ctryall$ctry == "Serbia and Kosovo (S/RES/1244 (1999))"] <- "Serbia" 
-ctryall$ctry[ctryall$ctry == "State of Palestine"] <- "Occupied Palestinian Territory" 
-ctryall$ctry[ctryall$ctry == "Syrian Arab Rep."] <- "Syrian Arab Republic" 
-ctryall$ctry[ctryall$ctry == "The former Yugoslav Republic of Macedonia"] <- "Macedonia, The Former Yugoslav Republic of" 
-ctryall$ctry[ctryall$ctry == "United Rep. of Tanzania"] <- "Tanzania, United Republic of" 
-ctryall$ctry[ctryall$ctry == "United States of America"] <- "United States" 
-## ctryall$ctry[ctryall$ctry == "Various/Unknown"] <- " " 
-ctryall$ctry[ctryall$ctry == "Venezuela (Bolivarian Republic of)"] <- "Venezuela, Bolivarian Republic of" 
-ctryall$ctry[ctryall$ctry == "Dem. People's Rep. of Korea"] <- "Korea, Democratic People's Republic of" 
-ctryall$ctry[ctryall$ctry == "Holy See (the)"] <- "Holy See (Vatican City State)" 
-ctryall$ctry[ctryall$ctry == "Palestinian"] <- "Occupied Palestinian Territory" 
-ctryall$ctry[ctryall$ctry == "Réunion"] <- "Reunion" 
-ctryall$ctry[ctryall$ctry == "Saint-Pierre-et-Miquelon"] <- "Saint Pierre and Miquelon" 
-## ctryall$ctry[ctryall$ctry == "Stateless"] <- " " 
-## ctryall$ctry[ctryall$ctry == "Tibetan"] <- " " 
-ctryall$ctry[ctryall$ctry == "US Virgin Islands"] <- "Virgin Islands, U.S." 
-ctryall$ctry[ctryall$ctry == "Wallis and Futuna Islands "] <- "Wallis and Futuna" 
-
-data$Origin[data$Origin == "Libyan Arab Jamahiriya"] <- "Libya" 
-data$Origin[data$Origin == "Syrian Arab Republic"] <- "Syria" 
-
-data$Asylum[data$Asylum == "Libyan Arab Jamahiriya"] <- "Libya" 
-data$Asylum[data$Asylum == "Syrian Arab Republic"] <- "Syria" 
-
-
-#library(countrycode)
-#countrycode_data <- countrycode_data
-
-## http://opengeocode.org/download
-## in order to get "latitude" & "longitude" for the centroid of the country
-url <- paste( 'https://web.archive.org/web/20150319012353/http://opengeocode.org/cude/download.php?file=/home/fashions/public_html/opengeocode.org/download/cow.txt') 
-download.file(url, destfile = "cow.txt" )
-
-
-cow <- read.csv("cow.txt",skip = 28, encoding = "UTF-8", sep = ";", comment.char = "#")
-
-# returns string w/o leading whitespace
-#trim.leading <- function (x) sub("^\\s+", "", x)
-# returns string w/o trailing whitespace
-#trim.trailing <- function (x) sub("\\s+$", "", x)
-# returns string w/o leading or trailing whitespace
-trim <- function(x) gsub("^\\s+|\\s+$", "", x)
-cow$ISOen_name <- trim(cow$ISOen_name)
-mena <- read.csv("mena.csv", encoding = "UTF-8", sep = ";", comment.char = "#")
-cow$ISO3166A3 <- trim(cow$ISO3166A3)
-mena$ISO3166A3 <- trim(mena$ISO3166A3)
-cow <- merge(x = cow , y = mena , by = "ISO3166A3", all.x = TRUE )
-
-#rm(mena)
-#str(ctryall)
-ctryall <- merge(x = ctryall , y = cow , by.x = "ctry", by.y = "ISOen_name" , all.x = TRUE )
-#rm(cow)
-## Eliminate record without 
-ctryall <- ctryall[!rowSums(is.na(ctryall["latitude"])), ]
-ctryall <- ctryall[!rowSums(is.na(ctryall["longitude"])), ]
-ctryall <- ctryall[ ,c("ctry2","mena","latitude","longitude")]
-#write.csv(ctryall, "data/ctryall.csv")
-
-### Subsetting the dataset
-#data <- databackp
-#databackp <- data
-
-data <- data[!rowSums(is.na(data["Origin"])), ]
-data <- data[!rowSums(is.na(data["Asylum"])), ]
+data <- data[!rowSums(is.na(data["CountryOriginCode"])), ]
+data <- data[!rowSums(is.na(data["CountryAsylumCode"])), ]
 data <- data[!rowSums(is.na(data["Year"])), ]
 data <- data[!rowSums(is.na(data["Value"])), ]
 
