@@ -33,21 +33,24 @@ All data is disaggregated by year, type of population, country/territory of asyl
 
 `Year` is an integer between 1951 and 2019
 
-Population types are expressed in the data as follows:
-      *    `REF` – Refugee
-      *    `ROC` – People in refugee-like situation
-      *    `ASY` – Asylum seekers
-      *    `VDA` – Venezuelans displaced abroad
-      *    `IDP` – Internally displaced persons
-      *    `IOC` – People in IDP-like situation
-      *    `STA` – Stateless persons
-      *    `OOC` – Others of concern
 
-Solutions are expressed in the data as codes as follows:
-      *    `RET` – Returned refugees
-      *    `RST` – Resettled refugees
-      *    `NAT` – Naturalized refugees
-      *    `RDP` – Returned IDPs
+Population types are expressed in the data as follows:
+
+ *    `REF` – Refugee  
+ *    `ROC` – People in refugee-like situation  
+ *    `ASY` – Asylum seekers  
+ *    `VDA` – Venezuelans displaced abroad  
+ *    `IDP` – Internally displaced persons  
+ *    `IOC` – People in IDP-like situation  
+ *    `STA` – Stateless persons  
+ *    `OOC` – Others of concern  
+
+Solutions are expressed in the data as codes as follows:  
+
+ *    `RET` – Returned refugees  
+ *    `RST` – Resettled refugees  
+ *    `NAT` – Naturalized refugees  
+ *    `RDP` – Returned IDPs  
       
 
 > Note that the term country/territory of asylum has a range of contexts depending on the dataset chosen
@@ -55,11 +58,10 @@ Solutions are expressed in the data as codes as follows:
  *   Resettlement – in this context this is the country of arrival – i.e. the country to which a refugee has been resettled
  *   Returns – in this context this is the country of departure – i.e. the country from which a refugee has voluntarily repatriated.
  
-Country/territory of asylum and origin – the full list of UN countries is available on the UNSD methodology page . ISO3 country codes are included. 
+Country/territory of asylum and origin – the full list of UN countries is available on the UNSD methodology page . ISO3 country codes are included. UNHCR uses the following non-standard ISO3 country codes:  
 
-UNHCR uses the following non-standard ISO3 country codes:
- *         `UNK` for Various/unknown
- *         `STA` for Stateless
+ *   `UNK` for Various/unknown  
+ *   `STA` for Stateless  
 
 
 
