@@ -57,6 +57,12 @@
 <li>
       <a href="articles/Exploration.html">Initial Exploration</a>
     </li>
+    <li>
+      <a href="articles/refugee-bar-chart-race.html">Bar Chart Race for Refugees</a>
+    </li>
+    <li>
+      <a href="articles/refugee-population-viz.html">Refugee Population Data Visualisation</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -74,11 +80,53 @@
   <div class="contents col-md-9">
 <div id="unhcrdatapackage" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#unhcrdatapackage" class="anchor"></a>unhcrdatapackage</h1></div>
+<a href="#unhcrdatapackage" class="anchor"></a><a href="https://Edouard-Legoupil.github.io/unhcrdatapackage/docs/">unhcrdatapackage</a>
+</h1></div>
 <p>A data package with UNHCR statistics Database</p>
 <p>Data are pulled from HDX @ <a href="https://data.humdata.org/dataset/unhcr-population-data-for-world" class="uri">https://data.humdata.org/dataset/unhcr-population-data-for-world</a> , conveniently packaged for R users.</p>
 <p>Install from github with <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("Edouard-Legoupil/unhcrdatapackage")</a></code>.</p>
 <p>The code used to build the package is in data/build.R - Tutorial from <a href="https://r-pkgs.org/data.html" class="uri">https://r-pkgs.org/data.html</a></p>
+<p>You can read the <a href="https://www.unhcr.org/5ee200e37.pdf">Global Trend Report</a></p>
+<div id="data-content" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-content" class="anchor"></a>Data Content</h2>
+<p>The data presented in this website consists of the following five datasets:</p>
+<p>UNHCR:</p>
+<ul>
+<li>End-year population figures - these are stock figures for specific types of populations at the end of each year, including refugees, IDPs and asylum seekers.</li>
+<li>Solutions – these are flow figures, with the total number of individuals that have availed each solution in each year.</li>
+</ul>
+<p>IDMC – global figures for internally displaced persons due to conflict and violence</p>
+<p>UNRWA – Palestine refugees under the mandate of UNRWA</p>
+<p>Demographics – are available for the UNHCR data, IDMC and UNRWA data. No demographics are available for resettlement and naturalization data</p>
+</div>
+<div id="data-structure" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-structure" class="anchor"></a>Data structure</h2>
+<p>All data is disaggregated by year, type of population, country/territory of asylum and origin.</p>
+<p><code>Year</code> is an integer between 1951 and 2019</p>
+<p>Population types are expressed in the data as follows: * <code>REF</code> – Refugee * <code>ROC</code> – People in refugee-like situation * <code>ASY</code> – Asylum seekers * <code>VDA</code> – Venezuelans displaced abroad * <code>IDP</code> – Internally displaced persons * <code>IOC</code> – People in IDP-like situation * <code>STA</code> – Stateless persons * <code>OOC</code> – Others of concern</p>
+<p>Solutions are expressed in the data as codes as follows: * <code>RET</code> – Returned refugees * <code>RST</code> – Resettled refugees * <code>NAT</code> – Naturalized refugees * <code>RDP</code> – Returned IDPs</p>
+<blockquote>
+<p>Note that the term country/territory of asylum has a range of contexts depending on the dataset chosen</p>
+</blockquote>
+<ul>
+<li>Resettlement – in this context this is the country of arrival – i.e. the country to which a refugee has been resettled</li>
+<li>Returns – in this context this is the country of departure – i.e. the country from which a refugee has voluntarily repatriated.</li>
+</ul>
+<p>Country/territory of asylum and origin – the full list of UN countries is available on the UNSD methodology page . ISO3 country codes are included.</p>
+<p>UNHCR uses the following non-standard ISO3 country codes:</p>
+<ul>
+<li><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>    <span class="st">`</span><span class="dt">UNK</span><span class="st">`</span> <span class="cf">for</span> Various<span class="op">/</span>unknown</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>    <span class="st">`</span><span class="dt">STA</span><span class="st">`</span> <span class="cf">for</span> Stateless</span></code></pre></div></li>
+</ul>
+</div>
+<div id="data-protection" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-protection" class="anchor"></a>Data protection</h2>
+<p>Before publishing any statistics on the refugee statistics website, UNHCR applies safeguards to protect confidentiality. Small numbers less than five are rounded to the nearest multiple of five. Additionally data relating to pending asylum applications, new applications and decisions is rounded between five and ten.</p>
+<p>Data between tables remains additive therefore the totals should be considered approximations.</p>
+</div>
 </div>
   </div>
 
@@ -86,7 +134,7 @@
     <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>What license is it under?</li>
+<li>Creative Commons Attribution 4.0 International Public License</li>
 </ul>
 </div>
 <div class="developers">

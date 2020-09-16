@@ -3,7 +3,7 @@
 \docType{data}
 \name{solutions_residing}
 \alias{solutions_residing}
-\title{solutions_residing}
+\title{Persons availing a durable solution}
 \format{
 A data frame with 17127 rows and 9 variables:
 \describe{
@@ -12,10 +12,10 @@ A data frame with 17127 rows and 9 variables:
   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
   \item{\code{CountryOriginName}}{character Country of Origin Name}
   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-  \item{\code{ResettlementArrivals}}{integer Number of Resettlement arrivals}
-  \item{\code{Naturalisation}}{integer Number of Naturalisation}
-  \item{\code{RefugeeReturns}}{integer Number of Refugee returns}
-  \item{\code{IDPReturns}}{integer Number of IDP returns} 
+  \item{\code{ResettlementArrivals}}{integer Number of Resettlement arrivals: Resettled refugees are those who have who have been resettled to another country. Resettlement is used to assist refugees in countries that cannot provide them with appropriate protection and support. Resettlement is primarily facilitated by UNHCR in most countries around the world, although significant private sponsorship schemes do exist as well (e.g. in Canada). }
+  \item{\code{Naturalisation}}{integer Number of Naturalisation: refers to those refugees that have naturalized in their country of asylum. Naturalization is the legal act or process by which a non-citizen in a country may acquire citizenship or nationality of that country. It is used as a proxy measure of local integration. The International Recommendations on Refugee Statistics make several recommendations on appropriate indicators for measuring and quantifying local integration in a way that is comparable and consistent across different contexts. However, the availability of such data about refugees remains very poor. Even data on naturalization is limited by the uneven availability of data and poor coverage as well as policy and legal changes over time. In particular, it can be difficult to distinguish between the naturalization of refugees and non-refugees. Therefore, the data are only indicative at best and provide an underestimate of the extent to which refugees are naturalized. }
+  \item{\code{RefugeeReturns}}{integer Number of Refugee returns: are former refugees who have returned to their countries of origin, either spontaneously or in an organized fashion, but are yet to be fully integrated. Such returns would ideally take place only under conditions of safety and dignity. For the purpose of UNHCR's statistics, only refugees who returned during the calendar year are included, although in practice, operations may assist returnees for longer periods. }
+  \item{\code{IDPReturns}}{integer Number of IDP returns: Returned IDPs refers to those IDPs who were beneficiaries of UNHCR’s protection and assistance activities, and who returned to their areas of origin or habitual residence during the calendar year. In practice, however, operations may assist IDP returnees for longer periods. } 
 }
 }
 \source{

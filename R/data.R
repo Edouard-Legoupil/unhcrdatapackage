@@ -40,7 +40,7 @@
 #' @source \url{http://somewhere.important.com/}
 "reference"
 
-#' @title end_year_population_totals
+#' @title Persons who are forcibly displaced, stateless and others of concern to UNHCR
 #' @description Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951.
 #' @format A data frame with 103302 rows and 11 variables:
 #' \describe{
@@ -49,17 +49,19 @@
 #'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-#'   \item{\code{Refugees}}{integer Number of Refugees}
-#'   \item{\code{IDPs}}{integer Number of Internally Displaced Persons}
-#'   \item{\code{AsylumSeekers}}{integer Number of Asylum-seekers}
-#'   \item{\code{OthersOfConcern}}{integer Number of Others of Concern to UNHCR}
-#'   \item{\code{StatelessPersons}}{integer Number of Stateless persons}
-#'   \item{\code{VenezuelansDisplacedAbroad}}{integer Number of Venezuelans Displaced Abroad} 
+#'   \item{\code{Refugees}}{integer Number of Refugees: include individuals recognized under the 1951 Convention relating to the Status of Refugees, its 1967 Protocol, the 1969 Organization of African Unity (OAU) Convention Governing the Specific Aspects of Refugee Problems in Africa, the refugee definition contained in the 1984 Cartagena Declaration on Refugees as incorporated into national laws, those recognized in accordance with the UNHCR Statute, individuals granted complementary forms of protection, and those enjoying temporary protection. The refugee population also includes people in refugee-like situations.
+#'   People in refugee-like situation refers to a category which is descriptive in nature and includes groups of people who are outside their country or territory of origin and who face protection risks similar to those of refugees, but for whom refugee status has, for practical or other reasons, not been ascertained.}
+#'   \item{\code{IDPs}}{integer Number of Internally Displaced Persons:  (IDPs) are persons or groups of persons who have been forced or obliged to flee or to leave their homes or places of habitual residence, in particular as a result of, or in order to avoid the effects of armed conflict, situations of generalized violence, violations of human rights or natural or human-made disasters, and who have not crossed an internationally recognized State border. For the purposes of UNHCR’s statistics, this population includes only conflict-generated IDPs to whom the Office extends protection and/or assistance. The IDP population also includes people in an IDP-like situation. 
+#'   People in an IDP-like situation refers to a category which is descriptive in nature and includes groups of people who are inside their country of nationality or habitual residence and who face protection risks similar to those of IDPs but who, for practical or other reasons, could not be reported as such.}
+#'   \item{\code{AsylumSeekers}}{integer Number of Asylum-seekers: Asylum-seekers are individuals who have sought international protection and whose claims for refugee status have not yet been determined.}
+#'   \item{\code{OthersOfConcern}}{integer Number of Others of Concern to UNHCR: Other groups or persons of concern refers to individuals who do not necessarily fall directly into any of these groups above but to whom UNHCR has extended its protection and/or assistance services, based on humanitarian or other special grounds.}
+#'   \item{\code{StatelessPersons}}{integer Number of Stateless persons: Individuals under UNHCR’s statelessness mandate are defined under the 1954 Convention Relating to the Status of Stateless Persons as those not considered as nationals by any State under the operation of its law. In other words, they do not possess the nationality of any State. UNHCR statistics refer to people who fall under the organization’s statelessness mandate as those who are stateless according to this international definition. Data from some countries may also include people with undetermined nationality. These are people who lack proof of possession of any nationality and at the same time have or are regarded as having important links to more than one State. UNHCR also works with populations at risk of statelessness, but persons at risk of statelessness are not reported on under the statistical category of individuals under UNHCR’s statelessness mandate.}
+#'   \item{\code{VenezuelansDisplacedAbroad}}{integer Number of Venezuelans Displaced Abroad: refers to persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards. } 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "end_year_population_totals"
 
-#' @title end_year_population_totals_long
+#' @title Persons who are forcibly displaced, stateless and others of concern to UNHCR - reshaped
 #' @description Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951.
 #' @format A data frame with 103303 rows and 11 variables:
 #' \describe{
@@ -74,7 +76,7 @@
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "end_year_population_totals_long"
 
-#' @title solutions_residing
+#' @title Persons availing a durable solution
 #' @description Data collated by UNHCR, containing information about the number of forcibly displaced residing in World availing different types of solutions for refugees and IDPs such as repatriation or resettlement. Data is available since 1983.
 #' @format A data frame with 17127 rows and 9 variables:
 #' \describe{
@@ -83,10 +85,10 @@
 #'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-#'   \item{\code{ResettlementArrivals}}{integer Number of Resettlement arrivals}
-#'   \item{\code{Naturalisation}}{integer Number of Naturalisation}
-#'   \item{\code{RefugeeReturns}}{integer Number of Refugee returns}
-#'   \item{\code{IDPReturns}}{integer Number of IDP returns} 
+#'   \item{\code{ResettlementArrivals}}{integer Number of Resettlement arrivals: Resettled refugees are those who have who have been resettled to another country. Resettlement is used to assist refugees in countries that cannot provide them with appropriate protection and support. Resettlement is primarily facilitated by UNHCR in most countries around the world, although significant private sponsorship schemes do exist as well (e.g. in Canada). }
+#'   \item{\code{Naturalisation}}{integer Number of Naturalisation: refers to those refugees that have naturalized in their country of asylum. Naturalization is the legal act or process by which a non-citizen in a country may acquire citizenship or nationality of that country. It is used as a proxy measure of local integration. The International Recommendations on Refugee Statistics make several recommendations on appropriate indicators for measuring and quantifying local integration in a way that is comparable and consistent across different contexts. However, the availability of such data about refugees remains very poor. Even data on naturalization is limited by the uneven availability of data and poor coverage as well as policy and legal changes over time. In particular, it can be difficult to distinguish between the naturalization of refugees and non-refugees. Therefore, the data are only indicative at best and provide an underestimate of the extent to which refugees are naturalized. }
+#'   \item{\code{RefugeeReturns}}{integer Number of Refugee returns: are former refugees who have returned to their countries of origin, either spontaneously or in an organized fashion, but are yet to be fully integrated. Such returns would ideally take place only under conditions of safety and dignity. For the purpose of UNHCR's statistics, only refugees who returned during the calendar year are included, although in practice, operations may assist returnees for longer periods. }
+#'   \item{\code{IDPReturns}}{integer Number of IDP returns: Returned IDPs refers to those IDPs who were beneficiaries of UNHCR’s protection and assistance activities, and who returned to their areas of origin or habitual residence during the calendar year. In practice, however, operations may assist IDP returnees for longer periods. } 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "solutions_residing"

@@ -3,7 +3,7 @@
 \docType{data}
 \name{end_year_population_totals_long}
 \alias{end_year_population_totals_long}
-\title{end_year_population_totals_long}
+\title{Persons who are forcibly displaced, stateless and others of concern to UNHCR - reshaped}
 \format{
 A data frame with 103303 rows and 11 variables:
 \describe{
