@@ -1280,7 +1280,7 @@ test2020_psav <- left_join(test2020_psav_o, PSAV2020_d, by = "iso_d")
 
 #  imf <- read_xls("data-raw/WEO_Data.xls",sheet = "WEO_Data")
 # 
- imf <- read_xlsx("data-raw/WEO_data.xlsx",sheet = "Sheet1")
+imf <-  unhcrdatapackage::GDP_IMF
 
 gdp_imf <- imf %>% 
   select(ISO,`2020`,`2021`) %>% 
