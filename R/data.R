@@ -167,3 +167,19 @@
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "asylum_applications"
+
+#' @title IMF GDP data
+#' @description GDP at constant price for 2020&2021 from IMF
+#' @format A data frame with 193 rows and 8 variables:
+#' \describe{
+#'   \item{\code{ISO}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{Country}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{Units}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{Scale}}{logical COLUMN_DESCRIPTION}
+#'   \item{\code{Country/Series-specific Notes}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{2020}}{double COLUMN_DESCRIPTION}
+#'   \item{\code{2021}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{Estimates Start After}}{double COLUMN_DESCRIPTION} 
+#'}
+#' @source \url{http://somewhere.important.com/}
+"imf"

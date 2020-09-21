@@ -209,5 +209,9 @@ attachment::att_to_description()
 rhub::check_for_cran()
 rhub::check()
 
+imf <- readxl::read_excel("data-raw/WEO_data.xlsx",sheet = "Sheet1")
 
+sinew::makeOxygen(imf, add_fields = "source")
+
+save(imf, file =  "data/GDP_IMF.RData")
 
