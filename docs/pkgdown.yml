@@ -4,8 +4,9 @@ pkgdown_sha: ~
 articles:
   BumpChart: BumpChart.html
   Exploration: Exploration.html
+  prediction: prediction.html
   pyramid: pyramid.html
   refugee-bar-chart-race: refugee-bar-chart-race.html
   refugee-population-viz: refugee-population-viz.html
-last_built: 2020-09-16T18:36Z
+last_built: 2020-09-21T14:16Z
 

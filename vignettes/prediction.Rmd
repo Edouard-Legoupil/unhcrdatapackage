@@ -1,12 +1,12 @@
 ---
-title: "Initial Exploration"
+title: "Prediction of Refugee Stock Numbers"
 date: '`r Sys.Date()`'
 output: 
   rmarkdown::html_vignette:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Initial Exploration}
+  %\VignetteIndexEntry{Prediction of Refugee Stock Numbers}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
