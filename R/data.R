@@ -42,7 +42,7 @@
 
 #' @title End-year stock population figures for forcibly displaced displaced and stateless persons
 #' @description Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951.
-#' @format A data frame with 103302 rows and 11 variables:
+#' @format A data frame with 109960 rows and 11 variables:
 #' \describe{
 #'   \item{\code{Year}}{character Year}
 #'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
@@ -61,11 +61,24 @@
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "end_year_population_totals"
 
-
+#' @title End-year stock population figures for forcibly displaced displaced and stateless persons - Long Format
+#' @description Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951.
+#' @format A data frame with 153809 rows and 7 variables:
+#' \describe{
+#'   \item{\code{Year}}{character Year}
+#'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
+#'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
+#'   \item{\code{CountryOriginName}}{character Country of Origin Name}
+#'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
+#'   \item{\code{Solution.type}}{character Type of Solution }
+#'   \item{\code{Value}}{integer Number of person} 
+#'}
+#' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
+"end_year_population_totals_long"
 
 #' @title Persons availing a durable solution
 #' @description Data collated by UNHCR, containing information about the number of forcibly displaced residing in World availing different types of solutions for refugees and IDPs such as repatriation or resettlement. Data is available since 1983.
-#' @format A data frame with 17127 rows and 9 variables:
+#' @format A data frame with 17651 rows and 9 variables:
 #' \describe{
 #'   \item{\code{Year}}{character Year}
 #'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
@@ -81,9 +94,24 @@
 "solutions"
 
 
+#' @title Persons availing a durable solution - long format
+#' @description Data collated by UNHCR, containing information about the number of forcibly displaced residing in World availing different types of solutions for refugees and IDPs such as repatriation or resettlement. Data is available since 1983.
+#' @format A data frame with 19298 rows and 7 variables:
+#' \describe{
+#'   \item{\code{Year}}{character Year}
+#'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
+#'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
+#'   \item{\code{CountryOriginName}}{character Country of Origin Name}
+#'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
+#'   \item{\code{Solution.type}}{character Type of Solution }
+#'   \item{\code{Value}}{integer Number of person} 
+#'}
+#' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
+"solutions_long"
+
 #' @title Demographics and locations of forcibly displaced displaced and stateless persons
 #' @description Data collated by UNHCR, containing information about forcibly displaced populations and stateless persons residing in World. It includes data on their demographics as well as sub-national locations. Data is available from 2001.
-#' @format A data frame with 170118 rows and 24 variables:
+#' @format A data frame with 182359 rows and 24 variables:
 #' \describe{
 #'   \item{\code{Year}}{character Year}
 #'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
@@ -124,7 +152,7 @@
 
 #' @title Asylum decisions taken on asylum claims of asylum-seekers
 #' @description Data collated by UNHCR about asylum decisions taken on asylum claims of asylum-seekers residing in World. Data is available since 2000.
-#' @format A data frame with 82486 rows and 16 variables:
+#' @format A data frame with 87495 rows and 16 variables:
 #' \describe{
 #'   \item{\code{Year}}{character Year}
 #'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
@@ -149,7 +177,7 @@
 
 #' @title Asylum applications by asylum-seekers
 #' @description Dataset collated by UNHCR, containing information about the number of applications for asylum residing in World. Data is available since 2000
-#' @format A data frame with 85949 rows and 13 variables:
+#' @format A data frame with 91031 rows and 13 variables:
 #' \describe{
 #'   \item{\code{Year}}{character Year}
 #'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
@@ -167,3 +195,19 @@
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "asylum_applications"
+
+#' @title IMF GDP data
+#' @description GDP at constant price for 2020&2021 from IMF
+#' @format A data frame with 193 rows and 8 variables:
+#' \describe{
+#'   \item{\code{ISO}}{character iso3 country code}
+#'   \item{\code{Country}}{character Country name}
+#'   \item{\code{Units}}{character Units of the data}
+#'   \item{\code{Scale}}{logical}
+#'   \item{\code{Country/Series-specific Notes}}{character Data source}
+#'   \item{\code{2020}}{double GDP data for 2020}
+#'   \item{\code{2021}}{character GDP data for 2021}
+#'   \item{\code{Estimates Start After}}{double Estimate time} 
+#'}
+#' @source \url{https://www.imf.org}
+"imf"

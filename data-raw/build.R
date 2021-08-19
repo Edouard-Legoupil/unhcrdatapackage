@@ -4,14 +4,24 @@
 
 # Check that the usethis package is also installed. If not:
 #install.packages("usethis")
+devtools::document()
+
+#install.packages("pkgdown")
+
+#library("pkgdown")
+pkgdown::build_site()
 
 
+## a few other exploration of the package
+devtools::release()
+# devtools::build_win(version = c("R-release", "R-devel"))
 
 #install.packages("sinew")
 #devtools::install_github("mdlincoln/docthis")
-#library(readr)
-#library(sinew)
-#library(docthis)
+library(tidyverse)
+library(readr)
+library(sinew)
+library(docthis)
 
 ckanr::ckanr_setup("https://data.humdata.org")
 
@@ -38,7 +48,7 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Internally Displaced Persons"="IDP", 
                                        "Asylum-seekers"="ASY",
                                        "Others of Concern to UNHCR"="OOC",
-                                       "Stateless persons"="STA",    
+                                       "Stateless Persons"="STA",    
                                         "Venezuelans Displaced Abroad"="VDA" ))
 
 save(end_year_population_totals, file =  "data/end_year_population_totals.RData")
@@ -57,6 +67,8 @@ end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
                                            # column that the measurement came from
                                            variable.name="Population.type",
                                            value.name="Value")
+
+end_year_population_totals_long <- end_year_population_totals_long[end_year_population_totals_long$Value > 0, ]
   
 save(end_year_population_totals_long, file =  "data/end_year_population_totals_long.RData")
 
@@ -76,8 +88,23 @@ solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="Countr
                                                                          "Refugee returns"="RET",
                                                                          "Naturalisation"="NAT",
                                                                          "IDP returns"="RDP" ))
-save(solutions, file =  "data/solutions.RData")
 
+save(solutions, file =  "data/solutions.RData")
+sinew::makeOxygen(solutions_residing, add_fields = "source")
+
+solutions_long <- reshape2::melt(solutions,
+                                                  # ID variables - all the variables to keep but not split apart on
+                                                  id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
+                                                  # The source columns
+                                                  measure.vars=c("NAT","RST", "RET","RDP"),
+                                                  # Name of the destination column that will identify the original
+                                                  # column that the measurement came from
+                                                  variable.name="Solution.type",
+                                                  value.name="Value")
+
+solutions_long <- solutions_long[solutions_long$Value > 0, ]
+save(solutions_long , file =  "data/solutions_long.RData")
+sinew::makeOxygen(solutions_long , add_fields = "source")
 
 
 demographics_residing <- read_sans_hxl("data-raw/demographics_residing_world.csv")
@@ -155,26 +182,17 @@ reference <- readr::read_csv("data-raw/reference.csv")
 save(reference, file =  "data/reference.RData")
 sinew::makeOxygen(reference, add_fields = "source")
 
-devtools::document()
+
+imf <- readxl::read_excel("data-raw/WEO_data.xlsx",sheet = "Sheet1")
+
+sinew::makeOxygen(imf, add_fields = "source")
+
+save(imf, file =  "data/GDP_IMF.RData")
 
 
-#install.packages("pkgdown")
-
-library("pkgdown")
-pkgdown::build_site()
-
-
-## a few other exploration of the package
-
-devtools::document()
-
-devtools::release()
-
-# devtools::build_win(version = c("R-release", "R-devel"))
 
 attachment::att_to_description()
 rhub::check_for_cran()
 rhub::check()
-
 
 

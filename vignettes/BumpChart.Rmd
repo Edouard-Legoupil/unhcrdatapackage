@@ -1,25 +1,25 @@
 ---
 title: "Bump charts"
-date: '`r Sys.Date()`'
 output: 
   rmarkdown::html_vignette:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Data Anonymisation and disclosure risk measurement}
+  %\VignetteIndexEntry{Bump charts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 Bump charts are good to use to plot ranking over time, or other examples when the path between two nodes have no statistical significance. Also includes functions to create custom smooth lines called sigmoid curves.
 
 
-```{r cars}
-pacman::p_load(BBmisc, tidyverse, hablar, ggbump, sf, rnaturalearth, feather, janitor, lubridate, unhcrdatapackage)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+ 
+pacman::p_load(BBmisc, tidyverse, hablar, ggbump, sf, rnaturalearth, feather, janitor, lubridate, unhcrdatapackage, unhcRstyle)
 options(stringsAsFactors = F)
 
 # Time series
@@ -52,18 +52,13 @@ data2 <- data[ which(data$Year == "2019" &
 
 
 
-```{r }
-
-
-
+```{r message=FALSE, warning=FALSE}
 sdf <- rnaturalearthdata::countries50 %>% 
   st_as_sf() %>% 
+  filter(iso_a3 %in% data2$CountryAsylumCode) %>% 
   #st_crop(xmin = -135, xmax = -24, ymin = -60, ymax = 60) %>%  ## Crop americas...
   st_crop(xmin = -135, xmax = -24, ymin = -60, ymax = 33.5) %>%  ## Crop americas...
-  filter(iso_a3 %in% data2$CountryAsylumCode) %>% 
   left_join(data2, by = c("iso_a3" = "CountryAsylumCode"))
-
-
 
 #min(sdf$Value)
 #max(sdf$Value)
@@ -72,7 +67,7 @@ ranking <- st_geometry(sdf) %>%
   st_point_on_surface() %>% 
   st_coordinates() %>% 
   as_tibble() %>% 
-  bind_cols(tibble(fine_cap = normalize(rank(sdf$Value), 
+  bind_cols(tibble(fine_cap = BBmisc::normalize(rank(sdf$Value), 
                                         range = c(min(sdf$Value), 
                                                   max(sdf$Value)), 
                                         method = "range"),
@@ -92,7 +87,7 @@ sdf2 <- sdf %>%
 
 
 
-```{r fig.height=10, fig.width=10}
+```{r fig.height=14, fig.width=10}
 
 ggplot() + 
   geom_sf(data = sdf2, size = .3, fill = "gray67", color = "gray17") +

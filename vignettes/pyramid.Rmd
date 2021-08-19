@@ -1,40 +1,45 @@
 ---
-title: "Age Pyramid"
-date: '`r Sys.Date()`'
+title: "Analysis of Refugees Age Pyramid"
 output: 
   rmarkdown::html_vignette:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Data Anonymisation and disclosure risk measurement}
+  %\VignetteIndexEntry{Analysis of Refugees Age Pyramid}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+
+Note that you can find the source code for all the chart below in the [Repository](https://github.com/unhcr/unhcrdatapackage/tree/master/vignettes).
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+knitr::opts_chunk$set(fig.width = 12, fig.height = 9)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
 
+pacman::p_load(BBmisc, tidyverse, hablar, ggbump, sf, rnaturalearth, feather, janitor, lubridate, unhcrdatapackage, unhcRstyle, ggplot2, ggthemes, dply, tidyr, wpp2015)
 
-
-
-
-```{r cars}
-pacman::p_load(BBmisc, tidyverse, hablar, ggbump, sf, rnaturalearth, feather, janitor, lubridate, unhcrdatapackage)
 options(stringsAsFactors = F)
-
-
-
-
+ 
 ```
 
 
+## Age Pyramid for Refugees
 
-```{r piramid, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+```{r piramid, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "" , fig.width=8}
 demographics <-  unhcrdatapackage::demographics
 demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
 #names(demographics)
-pyramid <-  demographics[ demographics$Year == "2019",
+pyramid <-  demographics[ demographics$Year == max(demographics$Year),
                           c("REGION_UN",
                           "Female04",
                               "Female511",
@@ -93,13 +98,201 @@ ggplot(pyramid3, aes(x = age, fill = gender,
                             yes = -pc, no = pc))) + 
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
-  labs(title = "Population Pyramid", x = "Age", y = "Percent of population") +
+  labs(title = "Population Pyramid (proportion of age group)  ",
+       subtitle = paste0("For all displaced population as of ", max(demographics$Year)),
+       x = "", 
+       y = "Percent of population",
+       caption =  "Source: UNHCR Population Statistics") +
   scale_colour_manual(values = c("pink", "steelblue"),
                       aesthetics = c("colour", "fill")) +
   coord_flip()+
-  kobo_unhcr_style_bar()
+  unhcRstyle::unhcr_theme()
 
 ```  
 
 
+
+## The International Data Base for Demographcis
+
+The US Census Bureau’s International Data Base (IDB) includes historical demographic data, current population estimates, and demographic projections to 2050 for countries of population 5,000 or greater that are recognized by the US Department of State (US Census Bureau 2013). Demographic indicators in the IDB include: mid-year population; population counts by sex and age; and fertility, mortality, and migration variables such as net migration, infant mortality rates, and total fertility rates. Future projections of these indicators are estimated using the cohort-component method (US Census Bureau 2013).
+
+Data from the IDB are available via a web interface provided by the US Census Bureau at https://www.census.gov/population/international/data/idb/informationGateway.php, and also can be accessed programmatically via the IDB data application programming interface, or API. The idbr R package provides convenient functions for accessing IDB data within an R session, and converting the data to an R data frame for analysis and visualization. idbr is available on CRAN; R users can install the package with install.packages('idbr').
+
+Users of the Census APIs should request an API key, which is available from http://api.census.gov/data/key_signup.html. The idbr package requires R users to set their API keys prior to accessing the data. The API key can be set for an entire R session with the idb_api_key function:
+
+
+We can then use such visualization in comparision with Age pyramid from other countries as offered by the [`idbr`](https://github.com/walkerke/idbr) package.
+
+```{r, fig.width=8}
+
+#install.packages("idbr")
+library(idbr)
+
+thiscountry <- "Venezuela"
+thisyear <- 2021
+
+
+#idbr::idb_api_key('Your API key goes here')
+china_data <- idbr::get_idb(
+  country = thiscountry,
+  year = thisyear,
+  age = 0:100,
+  sex = c("male", "female")
+) 
+
+china_data %>%
+  mutate(pop = ifelse(sex == "Male", pop * -1, pop)) %>%
+  ggplot(aes(x = pop, y = as.factor(age), fill = sex)) + 
+  geom_col(width = 1) + 
+  unhcRstyle::unhcr_theme(base_size = 15) + 
+  scale_x_continuous(labels = function(x) paste0(abs(x / 1000000), "m")) + 
+  scale_y_discrete(breaks = scales::pretty_breaks(n = 10)) + 
+  scale_fill_manual(values = c("pink", "steelblue")) + 
+  labs(title = paste0("Population structure of ",thiscountry, " in ", thisyear),
+       x = "Population",
+       y = "Age",
+       fill = "",
+       caption =  "Source: US Census Bureau’s International Data Base ")
+
+
+```
+
+```{r}
+# library(idbr)
+# library(tidyverse)
+# 
+# lex <- get_idb(
+#   country = "all",
+#   year = 2021,
+#   variables = c("name", "e0"),
+#   geometry = TRUE
+# )
+# 
+# ggplot(lex, aes(fill = e0)) + 
+#   theme_bw() + 
+#   geom_sf() + 
+#   coord_sf(crs = 'ESRI:54030') + 
+#   scale_fill_viridis_c() + 
+#   labs(fill = "Life expectancy \nat birth (2021)")
+```
+
+
+```{r}
+
+
+# library(countrycode)
+# 
+# africa <- countrycode_data[countrycode_data$continent == "Africa", ]
+# 
+# africa_fips <- na.omit(africa$fips104)
+# 
+# africa_tfr <- idb5(country = africa_fips, year = 2016, 
+#                    variables = "TFR", country_name = TRUE) %>%
+#   left_join(countrycode_data, by = c("FIPS" = "fips104"))
+# 
+# plot_ly(africa_tfr, z = ~TFR, text = ~NAME, locations = ~iso3c) %>%
+#   add_choropleth(colors = "Purples", hoverinfo = "z+text") %>%
+#   layout(geo = list(scope = "africa", resolution = 50),
+#          title = "Total fertility rate in Africa, 2016")
+
+
+```
+
+```{r}
+
+# library(dplyr)
+# 
+# male <- get_idb("United Arab Emirates", 2016, sex = "male") %>%
+#   mutate(pop = pop * -1,
+#          sex = "Male")
+# 
+# female <- get_idb("United Arab Emirates", 2016, sex = "female") %>%
+#   mutate(sex = "Female")
+# 
+# uae <- rbind(male, female) %>%
+#   mutate(abs_pop = abs(pop))
+# 
+# 
+# plot_ly(uae, 
+#         x = ~ pop, 
+#         y = ~ age, 
+#         color = ~ sex) %>%
+#   add_bars(orientation = "h",
+#         hoverinfo = "y+text+name", text = ~abs_pop, 
+#         colors = c("darkgreen", "red"))  %>%
+#   layout(bargap = 0.1,
+#          barmode = "overlay",
+#          title = "United Arab Emirates, 2016",
+#          xaxis = list(tickmode = "array",
+#                       tickvals = c(-150000, -100000, -50000, 0, 50000),
+#                       ticktext = c("150k", "100k", "50k", "0", "50k"),
+#                       title = "Population"),
+#          yaxis = list(title = "Age"))
+```
+
+
+## Comparing Age Pyramid with Country of Origin & Country of Asylum
+
+```{r}
+
+## https://stackoverflow.com/questions/15816073/population-pyramid-w-projection-in-r
+
+
+#load data in wpp2015
+data(popF)
+data(popM)
+data(popFprojMed)
+data(popMprojMed)
+
+#combine past and future female population
+df0 <- popF %>% 
+  left_join(popFprojMed) %>%
+  mutate(gender = "female")
+
+#combine past and future male population, add on female population
+df1 <- popM %>% 
+  left_join(popMprojMed) %>%
+  mutate(gender = "male") %>%
+  bind_rows(df0) %>%
+  mutate(age = factor(age, levels = unique(age)))
+
+#stack data for ggplot, filter World population and required years
+df2 <- df1 %>%
+  gather(key = year, value = pop, -country, -country_code, -age, -gender) %>%
+  mutate(pop = pop/1e03) %>%
+  filter(country == "World", year %in% c(1950, 2000, 2050, 2100))
+
+#add extra rows and numeric age variable for geom_step used for 2100
+df2 <- df2 %>% 
+  mutate(ageno = as.numeric(age) - 0.5)
+
+df2 <- df2 %>%
+  bind_rows(df2 %>% filter(year==2100, age=="100+") %>% mutate(ageno = ageno + 1)) 
+
+
+#Note: you need to do arrange(rev(year)) as the bars are overlays.
+ggplot(data = df2, aes(x = age, y = pop, fill = year)) +
+  #bars for all but 2100
+  geom_bar(data = df2 %>% filter(gender == "female", year != 2100) %>% arrange(rev(year)),
+           stat = "identity",
+           position = "identity") +
+  geom_bar(data = df2 %>% filter(gender == "male", year != 2100) %>% arrange(rev(year)),
+           stat = "identity",
+           position = "identity",
+           mapping = aes(y = -pop)) +
+  #steps for 2100
+  geom_step(data =  df2 %>% filter(gender == "female", year == 2100), 
+        aes(x = ageno), size = 1) +
+  geom_step(data =  df2 %>% filter(gender == "male", year == 2100), 
+        aes(x = ageno, y = -pop), size = 1) +
+  coord_flip() +
+  #extra style shazzaz
+  scale_y_continuous(labels = abs, limits = c(-400, 400), breaks = seq(-400, 400, 100)) +
+  geom_hline(yintercept = 0) +
+  unhcRstyle::unhcr_theme(base_size = 15) + 
+  #theme_economist(horizontal = FALSE) +
+  scale_fill_economist() +
+  labs(fill = "", x = "", y = "")
+
+```
 
