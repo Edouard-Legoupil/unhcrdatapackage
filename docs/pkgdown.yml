@@ -4,9 +4,11 @@ pkgdown_sha: ~
 articles:
   BumpChart: BumpChart.html
   Exploration: Exploration.html
+  chartRace: chartRace.html
   prediction: prediction.html
+  prediction2: prediction2.html
   pyramid: pyramid.html
-  refugee-bar-chart-race: refugee-bar-chart-race.html
-  refugee-population-viz: refugee-population-viz.html
-last_built: 2021-08-17T22:46Z
+  region-comparison: region-comparison.html
+  regional-exploration: regional-exploration.html
+last_built: 2021-08-20T12:30Z
 

@@ -194,39 +194,39 @@ The following chart visualizes population movements between source and destinati
 ###### Figure 1 **\| Population origin-destination in the region**
 
 ```{r pop-flows}
-chords1 <- time_series3 %>% 
-   group_by(coo = CountryOriginName, coa = CountryAsylumName) %>% 
-   summarize(total = sum(total), .groups = "drop")
-
-
-chords <- popstats %>% 
-  group_by(coo = coo_name, coa = coa_name) %>% 
-  summarize(total = sum(total), .groups = "drop")
-
-chords <- chords %>% 
-  mutate(coo = str_replace(coo, " \\(Bolivarian Republic of\\)", ""),
-        coa = str_replace(coa, " \\(Bolivarian Republic of\\)", ""),
-        coo = str_replace(coo, " \\(Plurinational State of\\)", ""),
-        coa = str_replace(coa, " \\(Plurinational State of\\)", ""),
-        coo = str_replace(coo, "United States of America", "USA"),
-        coa = str_replace(coa, "United States of America", "USA"))
-
-circlize::chordDiagram(chords, 
-             self.link = 1,
-             grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
-             annotationTrack = "grid", 
-             preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
-
-circos.track(track.index = 1, 
-             panel.fun = function(x, y) {
-              circos.text(CELL_META$xcenter, 
-                          CELL_META$ylim[1], 
-                          CELL_META$sector.index, 
-                          facing = "clockwise", 
-                          niceFacing = TRUE,
-                          adj = c(0, 0.5))
-                }, 
-            bg.border = NA) # here set bg.border to NA is important
+# chords1 <- time_series3 %>% 
+#    group_by(coo = CountryOriginName, coa = CountryAsylumName) %>% 
+#    summarize(total = sum(total), .groups = "drop")
+# 
+# 
+# chords <- popstats %>% 
+#   group_by(coo = coo_name, coa = coa_name) %>% 
+#   summarize(total = sum(total), .groups = "drop")
+# 
+# chords <- chords %>% 
+#   mutate(coo = str_replace(coo, " \\(Bolivarian Republic of\\)", ""),
+#         coa = str_replace(coa, " \\(Bolivarian Republic of\\)", ""),
+#         coo = str_replace(coo, " \\(Plurinational State of\\)", ""),
+#         coa = str_replace(coa, " \\(Plurinational State of\\)", ""),
+#         coo = str_replace(coo, "United States of America", "USA"),
+#         coa = str_replace(coa, "United States of America", "USA"))
+# 
+# circlize::chordDiagram(chords, 
+#              self.link = 1,
+#              grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
+#              annotationTrack = "grid", 
+#              preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
+# 
+# circos.track(track.index = 1, 
+#              panel.fun = function(x, y) {
+#               circos.text(CELL_META$xcenter, 
+#                           CELL_META$ylim[1], 
+#                           CELL_META$sector.index, 
+#                           facing = "clockwise", 
+#                           niceFacing = TRUE,
+#                           adj = c(0, 0.5))
+#                 }, 
+#             bg.border = NA) # here set bg.border to NA is important
 ```
 
 
@@ -343,7 +343,6 @@ The boundaries and names shown and the designations used on this map do not impl
 
 # Regional Analysis 
 
-Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)
 
 ## What displacement?
 
@@ -470,31 +469,81 @@ Stateless population refers to those individuals without a nationality in their 
 The population groups in this chart should not be summed up to calculate the total POCs figures as the stateless population group includes both non-displaced and displaced stateless.
 
 Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)
+Forced displacement as a result of conflict, violence, and other causes undermine sustainable 
+development, and can increase the risk of regional instability, especially when refugees are hosted in 
+neighbouring countries, resulting in possible tensions with local populations. The United Nations General 
+Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development at 
+paragraph 23 recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced 
+persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that 
+Member States resolve to take further effective measures and actions, to “strengthen support and meet 
+the special needs of people living in areas affected by complex humanitarian emergencies”. In addition, 
+target 10.7 recognizes for the first time the contribution of migration to sustainable development by 
+aiming to “facilitate orderly, safe, and responsible migration and mobility of people, including through 
+implementation of planned and well-managed migration policies”.  
+This indicator tracks the number of people displaced across national borders as a result of persecution, 
+conflict, violence, human rights violations, or events seriously disturbing public order. It measures the 
+total count of refugee population by country or territory of origin as a proportion of the total population. 
 
+Goal 10: Reduce inequality within and among countries 
+
+Target name : Facilitate orderly, safe, regular and responsible migration and mobility of people, including through the implementation of planned and well-managed migration policies
+Indicator name 	
+
+Proportion of the population who are refugees, by country of origin
+
+he indicator is defined as the total count of population who have been recognized as refugees as a 
+proportion of the total population of their country of origin, expressed per 100,000 population.  
+Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like 
+situation.  
+Population refers to total resident population in a given country in a given year. 
+ 
+Concepts: 
+Refugees recognized by the Government and/or UNHCR include:  
+(a) persons recognized as refugees by Governments having ratified the 1951 United Nations Convention 
+Relating to the Status of Refugees, and/or its 1967 Protocol;  
+Last updated: February 2021 
+(b) persons recognized as refugees under the 1969 Organization of African Unity (OAU) Convention 
+Governing the Specific Aspects of Refugee Problems in Africa;  
+(c) those recognized in accordance with the principles enshrined in the Cartagena Declaration;  
+(d) persons recognized by UNHCR as refugees in accordance with its Statute (otherwise referred to as 
+“mandate” refugees);  
+(e) those who have been granted a complementary form of protection (i.e. non-Convention);  
+(f) persons who have been granted temporary protection on a group basis;  
+Persons in a refugee-like situation refer to those outside their territory of origin who face protection risks 
+similar to those of refugees, but who, for practical or other reasons, have not been formally recognized or 
+issued documentation to that effect.  
+ 
+2.b. Unit of measure 
+Number of refugees per 100,000 population in country of origin 
+
+Refugee data are sent to UNHCR Country Offices by member states, usually through national institutions 
+responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of 
+Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, 
+estimations based on positive decisions on asylum applications from previous years are used. 
 
 ##### Figure 11 **\| Proportion of the population who are refugees, by country of origin**
 ```{r}
-egris <- 
-  popstats %>% 
-  filter(coo_region == "Americas") %>% 
-  group_by(coo_iso) %>% 
-  count(wt = refugees, name = "refugees") %>% 
-  left_join(m49 %>% select(iso3 = `ISO-alpha3 Code`, country = `Country or Area`), by = c(coo_iso = "iso3")) %>% 
-  left_join(wpp %>% transmute(country = `Region, subregion, country or area *`, pop = 1000*as.numeric(`2020`))) %>% 
-  mutate(egris = refugees/(pop+refugees)) %>% 
-  ungroup()
-
-egris %>% 
-  top_n(10, wt = egris) %>% 
-  ggplot(aes(egris, fct_reorder(country, egris))) +
-  geom_col(fill = "#0072BC") +
-  geom_label(aes(label = scales::percent(egris, accuracy = .01)), 
-             color = "black", hjust = "inward") +
-  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
-  labs(x = NULL, y = NULL, 
-       title = paste0("The number of refugees by country of origin\n",
-                      "as a proportion of the national population of that country of origin")) +
-  unhcRstyle::unhcr_theme()
+# egris <- 
+#   popstats %>% 
+#   filter(coo_region == "Americas") %>% 
+#   group_by(coo_iso) %>% 
+#   count(wt = refugees, name = "refugees") %>% 
+#   left_join(m49 %>% select(iso3 = `ISO-alpha3 Code`, country = `Country or Area`), by = c(coo_iso = "iso3")) %>% 
+#   left_join(wpp %>% transmute(country = `Region, subregion, country or area *`, pop = 1000*as.numeric(`2020`))) %>% 
+#   mutate(egris = refugees/(pop+refugees)) %>% 
+#   ungroup()
+# 
+# egris %>% 
+#   top_n(10, wt = egris) %>% 
+#   ggplot(aes(egris, fct_reorder(country, egris))) +
+#   geom_col(fill = "#0072BC") +
+#   geom_label(aes(label = scales::percent(egris, accuracy = .01)), 
+#              color = "black", hjust = "inward") +
+#   scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+#   labs(x = NULL, y = NULL, 
+#        title = paste0("The number of refugees by country of origin\n",
+#                       "as a proportion of the national population of that country of origin")) +
+#   unhcRstyle::unhcr_theme()
 ```
 
 
@@ -736,6 +785,22 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ## Venezuela Siuation
 
 ## El Salvador, Honduras, Guatemala & Mexico
+
+# Importance of EGRIS
+
+The  Expert  Group  on  Refugee  and  IDP  Statistics,  in  which  UNHCR  belongs  to  the  steering 
+committee, has released the International Recommendations on Refugee Statistics (IRRS), which 
+were adopted by the United Nations Statistical Commission during its 2018 session and is a strong 
+Last updated: February 2021 
+reference for refugee statistics reporting methodologies. UNHCR supports NSOs to build capacity 
+to report on forced displacement in countries that currently lack disaggregated data on refugees.  
+ 
+• Expert Group on Refugee and IDP Statistics (EGRIS): 
+https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics 
+ 
+• International Recommendations on Refugee Statistics (IRRS): 
+https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004 
+
 
 :::{.page-break}
 :::

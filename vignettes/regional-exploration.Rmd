@@ -1,0 +1,360 @@
+---
+title: "An overview of population of concerns in the Americas"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An overview of population of concerns in the Americas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+Note that you can find the source code for all the chart below in the [Repository](https://github.com/unhcr/unhcrdatapackage/tree/master/vignettes).
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+knitr::opts_chunk$set(fig.width = 12, fig.height = 9)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+library(tidyverse)
+library(circlize)
+library(unhcRstyle)
+library(unhcrdatapackage)
+
+```
+
+
+```{r m49, include = FALSE}
+# UN Stats Standard country or area codes for statistical use (M49)
+# Exported from https://unstats.un.org/unsd/methodology/m49/overview/
+m49 <- readr::read_csv("https://gist.githubusercontent.com/galalH/8b40c493636c512b52e8307a0c42d8e6/raw/64407b08412a8457202d6462c4bdae66dd229490/m49.csv")
+```
+
+```{r wpp, include = FALSE}
+wppf <- fs::file_temp(ext = "xlsx")
+httr::GET("https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/EXCEL_FILES/1_Population/WPP2019_POP_F01_1_TOTAL_POPULATION_BOTH_SEXES.xlsx", httr::write_disk(wppf))
+wpp <- readxl::read_excel(wppf)
+wpp <- wpp %>% slice(13:nrow(.)) %>% set_names(as.character(wpp %>% slice(12)))
+```
+
+```{r world-map, include = FALSE}
+
+time_series <-  unhcrdatapackage::end_year_population_totals
+
+lastyear <- max(time_series$Year)
+
+reference <- unhcrdatapackage::reference
+
+
+time_series3 <- 
+  time_series %>% 
+  filter(Year == 2020) %>% 
+  left_join(reference %>% select(coa_region = `UNHCRBureau`, iso_3), by = c(CountryAsylumCode = "iso_3")) %>%
+  left_join(reference %>% select(coo_region = `UNHCRBureau`, iso_3), by = c(CountryOriginCode = "iso_3"))
+
+time_series3 <- 
+  time_series3%>% 
+  filter(coa_region == "Americas") %>% 
+  mutate(across(REF:VDA, ~replace_na(as.numeric(.), 0)),
+         total = REF + ASY + VDA + IDP  + STA + OOC,
+         coa_name.orig = CountryAsylumName,
+         coo_name.orig = CountryOriginName,
+         coa_name = fct_lump_prop(CountryAsylumName, prop = .01, w = total),
+         coo_name = fct_lump_prop(CountryOriginName, prop = .01, w = total),
+         coo_name = fct_recode(CountryOriginName, "Other" = "China"))
+
+
+
+# Population, GDP & GNP per Capita from WorldBank
+wb_data <- wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+               startdate = 1951, enddate = 2020, return_wide = TRUE)
+# Renaming variables for further matching
+names(wb_data)[1] <- "CountryAsylumCode"
+names(wb_data)[2] <- "Year"
+
+
+library(tmap)
+data(World) # from the `tmap` package.
+```
+
+```{r popstats, include = FALSE}
+popstats <- 
+  httr::GET("https://api.unhcr.org/population/v1/population/",
+      query = list(limit = 10000,
+                   dataset = "population",
+                   displayType = "totals",
+                   "columns[]" = "refugees", 
+                   "columns[]" = "asylum_seekers",
+                   "columns[]" = "idps",
+                   "columns[]" = "vda",
+                   "columns[]" = "stateless",
+                   "columns[]" = "ooc",
+                   "year[]" = 2020,
+                   coo_all = TRUE,
+                   coa_all = TRUE))
+
+popstats <- httr::content(popstats, simplifyVector = TRUE)$items %>% as_tibble()
+```
+
+```{r popstats2, include = FALSE}
+popstats <- 
+  popstats %>% 
+  left_join(m49 %>% select(coa_region = `Region Name`, iso3 = `ISO-alpha3 Code`), by = c(coa_iso = "iso3")) %>%
+  left_join(m49 %>% select(coo_region = `Region Name`, iso3 = `ISO-alpha3 Code`), by = c(coo_iso = "iso3"))
+
+popstats <- 
+  popstats %>% 
+  filter(coa_region == "Americas") %>% 
+  mutate(across(refugees:ooc, ~replace_na(as.numeric(.), 0)),
+         total = refugees + asylum_seekers + vda + idps  + stateless + ooc,
+         coa_name.orig = coa_name,
+         coo_name.orig = coo_name,
+         coa_name = fct_lump_prop(coa_name, prop = .01, w = total),
+         coo_name = fct_lump_prop(coo_name, prop = .01, w = total),
+         coo_name = fct_recode(coo_name, "Other" = "China"))
+```
+
+
+
+## The EGRIS SDG Indicator
+
+_SDG Indicator 10.7.4: Proportion of the population who are refugees, by country of origin_
+
+```{r egris-sdg-indicator}
+egris <- 
+  popstats %>% 
+  filter(coo_region == "Americas") %>% 
+  group_by(coo_iso) %>% 
+  count(wt = refugees, name = "refugees") %>% 
+  left_join(m49 %>% select(iso3 = `ISO-alpha3 Code`, country = `Country or Area`), by = c(coo_iso = "iso3")) %>% 
+  left_join(wpp %>% transmute(country = `Region, subregion, country or area *`, pop = 1000*as.numeric(`2020`))) %>% 
+  mutate(egris = refugees/(pop+refugees)) %>% 
+  ungroup()
+
+egris %>% 
+  top_n(10, wt = egris) %>% 
+  ggplot(aes(egris, fct_reorder(country, egris))) +
+  geom_col(fill = "#0072BC") +
+  geom_label(aes(label = scales::percent(egris, accuracy = .01)), 
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+  labs(x = NULL, y = NULL, 
+       title = paste0("The number of refugees by country of origin\n",
+                      "as a proportion of the national population of that country of origin")) +
+  unhcRstyle::unhcr_theme()
+```
+
+## Trends in population
+
+The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
+
+```{r pop-flows}
+chords1 <- time_series3 %>% 
+   group_by(coo = CountryOriginName, coa = CountryAsylumName) %>% 
+   summarize(total = sum(total), .groups = "drop")
+
+
+chords <- popstats %>% 
+  group_by(coo = coo_name, coa = coa_name) %>% 
+  summarize(total = sum(total), .groups = "drop")
+
+chords <- chords %>% 
+  mutate(coo = str_replace(coo, " \\(Bolivarian Republic of\\)", ""),
+        coa = str_replace(coa, " \\(Bolivarian Republic of\\)", ""),
+        coo = str_replace(coo, " \\(Plurinational State of\\)", ""),
+        coa = str_replace(coa, " \\(Plurinational State of\\)", ""),
+        coo = str_replace(coo, "United States of America", "USA"),
+        coa = str_replace(coa, "United States of America", "USA"))
+
+circlize::chordDiagram(chords, 
+             self.link = 1,
+             grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
+             annotationTrack = "grid", 
+             preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
+
+circos.track(track.index = 1, 
+             panel.fun = function(x, y) {
+              circos.text(CELL_META$xcenter, 
+                          CELL_META$ylim[1], 
+                          CELL_META$sector.index, 
+                          facing = "clockwise", 
+                          niceFacing = TRUE,
+                          adj = c(0, 0.5))
+                }, 
+            bg.border = NA) # here set bg.border to NA is important
+```
+
+Restricting attention to recognized refugees, here's a breakdown of population increases/decreases by reason according to the mid-year statistical report:
+
+```{r pop-waterfall}
+# mysr2020.refugees <- mysr2020.refugees %>% filter(region == "Americas")
+# 
+# f <- 
+#   c("yearStartTotal",
+#     "groupRecognition",
+#     "temporaryProtection",
+#     "individualRecognition",
+#     "cessation",
+#     "resettlementArrivals",
+#     "decreasesResettlementTotal",
+#     "decreasesVoluntaryRepatriationTotal",
+#     "naturalization",
+#     "births",
+#     "deaths",
+#     "increasesOther",
+#     "decreasesOther",
+#     "midYearTotal")
+# 
+# tmp <- 
+#   mysr2020.refugees %>% 
+#   summarize(across(where(is.numeric), sum)) %>% 
+#   pivot_longer(everything(), names_to = "event", values_to = "val") %>% 
+#   mutate(event = factor(event, levels = f)) %>% 
+#   filter(!is.na(event)) %>% 
+#   arrange(event)
+# 
+# tmp <- 
+#   tmp %>% 
+#   mutate(sign = if_else(fct_match(event, 
+#                                   c("cessation", 
+#                                     "decreasesResettlementTotal", 
+#                                     "decreasesVoluntaryRepatriationTotal",
+#                                     "naturalization",
+#                                     "deaths",
+#                                     "decreasesOther")),
+#                         -1, 1)) %>% 
+#   filter(val != 0) %>% 
+#   mutate(val = val*sign,
+#          end = cumsum(val),
+#          start = lag(end, default = 0),
+#          id = row_number())
+# 
+# tmp <- 
+#   tmp %>% 
+#   mutate(sign = if_else(fct_match(event, c("yearStartTotal", "midYearTotal")), 0, sign)) %>% 
+#   rows_update(tibble(id = max(tmp$id), end = 0)) %>% 
+#   mutate(event = as.character(event), id = max(id) - id,
+#          stock = cumsum(val), stock = if_else(end == 0, val, stock))
+# 
+# tmp %>% 
+#   ggplot() +
+#   geom_rect(aes(ymin = id -.5, ymax = id + .5,
+#                 xmin = start, xmax = end,
+#                 fill = as_factor(sign))) +
+#   geom_text(aes(if_else(sign == -1, start, stock), id, label = scales::comma(val)), hjust = 1) +
+#   scale_y_continuous(labels = tmp$event, breaks = tmp$id) +
+#   scale_x_continuous(labels = scales::comma) +
+#   scale_fill_manual(labels = c("1" = "Increases", "0" = "Stock", "-1" = "Decreases"),
+#                     values = c("1" = "#00B398", "0" = "#0072BC", "-1" = "#EF4A60")) +
+#   coord_cartesian(xlim = c(6.5e5, NA)) +
+#   labs(x = NULL, y = NULL, title = "Refugee Population Increases and Decreases", 
+#        caption = "2020 Mid-Year Statistical Report") +
+#   unhcRstyle::unhcr_theme()
+```
+
+Now using the number of persons in need of international protection per 1,000 host community members as a proxy for the refugee hosting burden across the region.
+
+```{r pop-burden}
+## Intro Map of population data in the Americas...
+
+tmp <- 
+  popstats %>% 
+  mutate(total_sans_idps = total - idps,
+         coa_name.orig = str_replace(coa_name.orig, " \\(.*\\)", "")) %>%
+  group_by(coa_name.orig) %>% 
+  summarize(poc = sum(total_sans_idps)) %>% 
+  left_join(wpp %>% transmute(country = str_replace(`Region, subregion, country or area *`, " \\(Plurinational State of\\)", ""),
+                              pop = as.numeric(`2019`)),
+            by = c(coa_name.orig = "country")) %>% 
+  mutate(poc_per_thousand = poc/pop)
+
+World %>% 
+  filter(continent == "North America" | continent == "South America") %>% 
+  left_join(tmp, by = c(sovereignt = "coa_name.orig")) %>% 
+  tmap::tm_shape(projection=4326) +
+  tmap::tm_polygons("poc_per_thousand")
+```
+
+## Venezuelan Displaced Abroad: People displaced across borders…
+
+According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. 
+
+Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. 
+
+ 
+While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.  
+
+
+```{r}
+# Give more background around the concept of VDA
+# gender
+# population pyramid
+# Specific Needs
+```
+
+## Population registered with UNHCR
+
+The following question topics are [recommended as core topics](https://unstats.un.org/unsd/demographic-social/Standards-and-Methods/files/Principles_and_Recommendations/International-Migration/2018_1746_EN_08-E.pdf#page=46) in a population census: 
+
+ a) Country of birth 
+ b) Country of citizenship 
+ c) Acquisition of citizenship 
+ d) Year or period of arrival in the country . 
+ 
+ In addition, it is recommended to include as a core census question: 
+ a) Reason for migration, with response categories: i) Employment (including military service) ii) Education and training iii) Marriage, family reunification or family formation iv) Forced displacement (refugees, asylum seekers, temporary protected status, others) v) Other
+
+```{r pop-assisted}
+# Display  % of pop registered in primes...
+# Specific Needs
+# 
+# asr2019.ref <- asr2019.ref %>% group_by(country = asylum) %>% summarize(pop = sum(yearEndTotal), assisted = sum(yearEndTotalUnhcrAssisted))
+# asr2019.rsd <- asr2019.rsd %>% group_by(country = asylum) %>% summarize(pop = sum(totalEndYear), assisted = sum(totalEndYearUNHCRAssisted))
+# asr2019.idp <- asr2019.idp %>% filter(type == "IDPA" | type == "IDPB") %>% group_by(country = origin) %>% summarize(pop = sum(totalMidYear), assisted = sum(totalMidYearUNHCRAssisted))
+# asr2019.ret <- asr2019.ret %>% group_by(country = origin) %>% summarize(pop = sum(totalReturnees), assisted = sum(totalReturneesUNHCRAssisted))
+# asr2019.sta <- asr2019.sta %>% group_by(country = asylum) %>% summarize(pop = sum(totalYearEnd), assisted = sum(totalYearEndUNHCRAssisted))
+# asr2019.ooc <- asr2019.ooc %>% group_by(country = asylum) %>% summarize(pop = sum(totalYearEnd), assisted = sum(totalYearEndUNHCRAssisted))
+# 
+# asr2019 <- bind_rows(ref = asr2019.ref,
+#                      rsd = asr2019.rsd,
+#                      idp = asr2019.idp,
+#                      ret = asr2019.ret,
+#                      sta = asr2019.sta,
+#                      ooc = asr2019.ooc,
+#                      .id = "type")
+# 
+# asr2019 <-
+#   asr2019 %>% 
+#   left_join(popstats %>% distinct(country = coo, region = coo_region)) %>% 
+#   filter(region == "Americas") %>% 
+#   mutate(country = fct_lump_prop(country, prop = .01, w = pop)) %>% # View()
+#   group_by(type, country) %>% 
+#   summarize(across(pop:assisted, sum), .groups = "drop") %>% 
+#   pivot_longer(pop:assisted, names_to = "grp", values_to = "val") %>% 
+#   mutate(country = reorder_within(country, val, type, fun = first))
+# 
+# asr2019 %>% 
+#   ggplot() + 
+#   geom_col(aes(val, country, fill = grp), position = "dodge") +
+#   facet_wrap(vars(type), scales = "free") +
+#   scale_y_reordered() +
+#   scale_x_continuous(labels = scales::comma) +
+#   scale_fill_manual(values = c(pop = "black", assisted = "#0072BC")) +
+#   labs(x = NULL, y = NULL, title = "% of Population of Concern Assisted by UNHCR", caption = "Based on 2019 ASR") +
+#   unhcr_theme()
+```
+
+
+
+
+
+
+Due to movement restrictions and quarantine measures adopted by Governments to curb the spread of the pandemic, the ability of refugees and migrants to enter countries through regular pathways and stay with regular status has decreased in many countries of the region, due to closures of borders, but also due to the temporary full or partial suspension of asylum and regularization pathways as well as expiry of visa and residence permits. This has resulted in increased irregular border crossings and significantly heightened health and protection risks, negatively impacting access to basic goods and services.  
+
+With some governments in the region lifting movement and border restrictions towards the end of 2020, increasing numbers of re-entries from Venezuela are observed. 

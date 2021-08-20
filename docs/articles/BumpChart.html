@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">unhcrdatapackage</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -57,24 +57,40 @@
       <a href="../articles/BumpChart.html">Bump charts</a>
     </li>
     <li>
-      <a href="../articles/Exploration.html">Initial Exploration</a>
+      <a href="../articles/Exploration.html">Initial Exploration of Refugee Statistics</a>
     </li>
     <li>
-      <a href="../articles/prediction.html">Prediction of Refugee Stock Numbers with Gravity Model</a>
+      <a href="../articles/chartRace.html">Building a Chart Race for Refugees</a>
     </li>
     <li>
-      <a href="../articles/pyramid.html">Age Pyramid</a>
+      <a href="../articles/prediction.html">Prediction of Refugee Stock Numbers</a>
     </li>
     <li>
-      <a href="../articles/refugee-bar-chart-race.html">Bar Chart Race for Refugees</a>
+      <a href="../articles/prediction2.html">Prediction of Refugee Stock Numbers with Gravity Model</a>
     </li>
     <li>
-      <a href="../articles/refugee-population-viz.html">Refugee Population Data Visualisation</a>
+      <a href="../articles/pyramid.html">Analysis of Refugees Age Pyramid</a>
+    </li>
+    <li>
+      <a href="../articles/region-comparison.html">Refugee Population Region Comparison</a>
+    </li>
+    <li>
+      <a href="../articles/regional-exploration.html">An overview of population of concerns in the Americas</a>
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/unhcr/unhcrdatapackage/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -84,14 +100,13 @@
 
       
 
-      </header><script src="BumpChart_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="BumpChart_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Bump charts</h1>
             
-            <h4 class="date">2020-10-13</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/unhcr/unhcrdatapackage/blob/master/vignettes/BumpChart.Rmd"><code>vignettes/BumpChart.Rmd</code></a></small>
       <div class="hidden name"><code>BumpChart.Rmd</code></div>
 
     </div>
@@ -99,106 +114,6 @@
     
     
 <p>Bump charts are good to use to plot ranking over time, or other examples when the path between two nodes have no statistical significance. Also includes functions to create custom smooth lines called sigmoid curves.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">BBmisc</span>, <span class="va">tidyverse</span>, <span class="va">hablar</span>, <span class="va">ggbump</span>, <span class="va">sf</span>, <span class="va">rnaturalearth</span>, <span class="va">feather</span>, <span class="va">janitor</span>, <span class="va">lubridate</span>, <span class="va">unhcrdatapackage</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>stringsAsFactors <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>
-
-<span class="co"># Time series</span>
-<span class="va">time_series</span> <span class="op">&lt;-</span>  <span class="fu">unhcrdatapackage</span><span class="fu">::</span><span class="va"><a href="../reference/end_year_population_totals.html">end_year_population_totals</a></span>
-
-<span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu">unhcrdatapackage</span><span class="fu">::</span><span class="va"><a href="../reference/reference.html">reference</a></span>
-
-<span class="va">time_series2</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span><span class="op">(</span><span class="va">time_series</span>,
-                                           <span class="co"># ID variables - all the variables to keep but not split apart on</span>
-                                           id.vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Year"</span>, <span class="st">"CountryOriginCode"</span>,<span class="st">"CountryAsylumCode"</span>,<span class="st">"CountryOriginName"</span>,<span class="st">"CountryAsylumName"</span> <span class="op">)</span>,
-                                           <span class="co"># The source columns</span>
-                                           measure.vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span>,<span class="st">"IDP"</span>, <span class="st">"ASY"</span>,<span class="st">"OOC"</span>,<span class="st">"STA"</span>,<span class="st">"VDA"</span><span class="op">)</span>,
-                                           <span class="co"># Name of the destination column that will identify the original</span>
-                                           <span class="co"># column that the measurement came from</span>
-                                           variable.name<span class="op">=</span><span class="st">"Population.type"</span>,
-                                           value.name<span class="op">=</span><span class="st">"Value"</span><span class="op">)</span> 
-
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time_series2</span>, by.x<span class="op">=</span><span class="st">"CountryOriginCode"</span>, y <span class="op">=</span> <span class="va">reference</span>, by.y<span class="op">=</span> <span class="st">"iso_3"</span>, all.x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co">#names(data)</span>
-<span class="co">#levels(as.factor(data$REGION_UN))</span>
-<span class="va">data2</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"2019"</span> <span class="op">&amp;</span> 
-                <span class="va">data</span><span class="op">$</span><span class="va">Population.type</span>  <span class="op">==</span> <span class="st">"VDA"</span> <span class="op">&amp;</span>
-                 <span class="va">data</span><span class="op">$</span><span class="va">REGION_UN</span> <span class="op">==</span> <span class="st">"Americas"</span> <span class="op">&amp;</span>
-                 <span class="va">data</span><span class="op">$</span><span class="va">Value</span> <span class="op">&gt;</span> <span class="fl">1000</span>              <span class="op">)</span>,
-               <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CountryOriginCode"</span>, <span class="st">"Year"</span> ,  <span class="st">"CountryAsylumCode"</span>, <span class="st">"CountryOriginName"</span>, <span class="st">"CountryAsylumName"</span>, <span class="st">"Population.type"</span>, <span class="st">"Value"</span>  <span class="op">)</span><span class="op">]</span></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">rnaturalearthdata</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/rnaturalearthdata/man/countries.html">countries50</a></span> <span class="op">%&gt;%</span> 
-  <span class="fu">st_as_sf</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="co">#st_crop(xmin = -135, xmax = -24, ymin = -60, ymax = 60) %&gt;%  ## Crop americas...</span>
-  <span class="fu">st_crop</span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">135</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">24</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="fl">60</span>, ymax <span class="op">=</span> <span class="fl">33.5</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co">## Crop americas...</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">iso_a3</span> <span class="op">%in%</span> <span class="va">data2</span><span class="op">$</span><span class="va">CountryAsylumCode</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">left_join</span><span class="op">(</span><span class="va">data2</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"iso_a3"</span> <span class="op">=</span> <span class="st">"CountryAsylumCode"</span><span class="op">)</span><span class="op">)</span></pre></div>
-<pre><code>## although coordinates are longitude/latitude, st_intersection assumes that they are planar</code></pre>
-<pre><code>## Warning: attribute variables are assumed to be spatially constant throughout all
-## geometries</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co">#min(sdf$Value)</span>
-<span class="co">#max(sdf$Value)</span>
-
-<span class="va">ranking</span> <span class="op">&lt;-</span> <span class="fu">st_geometry</span><span class="op">(</span><span class="va">sdf</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">st_point_on_surface</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">st_coordinates</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">bind_cols</span><span class="op">(</span><span class="fu">tibble</span><span class="op">(</span>fine_cap <span class="op">=</span> <span class="fu">normalize</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rank.html">rank</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">Value</span><span class="op">)</span>, 
-                                        range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">Value</span><span class="op">)</span>, 
-                                                  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">Value</span><span class="op">)</span><span class="op">)</span>, 
-                                        method <span class="op">=</span> <span class="st">"range"</span><span class="op">)</span>,
-                   CountryAsylumName <span class="op">=</span> <span class="va">sdf</span><span class="op">$</span><span class="va">CountryAsylumName</span>,
-                   xend <span class="op">=</span> <span class="op">-</span><span class="fl">50</span>,
-                   x_axis_start <span class="op">=</span> <span class="va">xend</span> <span class="op">+</span> <span class="fl">60</span>,
-                   fine_cap_x <span class="op">=</span> <span class="fu">normalize</span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">Value</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu">first</span><span class="op">(</span><span class="va">x_axis_start</span><span class="op">)</span>, <span class="fl">10000000</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"range"</span><span class="op">)</span>,
-                   val_txt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">Value</span>, digits <span class="op">=</span> <span class="fl">0</span>, nsmall <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span><span class="op">)</span></pre></div>
-<pre><code>## Warning in st_point_on_surface.sfc(.): st_point_on_surface may not give correct
-## results for longitude/latitude data</code></pre>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-            <span class="co">#,</span>
-            <span class="co">#       val_txt2 = if_else(country == "Uruguay", paste0(val_txt, "% mobility change"), val_txt)))</span>
-
-<span class="va">sdf2</span> <span class="op">&lt;-</span> <span class="va">sdf</span> <span class="op">%&gt;%</span> 
-  <span class="fu">bind_cols</span><span class="op">(</span><span class="va">ranking</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">fine_cap</span><span class="op">)</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sdf2</span>, size <span class="op">=</span> <span class="fl">.3</span>, fill <span class="op">=</span> <span class="st">"gray67"</span>, color <span class="op">=</span> <span class="st">"gray17"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="co"># Sigmoid from country to start of barchart</span>
-  <span class="fu">geom_sigmoid</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ranking</span>, 
-               <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">X</span>, y <span class="op">=</span> <span class="va">Y</span>, xend <span class="op">=</span> <span class="va">x_axis_start</span> <span class="op">-</span> <span class="fl">.2</span>, yend <span class="op">=</span> <span class="va">fine_cap</span>, group <span class="op">=</span> <span class="va">CountryAsylumName</span>, color <span class="op">=</span> <span class="va">fine_cap</span><span class="op">)</span>, 
-               alpha <span class="op">=</span> <span class="fl">.6</span>, smooth <span class="op">=</span> <span class="fl">10</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="co"># Line from xstart to value</span>
-  <span class="fu">geom_segment</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ranking</span>, 
-               <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_axis_start</span>, y <span class="op">=</span> <span class="va">fine_cap</span>, xend <span class="op">=</span> <span class="va">fine_cap_x</span>, yend <span class="op">=</span> <span class="va">fine_cap</span>, color <span class="op">=</span> <span class="va">fine_cap</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">.6</span>, size <span class="op">=</span> <span class="fl">1</span>, 
-               lineend <span class="op">=</span> <span class="st">"round"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="co"># Y axis - black line</span>
-  <span class="fu">geom_segment</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ranking</span>, 
-               <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_axis_start</span>, y <span class="op">=</span> <span class="fl">40</span>, xend <span class="op">=</span> <span class="va">x_axis_start</span>, yend <span class="op">=</span> <span class="fl">67</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">.6</span>, size <span class="op">=</span> <span class="fl">1.3</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="co"># dot on centroid of country in map</span>
-  <span class="fu">geom_point</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ranking</span>, 
-             <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">X</span>, y <span class="op">=</span> <span class="va">Y</span>, color <span class="op">=</span> <span class="va">fine_cap</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
-  <span class="co"># Country text</span>
-  <span class="co"># geom_text(data = ranking, aes(x = x_axis_start-.5, y = fine_cap, label = country, color = fine_cap), hjust = 1, size = 2.5, nudge_y = .5) +</span>
-  <span class="fu">geom_text</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ranking</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_axis_start</span><span class="op">-</span><span class="fl">.5</span>, y <span class="op">=</span> <span class="va">fine_cap</span>, label <span class="op">=</span> <span class="va">CountryAsylumName</span>, color <span class="op">=</span> <span class="va">fine_cap</span><span class="op">)</span>, hjust <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">3</span>, nudge_y <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="co"># Value text</span>
-  <span class="co">#geom_text(data = ranking, aes(x = fine_cap_x, y = fine_cap, label = val_txt2, color = fine_cap), hjust = 0, size = 2, nudge_x = .4) +</span>
-  <span class="fu">geom_text</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ranking</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">fine_cap_x</span>, y <span class="op">=</span> <span class="va">fine_cap</span>, label <span class="op">=</span> <span class="va">val_txt</span>, color <span class="op">=</span> <span class="va">fine_cap</span><span class="op">)</span>, hjust <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">4</span>, nudge_x <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_sf</span><span class="op">(</span>clip <span class="op">=</span> <span class="st">"off"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_fill_viridis_c</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_color_viridis_c</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">theme_void</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Venezuelan Displaced Abroad in 2019 in Americas"</span>,
-       subtitle <span class="op">=</span> <span class="fu">str_wrap</span><span class="op">(</span><span class="st">"refers to persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards."</span>, <span class="fl">150</span><span class="op">)</span>,
-       caption <span class="op">=</span> <span class="st">"UNHCR https://www.unhcr.org/refugee-statistics/"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">theme</span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">1</span>, <span class="fl">.5</span>, <span class="fl">.5</span>, <span class="st">"cm"</span><span class="op">)</span>,
-        legend.position <span class="op">=</span> <span class="st">"none"</span>,
-        plot.background <span class="op">=</span> <span class="fu">element_rect</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>,
-        plot.caption <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"gray40"</span>, size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>,
-        plot.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"gray40"</span>, size <span class="op">=</span> <span class="fl">14</span>, family <span class="op">=</span> <span class="st">"Helvetica"</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,
-        plot.subtitle <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"gray40"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p><img src="BumpChart_files/figure-html/unnamed-chunk-2-1.png" width="960"></p>
   </div>
 
