@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Persons who are forcibly displaced, stateless and others of concern to UNHCR - reshaped — end_year_population_totals_long • unhcrdatapackage</title>
+<title>End-year stock population figures for forcibly displaced displaced and stateless persons - Long Format — end_year_population_totals_long • unhcrdatapackage</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Persons who are forcibly displaced, stateless and others of concern to UNHCR - reshaped — end_year_population_totals_long" />
+<meta property="og:title" content="End-year stock population figures for forcibly displaced displaced and stateless persons - Long Format — end_year_population_totals_long" />
 <meta property="og:description" content="Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">unhcrdatapackage</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -95,19 +95,42 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Exploration.html">Initial Exploration</a>
+      <a href="../articles/BumpChart.html">Bump charts</a>
     </li>
     <li>
-      <a href="../articles/refugee-bar-chart-race.html">Bar Chart Race for Refugees</a>
+      <a href="../articles/Exploration.html">Initial Exploration of Refugee Statistics</a>
     </li>
     <li>
-      <a href="../articles/refugee-population-viz.html">Refugee Population Data Visualisation</a>
+      <a href="../articles/chartRace.html">Building a Chart Race for Refugees</a>
+    </li>
+    <li>
+      <a href="../articles/prediction.html">Prediction of Refugee Stock Numbers</a>
+    </li>
+    <li>
+      <a href="../articles/prediction2.html">Prediction of Refugee Stock Numbers with Gravity Model</a>
+    </li>
+    <li>
+      <a href="../articles/pyramid.html">Analysis of Refugees Age Pyramid</a>
+    </li>
+    <li>
+      <a href="../articles/region-comparison.html">Refugee Population Region Comparison</a>
+    </li>
+    <li>
+      <a href="../articles/regional-exploration.html">An overview of population of concerns in the Americas</a>
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/unhcr/unhcrdatapackage/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -121,8 +144,8 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Persons who are forcibly displaced, stateless and others of concern to UNHCR - reshaped</h1>
-    
+    <h1>End-year stock population figures for forcibly displaced displaced and stateless persons - Long Format</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/unhcrdatapackage/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>end_year_population_totals_long.Rd</code></div>
     </div>
 
@@ -130,19 +153,19 @@
     <p>Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951.</p>
     </div>
 
-    <pre class="usage"><span class='kw'>end_year_population_totals_long</span></pre>
+    <pre class="usage"><span class='va'>end_year_population_totals_long</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A data frame with 103303 rows and 11 variables:</p><dl>
+    <p>A data frame with 153809 rows and 7 variables:</p><dl>
   <dt><code>Year</code></dt><dd><p>character Year</p></dd>
   <dt><code>CountryOriginCode</code></dt><dd><p>character Country of Origin Code isoA3</p></dd>
   <dt><code>CountryAsylumCode</code></dt><dd><p>character Country of Asylum Code isoA3</p></dd>
   <dt><code>CountryOriginName</code></dt><dd><p>character Country of Origin Name</p></dd>
   <dt><code>CountryAsylumName</code></dt><dd><p>character Country of Asylum Name</p></dd>
-  <dt><code>Population.type</code></dt><dd><p>character Population.type: Refugees, Internally Displaced Persons,Asylum-seekers, Others of Concern to UNHCR, Stateless persons, Venezuelans Displaced Abroad</p></dd>
-  <dt><code>Value</code></dt><dd><p>integer Number of</p></dd>
+  <dt><code>Solution.type</code></dt><dd><p>character Type of Solution</p></dd>
+  <dt><code>Value</code></dt><dd><p>integer Number of person</p></dd> 
 
 </dl>
 

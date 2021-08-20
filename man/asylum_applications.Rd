@@ -5,7 +5,7 @@
 \alias{asylum_applications}
 \title{Asylum applications by asylum-seekers}
 \format{
-A data frame with 85949 rows and 13 variables:
+A data frame with 91031 rows and 13 variables:
 \describe{
   \item{\code{Year}}{character Year}
   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}

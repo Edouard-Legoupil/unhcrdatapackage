@@ -5,7 +5,7 @@
 \alias{solutions}
 \title{Persons availing a durable solution}
 \format{
-A data frame with 17127 rows and 9 variables:
+A data frame with 17651 rows and 9 variables:
 \describe{
   \item{\code{Year}}{character Year}
   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}

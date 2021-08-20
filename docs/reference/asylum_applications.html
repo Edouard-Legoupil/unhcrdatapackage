@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">unhcrdatapackage</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -98,22 +98,39 @@
       <a href="../articles/BumpChart.html">Bump charts</a>
     </li>
     <li>
-      <a href="../articles/Exploration.html">Initial Exploration</a>
+      <a href="../articles/Exploration.html">Initial Exploration of Refugee Statistics</a>
     </li>
     <li>
-      <a href="../articles/pyramid.html">Age Pyramid</a>
+      <a href="../articles/chartRace.html">Building a Chart Race for Refugees</a>
     </li>
     <li>
-      <a href="../articles/refugee-bar-chart-race.html">Bar Chart Race for Refugees</a>
+      <a href="../articles/prediction.html">Prediction of Refugee Stock Numbers</a>
     </li>
     <li>
-      <a href="../articles/refugee-population-viz.html">Refugee Population Data Visualisation</a>
+      <a href="../articles/prediction2.html">Prediction of Refugee Stock Numbers with Gravity Model</a>
+    </li>
+    <li>
+      <a href="../articles/pyramid.html">Analysis of Refugees Age Pyramid</a>
+    </li>
+    <li>
+      <a href="../articles/region-comparison.html">Refugee Population Region Comparison</a>
+    </li>
+    <li>
+      <a href="../articles/regional-exploration.html">An overview of population of concerns in the Americas</a>
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/unhcr/unhcrdatapackage/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,7 +145,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Asylum applications by asylum-seekers</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/unhcrdatapackage/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>asylum_applications.Rd</code></div>
     </div>
 
@@ -136,12 +153,12 @@
     <p>Dataset collated by UNHCR, containing information about the number of applications for asylum residing in World. Data is available since 2000</p>
     </div>
 
-    <pre class="usage"><span class='kw'>asylum_applications</span></pre>
+    <pre class="usage"><span class='va'>asylum_applications</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A data frame with 85949 rows and 13 variables:</p><dl>
+    <p>A data frame with 91031 rows and 13 variables:</p><dl>
   <dt><code>Year</code></dt><dd><p>character Year</p></dd>
   <dt><code>CountryOriginCode</code></dt><dd><p>character Country of Origin Code isoA3</p></dd>
   <dt><code>CountryAsylumCode</code></dt><dd><p>character Country of Asylum Code isoA3</p></dd>

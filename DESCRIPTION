@@ -1,12 +1,53 @@
-Package: unhcrdatapackage
 Type: Package
+Package: unhcrdatapackage
 Title: UNHCR Population statistics Database
-Version: 0.1.0
-Author: Edouard Legoupil, Snr Data Analysis Officer, UNHCR
+Version: 0.1.2
+Author: Edouard Legoupil, Chao Huang, Hisham Galal
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
-Description: This is a data package with all frame organised and reshapped for easy consumptions in R
-    Please see https://www.unhcr.org/refugee-statistics/ https://data.humdata.org/dataset/unhcr-population-data-for-world 
+Description: This is a data package with all frame organised and reshapped
+    for easy consumptions in R Please see
+    https://www.unhcr.org/refugee-statistics/
+    https://data.humdata.org/dataset/unhcr-population-data-for-world
 License: Creative Commons Attribution 4.0 International Public License
+URL: https://unhcr.github.io/unhcrdatapackage/docs/
+BugReports: https://github.com/unhcr/unhcrdatapackage/issues
+Imports: 
+    ggplot2
+Suggests: 
+    broom,
+    classInt,
+    dplyr,
+    DT,
+    geosphere,
+    ggalluvial,
+    ggalt,
+    gganimate,
+    gghighlight,
+    ggpubr,
+    ggrepel,
+    gpclib,
+    knitr,
+    koboloadeR,
+    maps,
+    networkD3,
+    pacman,
+    plyr,
+    RColorBrewer,
+    reshape2,
+    rgdal,
+    rmarkdown,
+    rnaturalearthdata,
+    rworldmap,
+    scales,
+    sp,
+    stringr,
+    tidyr,
+    tidyverse,
+    wbstats
+Remotes:
+    github::UNHCR-WEB/unhcRstyle
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
-LazyData: true
+LazyData: TRUE
 RoxygenNote: 7.1.1

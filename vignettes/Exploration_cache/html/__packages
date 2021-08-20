@@ -1,10 +1,4 @@
 base
-methods
-datasets
-utils
-grDevices
-graphics
-stats
 tidyverse
 ggplot2
 tibble
@@ -23,7 +17,6 @@ R.methodsS3
 R.oo
 R.utils
 png
-grid
 scales
 markdown
 pander
@@ -34,3 +27,6 @@ rnaturalearth
 rnaturalearthdata
 ggspatial
 unhcrdatapackage
+bookdown
+xml2
+unhcRstyle

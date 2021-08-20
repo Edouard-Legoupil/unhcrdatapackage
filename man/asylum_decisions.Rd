@@ -5,7 +5,7 @@
 \alias{asylum_decisions}
 \title{Asylum decisions taken on asylum claims of asylum-seekers}
 \format{
-A data frame with 82486 rows and 16 variables:
+A data frame with 87495 rows and 16 variables:
 \describe{
   \item{\code{Year}}{character Year}
   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}

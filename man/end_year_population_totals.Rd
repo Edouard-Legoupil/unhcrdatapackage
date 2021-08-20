@@ -5,7 +5,7 @@
 \alias{end_year_population_totals}
 \title{End-year stock population figures for forcibly displaced displaced and stateless persons}
 \format{
-A data frame with 103302 rows and 11 variables:
+A data frame with 109960 rows and 11 variables:
 \describe{
   \item{\code{Year}}{character Year}
   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
