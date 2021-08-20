@@ -45,7 +45,7 @@ Data between tables remains additive therefore the totals should be considered a
 
 ## Contribution are welcome
 
-Contribution - specifically creation of new vgnettes are welcome - please fork and submit pullrequest.
+Contribution - specifically creation of new vgnettes are welcome - please fork and submit pull request.
 
 ```{r}
 pkgdown::build_site()

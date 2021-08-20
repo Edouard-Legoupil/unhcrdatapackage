@@ -351,7 +351,7 @@ Compared to the previous year, the population groups with increases were
 the returned IDPs with 22 per cent and the number of internally displaced persons increased by
 12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
 
-###### Figure 2 **\| Largest Countries of Asylum**
+###### Figure 3 **\| Largest Countries of Asylum**
 ```{r}
 #Prepare data2
 bar_df <- end_year_population_totals_long2 %>%
@@ -521,7 +521,7 @@ responsible for data production in the area of refugee and asylum (National Stat
 Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, 
 estimations based on positive decisions on asylum applications from previous years are used. 
 
-##### Figure 11 **\| Proportion of the population who are refugees, by country of origin**
+##### Figure 5 **\| Proportion of the population who are refugees, by country of origin**
 ```{r}
 # egris <- 
 #   popstats %>% 
@@ -551,13 +551,13 @@ estimations based on positive decisions on asylum applications from previous yea
 ## What profiles?
 
 
-##### Figure 5 **\| Where Demographic Composition is available?**
+##### Figure 6 **\| Where Demographic Composition is available?**
 ```{r}
 
 ```
 
 
-##### Figure 6 **\| Demographic Composition**
+##### Figure 7 **\| Demographic Composition**
 ```{r}
 
 demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
@@ -668,12 +668,12 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
-##### Figure 7 **\| Where Displacement Condition description is available?**
+##### Figure 8 **\| Where Displacement Condition description is available?**
 ```{r}
 
 ```
 
-##### Figure 8 **\| Displacement & Accommodation Type**
+##### Figure 9 **\| Displacement & Accommodation Type**
 ```{r}
 
 ```
@@ -687,7 +687,7 @@ Durable solutions include voluntary repatriation, resettlement to a third countr
 
 The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
 
-##### Figure 9 **\| Trends for Solution**
+##### Figure 10 **\| Trends for Solution**
 ```{r}
 multiple_line_df <- solutions_long2 %>%
   filter(UNHCRBureau  == thisbureau &
@@ -752,7 +752,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 
-##### Figure 10 **\| Refugee Status Determination trends 
+##### Figure 11 **\| Refugee Status Determination trends 
 
 ```{r}
 
