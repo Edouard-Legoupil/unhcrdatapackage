@@ -611,8 +611,8 @@ pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
 pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
 
 ## Add images for geneder
-men <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"))
-women <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png"))
+#men <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"))
+#women <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png"))
 
 icon <- data.frame(
    c("men", "women"),
