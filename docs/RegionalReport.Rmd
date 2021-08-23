@@ -627,10 +627,10 @@ names(icon)[3] <- "age"
 names(icon)[4] <- "pc"
 
 # Or add to plot as annotation
-men <- magick::image_fill(men, 'none')
-men <- as.raster(men) 
-women <- magick::image_fill(women, 'none')
-women <- as.raster(women) 
+# men <- magick::image_fill(men, 'none')
+# men <- as.raster(men) 
+# women <- magick::image_fill(women, 'none')
+# women <- as.raster(women) 
 
 #annotation_raster(men, 25, 35, 3, 5) + 
 #annotation_raster(women, 25, 35, 3, 5) + 
