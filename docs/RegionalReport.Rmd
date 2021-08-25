@@ -151,25 +151,25 @@ totalnat <- format(round(sum(solutions_long2[solutions_long2$UNHCRBureau == this
 
 ## Forcible Displacement
 
-As per 2020 statistical reporting in the __`r thisbureau`__, he total population of concern is __`r allpop`__, this includes:          
+As per 2020 statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
- * Total refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
+ * Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
  * Total Internally Displaced Persons __`r totalIDP`__
  * Total Statelessness __`r totalsta`__ 
  * Total Other of Concerns __`r totalooc`__ 
 
 ## Solutions
 
- * Total returned refugees __`r totalret`__ 
- * Total returned IDP __`r totalretipd`__
- * Total resettlement __`r totalrst `__
+ * Total Returned Refugees __`r totalret`__ 
+ * Total Returned IDP __`r totalretipd`__
+ * Total Resettlement __`r totalrst `__
  * Total Naturalisation  __`r totalnat`__
  
 ## Profiles
 
-Total children below 18
+???Total children below 18
 
-Hosted in urban/peri-urban areas
+???Hosted in urban/peri-urban areas
           
 
             
@@ -180,8 +180,35 @@ Hosted in urban/peri-urban areas
 # Regional Overview 
 
 
-LUCA DI GENNARO The total number of persons of concern by end of 2020 stood at 9.8
-million, a slight increase from 2019
+The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). The Americas hosts 21 per cent of the total persons of concern to UNHCR in the world.
+
+There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), __`r totalret`__  returned refugees, more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of 2020 stood at __`r totalsta`__. 
+
+
+18 per cent of the world's Internally Displaced Persons population 
+
+LUCA DI GENNARO
+
+. Globally, Pakistan and Bangladesh are among the 10 countries with the largest refugee/asylum-seeker populations while Afghanistan and Myanmar are the third and fifth country of origin of refugees and asylum-seekers.
+
+ * Total __`r totaldis`__ Refugees, Asylum-seekers & Venezuelan Displaced Abroad:   
+ * Total Internally Displaced Persons __`r totalIDP`__
+ * Total Statelessness __`r totalsta`__ 
+ * Total Other of Concerns __`r totalooc`__ 
+
+## Solutions
+
+ * Total Returned Refugees __`r totalret`__ 
+ * Total Returned IDP __`r totalretipd`__
+ * Total Resettlement __`r totalrst `__
+ * Total Naturalisation  __`r totalnat`__
+
+
+An additional 685,000 persons were identified as 'others of concern'. Others of concern are out of the scope of this report and not included in the analysis. An additional 685,000 persons were identified as 'others of concern' 
+
+The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations. Dotted line represents approximately the Line of Control in Jammu and Kashmir agreed upon by India and Pakistan. The final status of Jammu and Kashmir has not yet been agreed upon by the parties.
+
+
 
 The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
 
@@ -325,13 +352,12 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
-due mainly to increases in the internally displaced population and the inclusion of assisted host community figures. There were 4 million refugees, 209,000 asylum-seekers, 2,500 returned refugees, 3.5 million internally displaced persons and 155,000 returned IDPs in the region. Persons under UNHCR's statelessness mandate in the region by end of 2020 stood at 2.3 million. 
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
 
-The Americas hosts 11 per cent of the total persons of concern to UNHCR. 19 per cent of the world's refugee population and 55 per cent of the world's stateless population live in the region. Globally, Pakistan and Bangladesh are among the 10 countries with the largest refugee/asylum-seeker populations while Afghanistan and Myanmar are the third and fifth country of origin of refugees and asylum-seekers.
 
-An additional 685,000 persons were identified as 'others of concern'. Others of concern are out of the scope of this report and not included in the analysis. An additional 685,000 persons were identified as 'others of concern' 
 
-The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations. Dotted line represents approximately the Line of Control in Jammu and Kashmir agreed upon by India and Pakistan. The final status of Jammu and Kashmir has not yet been agreed upon by the parties.
+
+
 
 
 :::{.page-break}
