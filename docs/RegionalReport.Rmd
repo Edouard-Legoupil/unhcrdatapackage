@@ -178,7 +178,9 @@ names(wb_data)[2] <- "Year"
 # write.csv(wb_data, "wb_data.csv", row.names = FALSE)
 
 ## getting data from ACLED for events... 
-acled.data <- acled.api::acled.api(start.date = "2017-01-01",
+acled.data <- acled.api::acled.api(email.address = Sys.getenv("EMAIL_ADDRESS"),  # see https://developer.acleddata.com/
+                                   access.key = Sys.getenv("ACCESS_KEY"),
+                                   start.date = "2017-01-01",
                         end.date = lubridate::today(),
                         country = c("Mexico", "Belize", "Honduras",  "Nicaragua", 
                               "Guatemala", "El Salvador", "Costa Rica","Panama" , 
