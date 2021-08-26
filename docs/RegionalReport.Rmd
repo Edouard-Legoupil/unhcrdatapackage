@@ -66,7 +66,7 @@ using <- function(...) {
     }
 }
 
-using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize')
+using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize', 'viridis')
 
 library(tidyverse)
 library(ggplot2)
@@ -90,10 +90,13 @@ update_geom_font_defaults()
 end_year_population_totals <- unhcrdatapackage::end_year_population_totals
 reference <- unhcrdatapackage::reference
 end_year_population_totals_long <- unhcrdatapackage::end_year_population_totals_long
-end_year_population_totals_long2 <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))
 
+end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3"))
 
 demographics <- unhcrdatapackage::demographics
 asylum_applications <- unhcrdatapackage::asylum_applications
@@ -110,29 +113,29 @@ solutions_long2 <- dplyr::left_join( x=  solutions_long,
 ```{r  include=FALSE, message=FALSE, warning=FALSE}
 ## Key Figures calculation
 thisbureau <- "Americas"
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 
-allpop <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020  , 
+allpop <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020  , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totaldis <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type %in% c("REF","ASY","VDA") , 
+totaldis <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("REF","ASY","VDA") , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totalIDP <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type =="IDP" , 
+totalIDP <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type =="IDP" , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totalooc <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type =="OOC" , 
+totalooc <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type =="OOC" , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totalsta <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type =="STA" , 
+totalsta <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type =="STA" , 
                                      c("Value")])
              , -3),  big.mark=",")
 
@@ -286,12 +289,12 @@ circos.track(track.index = 1,
 In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(UNHCRBureau  == thisbureau &
            !(is.na(UNHCRBureau))) %>%
-  group_by(Year, Population.type ) %>%
+  group_by(Year, Population.type, Population.type.label ) %>%
   summarise(Value2 = sum(Value) ) 
 
 #Make plot
@@ -378,8 +381,27 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
+```
+
+
+```{r message = FALSE, warning = FALSE, fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
+# # Plot
+# ggplot(multiple_line_df, aes(x = Year, y = Value2, fill=Population.type.label)) + 
+#     #geom_area(alpha=0.6 , size=.5, colour="white") +
+#     geom_bar(position="stack", stat="identity") + 
+#     viridis::scale_fill_viridis(discrete = T) + 
+#   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+#   scale_y_continuous( label = format_si()) + ## Format axis number
+#   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+#   
+#   ## and the chart labels
+#   labs(title = "Forcible Displacement in the Americas ",
+#        subtitle = "Evolution in the past 20 years",
+#        x = "",
+#        y = "",
+#        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
 The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__). 
@@ -409,7 +431,7 @@ acled.data %>%
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
- ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg)
+
  
  
 
@@ -420,6 +442,7 @@ acled.data %>%
 
 ```{r}
 # ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
+#  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
 ```
  
 ## What displacement?
@@ -429,7 +452,7 @@ Compared to the previous year, the population groups with increases were the ret
  
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
 #Prepare data2
-bar_df <- end_year_population_totals_long2 %>%
+bar_df <- end_year_population_totals_long.asy %>%
   filter(Population.type  %in% c("REF","ASY","VDA") & 
            Year == lastyear &
            UNHCRBureau  == thisbureau &
@@ -471,7 +494,7 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
        subtitle = paste0("Refugee, Asylum Seekers & Venezuelan Displaced Abroad in ",lastyear), 
        x = "",
        y = "",
-       caption = "Top 10 Countries, UNHCR https://www.unhcr.org/refugee-statistics/") +
+       caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
@@ -485,7 +508,7 @@ The evolution in the last 20 years shows a significant increased in Internally D
 
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Other Displacement**"}
 #Prepare data2
-bar_df <- end_year_population_totals_long2 %>%
+bar_df <- end_year_population_totals_long.asy %>%
   filter(Population.type  %in% c("IDP","OOC","STA") & 
            Year == lastyear &
            UNHCRBureau  == thisbureau &
@@ -531,7 +554,7 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
        subtitle = paste0("IDPs, Statelessness & Other of Concern in ",lastyear), 
        x = "",
        y = "",
-       caption = "Top 10 Countries, UNHCR https://www.unhcr.org/refugee-statistics/") +
+       caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
   scale_y_continuous( label = format_si(),
                       limits=c(0, 10000000))  + ## Format axis number
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
@@ -549,29 +572,36 @@ Forced displacement as a result of conflict, violence, and other causes undermin
 :::
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
-# egris <- 
-#   popstats %>% 
-#   filter(coo_region == "Americas") %>% 
-#   group_by(coo_iso) %>% 
-#   count(wt = refugees, name = "refugees") %>% 
-#   left_join(m49 %>% select(iso3 = `ISO-alpha3 Code`, country = `Country or Area`), by = c(coo_iso = "iso3")) %>% 
-#   left_join(wpp %>% transmute(country = `Region, subregion, country or area *`, pop = 1000*as.numeric(`2020`))) %>% 
-#   mutate(egris = refugees/(pop+refugees)) %>% 
-#   ungroup()
-# 
-# egris %>% 
-#   top_n(10, wt = egris) %>% 
-#   ggplot(aes(egris, fct_reorder(country, egris))) +
-#   geom_col(fill = "#0072BC") +
-#   geom_label(aes(label = scales::percent(egris, accuracy = .01)), 
-#              color = "black", hjust = "inward") +
-#   scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
-#   labs(x = NULL, y = NULL, 
-#        title = paste0("The number of refugees by country of origin\n",
-#                       "as a proportion of the national population of that country of origin"), 
-#          caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like 
-# situation.  Population refers to total resident population in a given country in a given year.") +
-#   unhcRstyle::unhcr_theme()
+end_year_population_totals_long.ori %>%
+  filter(Population.type  %in% c("REF","ASY","VDA") & 
+           Year == lastyear &
+           UNHCRBureau  == thisbureau &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(CountryOriginName, CountryOriginCode) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
+  
+    ## Now merge with WB Data 
+  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == "2020"), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
+  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
+  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
+  geom_col(fill = "#0072BC") +
+  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+  labs(x = NULL, 
+       y = NULL,
+       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
+       subtitle =     "As a proportion of the national population of that country of origin",
+         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
+situation.  Population refers to total resident population in a given country in a given year.") +
+  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
+  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
 
@@ -760,7 +790,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
  
@@ -786,9 +816,9 @@ Recognition rate by Country - and top nationality - RSD  -
  Check otherwise closed... 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == "Mexico" & Year > 2014 ) %>%
   group_by(Year, Population.type ) %>%
   summarise(Value2 = sum(Value) ) 
@@ -877,7 +907,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 
@@ -886,9 +916,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == "Brazil" & Year > 2014 ) %>%
   group_by(Year, Population.type ) %>%
   summarise(Value2 = sum(Value) ) 
@@ -977,7 +1007,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 
@@ -987,9 +1017,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Colombia**"}
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == "Colombia" & Year > 2014 ) %>%
   group_by(Year, Population.type ) %>%
   summarise(Value2 = sum(Value) ) 
@@ -1078,7 +1108,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 
@@ -1088,9 +1118,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == "Ecuador" & Year > 2014 ) %>%
   group_by(Year, Population.type ) %>%
   summarise(Value2 = sum(Value) ) 
@@ -1179,7 +1209,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 
@@ -1188,9 +1218,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Peru**"}
-lastyear <- max(end_year_population_totals_long2$Year)
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == "Peru" & Year > 2014 ) %>%
   group_by(Year, Population.type ) %>%
   summarise(Value2 = sum(Value) ) 
@@ -1279,7 +1309,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 

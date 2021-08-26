@@ -165,7 +165,7 @@ rank_data.ref$CountryAsylumName <- as.factor(as.character(rank_data.ref$CountryA
 
 ```
 
-```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE, , include=FALSE}
+```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE, cache=TRUE, include=FALSE}
 # Population, GDP & GNP per Capita from WorldBank
 wb_data <- wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
                 startdate = 1951, enddate = lastyear, return_wide = TRUE)
