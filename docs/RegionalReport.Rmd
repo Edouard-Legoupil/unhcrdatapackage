@@ -655,6 +655,10 @@ Since the first case of COVID-19 was recorded in December 2019, more than 170 mi
 
 Durable solutions include voluntary repatriation, resettlement to a third country, local integration, naturalization and return to place of origin prior to displacement (for IDPs). However, a growing number of displaced populations have limited opportunities for a durable solution. The COVID-19 pandemic has only exacerbated these challenges.
 
+
+
+![Costa Rica. UNHCR expands cash assistance programme during COVID-19 crisis](media/image_cbi.jpg)
+
 The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
 
 ##### Figure 10 **\| Trends for Solution**
@@ -855,6 +859,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 :::
 
 # Analysis of Situation 
+
+
+![ ](media/image_hand.jpg)
 
 ## Venezuela Situation
 
