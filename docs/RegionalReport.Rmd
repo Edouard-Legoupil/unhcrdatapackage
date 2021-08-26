@@ -2,7 +2,7 @@
 title: "AMERICAS REGIONAL POPULATION TRENDS ANALYSIS"
 subtitle: "Forced Displacement in 2020"
 abstract-title: UNHCR Regional Bureau for the Americas
-abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on publicly available data. It includes trends and analysis of the major population groups, three leading focus countries and the two major displacement situations in the region."
+abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on __publicly available data__. It includes trends and analysis of the major population groups, three leading focus countries and the two major displacement situations in the region."
 date: "25 Augut 2021"
 author:
   - name: Contact name1
@@ -169,12 +169,9 @@ As per 2020 statistical reporting in the __`r thisbureau`__, the total populatio
  
 ## Profiles
 
-???Total children below 18
+Total children below 18
 
-???Hosted in urban/peri-urban areas
-          
-
-            
+Hosted in urban/peri-urban areas
 
 :::{.page-break}
 :::
@@ -226,6 +223,8 @@ circos.track(track.index = 1,
 
 
 ###### Figure 2 **\| Evolution over time of the different Population of Concern**
+
+In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
 
 ```{r ,message = FALSE, warning = FALSE}
 lastyear <- max(end_year_population_totals_long2$Year)
@@ -324,31 +323,18 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
-
-
 The Americas hosts __`r thisbureau`__ per cent of the total persons of concern to UNHCR. __`r thisbureau`__ per cent of the world's refugee population and __`r thisbureau`__ per cent of the world's stateless population live in the region. 
-
-
-
-
-![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
- 
-
-The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
-
-
-
 
 :::{.page-break}
 :::
 
 # Regional Analysis 
 
-
-## What displacement?
-
-
+```{r}
+# ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
+```
  
+## What displacement?
 
 ###### Figure 3 **\| Largest Countries of Asylum**
 ```{r}
@@ -403,6 +389,9 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
 ```
 
 ###### Figure 4 **\| Other Displacement **
+
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). 
+
 ```{r message=FALSE, warning=FALSE}
 #Prepare data2
 bar_df <- end_year_population_totals_long2 %>%
