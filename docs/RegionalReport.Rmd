@@ -179,6 +179,7 @@ Hosted in urban/peri-urban areas
 # Regional Overview 
 
 
+
 The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
 
 ###### Figure 1 **\| Population origin-destination in the region**
@@ -324,6 +325,10 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 The Americas hosts __`r thisbureau`__ per cent of the total persons of concern to UNHCR. __`r thisbureau`__ per cent of the world's refugee population and __`r thisbureau`__ per cent of the world's stateless population live in the region. 
+
+
+
+
 
 :::{.page-break}
 :::
@@ -502,6 +507,52 @@ names(wb_data)[2] <- "Year"
 ```
 
 
+## Risk of being victim of violence
+
+> SDG Indicator 16.1.2: Conflict-related deaths per 100,000 population.
+
+```{r}
+
+wppf <- fs::file_temp(ext = "xlsx")
+httr::GET("https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/EXCEL_FILES/1_Population/WPP2019_POP_F01_1_TOTAL_POPULATION_BOTH_SEXES.xlsx", httr::write_disk(wppf))
+wpp <- readxl::read_excel(wppf)
+wpp <- wpp %>% slice(13:nrow(.)) %>% set_names(as.character(wpp %>% slice(12)))
+
+wpp.acled <- 
+  wpp %>% 
+  mutate(country = `Region, subregion, country or area *`,
+         country = case_when(str_detect(country, "Venezuela") ~ "Venezuela",
+                             str_detect(country, "Bolivia") ~ "Bolivia",
+                             TRUE ~ country))
+
+library(acled.api)
+acled.data <- acled.api::acled.api(start.date = "2017-01-01",
+                        end.date = lubridate::today(),
+                        country = c("Mexico", "Belize", "Honduras",  "Nicaragua", 
+                              "Guatemala", "El Salvador", "Costa Rica","Panama" , 
+                               "Colombia" , "Venezuela", "Guyana", "Suriname",
+                                "Ecuador" , "Bolivia", "Peru" ,  "Brazil",  
+                                "Chile", "Argentina", "Paraguay", "Uruguay"),
+                        all.variables = TRUE)
+
+
+top10_100k <- 
+  acled.data %>% 
+  filter(year == 2020) %>% 
+  count(country, wt = fatalities) %>% 
+  left_join(wpp.acled) %>% 
+  select(country, fatalities = n, pop = `2020`) %>% 
+  mutate(fatalities_per_100k = fatalities/as.numeric(pop)*100) %>% 
+  top_n(10, fatalities_per_100k)
+
+top10_100k %>% 
+  ggplot(aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
+  geom_col(fill = "#0072BC") +
+  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), hjust = "inward", color = "black") +
+  scale_x_continuous(labels = scales::label_comma()) +
+  labs(x = "Fatalities per 100,000 population", y = "Country", title = "Conflict-related deaths per 100,000 population") +
+    unhcRstyle::unhcr_theme()  ## Insert UNHCR Style
+```
  
 ## What profiles?
 
