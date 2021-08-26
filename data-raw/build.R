@@ -35,9 +35,12 @@ read_sans_hxl <- function(file, ...) {
   readr::read_csv(file, col_names = hdrs, skip = 2, ...)
 }
 
+
+
+## Displaced ##########
+
 end_year_population_totals <- read_sans_hxl("data-raw/end_year_population_totals_residing_world.csv")
 
-sinew::makeOxygen(end_year_population_totals, add_fields = "source")
 
 # Rename column to have proper Variable names
 end_year_population_totals <- plyr::rename(end_year_population_totals, c("Country of Origin Code"="CountryOriginCode",
@@ -50,6 +53,8 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Others of Concern to UNHCR"="OOC",
                                        "Stateless Persons"="STA",    
                                         "Venezuelans Displaced Abroad"="VDA" ))
+
+sinew::makeOxygen(end_year_population_totals, add_fields = "source")
 
 save(end_year_population_totals, file =  "data/end_year_population_totals.RData")
 
@@ -69,12 +74,21 @@ end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
                                            value.name="Value")
 
 end_year_population_totals_long <- end_year_population_totals_long[end_year_population_totals_long$Value > 0, ]
+
+end_year_population_totals_long$Population.type.label <- ""
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally Displaced Persons"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
   
 save(end_year_population_totals_long, file =  "data/end_year_population_totals_long.RData")
 
 
 
 
+## Solutions ##########
 
 solutions_residing <- read_sans_hxl("data-raw/solutions_residing_world.csv")
 
@@ -90,7 +104,7 @@ solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="Countr
                                                                          "IDP returns"="RDP" ))
 
 save(solutions, file =  "data/solutions.RData")
-sinew::makeOxygen(solutions_residing, add_fields = "source")
+sinew::makeOxygen(solutions, add_fields = "source")
 
 solutions_long <- reshape2::melt(solutions,
                                                   # ID variables - all the variables to keep but not split apart on
@@ -103,11 +117,22 @@ solutions_long <- reshape2::melt(solutions,
                                                   value.name="Value")
 
 solutions_long <- solutions_long[solutions_long$Value > 0, ]
+
+
+solutions_long$Solution.type.label <- ""
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RST"] <- "Resettlement arrivals"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="NAT"] <- "Naturalisation"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RDP"] <- "IDP returns"
+
 save(solutions_long , file =  "data/solutions_long.RData")
 sinew::makeOxygen(solutions_long , add_fields = "source")
 
+## Demographics ##########
 
 demographics_residing <- read_sans_hxl("data-raw/demographics_residing_world.csv")
+
+names(demographics_residing)
 
 sinew::makeOxygen(demographics_residing, add_fields = "source")
 # Rename column to have proper Variable names
@@ -115,6 +140,7 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
                                                          "Country of Asylum Code"="CountryAsylumCode", 
                                                          "Country of Origin Name"="CountryOriginName",
                                                          "Country of Asylum Name"="CountryAsylumName",  
+                                                         "Population Type"= "Population.type",
                                                          "Female 0-4"="Female04", 
                                                          "Female 5-11"="Female511", 
                                                          "Female 12-17"="Female1217", 
@@ -130,7 +156,17 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
                                                          "Male Unknown"="MaleUnknown",
                                                          "Male Total"="MaleTotal")
                                                          )
+
+names(demographics)
+table(demographics$location, useNA = "ifany")
+table(demographics$urbanRural, useNA = "ifany")
+table(demographics$accommodationType, useNA = "ifany")
+
 save(demographics, file =  "data/demographics.RData")
+
+
+
+## RSD ##########
 
 
 asylum_decisions_residing <- read_sans_hxl("data-raw/asylum_decisions_residing_world.csv")
