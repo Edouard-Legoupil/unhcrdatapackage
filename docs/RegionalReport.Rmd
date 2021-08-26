@@ -180,37 +180,23 @@ As per 2020 statistical reporting in the __`r thisbureau`__, the total populatio
 # Regional Overview 
 
 
-The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). The Americas hosts 21 per cent of the total persons of concern to UNHCR in the world.
+The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
 
-There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), __`r totalret`__  returned refugees, more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of 2020 stood at __`r totalsta`__. 
-
-
-18 per cent of the world's Internally Displaced Persons population 
-
-LUCA DI GENNARO
-
-. Globally, Pakistan and Bangladesh are among the 10 countries with the largest refugee/asylum-seeker populations while Afghanistan and Myanmar are the third and fifth country of origin of refugees and asylum-seekers.
-
- * Total __`r totaldis`__ Refugees, Asylum-seekers & Venezuelan Displaced Abroad:   
- * Total Internally Displaced Persons __`r totalIDP`__
- * Total Statelessness __`r totalsta`__ 
- * Total Other of Concerns __`r totalooc`__ 
-
-## Solutions
-
- * Total Returned Refugees __`r totalret`__ 
- * Total Returned IDP __`r totalretipd`__
- * Total Resettlement __`r totalrst `__
- * Total Naturalisation  __`r totalnat`__
-
-
-An additional 685,000 persons were identified as 'others of concern'. Others of concern are out of the scope of this report and not included in the analysis. An additional 685,000 persons were identified as 'others of concern' 
-
-The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations. Dotted line represents approximately the Line of Control in Jammu and Kashmir agreed upon by India and Pakistan. The final status of Jammu and Kashmir has not yet been agreed upon by the parties.
+The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
 
 
-The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
+There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of 2020 stood at __`r totalsta`__. 
+
+
+In the UNHCR data finder more details and data: https://www.unhcr.org/refugee-statistics/download/?url=E1ZxP4
+
+The definition of 'Venezuelans Displaced Abroad' (VDA) in the context of the Population Statistical Reference (PSR is UNHCR’s platform for collection of data on UNHCR’s population of concern globally): Persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
+
+
+
+
+The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
 ###### Figure 1 **\| Population origin-destination in the region**
 
@@ -352,7 +338,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
-The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__). 
+
 
 
 
@@ -369,6 +356,7 @@ The evolution in the last 20 years shows a significant increased in Internally D
 ## What displacement?
 
 
+???????????????????????????????????????????
 Compared to the previous year, the population groups with increases were
 the returned IDPs with 22 per cent and the number of internally displaced persons increased by
 12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
@@ -424,6 +412,9 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
+
+Considering together Refugees, Asylum Seekers and Venezuelan Displaced Abroad, Colombia is the first country with more population, especially for the presence of Venezuelan Displaced Abroad (1,729,537). United States of America has the second largest host has a big component of Refugees (340,844) and Asylum Seekers (997,998). The third country, Peru has a great component of Venezuelan Displaced Abroad (515,039).
+
 
 ###### Figure 4 **\| Countries with the Most within border Concern to UNHCR**
 ```{r message=FALSE, warning=FALSE}
@@ -482,7 +473,10 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
-UNHCR ASR source of  figures is IDMC, which estimation methodology can differ from other sources: <https://www.unhcr.org/refugee-statistics/download/?url=E1ZxP>
+????Colombia OOC is the sum of OOC and Host Community. Maybe this graphs is missleading ???????
+
+
+Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
 
 
 Stateless population refers to those individuals without a nationality in their country of habitual residence. Non-stateless population refers to those individuals without a nationality in their country of habitual residence and who are either internally or internationally displaced.
@@ -689,6 +683,8 @@ ggplot(pyramid3, aes(x = age,
 #  ggimage::geom_image(, aes(image = pathc)) 
 
 ```
+Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for 2020 show a balance beetwen sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
+
 
 ##### Figure 8 **\| Where Displacement Condition description is available?**
 ```{r message=FALSE, warning=FALSE}
