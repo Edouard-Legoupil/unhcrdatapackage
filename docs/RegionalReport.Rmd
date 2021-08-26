@@ -55,16 +55,34 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r packages, include=FALSE, message=FALSE, warning=FALSE}
-# Load required packages for charts with UNHCR style 
-library(unhcRstyle)
-library(ggplot2)
+
+using <- function(...) {
+    libs <- unlist(list(...))
+    req <- unlist(lapply(libs,require,character.only = TRUE))
+    need <- libs[req == FALSE]
+    if (length(need) > 0) { 
+        install.packages(need)
+        lapply(need,require,character.only = TRUE)
+    }
+}
+
+using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize')
+
 library(tidyverse)
-library(unhcrdatapackage)
+library(ggplot2)
 library(scales)
 library(ragg)
 library(magick)
 library(circlize)
+library(wbstats)
+library(acled.api)
+
+# Load required packages for charts with UNHCR style 
+library(unhcRstyle)
+library(unhcrdatapackage)
 update_geom_font_defaults()
+
+
 ```
 
 ```{r  include=FALSE, message=FALSE, warning=FALSE}
@@ -145,16 +163,33 @@ totalnat <- format(round(sum(solutions_long2[solutions_long2$UNHCRBureau == this
 ```
 
 
-```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE,  include=FALSE}
+```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE,  include=FALSE, cache = TRUE}
 # Population, GDP & GNP per Capita from WorldBank
-library(wbstats)
 
-wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
+                                      "NY.GDP.MKTP.CD", ## GDP current https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
+                                      "NY.GDP.PCAP.CD", ## GDP per capita https://data.worldbank.org/indicator/NY.GDP.PCAP.CD 
+                                      "NY.GNP.PCAP.CD" ## GNI per capita, Atlas method (current US$) https://data.worldbank.org/indicator/NY.GNP.PCAP.CD
+                                      ),
                 startdate = 1951, enddate = lastyear, return_wide = TRUE)
 # # Renaming variables for further matching
 names(wb_data)[1] <- "CountryAsylumCode"
 names(wb_data)[2] <- "Year"
 # write.csv(wb_data, "wb_data.csv", row.names = FALSE)
+
+## getting data from ACLED for events... 
+acled.data <- acled.api::acled.api(start.date = "2017-01-01",
+                        end.date = lubridate::today(),
+                        country = c("Mexico", "Belize", "Honduras",  "Nicaragua", 
+                              "Guatemala", "El Salvador", "Costa Rica","Panama" , 
+                               "Colombia" , "Venezuela", "Guyana", "Suriname",
+                                "Ecuador" , "Bolivia", "Peru" ,  "Brazil",  
+                                "Chile", "Argentina", "Paraguay", "Uruguay"),
+                        all.variables = TRUE) 
+
+wb_data$yearctr <- paste0(wb_data$CountryAsylumCode, wb_data$Year)
+acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
+
 ```
 
 
@@ -351,46 +386,30 @@ The evolution in the last 20 years shows a significant increased in Internally D
 
 ```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
-wppf <- fs::file_temp(ext = "xlsx")
-httr::GET("https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/EXCEL_FILES/1_Population/WPP2019_POP_F01_1_TOTAL_POPULATION_BOTH_SEXES.xlsx", httr::write_disk(wppf))
-wpp <- readxl::read_excel(wppf)
-wpp <- wpp %>% slice(13:nrow(.)) %>% set_names(as.character(wpp %>% slice(12)))
-
-wpp.acled <- 
-  wpp %>% 
-  mutate(country = `Region, subregion, country or area *`,
-         country = case_when(str_detect(country, "Venezuela") ~ "Venezuela",
-                             str_detect(country, "Bolivia") ~ "Bolivia",
-                             TRUE ~ country))
-
-library(acled.api)
-acled.data <- acled.api::acled.api(start.date = "2017-01-01",
-                        end.date = lubridate::today(),
-                        country = c("Mexico", "Belize", "Honduras",  "Nicaragua", 
-                              "Guatemala", "El Salvador", "Costa Rica","Panama" , 
-                               "Colombia" , "Venezuela", "Guyana", "Suriname",
-                                "Ecuador" , "Bolivia", "Peru" ,  "Brazil",  
-                                "Chile", "Argentina", "Paraguay", "Uruguay"),
-                        all.variables = TRUE)
-
-
-top10_100k <- 
-  acled.data %>% 
+acled.data %>% 
   filter(year == 2020) %>% 
+  group_by(yearctr,country ) %>% 
   count(country, wt = fatalities) %>% 
-  left_join(wpp.acled) %>% 
-  select(country, fatalities = n, pop = `2020`) %>% 
+    left_join(wb_data %>% select("SP.POP.TOTL","yearctr"), by = c(  "yearctr"    )) %>%
   ## get fatalities Percentage
-  mutate(fatalities_per_100k = fatalities/as.numeric(pop)*100) %>% 
+  mutate(fatalities_per_100k = round(  (n/as.numeric(SP.POP.TOTL)*100000) , 1)) %>% 
   top_n(10, fatalities_per_100k) %>% 
   ## Now the chart 
   ggplot(aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
   geom_col(fill = "#0072BC") +
-  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), hjust = "inward", color = "black") +
+  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), 
+            hjust = "inward", 
+            color = "black") +
   scale_x_continuous(labels = scales::label_comma()) +
-  labs(x = "Fatalities per 100,000 population", y = "Country", title = "Conflict-related deaths per 100,000 population") +
-    unhcRstyle::unhcr_theme()  ## Insert UNHCR Style
+  labs(x = "Fatalities per 100,000 population", 
+       y = " ", 
+       title = "Conflict-related deaths per 100,000 population",
+       caption = "Source: Acled Data - https://acleddata.com") +
+  unhcRstyle::unhcr_theme()  + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
+ ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg)
  
  
 
@@ -523,18 +542,10 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 
 Colombia OOC is the sum of OOC and Host Community. 
 
-
 Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
 
-
-::: {.lead}
-
- Target 10.7 Facilitate orderly, safe, regular and responsible migration and mobility of people, including through the implementation of planned and well-managed migration policies -> Goal 10: Reduce inequality within and among countries 
-
-Forced displacement as a result of conflict, violence, and other causes undermine sustainable development, and can increase the risk of regional instability, especially when refugees are hosted in neighbouring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development at paragraph 23 recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”. 
-
- In addition, target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies”.  This indicator tracks the number of people displaced across national borders as a result of persecution, conflict, violence, human rights violations, or events seriously disturbing public order. It measures the total count of refugee population by country or territory of origin as a proportion of the total population. 
-
+:::{.bg-blue}
+Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
 :::
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
@@ -566,13 +577,11 @@ Forced displacement as a result of conflict, violence, and other causes undermin
 
 ## What profiles?
 
-
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| How far Demographic breakdown is available?**"}
 ## percentage of the total population within the country for which demographci breakdown is available
 
 ```
 
- 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Demographic breakdown**"}
 demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
 #names(demographics)
@@ -678,6 +687,7 @@ ggplot(pyramid3, aes(x = age,
 #  ggimage::geom_image(, aes(image = pathc)) 
 
 ```
+
 Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for 2020 show a balance beetwen sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
 
 ## Impact of Covid-19, a dramatic drop of solutions 
@@ -769,6 +779,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ## Mexico
 
+Recognition rate by Country - and top nationality - RSD  -
+
+ pending  // decision during the year // new 
+ 
+ Check otherwise closed... 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
 lastyear <- max(end_year_population_totals_long2$Year)
