@@ -452,16 +452,11 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 
 
 
-SDG Indicator 10.7.4 Proportion of the population who are refugees, by country of origin / Target 10.7 Facilitate orderly, safe, regular and responsible migration and mobility of people, including through the implementation of planned and well-managed migration policies / Goal 10: Reduce inequality within and among countries 
+> SDG Indicator 10.7.4 Proportion of the population who are refugees, by country of origin -> Target 10.7 Facilitate orderly, safe, regular and responsible migration and mobility of people, including through the implementation of planned and well-managed migration policies -> Goal 10: Reduce inequality within and among countries 
 
->Forced displacement as a result of conflict, violence, and other causes undermine sustainable development, and can increase the risk of regional instability, especially when refugees are hosted in neighbouring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development at paragraph 23 recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”. 
+Forced displacement as a result of conflict, violence, and other causes undermine sustainable development, and can increase the risk of regional instability, especially when refugees are hosted in neighbouring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development at paragraph 23 recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”. 
 
-> In addition, target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies”.  This indicator tracks the number of people displaced across national borders as a result of persecution, conflict, violence, human rights violations, or events seriously disturbing public order. It measures the total count of refugee population by country or territory of origin as a proportion of the total population. 
-
-
-
- 
- 
+ In addition, target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies”.  This indicator tracks the number of people displaced across national borders as a result of persecution, conflict, violence, human rights violations, or events seriously disturbing public order. It measures the total count of refugee population by country or territory of origin as a proportion of the total population. 
 
 ##### Figure 5 **\| Proportion of the population who are refugees, by country of origin**
 
@@ -628,15 +623,7 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
-##### Figure 8 **\| Where Displacement Condition description is available?**
-```{r message=FALSE, warning=FALSE}
 
-```
-
-##### Figure 9 **\| Displacement & Accommodation Type**
-```{r message=FALSE, warning=FALSE}
-
-```
 
 ## Impact of Covid-19, a dramatic drop of solutions 
 
@@ -650,7 +637,7 @@ Durable solutions include voluntary repatriation, resettlement to a third countr
 
 The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
 
-##### Figure 10 **\| Trends for Solution**
+##### Figure 8 **\| Trends for Solution**
 ```{r message=FALSE, warning=FALSE}
 multiple_line_df <- solutions_long2 %>%
   filter(UNHCRBureau  == thisbureau &
@@ -715,7 +702,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 
-##### Figure 11 **\| Refugee Status Determination trends 
+##### Figure 9 **\| Refugee Status Determination trends 
 
 ```{r}
 
@@ -732,12 +719,12 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 :::{.page-break}
 :::
 
-# Country highlights 
+# Country Highlights 
 
 ## Mexico
 
 
-###### Figure 12 **\| Evolution over time of the different Population of Concern**
+###### Figure 10 **\| Evolution over time of the different Population of Concern**
 
 ```{r ,message = FALSE, warning = FALSE}
 lastyear <- max(end_year_population_totals_long2$Year)
