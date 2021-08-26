@@ -153,25 +153,25 @@ Forcibly Displaced Population data are sent to UNHCR Country Offices by member s
 
 ## Forcible Displacement
 
-As per 2020 statistical reporting in the __`r thisbureau`__, he total population of concern is __`r allpop`__, this includes:          
+As per 2020 statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
- * Total refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
+ * Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
  * Total Internally Displaced Persons __`r totalIDP`__
  * Total Statelessness __`r totalsta`__ 
  * Total Other of Concerns __`r totalooc`__ 
 
 ## Solutions
 
- * Total returned refugees __`r totalret`__ 
- * Total returned IDP __`r totalretipd`__
- * Total resettlement __`r totalrst `__
+ * Total Returned Refugees __`r totalret`__ 
+ * Total Returned IDP __`r totalretipd`__
+ * Total Resettlement __`r totalrst `__
  * Total Naturalisation  __`r totalnat`__
  
 ## Profiles
 
-Total children below 18
+???Total children below 18
 
-Hosted in urban/peri-urban areas
+???Hosted in urban/peri-urban areas
           
 
             
@@ -180,6 +180,7 @@ Hosted in urban/peri-urban areas
 :::
 
 # Regional Overview 
+
 
 The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
 
@@ -324,13 +325,18 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 
+
 The Americas hosts __`r thisbureau`__ per cent of the total persons of concern to UNHCR. __`r thisbureau`__ per cent of the world's refugee population and __`r thisbureau`__ per cent of the world's stateless population live in the region. 
 
 
 
 
-![CUNHCR Presence in the Americas](media/image_mapAmerica.jpg)
+![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
  
+
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
+
+
 
 
 :::{.page-break}
@@ -469,6 +475,22 @@ SDG Indicator 10.7.4 Proportion of the population who are refugees, by country o
  
 
 ##### Figure 5 **\| Proportion of the population who are refugees, by country of origin**
+
+
+
+```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE, , include=FALSE}
+# Population, GDP & GNP per Capita from WorldBank
+
+library(wbstats)
+
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+                startdate = 1951, enddate = lastyear, return_wide = TRUE)
+# # Renaming variables for further matching
+names(wb_data)[1] <- "CountryAsylumCode"
+names(wb_data)[2] <- "Year"
+# write.csv(wb_data, "wb_data.csv", row.names = FALSE)
+```
+
 ```{r message=FALSE, warning=FALSE}
 # egris <- 
 #   popstats %>% 
