@@ -151,7 +151,7 @@
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "demographics"
 
-
+## RSD Decision ##########
 #' @title Asylum decisions taken on asylum claims of asylum-seekers
 #' @description Data collated by UNHCR about asylum decisions taken on asylum claims of asylum-seekers residing in World. Data is available since 2000.
 #' @format A data frame with 87495 rows and 16 variables:
@@ -164,6 +164,7 @@
 #'   \item{\code{ProcedureType}}{character Procedure Type}
 #'   \item{\code{ProcedureName}}{character Procedure Name}
 #'   \item{\code{DecisionTypeCode}}{character Decision Type Code}
+#'   \item{\code{DecisionTypeName}}{character Decision Type Name}
 #'   \item{\code{DecisionDataType}}{character Decision Data Type}
 #'   \item{\code{DecisionData}}{character Decision Data}
 #'   \item{\code{DecisionsAveragePersonsPerCase}}{integer Decisions Average Persons Per Case}
@@ -177,6 +178,31 @@
 "asylum_decisions"
 
 
+
+#' @title Asylum decisions taken on asylum claims of asylum-seekers
+#' @description Data collated by UNHCR about asylum decisions taken on asylum claims of asylum-seekers residing in World. Data is available since 2000.
+#' @format A data frame with 160,334 rows and 13 variables:
+#' \describe{
+#'   \item{\code{Year}}{character Year}
+#'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
+#'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
+#'   \item{\code{CountryOriginName}}{character Country of Origin Name}
+#'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
+#'   \item{\code{ProcedureType}}{character Procedure Type}
+#'   \item{\code{ProcedureName}}{character Procedure Name}
+#'   \item{\code{DecisionTypeCode}}{character Decision Type Code}
+#'   \item{\code{DecisionTypeName}}{character Decision Type Name}
+#'   \item{\code{DecisionDataType}}{character Decision Data Type}
+#'   \item{\code{DecisionData}}{character Decision Data}
+#'   \item{\code{DecisionsAveragePersonsPerCase}}{integer Decisions Average Persons Per Case}
+#'   \item{\code{Decision.output}}{integer COLUMN_DESCRIPTION}
+#'   \item{\code{Value}}{double COLUMN_DESCRIPTION} 
+#'}
+#' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
+"asylum_decisions_long"
+
+
+## RSD Application ##########
 #' @title Asylum applications by asylum-seekers
 #' @description Dataset collated by UNHCR, containing information about the number of applications for asylum residing in World. Data is available since 2000
 #' @format A data frame with 91031 rows and 13 variables:

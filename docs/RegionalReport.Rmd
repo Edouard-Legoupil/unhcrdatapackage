@@ -66,7 +66,9 @@ using <- function(...) {
     }
 }
 
-using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize', 'viridis')
+using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize',
+      'viridis', 'treemap',
+      'treemapify', 'patchwork')
 
 library(tidyverse)
 library(ggplot2)
@@ -121,6 +123,21 @@ allpop <- format(round(sum(end_year_population_totals_long.asy[end_year_populati
 
 totaldis <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
                                        end_year_population_totals_long.asy$Population.type %in% c("REF","ASY","VDA") , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
+totalref <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("REF") , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
+totalasy <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("ASY") , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
+totalvda <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("VDA") , 
                                      c("Value")])
              , -3),  big.mark=",")
 
@@ -201,6 +218,8 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 
 # Key Figures
 
+Almost one in every five persons of concern to UNHCR live in the Americas, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+
 Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
 
 ## Forcible Displacement
@@ -224,6 +243,132 @@ As per 2020 statistical reporting in the __`r thisbureau`__, the total populatio
 Total children below 18
 
 Hosted in urban/peri-urban areas
+
+
+```{r, message=FALSE, warning=FALSE, fig.cap = "**| Population of Concern in 2020 in the Americas**"}
+
+# Create data
+group <- c("IDPs",
+           "Venezuelan Abroad",
+           "Asylum Seekers",
+           "Refugees",
+           "Other of Concerns",
+           "Stateless")
+value2020 <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="IDP" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="VDA" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="ASY" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="REF" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="OOC" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="STA" , 
+                                     c("Value")]))       )
+
+
+
+value2019 <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="IDP" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="VDA" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="ASY" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="REF" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="OOC" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="STA" , 
+                                     c("Value")]))       )
+
+colorPopType <- c("#01b399", # IDP 
+           "#000000", # VDA
+           "#f9ec00", # ASY
+           "#0171ba", # REF
+           "#153764",# OOC
+           "#f04a60") #STA
+
+
+datatree <- data.frame(group,
+                   value2020,
+                   value2019,
+                   colorPopType)
+ 
+# treemap
+# treemap(datatree,
+#             index="group",
+#             vSize="value",
+#             type="index",
+#             vColor="color",
+#             #type="manual", 
+#             #palette = colorPopType,
+#             border.col= "white" ,
+#             )
+
+## Treemapify
+p2020 <- ggplot(datatree, 
+       aes(area = value2020, 
+           fill = group, 
+           label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDPs" = "#01b399",
+                                     "Venezuelan Abroad"="#000000",
+                                     "Asylum Seekers" = "#f9ec00",
+                                     "Refugees" = "#0171ba",
+                                     "Other of Concerns" ="#153764",
+                                     "Stateless"="#f04a60")) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(#title = "Population of Concerns in the Americas ",
+        subtitle = paste0("2020, a total of ", format(round(sum(datatree$value2020), -3),  big.mark=","), " "),
+       x = "",
+       y = "",
+       caption = " ")
+
+
+
+
+p2019 <- ggplot(datatree, 
+       aes(area = value2019, 
+           fill = group, 
+           label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDPs" = "#01b399",
+                                     "Venezuelan Abroad"="#000000",
+                                     "Asylum Seekers" = "#f9ec00",
+                                     "Refugees" = "#0171ba",
+                                     "Other of Concerns" ="#153764",
+                                     "Stateless"="#f04a60")) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(#title = "Population of Concerns in the Americas ",
+       subtitle = paste0("2019, a total of ", format(round(sum(datatree$value2019), -3),  big.mark=","), " "),
+       x = "",
+       y = "",
+       caption = " ")
+
+library(patchwork)
+patchwork <- p2019 + p2020
+patchwork +
+  unhcRstyle::unhcr_theme() +  ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  plot_annotation(
+    title = 'Key figures increase due to the Other of Concerns category',
+    caption = 'Source: UNHCR.org/refugee-statistics '
+  )
+
+```
+
+
 
 :::{.page-break}
 :::
@@ -795,11 +940,180 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
  
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Refugee Status Determination trends**"}
+
+## Refugee Status Determination Processing in the Region
+
+
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Application in 2020**"}
+
+linksApplication.Ori.Procedure <- asylum_applications %>%
+                    ## Add reference for the filters
+                    dplyr::left_join( unhcrdatapackage::reference %>% 
+                                        select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+                    filter(coa_region == "Americas" & Year == 2020) %>% 
+                    ## Group small records under other
+                    mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = NumberApplications)) %>% 
+                    mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))%>% 
+                    ## Calculate grouped value for Origin to procedure..
+                    group_by(CountryOriginName, ProcedureName ) %>%
+                    summarise(value = sum(NumberApplications) ) %>%
+                    ## Rename variable
+                    rename(source = CountryOriginName) %>%
+                    rename(target = ProcedureName) 
+
+linksApplication.Procedure.Type <- asylum_applications %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, ApplicationType ) %>%
+  summarise(value = sum(NumberApplications) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = ApplicationType) 
+
+linksApplication.Type.Asylum <- asylum_applications %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  mutate(CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = NumberApplications)) %>% 
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""))%>% 
+  
+  mutate(CountryAsylumName = paste0("Asylum in ", CountryAsylumName)) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ApplicationType, CountryAsylumName) %>%
+  summarise(value = sum(NumberApplications) ) %>%
+  ## Rename variable
+  rename(source = ApplicationType) %>%
+  rename(target = CountryAsylumName) 
+
+linksall <- rbind(linksApplication.Ori.Procedure,
+                  linksApplication.Procedure.Type,
+                  linksApplication.Type.Asylum)
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodes <- data.frame(
+  name=c(as.character(linksall$source), 
+         as.character(linksall$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksall$IDsource <- match(linksall$source, nodes$name)-1 
+linksall$IDtarget <- match(linksall$target, nodes$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksall, 
+                              Nodes = nodes,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+p
 
 ```
 
+Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum
 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in 2020**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+linksDecision.output.Asylum <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  mutate(CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = Value)) %>% 
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""))%>% 
+  
+  mutate(CountryAsylumName = paste0("Asylum in ", CountryAsylumName)) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(Decision.output, CountryAsylumName) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = Decision.output) %>%
+  rename(target = CountryAsylumName) 
+
+linksall <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output,
+                  linksDecision.output.Asylum)
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodes <- data.frame(
+  name=c(as.character(linksall$source), 
+         as.character(linksall$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksall$IDsource <- match(linksall$source, nodes$name)-1 
+linksall$IDtarget <- match(linksall$target, nodes$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksall, 
+                              Nodes = nodes,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+p
+
+
+
+```
 
  
 :::{.page-break}
