@@ -569,12 +569,15 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 ```
 
 
-Colombia OOC is the sum of Other persons of concern and Host Community.
+Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
 
 :::{.bg-blue}
-Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
+Statistical definition: Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
 :::
 
+:::{.bg-blue}
+Statistical definition: Host Community (HST):	A community that hosts large populations of refugees or internally displaced persons, whether in camps, integrated into households, or independently.
+:::
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
@@ -804,7 +807,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
- 
+ The Resettlement solution decreased in the last 5 years. This page https://www.unhcr.org/resettlement-data.html presents the most up-to-date data on UNHCR’s resettlement activities.
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Refugee Status Determination trends**"}
 
@@ -921,7 +924,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
+??? THIS IS THGE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
 
+in the last five years the people of concern significantly increased in Mexico.
 
 ## Brazil
 
