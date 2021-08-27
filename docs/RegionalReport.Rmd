@@ -233,6 +233,8 @@ Hosted in urban/peri-urban areas
 # Regional Overview 
 
 1.  WE NEED DATA DISAGREGATED BY Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad
+2. tHE GRAPHS OF THE COUNTRIES ARE ON 5 YEARS BUT THE TITLE SAIS 20. IS THE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
+
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
 
@@ -437,7 +439,7 @@ acled.data %>%
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
-This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent contries in Americas are from the central America: Belize, Honduras, Mexico, El salvador and Guatemala. ACLED collects real-time data of all reported political violence WWW.acleddata.com.
+This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent contries in Americas are from the central America: Belize, Honduras, Mexico, El salvador and Guatemala. ACLED collects real-time data of all reported political violence.
  
  
 
@@ -574,6 +576,9 @@ Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of wo
 :::{.bg-blue}
 Statistical definition: Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
 :::
+
+
+
 
 :::{.bg-blue}
 Statistical definition: Host Community (HST):	A community that hosts large populations of refugees or internally displaced persons, whether in camps, integrated into households, or independently.
@@ -807,8 +812,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
- The Resettlement solution decreased in the last 5 years. This page https://www.unhcr.org/resettlement-data.html presents the most up-to-date data on UNHCR’s resettlement activities.
-
+ The Resettlement solution decreased in the last 5 years. 
+ 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Refugee Status Determination trends**"}
 
 ```
@@ -1401,6 +1406,8 @@ data %>%
 
 The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports NSOs to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
 
+
+https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in-central-americas/
 
 # Glossary
 
