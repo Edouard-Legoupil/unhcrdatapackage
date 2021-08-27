@@ -232,6 +232,8 @@ Hosted in urban/peri-urban areas
 
 # Regional Overview 
 
+1.  WE NEED DATA DISAGREGATED BY Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad
+
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
 
 The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
@@ -388,6 +390,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__). 
+
 ```{r message = FALSE, warning = FALSE, fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
 # # Plot
 # ggplot(multiple_line_df, aes(x = Year, y = Value2, fill=Population.type.label)) + 
@@ -406,7 +410,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 #        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
-The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__). 
+
 
 ```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
@@ -433,7 +437,7 @@ acled.data %>%
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
-
+This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent contries in Americas are from the central America: Belize, Honduras, Mexico, El salvador and Guatemala. ACLED collects real-time data of all reported political violence WWW.acleddata.com.
  
  
 
@@ -565,13 +569,13 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 ```
 
 
-Colombia OOC is the sum of OOC and Host Community. 
-
-Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
+Colombia OOC is the sum of Other persons of concern and Host Community.
 
 :::{.bg-blue}
-Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
+Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
 :::
+
+
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
 end_year_population_totals_long.ori %>%
@@ -606,6 +610,11 @@ situation.  Population refers to total resident population in a given country in
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
+
+
+:::{.bg-blue}
+Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
+:::
 
 ## What profiles?
 
