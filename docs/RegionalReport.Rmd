@@ -180,6 +180,14 @@ totalnat <- format(round(sum(solutions_long2[solutions_long2$UNHCRBureau == this
                                      c("Value")])
              , -3),  big.mark=",")
 
+
+
+## Profiles
+
+#Total children below 18
+
+#Hosted in urban/peri-urban areas
+
 ```
 
 
@@ -240,11 +248,7 @@ As per 2020 statistical reporting in the __`r thisbureau`__, the total populatio
  * Total Resettlement __`r totalrst `__
  * Total Naturalisation  __`r totalnat`__
  
-## Profiles
 
-Total children below 18
-
-Hosted in urban/peri-urban areas
 
 
 ```{r, message=FALSE, warning=FALSE, fig.cap = "**| Population of Concern in 2020 in the Americas**"}
@@ -377,8 +381,7 @@ patchwork +
 
 # Regional Overview 
 
-1.  WE NEED DATA DISAGREGATED BY Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad
-2. tHE GRAPHS OF THE COUNTRIES ARE ON 5 YEARS BUT THE TITLE SAIS 20. IS THE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
+
 
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
@@ -604,13 +607,18 @@ Compared to the previous year, the population groups with increases were the ret
 12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
  
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
+
+# 1.  WE NEED DATA DISAGREGATED BY Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad
+# 2. tHE GRAPHS OF THE COUNTRIES ARE ON 5 YEARS BUT THE TITLE SAIS 20. IS THE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
+
 #Prepare data2
 bar_df <- end_year_population_totals_long.asy %>%
   filter(Population.type  %in% c("REF","ASY","VDA") & 
            Year == lastyear &
            UNHCRBureau  == thisbureau &
            !(is.na(UNHCRBureau))) %>%
-  group_by( CountryAsylumName) %>%
+  group_by( CountryAsylumName#, Population.type
+            ) %>%
   summarise(Value2 = sum(Value) )  %>%
   #mutate( value3 =  format_si(Value2)) %>%
   arrange(desc(Value2)) %>%
@@ -619,11 +627,12 @@ bar_df <- end_year_population_totals_long.asy %>%
 
 #Make plot
 ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
-                           y = Value2)) +
+                   y = Value2)) +
   geom_bar(stat = "identity", 
            position = "identity", 
-           fill = "#0072bc") + # here we configure that it will be bar chart+
-  
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  #facet_wrap( vars(Population.type), ncol = 3) +
   geom_text(#bar_df, 
              aes(x =reorder(CountryAsylumName, Value2), ## Reordering country by Value
                  y = Value2,
@@ -643,8 +652,8 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
   geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
-  labs(title = "Largest Countries of Asylum in the Americas",
-       subtitle = paste0("Refugee, Asylum Seekers & Venezuelan Displaced Abroad in ",lastyear), 
+  labs(title = "Except for the US, most displacement in the region is linked to Venezuelan Abroad ",
+       subtitle = paste0("Refugee, Asylum Seekers & Venezuelan Abroad in ",lastyear), 
        x = "",
        y = "",
        caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
@@ -1133,8 +1142,8 @@ nodesDecision <- data.frame(
 )
 
 # With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallDecision$IDsource <- match(linksallDecision$source, nodes$name)-1 
-linksallDecision$IDtarget <- match(linksallDecision$target, nodes$name)-1
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
 
 # Make the Network
 p <- networkD3::sankeyNetwork(Links = linksallDecision, 
