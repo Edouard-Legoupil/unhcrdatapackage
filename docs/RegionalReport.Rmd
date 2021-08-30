@@ -3,7 +3,7 @@ title: "AMERICAS REGIONAL POPULATION TRENDS ANALYSIS"
 subtitle: "Forced Displacement in 2020"
 abstract-title: UNHCR Regional Bureau for the Americas
 abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on __officially published and publicly available data__. It includes trends and analysis of the major population groups and major displacement situations in the region."
-date: "25 Augut 2021"
+date: format(Sys.Date(),  '%d %B %Y')
 params:
   bureau: Americas
   year: 2020
@@ -128,6 +128,13 @@ allpop <- format(round(sum(end_year_population_totals_long.asy[end_year_populati
                                      c("Value")])
              , -3),  big.mark=",")
 
+allpop.prop <- format(round( sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==lastyear  , 
+                                     c("Value")]) /
+                               sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$Year ==lastyear  , 
+                                     c("Value")]) * 100
+             , 1),  big.mark=",")
+
+
 totaldis <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==lastyear &
                                        end_year_population_totals_long.asy$Population.type %in% c("REF","ASY","VDA") , 
                                      c("Value")])
@@ -187,7 +194,17 @@ totalnat <- format(round(sum(solutions_long.asy[solutions_long.asy$UNHCRBureau =
                                      c("Value")])
              , -3),  big.mark=",")
 
+allsol <- format(round(sum(solutions_long.asy[solutions_long.asy$UNHCRBureau == thisbureau &      solutions_long.asy$Year ==lastyear  , 
+                                     c("Value")])
+             , -3),  big.mark=",")
 
+allsol.prop <- format(round( 
+  sum(solutions_long.asy[solutions_long.asy$UNHCRBureau == thisbureau &      solutions_long.asy$Year ==lastyear  , 
+                                     c("Value")]) / 
+    sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==lastyear  , 
+                                     c("Value")]) *100
+    
+             , 3),  big.mark=",")
 
 ## Profiles
 
@@ -235,9 +252,9 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 
 # Key Figures
 
-Almost one in every five persons of concern to UNHCR live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+ 
 
-Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
 
 ## Forcible Displacement
 
@@ -248,13 +265,16 @@ As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the tot
  * Total Statelessness __`r totalsta`__ 
  * Total Other of Concerns __`r totalooc`__ 
 
-## Solutions
 
- * Total Returned Refugees __`r totalret`__ 
- * Total Returned IDP __`r totalretipd`__
- * Total Resettlement __`r totalrst `__
- * Total Naturalisation  __`r totalnat`__
+The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
+
+Venezuelan Displaced Abroad is relatively new category for UNHCR.
+
+:::{.bg-blue}
+According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.
+:::
  
+
 
 
 
@@ -375,36 +395,36 @@ patchwork +
   unhcRstyle::unhcr_theme() +  ## Insert UNHCR Style
   theme(legend.position = "none") +
   plot_annotation(
-    title = 'Key figures increase due to the Other of Concerns category',
+    title = 'Significant increase in Key Figures',
+    subtitle = 'The percentage of Other of concerns (OOC) and Venezuelans Displaced Abroad (VDA) \n increased in comparison to the 2019',
     caption = 'Source: UNHCR.org/refugee-statistics '
   )
 
 ```
 
+ 
 
+## Solutions
+
+Finding solutions that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
+
+ * Total Returned Refugees __`r totalret`__ 
+ * Total Returned IDP __`r totalretipd`__
+ * Total Resettlement __`r totalrst `__
+ * Total Naturalisation  __`r totalnat`__
+ 
+
+In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR.
+ 
 
 :::{.page-break}
 :::
 
 # Regional Overview 
 
-
-
-
-The total number of persons of concern by end of __`r lastyear`__ stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
-
 The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
-
-
 There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of __`r lastyear`__ stood at __`r totalsta`__. 
-
-
-
-The definition of 'Venezuelans Displaced Abroad' (VDA) in the context of the Population Statistical Reference (PSR is UNHCR’s platform for collection of data on UNHCR’s population of concern globally): Persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
-
-The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
-
 
 
 ```{r pop-flows, message=FALSE, warning=FALSE, fig.cap = "**| Population origin-destination in the region**"}
@@ -445,9 +465,9 @@ circos.track(track.index = 1,
             bg.border = NA) # here set bg.border to NA is important
 ```
 
- 
+?????? The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
-In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
+
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
 
@@ -546,8 +566,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
+The evolution in the last 20 years shows a significant increase in Internally Displaced Persons, specifically in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in __`r lastyear`__, __`r totalooc`__). 
 
-The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in __`r lastyear`__, __`r totalooc`__). 
 
 ```{r message = FALSE, warning = FALSE, fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
 # # Plot
@@ -594,7 +614,8 @@ acled.data %>%
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
-This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent contries in Americas are from the central America: Belize, Honduras, Mexico, El salvador and Guatemala. ACLED collects real-time data of all reported political violence.
+
+This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent countries in Americas are from the central America: Belize, Honduras, Mexico, El Salvador and Guatemala. Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality according with mejor socio-ecomomic index. ACLED collects real-time data of all reported political violence.
  
  
 
@@ -610,7 +631,7 @@ This graph shows the 'Conflict-related deaths per 100,000 population'. The five 
  
 ## What displacement?
 
-Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
+??????Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
 12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
  
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
@@ -732,9 +753,9 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 ```
 
 
-Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
+Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  
 
- 
+Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
@@ -779,7 +800,7 @@ Forced displacement as a result of conflict, violence, and other causes undermin
 ## What profiles?
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| How far Demographic breakdown is available?**"}
-## percentage of the total population within the country for which demographci breakdown is available
+## percentage of the total population within the country for which demographic breakdown is available
 
 ```
 
@@ -968,10 +989,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 
 
-## Refugee Status Determination Processing in the Region
+## Refugee Status Determination (RSD) Processing 
 
-
-
+RSD application is mostly done through Government
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Application in 2020**"}
 ## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
@@ -1061,11 +1081,131 @@ webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/appl
 
 ```
 
+Most RSD activities occurs in the US.
 
+
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Asylum Country in 2020**"}
+topasyl <-  asylum_decisions %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear) %>% 
+ # select(region_asy, ctry_asy, year, recognizedConvMandate, recognizedOther, appliedDuringTheYear, meta_applicationAveragePersonsPerCase) %>%
+  mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
+  group_by(CountryAsylumName) %>% 
+  summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
+            ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
+            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
+  mutate(recognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
+  filter(TotalDecided  != 0) %>%
+  filter(TotalDecided  > 1000)  
+  
  
+  ggplot(topasyl, aes(y = TotalDecided, 
+             x = reorder(CountryAsylumName, TotalDecided))) + 
+  scale_y_continuous(labels = format_si()) +
+  #facet_grid(.~ ctry_asy) +  
+  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
+  coord_flip() +
+  labs(title = "Number of RSD application per country of asylum in 2020",
+       subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
+       x = " ", 
+       y = " ",
+       caption = "Source: UNHCR.org/refugee-statistics " ) +
+  unhcRstyle::unhcr_theme(base_size = 11) +
+  theme(#axis.text.x = element_blank(),
+    # legend.position = "none",
+    
+    panel.grid.major.x = element_line(color = "#cbcbcb"), 
+    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+```
+Though, the US has a recognition rate below 5% 
 
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Asylum in 2020**"}
+ggplot(topasyl, aes(y = recognitionRate, 
+             x = reorder(CountryAsylumName, recognitionRate))) + 
+  scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
+  #facet_grid(.~ ctry_asy) +  
+  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
+  coord_flip() +
+  labs(title = "Recognition rate per country of asylum in 2020",
+       subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
+       x = " ", 
+       y = " ",
+       caption = "Source: UNHCR.org/refugee-statistics " ) +
+  unhcRstyle::unhcr_theme(base_size = 11) +
+  theme(#axis.text.x = element_blank(),
+    # legend.position = "none",
+    
+    panel.grid.major.x = element_line(color = "#cbcbcb"), 
+    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+```
 
-Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum
+Most RSD applications comes from Venezuelan
+
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Origin Country in 2020**"}
+topOrigin <-  asylum_decisions %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryOriginCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear) %>% 
+ # select(region_asy, ctry_asy, year, recognizedConvMandate, recognizedOther, appliedDuringTheYear, meta_applicationAveragePersonsPerCase) %>%
+  mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
+  group_by(CountryOriginName) %>% 
+  summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
+            ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
+            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
+  mutate(recognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
+  filter(TotalDecided  != 0) %>%
+  filter(TotalDecided  > 1000)  
+  
+ 
+ggplot(topOrigin, aes(y = TotalDecided, 
+             x = reorder(CountryOriginName, TotalDecided))) + 
+  scale_y_continuous(labels = format_si()) +
+  #facet_grid(.~ ctry_asy) +  
+  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
+  coord_flip() +
+  labs(title = "Number of RSD application per country of Origin in 2020",
+       subtitle = "Only Countries of Origin with more than 1,000 application during 2020",
+       x = " ", 
+       y = " ",
+       caption = "Source: UNHCR.org/refugee-statistics " ) +
+  unhcRstyle::unhcr_theme(base_size = 11) +
+  theme(#axis.text.x = element_blank(),
+    # legend.position = "none",
+    
+    panel.grid.major.x = element_line(color = "#cbcbcb"), 
+    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+```
+
+And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. 
+
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=7, size="small",  fig.cap = "**| Recognition rate by Country of Origin in 2020**"}
+ggplot(topOrigin, aes(y = recognitionRate, 
+             x = reorder(CountryOriginName, recognitionRate))) + 
+  scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
+  #facet_grid(.~ ctry_asy) +  
+  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
+  coord_flip() +
+  labs(title = "Recognition rate per country of Origin in 2020",
+       subtitle = "Only Countries of Origin with more than 1,000 application during 2020",
+       x = " ", 
+       y = " ",
+       caption = "Source: UNHCR.org/refugee-statistics " ) +
+  unhcRstyle::unhcr_theme(base_size = 11) +
+  theme(#axis.text.x = element_blank(),
+    # legend.position = "none",
+    
+    panel.grid.major.x = element_line(color = "#cbcbcb"), 
+    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+```
+
+Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum.
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in 2020**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
@@ -1162,14 +1302,8 @@ webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decisio
 
 ```
 
-
-
-
- 
 :::{.page-break}
 :::
-
-
 
 # Analysis of Situation 
 
@@ -1180,12 +1314,7 @@ webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decisio
 
 As the second-largest displacement crisis in the world, refugees and migrants from Venezuela (Bolivarian Republic of) now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
 
-  
-
 Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
-
-  
-
 
 ## El Salvador, Honduras, Guatemala & Mexico
 
@@ -1239,7 +1368,9 @@ data %>%
 The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
 
 
-https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in-central-americas/
+:::{.bg-blue}
+On the 7th and 8th of June 2021, UNHCR together with CENTROESTAD-SICA convened a [virtual workshop](https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in-central-americas/), held in Spanish, to raise awareness on the international recommendations and discuss their implementation in the among statistics office of the Central American Integration System (SICA). Among the take away from the workshop, it appears that there is space to introduce questions in the next census and survey of NSOs: Four National Statistics Offices have committed to introduce questions on internal displacement in their forthcoming census or household surveys.
+:::
 
 
 :::{.page-break}
@@ -1249,7 +1380,9 @@ https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in
 
 ## Glossary of UNHCR Statistical Concept
 
-UNHCR [Population Statistics Database](https://www.unhcr.org/refugee-statistics/)  contains data about UNHCR's populations of concern from the year 1951 up to 2014 as well as their general composition by location of residence or origin, their status, their evolution over time. Ths includes different population type and solution events
+Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
+
+UNHCR [Population Statistics Database](https://www.unhcr.org/refugee-statistics/)  contains data about UNHCR's populations of concern from the year 1951 up to 2014 as well as their general composition by location of residence or origin, their status, their evolution over time. This includes different population type and solution events:
  
 
  *  __Refugees__ include individuals recognized under the 1951 Convention relating to the Status of Refugees; its 1967 Protocol; the 1969 OAU Convention Governing the Specific Aspects of Refugee Problems in Africa; those recognised in accordance with the UNHCR Statute; individuals granted complementary forms of protection; or those enjoying temporary protection. Since 2007, the refugee population also includes people in a refugee-like situation. __Refugees__ recognized by the Government and/or UNHCR include:   
@@ -1274,8 +1407,8 @@ UNHCR [Population Statistics Database](https://www.unhcr.org/refugee-statistics/
 
  *  __Others of concern__ refers to individuals who do not necessarily fall directly into any of the groups above, but to whom UNHCR extends its protection and/or assistance services, based on humanitarian or other special grounds (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, are not included. This group also includes __Host Community__, i.e, communities that hosts large populations of refugees or internally displaced persons, whether in camps, integrated into households, or independently.
 
- *  __Venezuelan Displaced Abroad__: People displaced across borders. According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.
-
+ *  __Venezuelan Displaced Abroad__: People of Venezuelan origin displaced across borders, and  who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
+ 
  
 
 
@@ -1294,7 +1427,7 @@ Every year, UNHCR publish its Population Statistics Reference. it includes detai
 :::{.page-break}
 :::
 
-## Country Highlights for Top 10 Countries
+## Country Highlights 
 
 ### Colombia
 
@@ -1302,7 +1435,7 @@ Every year, UNHCR publish its Population Statistics Reference. it includes detai
 thiscountry <- "Colombia"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Colombia**"}
 #Prepare data
@@ -1338,8 +1471,6 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
        caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
-
-
 
 
 No solutions recorded in __`r thiscountry`__
@@ -1378,15 +1509,86 @@ No solutions recorded in __`r thiscountry`__
 
 ```
 
+RSD activities are mostly for Venezuelan
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Colombia**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
 
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
 
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisioncol.html")
 
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisioncol.html"),paste0(getwd(),"/graph/decisioncol.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
 
-
-
+```
 
 
 
@@ -1396,7 +1598,7 @@ No solutions recorded in __`r thiscountry`__
 thiscountry <- "Venezuela (Bolivarian Republic of)"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Venezuela**"}
 #Prepare data
@@ -1433,6 +1635,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Venezuela**"}
 #Prepare data
@@ -1468,6 +1671,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Venezuela**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionven.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionven.html"),paste0(getwd(),"/graph/decisionven.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 ### United States of America
 
@@ -1476,6 +1759,7 @@ thiscountry <- "United States of America"
 ```
 
 
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in United States of America**"}
 
@@ -1516,7 +1800,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
-
+Solutions
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in United States of America**"}
@@ -1555,12 +1839,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in United States of America**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
 
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
 
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionusa.html")
 
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionusa.html"),paste0(getwd(),"/graph/decisionusa.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 ### Peru
 
@@ -1568,7 +1926,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Peru"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern  in Peru**"}
 #Prepare data
@@ -1606,7 +1964,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
-
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Peru**"}
 #Prepare data
@@ -1645,10 +2003,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Peru**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
 
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionper.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionper.html"),paste0(getwd(),"/graph/decisionper.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 
 ### Ecuador
@@ -1657,6 +2091,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Ecuador"
 ```
 
+Population of Concern
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
@@ -1695,7 +2130,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
-
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions  in Ecuador**"}
 #Prepare data
@@ -1734,11 +2169,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Ecuador**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
 
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
 
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionecu.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionecu.html"),paste0(getwd(),"/graph/decisionecu.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 ### Chile
 
@@ -1746,7 +2256,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Chile"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Chile**"}
 #Prepare data
@@ -1784,7 +2294,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
-
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Chile**"}
 #Prepare data
@@ -1820,7 +2330,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
+RSD activities are mostly for ..
 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Chile**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionchl.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionchl.html"),paste0(getwd(),"/graph/decisionchl.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 ### Brazil
 
@@ -1828,7 +2417,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Brazil"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
 #Prepare data
@@ -1865,7 +2454,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
-
+Solutions
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Brazil**"}
@@ -1903,9 +2492,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Brazil**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionbra.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionbra.html"),paste0(getwd(),"/graph/decisionbra.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 
 ### Mexico
@@ -1914,7 +2580,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Mexico"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
 
@@ -1953,7 +2619,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
-
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Mexico**"}
 #Prepare data
@@ -1989,10 +2655,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Mexic0**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
 
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionmex.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionmex.html"),paste0(getwd(),"/graph/decisionmex.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 
 ### Canada
@@ -2001,7 +2743,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Canada"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Canada**"}
 #Prepare data
@@ -2038,7 +2780,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
-
+Solutions
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Canada**"}
@@ -2077,9 +2819,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 
 
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Canada**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
 
 
 
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisioncan.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisioncan.html"),paste0(getwd(),"/graph/decisioncan.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 
 ### Argentina
@@ -2088,7 +2907,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Argentina"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Argentina**"}
 #Prepare data
@@ -2126,7 +2945,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
-
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Argentina**"}
 #Prepare data
@@ -2163,9 +2982,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
+RSD activities are mostly for ..
 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Argentina**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
 
  
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionarg.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionarg.html"),paste0(getwd(),"/graph/decisionarg.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 ### Panama
 
@@ -2173,7 +3069,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 thiscountry <- "Panama"
 ```
 
-
+Population of Concern
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Panama**"}
 #Prepare data
@@ -2211,7 +3107,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
-
+Solutions
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions**"}
 #Prepare data
@@ -2250,7 +3146,86 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 
 
+RSD activities are mostly for ..
 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Panama**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionpan.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionpan.html"),paste0(getwd(),"/graph/decisionpan.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
 
 
 
