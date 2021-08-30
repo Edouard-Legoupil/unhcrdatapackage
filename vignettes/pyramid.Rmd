@@ -35,7 +35,7 @@ options(stringsAsFactors = F)
 ## Age Pyramid for Refugees
 
 
-```{r piramid, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "" , fig.width=8}
+```{r piramid, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "" , , include=FALSE}
 demographics <-  unhcrdatapackage::demographics
 demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
 #names(demographics)

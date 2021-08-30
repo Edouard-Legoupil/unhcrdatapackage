@@ -192,42 +192,42 @@ data <- data[ !(data$CountryAsylumName %in% c("","Various/Unknown","Stateless","
 ```{r data3, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 
 ## only arcs representing refugees
-#data <- data[  (data$Population.type == "Refugees (incl. refugee-like situations)") , ]
-
-#str(data)
-
-# add latlons from both in and out
-data <- merge(data, ctryall, by.x , by.x = "Origin", by.y = "ctry2" , all.x = TRUE )
-data <- merge(data, ctryall, by.x , by.x = "Asylum", by.y = "ctry2" , all.x = TRUE )
-#rm(ctryall)
-
-## Build uniqueID for Arc
-data$arc <- paste("from-",data$Origin,"-to-", data$Asylum, sep = "")
-data$arc2 <- paste("from-",data$Origin,"-to-", data$Asylum, "-for-", data$Population.type , sep = "")
-arc <- unique(data[ c("arc", "longitude.x", "latitude.x", "longitude.y", "latitude.y")])
-
-#### Create curved routes##############################
-# calculate routes -- Dateline Break FALSE, otherwise we get a bump in the shifted ggplots
-gcircles <- gcIntermediate(arc[,c('longitude.x', 'latitude.x')], arc[,c('longitude.y', 'latitude.y')], 
-                      n = 80, 
-                      breakAtDateLine = FALSE, 
-                      addStartEnd = TRUE, 
-                      sp  = TRUE)
-
-# http://docs.ggplot2.org/0.9.3.1/fortify.map.html
-gcircles  <- ldply(gcircles@lines, fortify)
-
-#### merging back with Value for each arc
-arc$id <- as.character(c(1:nrow(arc))) # that rts.ff$id is a char
-gcircles <- merge(gcircles, arc, all.x = TRUE, by = "id") # join attributes, we keep them all, just in case
-
-
-worldmap <- getMap() # load the map data class(s) # what type of are we dealing with? 
+#data <- data[  (data$Population.type == "REF") , ]
+# 
+# #str(data)
+# 
+# # add latlons from both in and out
+# data <- merge(data, ctryall, by.x , by.x = "Origin", by.y = "ctry2" , all.x = TRUE )
+# data <- merge(data, ctryall, by.x , by.x = "Asylum", by.y = "ctry2" , all.x = TRUE )
+# #rm(ctryall)
+# 
+# ## Build uniqueID for Arc
+# data$arc <- paste("from-",data$Origin,"-to-", data$Asylum, sep = "")
+# data$arc2 <- paste("from-",data$Origin,"-to-", data$Asylum, "-for-", data$Population.type , sep = "")
+# arc <- unique(data[ c("arc", "longitude.x", "latitude.x", "longitude.y", "latitude.y")])
+# 
+# #### Create curved routes##############################
+# # calculate routes -- Dateline Break FALSE, otherwise we get a bump in the shifted ggplots
+# gcircles <- gcIntermediate(arc[,c('longitude.x', 'latitude.x')], arc[,c('longitude.y', 'latitude.y')], 
+#                       n = 80, 
+#                       breakAtDateLine = FALSE, 
+#                       addStartEnd = TRUE, 
+#                       sp  = TRUE)
+# 
+# # http://docs.ggplot2.org/0.9.3.1/fortify.map.html
+# gcircles  <- ldply(gcircles@lines, fortify)
+# 
+# #### merging back with Value for each arc
+# arc$id <- as.character(c(1:nrow(arc))) # that rts.ff$id is a char
+# gcircles <- merge(gcircles, arc, all.x = TRUE, by = "id") # join attributes, we keep them all, just in case
+# 
+# 
+worldmap <- getMap() # load the map data class(s) # what type of are we dealing with?
 ## need to merge with MENA dataframe in order to facet the map
 # names(worldmap)
-mena$mena.x <- mena$mena
-mena$mena.y <- mena$mena
-worldmap <- merge(x = worldmap , y = mena, by.x = "ISO_A3" , by.y = "ISO3166A3" , all.x = TRUE)
+# mena$mena.x <- mena$mena
+# mena$hcr_subregion <- mena$mena
+#worldmap <- merge(x = worldmap , y = mena, by.x = "ISO_A3" , by.y = "ISO3166A3" , all.x = TRUE)
 
 data$Value[data$Value < 0] <- 0
 
@@ -237,7 +237,7 @@ data$Value[data$Value < 0] <- 0
 
 data$Value.class <- cut(data$Value, breaks = c(0, 1000, 5000,       10000,          25000,           50000,            100000,             200000, 100000000),include.lowest = TRUE)
 
-#                         labels = c("0.to.5000", "5000.to.10000", "10000.to.25000", "25000.to.50000", "50000.to.100000", "100000.to.200000", "over.200000"), 
+#                         labels = c("0.to.5000", "5000.to.10000", "10000.to.25000", "25000.to.50000", "50000.to.100000", "100000.to.200000", "over.200000"),
 # data$Value.class <- factor(data$Value.class, levels = c("Less.than.5000","5000.to.10000","10000.to.25000","25000.to.50000","50000.to.100000","100000.to.200000","Over.200000") )
 
 ```
@@ -258,29 +258,34 @@ The elements present below have been developed to facilitate the understanding o
 ```{r sankeyregion, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
 popstats <- data %>%
-  filter(  Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+  filter(  Population.type %in% c("REF", "ASY") &
+            # UNHCRBureau == "MENA" &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017")
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020")
         ) %>%
-  group_by( Year, mena.y) %>%
+  group_by( Year, hcr_subregion) %>%
   summarise(refugees = sum(Value))
-popstats$mena.y <- as.character(popstats$mena.y)
-popstats$mena.y[is.na(popstats$mena.y)] <- "Other regions"
+popstats$hcr_subregion <- as.character(popstats$hcr_subregion)
+popstats$hcr_subregion[is.na(popstats$hcr_subregion)] <- "Other regions"
 
-regions <- c("Other regions", "Middle-East", "North Africa", "Gulf")
-paletteregion <- brewer.pal(4, "Set3")
-names(paletteregion) <- regions
+# regions <- c("Other regions", "Middle-East", "North Africa", "Gulf")
+# paletteregion <- brewer.pal(4, "Set3")
+# names(paletteregion) <- regions
 
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = mena.y, stratum = mena.y)) +
+ggplot(data = popstats, 
+       aes(x = Year, 
+           y = refugees, 
+           alluvium = hcr_subregion, 
+           stratum = hcr_subregion)) +
   ggtitle("About a third of Global Refugee & Asylum seekers population are in MENA") + 
-  geom_alluvium(aes(fill = mena.y),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill = hcr_subregion),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Region")   + 
-  scale_colour_manual(values = paletteregion) +
- # scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(mena.y), NA),  stat = "stratum", 
+  #scale_colour_manual(values = paletteregion) +
+  scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(hcr_subregion), NA),  stat = "stratum", 
                                 size = 3, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -295,23 +300,23 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = mena.y, stratum =
 
 ```{r sankey1, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 popstats <- data %>%
-  filter( mena.y == "Middle-East" & 
-        Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+  filter( hcr_subregion == "Middle East" & 
+        Population.type %in% c("REF", "ASY") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017")
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020")
         ) %>%
-  group_by( Year, Asylum) %>%
+  group_by( Year, CountryAsylumName) %>%
   summarise(refugees = sum(Value))
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Asylum, stratum = Asylum)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = CountryAsylumName, stratum = CountryAsylumName)) +
   ggtitle("Syria has been the largest refugee hosting country for 5 years") + 
-  geom_alluvium(aes(fill = Asylum),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill = CountryAsylumName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Countries")   + 
   #scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(Asylum), NA),  stat = "stratum", 
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(CountryAsylumName), NA),  stat = "stratum", 
                                 size = 3, direction = "y", nudge_y = -0.05, vjust = 0.5, segment.size = 0.1)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -326,23 +331,23 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Asylum, stratum =
 
 ```{r sankeyorigin1, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 popstats <- data %>%
-  filter( mena.y == "Middle-East" & 
-        Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+  filter( hcr_subregion == "Middle East" & 
+        Population.type %in% c("REF", "ASY") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017") &
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020") &
           Value > 10000  ) %>%
-  group_by( Year, Origin) %>%
+  group_by( Year, CountryOriginName) %>%
   summarise(refugees = sum(Value))
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  Origin, stratum =  Origin)) +
-  ggtitle("Syria is the the main country of Origin for Refugees in Middle East") + 
-  geom_alluvium(aes(fill =  Origin),  alpha = .75, color = "white", decreasing = FALSE) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  CountryOriginName, stratum =  CountryOriginName)) +
+  ggtitle("Syria is the the main country of CountryOriginName for Refugees in Middle East") + 
+  geom_alluvium(aes(fill =  CountryOriginName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Countries")   + 
   #scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character( Origin), NA),  stat = "stratum",
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character( CountryOriginName), NA),  stat = "stratum",
                                 size = 3, direction = "y", nudge_y = -0.05, vjust = 0.5, segment.size = 0.1)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -360,24 +365,24 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  Origin, stratum 
 
 ```{r sankey2, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 popstats <- data %>%
-  filter( mena.y == "North Africa" & 
-        Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+  filter( hcr_subregion == "North Africa" & 
+        Population.type %in% c("REF", "ASY") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017")
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020")
         ) %>%
-  group_by( Year, Asylum) %>%
+  group_by( Year, CountryAsylumName) %>%
   summarise(refugees = sum(Value))
 
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Asylum, stratum = Asylum)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = CountryAsylumName, stratum = CountryAsylumName)) +
   ggtitle("The impact of the Syria crisis can be observed in North Africa") + 
-  geom_alluvium(aes(fill = Asylum),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill = CountryAsylumName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Countries")   + 
   #scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(Asylum), NA),  stat = "stratum", 
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(CountryAsylumName), NA),  stat = "stratum", 
                                 size = 3, direction = "y", nudge_y = -0.05, vjust = 0.5, segment.size = 0.0)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -391,26 +396,26 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Asylum, stratum =
 ```{r sankeyorigin2, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
 popstats <- data %>%
-  filter( mena.y == "North Africa" & 
-        Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+  filter( hcr_subregion == "North Africa" & 
+        Population.type %in% c("REF", "ASY") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017") &
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020") &
           Value > 10000  ) %>%
-  group_by( Year, Origin) %>%
+  group_by( Year, CountryOriginName) %>%
   summarise(refugees = sum(Value))
 
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  Origin, stratum =  Origin)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  CountryOriginName, stratum =  CountryOriginName)) +
   ggtitle("Syria is now the main country of Origin in North Africa") + 
-  geom_alluvium(aes(fill =  Origin),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill =  CountryOriginName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Countries")   + 
   #scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2017, as.character( Origin), NA),  stat = "stratum", 
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2017, as.character( CountryOriginName), NA),  stat = "stratum", 
                                 size = 3, direction = "y", nudge_y = -0.05, vjust = 1, segment.size = 0.1)) +
-#  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2006, as.character( Origin), NA),  stat = "stratum", size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
+#  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2006, as.character( CountryOriginName), NA),  stat = "stratum", size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
          plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
@@ -425,26 +430,25 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  Origin, stratum 
 
 ```{r sankey3, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 popstats <- data %>%
-  filter( mena.y == "Gulf" & 
-         # Asylum %in% c("Saudi Arabia", "Yemen", "Kuwait") &
+  filter(  CountryAsylumName %in% c("Saudi Arabia", "Yemen", "Kuwait") &
            Value > 1000 &
-        Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+        Population.type %in% c("REF", "ASY") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017")
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020")
         ) %>%
-  group_by( Year, Asylum) %>%
+  group_by( Year, CountryAsylumName) %>%
   summarise(refugees = sum(Value))
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Asylum, stratum = Asylum)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = CountryAsylumName, stratum = CountryAsylumName)) +
   ggtitle("In the Gulf, only Yemen is hosting large numbers of refugees") + 
-  geom_alluvium(aes(fill = Asylum),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill = CountryAsylumName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Countries")   + 
   #scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
- # ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(Asylum), NA),  stat = "stratum",  size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2008, as.character(Asylum), NA),  stat = "stratum", 
+ # ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(CountryAsylumName), NA),  stat = "stratum",  size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2008, as.character(CountryAsylumName), NA),  stat = "stratum", 
                                 size = 3, direction = "y", nudge_y = -0.05, vjust = 0.5, segment.size = 0.1)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -457,25 +461,25 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Asylum, stratum =
 ```
 ```{r sankeyorigin3, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 popstats <- data %>%
-  filter( mena.y == "Gulf" & 
-        Population.type %in% c("Refugees (incl. refugee-like situations)", "Asylum-seekers") &
+  filter( CountryAsylumName %in% c("Saudi Arabia", "Yemen", "Kuwait") &
+        Population.type %in% c("REF", "ASY") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017") &
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020") &
           Value > 5000  ) %>%
-  group_by( Year, Origin) %>%
+  group_by( Year, CountryOriginName) %>%
   summarise(refugees = sum(Value))
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  Origin, stratum =  Origin)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  CountryOriginName, stratum =  CountryOriginName)) +
   ggtitle("Most Refugees in the Gulf are Somalis") + 
-  geom_alluvium(aes(fill =  Origin),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill =  CountryOriginName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Countries")   + 
   #scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2014, as.character( Origin), NA),  stat = "stratum", 
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2014, as.character( CountryOriginName), NA),  stat = "stratum", 
                                 size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2007, as.character( Origin), NA),  stat = "stratum",
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2007, as.character( CountryOriginName), NA),  stat = "stratum",
                                 size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -492,25 +496,25 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium =  Origin, stratum 
 ```{r sankeyregionidp, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
 popstats <- data %>%
-  filter(  Population.type == "Internally displaced persons" &
+  filter(  Population.type == "IDP" &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017")
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020")
         ) %>%
-  group_by( Year, mena.y) %>%
+  group_by( Year, hcr_subregion) %>%
   summarise(refugees = sum(Value))
-popstats$mena.y <- as.character(popstats$mena.y)
-popstats$mena.y[is.na(popstats$mena.y)] <- "Other regions"
+popstats$hcr_subregion <- as.character(popstats$hcr_subregion)
+popstats$hcr_subregion[is.na(popstats$hcr_subregion)] <- "Other regions"
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = mena.y, stratum = mena.y)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = hcr_subregion, stratum = hcr_subregion)) +
   ggtitle("One quarter of all IDP's worldwide are in the MENA Region") + 
-  geom_alluvium(aes(fill = mena.y),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill = hcr_subregion),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Region")   + 
-  scale_colour_manual(values = paletteregion) +
- # scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-#  ggrepel::geom_text_repel( aes(label = mena.y,  stat = "stratum",                                  size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(mena.y), NA),  stat = "stratum",
+  #scale_colour_manual(values = paletteregion) +
+  scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
+#  ggrepel::geom_text_repel( aes(label = hcr_subregion,  stat = "stratum",                                  size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2016, as.character(hcr_subregion), NA),  stat = "stratum",
                                 size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -524,24 +528,24 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = mena.y, stratum =
 ```{r sankeycountryidp, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
 popstats <- data %>%
-  filter(  Population.type == "Internally displaced persons" &
-        mena.y  %in% c("Gulf", "Middle-East", "North Africa") &
+  filter(  Population.type == "IDP" &
+        UNHCRBureau  %in% c("MENA") &
         Year %in% c("2003","2004","2005","2006","2007","2008","2009","2010",
-                    "2011","2012","2013","2014","2015","2016","2017") & 
+                    "2011","2012","2013","2014","2015","2016","2017","2018","2019","2020") & 
           Value > 0 ) %>%
-  group_by( Year, Origin) %>%
+  group_by( Year, CountryOriginName) %>%
   summarise(refugees = sum(Value))
 
-ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Origin, stratum =  Origin)) +
+ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = CountryOriginName, stratum =  CountryOriginName)) +
   ggtitle("The addition of Syrian & Yemen has trippled the IDP population in MENA") + 
-  geom_alluvium(aes(fill =  Origin),  alpha = .75, color = "white", decreasing = FALSE) +
+  geom_alluvium(aes(fill =  CountryOriginName),  alpha = .75, color = "white", decreasing = FALSE) +
   scale_y_continuous(labels = format_si()) +
   theme_bw() +
   labs( y = "# of Refugees", fill = "Hosting Region")   + 
  # scale_colour_manual(values = paletteregion) +
   scale_fill_brewer(type = "qual", palette = "Set3") +  #,  guide = FALSE+
-#  ggrepel::geom_text_repel( aes(label =  Origin,  stat = "stratum",                                  size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
-  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2017, as.character( Origin), NA),  stat = "stratum",
+#  ggrepel::geom_text_repel( aes(label =  CountryOriginName,  stat = "stratum",                                  size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
+  ggrepel::geom_text_repel( aes(label = ifelse(Year == 2017, as.character( CountryOriginName), NA),  stat = "stratum",
                                 size = 4, direction = "y", nudge_x = .15, hjust = 0, segment.size = 0.2)) +
   theme(legend.position = "none") +
   theme( axis.text.x = element_text( hjust = 0),
@@ -558,34 +562,34 @@ ggplot(data = popstats, aes(x = Year, y = refugees, alluvium = Origin, stratum =
 
 
 ```{r map1, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
-data.ref.2017.frommena <- data[   which(data$Population.type == "Refugees (incl. refugee-like situations)" &
-                                     data$Origin == "Syrian Arab Rep." &
+data.ref.2017.frommena <- data[   which(data$Population.type == "REF" &
+                                     data$CountryOriginName == "Syrian Arab Rep." &
                                      data$Year == "2017" &
                                      data$Value > 1000 ) , ]
-gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
-
-ggplot() +
-  labs(title = "Refugees from Syria" , subtitle = "", caption = "", x = NULL, y = NULL) +
-  geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
-  geom_line(aes(long,lat,group = group, size = Value.class, alpha = .75, colour = "white"),
-            arrow = arrow(length = unit(0.05,"cm"), ends = "first", type = "closed"), data = gcircles.2017) + 
-  scale_size_discrete(name = "Magnitude",
-                      labels = c("Less.than.5000","5000.to.10000","10000.to.25000","25000.to.50000","50000.to.100000","100000.to.200000","Over.200000"),
-                      guide = guide_legend( direction = "vertical",  title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = FALSE )) +
-  guides(alpha= FALSE, color = FALSE ) +
- # scale_y_continuous(breaks = (-2:2) * 30) +
- # scale_x_continuous(breaks = (-4:4) * 45) +
- # coord_map("ortho", orientation = c(30, 30, 10)) +
-  ylim(-20, 90) +
-  xlim(-160, 160) +
-  coord_equal() +
-  theme_map() + 
-  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
-         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
-         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
-         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
-         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) +
- annotate("text", x = -20 , y = -160, hjust = 0,  colour = "grey50", size = 3, label = "The chart only displays asylum countries with more than 5000 Refugees & Asylum Seekers")
+# gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
+# 
+# ggplot() +
+#   labs(title = "Refugees from Syria" , subtitle = "", caption = "", x = NULL, y = NULL) +
+#   geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
+#   geom_line(aes(long,lat,group = group, size = Value.class, alpha = .75, colour = "white"),
+#             arrow = arrow(length = unit(0.05,"cm"), ends = "first", type = "closed"), data = gcircles.2017) + 
+#   scale_size_discrete(name = "Magnitude",
+#                       labels = c("Less.than.5000","5000.to.10000","10000.to.25000","25000.to.50000","50000.to.100000","100000.to.200000","Over.200000"),
+#                       guide = guide_legend( direction = "vertical",  title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = FALSE )) +
+#   guides(alpha= FALSE, color = FALSE ) +
+#  # scale_y_continuous(breaks = (-2:2) * 30) +
+#  # scale_x_continuous(breaks = (-4:4) * 45) +
+#  # coord_map("ortho", orientation = c(30, 30, 10)) +
+#   ylim(-20, 90) +
+#   xlim(-160, 160) +
+#   coord_equal() +
+#   theme_map() + 
+#   theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+#          legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+#          plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+#          legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+#          panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) +
+#  annotate("text", x = -20 , y = -160, hjust = 0,  colour = "grey50", size = 3, label = "The chart only displays asylum countries with more than 5000 Refugees & Asylum Seekers")
 
 ```
 
@@ -594,38 +598,38 @@ ggplot() +
 
 ```{r map11, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
-data.ref.2017.frommena <- data[   which(data$Population.type == "Refugees (incl. refugee-like situations)" &
-                                     data$mena.y == "Syria Situation" &
-                                     data$Year == "2017" &
+data.ref.2017.frommena <- data[   which(data$Population.type == "REF" &
+                                     data$UNHCRBureau == "MENA" &
+                                     data$Year == "2020" &
                                      data$Value > 1000 ) , ]
-gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
-
-ggplot() +
-  labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
-  
-  geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
-  
-  # arc
-  geom_line(aes(long,lat,group = group, size = Value.class, color = Origin ),
-            arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
-            data = gcircles.2017) + 
-  # , linejoin = 'round mitre'
-  
-  # Adding points asylum - Origin with different color 
- # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
- # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
-  
-  
-  # set theme as organised above
-  scale_y_continuous(breaks = (-2:2) * 30) +
-  scale_x_continuous(breaks = (-4:4) * 45) +
-  coord_map("ortho", orientation = c(30, 30, 10)) +
-  theme_map() + 
-  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
-         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
-         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
-         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
-         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
+# gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
+# 
+# ggplot() +
+#   labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
+#   
+#   geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
+#   
+#   # arc
+#   geom_line(aes(long,lat,group = group, size = Value.class, color = CountryOriginName ),
+#             arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
+#             data = gcircles.2017) + 
+#   # , linejoin = 'round mitre'
+#   
+#   # Adding points asylum - Origin with different color 
+#  # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
+#  # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
+#   
+#   
+#   # set theme as organised above
+#   scale_y_continuous(breaks = (-2:2) * 30) +
+#   scale_x_continuous(breaks = (-4:4) * 45) +
+#   coord_map("ortho", orientation = c(30, 30, 10)) +
+#   theme_map() + 
+#   theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+#          legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+#          plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+#          legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+#          panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
 
 ```
 
@@ -633,40 +637,40 @@ ggplot() +
 
 ```{r map2, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
-data.ref.2017.frommena <- data[   which(data$Population.type == "Refugees (incl. refugee-like situations)" &
+data.ref.2017.frommena <- data[   which(data$Population.type == "REF" &
                                      data$mena.x == "North Africa" &
-                                     data$Year == "2017" &
+                                     data$Year == "2020" &
                                      data$Value > 1000 ) , ]
-gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
-
-ggplot() +
-  labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
-  
-  geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
-  
-  # arc
-  geom_line(aes(long,lat,group = group, size = Value.class, color = Origin ),
-            arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
-            data = gcircles.2017) + 
-  # , linejoin = 'round mitre'
-  
-
-  
-  # Adding points asylum - Origin with different color 
- # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
- # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
-  
-  
-  # set theme as organised above
-  scale_y_continuous(breaks = (-2:2) * 30) +
-  scale_x_continuous(breaks = (-4:4) * 45) +
-  coord_map("ortho", orientation = c(30, 30, 10)) +
-  theme_map() + 
-  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
-         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
-         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
-         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
-         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
+# gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
+# 
+# ggplot() +
+#   labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
+#   
+#   geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
+#   
+#   # arc
+#   geom_line(aes(long,lat,group = group, size = Value.class, color = CountryOriginName ),
+#             arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
+#             data = gcircles.2017) + 
+#   # , linejoin = 'round mitre'
+#   
+# 
+#   
+#   # Adding points asylum - Origin with different color 
+#  # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
+#  # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
+#   
+#   
+#   # set theme as organised above
+#   scale_y_continuous(breaks = (-2:2) * 30) +
+#   scale_x_continuous(breaks = (-4:4) * 45) +
+#   coord_map("ortho", orientation = c(30, 30, 10)) +
+#   theme_map() + 
+#   theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+#          legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+#          plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+#          legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+#          panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
 
 ```
 
@@ -674,37 +678,37 @@ ggplot() +
 
 ```{r map22, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
-data.ref.2017.frommena <- data[   which(data$Population.type == "Refugees (incl. refugee-like situations)" &
-                                     data$mena.y == "North Africa" &
-                                     data$Year == "2017" &
+data.ref.2017.frommena <- data[   which(data$Population.type == "REF" &
+                                     data$hcr_subregion == "North Africa" &
+                                     data$Year == "2020" &
                                      data$Value > 1000 ) , ]
-gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
-
-ggplot() +
-  labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
-  
-  geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
-  
-  # arc
-  geom_line(aes(long,lat,group = group, size = Value.class, color = Origin ),
-            arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
-            data = gcircles.2017) + 
-  # , linejoin = 'round mitre'
-  # Adding points asylum - Origin with different color 
- # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
- # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
-  
-  
-  # set theme as organised above
-  scale_y_continuous(breaks = (-2:2) * 30) +
-  scale_x_continuous(breaks = (-4:4) * 45) +
-  coord_map("ortho", orientation = c(30, 30, 10)) +
-  theme_map() + 
-  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
-         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
-         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
-         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
-         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
+# gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
+# 
+# ggplot() +
+#   labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
+#   
+#   geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
+#   
+#   # arc
+#   geom_line(aes(long,lat,group = group, size = Value.class, color = CountryOriginName ),
+#             arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
+#             data = gcircles.2017) + 
+#   # , linejoin = 'round mitre'
+#   # Adding points asylum - Origin with different color 
+#  # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
+#  # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
+#   
+#   
+#   # set theme as organised above
+#   scale_y_continuous(breaks = (-2:2) * 30) +
+#   scale_x_continuous(breaks = (-4:4) * 45) +
+#   coord_map("ortho", orientation = c(30, 30, 10)) +
+#   theme_map() + 
+#   theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+#          legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+#          plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+#          legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+#          panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
 
 ```
 
@@ -712,40 +716,40 @@ ggplot() +
 
 ```{r map3, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
-data.ref.2017.frommena <- data[   which(data$Population.type == "Refugees (incl. refugee-like situations)" &
-                                     data$mena.x == "Gulf" &
-                                     data$Year == "2017" &
+data.ref.2017.frommena <- data[   which(data$Population.type == "REF" &
+                                    # data$mena.x == "Gulf" &
+                                     data$Year == "2020" &
                                      data$Value > 1000 ) , ]
-gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
-
-ggplot() +
-  labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
-  
-  geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
-  
-  # arc
-  geom_line(aes(long,lat,group = group, size = Value.class, color = Origin ),
-            arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
-            data = gcircles.2017) + 
-  # , linejoin = 'round mitre'
-  
-
-  
-  # Adding points asylum - Origin with different color 
- # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
- # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
-  
-  
-  # set theme as organised above
-  scale_y_continuous(breaks = (-2:2) * 30) +
-  scale_x_continuous(breaks = (-4:4) * 45) +
-  coord_map("ortho", orientation = c(30, 30, 10)) +
-  theme_map() + 
-  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
-         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
-         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
-         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
-         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
+# gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
+# 
+# ggplot() +
+#   labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
+#   
+#   geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
+#   
+#   # arc
+#   geom_line(aes(long,lat,group = group, size = Value.class, color = CountryOriginName ),
+#             arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
+#             data = gcircles.2017) + 
+#   # , linejoin = 'round mitre'
+#   
+# 
+#   
+#   # Adding points asylum - Origin with different color 
+#  # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
+#  # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
+#   
+#   
+#   # set theme as organised above
+#   scale_y_continuous(breaks = (-2:2) * 30) +
+#   scale_x_continuous(breaks = (-4:4) * 45) +
+#   coord_map("ortho", orientation = c(30, 30, 10)) +
+#   theme_map() + 
+#   theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+#          legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+#          plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+#          legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+#          panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
 
 ```
 
@@ -754,37 +758,37 @@ ggplot() +
 
 ```{r map33, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "",  size="small"}
 
-data.ref.2017.frommena <- data[   which(data$Population.type == "Refugees (incl. refugee-like situations)" &
-                                     data$mena.y == "Gulf" &
-                                     data$Year == "2017" &
+data.ref.2017.frommena <- data[   which(data$Population.type == "REF" &
+                                     data$UNHCRBureau == "MENA" &
+                                     data$Year == "2020" &
                                      data$Value > 1000 ) , ]
-gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
-
-ggplot() +
-  labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
-  
-  geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
-  
-  # arc
-  geom_line(aes(long,lat,group = group, size = Value.class, color = Origin ),
-            arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
-            data = gcircles.2017) + 
-  # , linejoin = 'round mitre'
-  
-  # Adding points asylum - Origin with different color 
- # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
- # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
-
-  # set theme as organised above
-  scale_y_continuous(breaks = (-2:2) * 30) +
-  scale_x_continuous(breaks = (-4:4) * 45) +
-  coord_map("ortho", orientation = c(30, 30, 10)) +
-  theme_map() + 
-  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
-         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
-         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
-         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
-         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
+# gcircles.2017 <- merge(x = gcircles, y = data.ref.2017.frommena, by = "arc", all.y = TRUE )
+# 
+# ggplot() +
+#   labs(title = "Refugees" , subtitle = "", caption = "UNHCR", x = NULL, y = NULL) +
+#   
+#   geom_polygon(aes(long, lat, group = group), size = 0.3, fill = "#E2C083", colour = "white", data = worldmap) +
+#   
+#   # arc
+#   geom_line(aes(long,lat,group = group, size = Value.class, color = CountryOriginName ),
+#             arrow = arrow(length = unit(0.1,"cm"), ends = "first", type = "closed"), 
+#             data = gcircles.2017) + 
+#   # , linejoin = 'round mitre'
+#   
+#   # Adding points asylum - Origin with different color 
+#  # geom_point(aes(longitude.x, latitude.x),data = arc[], alpha = 0.8, size = 1, colour = "blue") +
+#  # geom_point(aes(longitude.y, latitude.y),data = arc, alpha = 0.8, size = 1, colour = "red") +
+# 
+#   # set theme as organised above
+#   scale_y_continuous(breaks = (-2:2) * 30) +
+#   scale_x_continuous(breaks = (-4:4) * 45) +
+#   coord_map("ortho", orientation = c(30, 30, 10)) +
+#   theme_map() + 
+#   theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+#          legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+#          plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+#          legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+#          panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) 
 
 ```
 
@@ -816,6 +820,5 @@ An animation can be used to present the population movement over time
 # animated.map %>% gg_animate_save("out/animatedmap.gif")
 ```
 
-![](https://raw.githubusercontent.com/unhcr-mena/popstats/gh-pages/out/animatedmap.gif)
 
 

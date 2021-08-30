@@ -70,7 +70,8 @@
 #'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-#'   \item{\code{Solution.type}}{character Type of Solution }
+#'   \item{\code{Population.type}}{character Type of Solution }
+#'   \item{\code{Population.type.label}}{character Type of Solution }
 #'   \item{\code{Value}}{integer Number of person} 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
@@ -104,6 +105,7 @@
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
 #'   \item{\code{Solution.type}}{character Type of Solution }
+#'   \item{\code{Solution.type.label}}{character Type of Solution }
 #'   \item{\code{Value}}{integer Number of person} 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
@@ -118,7 +120,7 @@
 #'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-#'   \item{\code{Population Type}}{character Population Type: Population types are expressed in the data as follows:#'   
+#'   \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:#'   
 #'   *    `REF` – Refugee  
 #'   *    `ROC` – People in refugee-like situation  
 #'   *    `ASY` – Asylum seekers  
@@ -127,9 +129,9 @@
 #'   *    `IOC` – People in IDP-like situation  
 #'   *    `STA` – Stateless persons  
 #'   *    `OOC` – Others of concern  }
-#'   \item{\code{location}}{character location}
-#'   \item{\code{urbanRural}}{character Urban  or Rural}
-#'   \item{\code{accommodationType}}{character Accommodation Type}
+#'   \item{\code{location}}{character location - Variable not used.. }
+#'   \item{\code{urbanRural}}{character Urban  or Rural - Variable not used.. }
+#'   \item{\code{accommodationType}}{character Accommodation Type - Variable not used.. }
 #'   \item{\code{Female04}}{integer Female 0-4}
 #'   \item{\code{Female511}}{integer Female 5-11}
 #'   \item{\code{Female1217}}{integer Female 12-17}
@@ -149,7 +151,7 @@
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "demographics"
 
-
+## RSD Decision ##########
 #' @title Asylum decisions taken on asylum claims of asylum-seekers
 #' @description Data collated by UNHCR about asylum decisions taken on asylum claims of asylum-seekers residing in World. Data is available since 2000.
 #' @format A data frame with 87495 rows and 16 variables:
@@ -162,6 +164,7 @@
 #'   \item{\code{ProcedureType}}{character Procedure Type}
 #'   \item{\code{ProcedureName}}{character Procedure Name}
 #'   \item{\code{DecisionTypeCode}}{character Decision Type Code}
+#'   \item{\code{DecisionTypeName}}{character Decision Type Name}
 #'   \item{\code{DecisionDataType}}{character Decision Data Type}
 #'   \item{\code{DecisionData}}{character Decision Data}
 #'   \item{\code{DecisionsAveragePersonsPerCase}}{integer Decisions Average Persons Per Case}
@@ -175,6 +178,31 @@
 "asylum_decisions"
 
 
+
+#' @title Asylum decisions taken on asylum claims of asylum-seekers
+#' @description Data collated by UNHCR about asylum decisions taken on asylum claims of asylum-seekers residing in World. Data is available since 2000.
+#' @format A data frame with 160,334 rows and 13 variables:
+#' \describe{
+#'   \item{\code{Year}}{character Year}
+#'   \item{\code{CountryOriginCode}}{character Country of Origin Code isoA3}
+#'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
+#'   \item{\code{CountryOriginName}}{character Country of Origin Name}
+#'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
+#'   \item{\code{ProcedureType}}{character Procedure Type}
+#'   \item{\code{ProcedureName}}{character Procedure Name}
+#'   \item{\code{DecisionTypeCode}}{character Decision Type Code}
+#'   \item{\code{DecisionTypeName}}{character Decision Type Name}
+#'   \item{\code{DecisionDataType}}{character Decision Data Type}
+#'   \item{\code{DecisionData}}{character Decision Data}
+#'   \item{\code{DecisionsAveragePersonsPerCase}}{integer Decisions Average Persons Per Case}
+#'   \item{\code{Decision.output}}{integer COLUMN_DESCRIPTION}
+#'   \item{\code{Value}}{double COLUMN_DESCRIPTION} 
+#'}
+#' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
+"asylum_decisions_long"
+
+
+## RSD Application ##########
 #' @title Asylum applications by asylum-seekers
 #' @description Dataset collated by UNHCR, containing information about the number of applications for asylum residing in World. Data is available since 2000
 #' @format A data frame with 91031 rows and 13 variables:

@@ -35,9 +35,12 @@ read_sans_hxl <- function(file, ...) {
   readr::read_csv(file, col_names = hdrs, skip = 2, ...)
 }
 
+
+
+## Displaced ##########
+
 end_year_population_totals <- read_sans_hxl("data-raw/end_year_population_totals_residing_world.csv")
 
-sinew::makeOxygen(end_year_population_totals, add_fields = "source")
 
 # Rename column to have proper Variable names
 end_year_population_totals <- plyr::rename(end_year_population_totals, c("Country of Origin Code"="CountryOriginCode",
@@ -50,6 +53,8 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Others of Concern to UNHCR"="OOC",
                                        "Stateless Persons"="STA",    
                                         "Venezuelans Displaced Abroad"="VDA" ))
+
+sinew::makeOxygen(end_year_population_totals, add_fields = "source")
 
 save(end_year_population_totals, file =  "data/end_year_population_totals.RData")
 
@@ -69,12 +74,21 @@ end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
                                            value.name="Value")
 
 end_year_population_totals_long <- end_year_population_totals_long[end_year_population_totals_long$Value > 0, ]
+
+end_year_population_totals_long$Population.type.label <- ""
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally Displaced Persons"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
   
 save(end_year_population_totals_long, file =  "data/end_year_population_totals_long.RData")
 
 
 
 
+## Solutions ##########
 
 solutions_residing <- read_sans_hxl("data-raw/solutions_residing_world.csv")
 
@@ -90,7 +104,7 @@ solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="Countr
                                                                          "IDP returns"="RDP" ))
 
 save(solutions, file =  "data/solutions.RData")
-sinew::makeOxygen(solutions_residing, add_fields = "source")
+sinew::makeOxygen(solutions, add_fields = "source")
 
 solutions_long <- reshape2::melt(solutions,
                                                   # ID variables - all the variables to keep but not split apart on
@@ -103,11 +117,22 @@ solutions_long <- reshape2::melt(solutions,
                                                   value.name="Value")
 
 solutions_long <- solutions_long[solutions_long$Value > 0, ]
+
+
+solutions_long$Solution.type.label <- ""
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RST"] <- "Resettlement arrivals"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="NAT"] <- "Naturalisation"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RDP"] <- "IDP returns"
+
 save(solutions_long , file =  "data/solutions_long.RData")
 sinew::makeOxygen(solutions_long , add_fields = "source")
 
+## Demographics ##########
 
 demographics_residing <- read_sans_hxl("data-raw/demographics_residing_world.csv")
+
+names(demographics_residing)
 
 sinew::makeOxygen(demographics_residing, add_fields = "source")
 # Rename column to have proper Variable names
@@ -115,6 +140,7 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
                                                          "Country of Asylum Code"="CountryAsylumCode", 
                                                          "Country of Origin Name"="CountryOriginName",
                                                          "Country of Asylum Name"="CountryAsylumName",  
+                                                         "Population Type"= "Population.type",
                                                          "Female 0-4"="Female04", 
                                                          "Female 5-11"="Female511", 
                                                          "Female 12-17"="Female1217", 
@@ -130,9 +156,47 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
                                                          "Male Unknown"="MaleUnknown",
                                                          "Male Total"="MaleTotal")
                                                          )
+
+names(demographics)
+table(demographics$location, useNA = "ifany")
+table(demographics$urbanRural, useNA = "ifany")
+table(demographics$accommodationType, useNA = "ifany")
+
 save(demographics, file =  "data/demographics.RData")
 
+## RSD Application ########## 
+asylum_applications_residing <- read_sans_hxl("data-raw/asylum_applications_residing_world.csv")
 
+sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
+
+# Rename column to have proper Variable names
+asylum_applications <- plyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
+                                                                    "Country of Asylum Code"="CountryAsylumCode", 
+                                                                    "Country of Origin Name"="CountryOriginName",
+                                                                    "Country of Asylum Name"="CountryAsylumName", 
+                                                                    "Procedure Type"="ProcedureType",                      
+                                                                    "Procedure Name"="ProcedureName",                      
+                                                                    "Application Type Code"="ApplicationTypeCode",               
+                                                                    "Application Type"="ApplicationType",                    
+                                                                    "Application Data Type"="ApplicationDataType",               
+                                                                    "Application Data"="ApplicationData",                    
+                                                                    "Application Average Persons Per Case"="ApplicationAveragePersonsPerCase",
+                                                                    "Number of Applications"="NumberApplications" 
+)
+)
+
+asylum_applications$ApplicationType[asylum_applications$ApplicationTypeCode == "V"] <- "Various"
+asylum_applications$ApplicationTypeCode[asylum_applications$ApplicationType == "New and appeal"] <- "NA"
+
+View(unique(asylum_applications[ ,c("ApplicationTypeCode","ApplicationType")]))
+
+save(asylum_applications, file =  "data/asylum_applications.RData")
+
+View(unique(asylum_applications[ ,c("ProcedureType",  "ProcedureName")]))
+
+View(unique(asylum_applications[ ,c("ApplicationDataType","ApplicationData")]))
+
+## RSD Decision ##########
 asylum_decisions_residing <- read_sans_hxl("data-raw/asylum_decisions_residing_world.csv")
 
 sinew::makeOxygen(asylum_decisions_residing, add_fields = "source")
@@ -152,44 +216,90 @@ asylum_decisions <- plyr::rename(asylum_decisions_residing, c("Country of Origin
                                                                "Total Decided" = "TotalDecided"
                                                                )
 )
+
+
+View(unique(asylum_decisions[ ,c("ProcedureType",  "ProcedureName")]))
+View(unique(asylum_decisions[ ,c("DecisionTypeCode")]))
+
+asylum_decisions$DecisionTypeName <- ""
+asylum_decisions$DecisionTypeCode[is.na(asylum_decisions$DecisionTypeCode) ] <- "NA"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "FI"] <- "First instance"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "AR"] <- "Re-opened/repeat"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "FA"] <- "First instance and appeal"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "BL"] <- "BL"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "NA"] <- "New applications"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "RA"] <- "Repeat/reopened applications"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "CA"] <- "CA"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "EO"] <- "US Executive Office of Immigration Review"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "IN"] <- "US Citizenship and Immigration Services"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TR"] <- "TR"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "JR"] <- "Judicial Review "
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "SP"] <- "Subsidiary protection"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TA"] <- "Temporary asylum"
+asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TP"] <- "Temporary Protection" 
+
+View(unique(asylum_decisions[ ,c("DecisionTypeCode","DecisionTypeName")])) 
+sinew::makeOxygen(asylum_decisions, add_fields = "source")
 save(asylum_decisions, file =  "data/asylum_decisions.RData")
 
 
+## RDS Decision Long format ########
 
-asylum_applications_residing <- read_sans_hxl("data-raw/asylum_applications_residing_world.csv")
+names(asylum_decisions)
 
-sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
+asylum_decisions_long <- reshape2::melt(asylum_decisions,
+                                                  # ID variables - all the variables to keep but not split apart on
+                                                  id.vars=c("Year", "CountryOriginCode","CountryAsylumCode",
+                                                            "CountryOriginName","CountryAsylumName",
+                                                            "ProcedureType",  "ProcedureName",
+                                                            "DecisionTypeCode","DecisionTypeName",
+                                                            "DecisionData","DecisionsAveragePersonsPerCase"),
+                                                  # The source columns
+                                                  measure.vars=c("Recognized","ComplementaryProtection","OtherwiseClosed","Rejected"),
+                                                  # Name of the destination column that will identify the original
+                                                  # column that the measurement came from
+                                                  variable.name="Decision.output",
+                                                  value.name="Value")
 
-# Rename column to have proper Variable names
-asylum_applications <- plyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
-                                                                       "Country of Asylum Code"="CountryAsylumCode", 
-                                                                       "Country of Origin Name"="CountryOriginName",
-                                                                       "Country of Asylum Name"="CountryAsylumName", 
-                                                                       "Procedure Type"="ProcedureType",                      
-                                                                       "Procedure Name"="ProcedureName",                      
-                                                                       "Application Type Code"="ApplicationTypeCode",               
-                                                                       "Application Type"="ApplicationType",                    
-                                                                       "Application Data Type"="ApplicationDataType",               
-                                                                       "Application Data"="ApplicationData",                    
-                                                                       "Application Average Persons Per Case"="ApplicationAveragePersonsPerCase",
-                                                                       "Number of Applications"="NumberApplications" 
-)
-)
-save(asylum_applications, file =  "data/asylum_applications.RData")
+asylum_decisions_long <- asylum_decisions_long[asylum_decisions_long$Value > 0, ]
 
+sinew::makeOxygen(asylum_decisions_long, add_fields = "source")
+save(asylum_decisions_long, file =  "data/asylum_decisions_long.RData")
+
+
+
+## merge RSD processing ##############
+
+
+asylum <- dplyr::left_join( x= asylum_applications, y = asylum_decisions, by = c("Year",
+                                                                                "CountryOriginCode",
+                                                                                "CountryAsylumCode", 
+                                                                                "CountryOriginName",
+                                                                                "CountryAsylumName",
+                                                                                "ProcedureType" ,
+                                                                                "ProcedureName"  ))
+
+## Difference between applied and processed
+
+#names(asylum)
+asylum$gapapplieddecided <- asylum$TotalDecided - asylum$NumberApplications
+table(asylum$gapapplieddecided, useNA = "ifany")
+
+
+## Reference ######
 
 reference <- readr::read_csv("data-raw/reference.csv")
 save(reference, file =  "data/reference.RData")
 sinew::makeOxygen(reference, add_fields = "source")
 
-
+## IMF ########
 imf <- readxl::read_excel("data-raw/WEO_data.xlsx",sheet = "Sheet1")
 
 sinew::makeOxygen(imf, add_fields = "source")
 
 save(imf, file =  "data/GDP_IMF.RData")
 
-
+## Last #######
 
 attachment::att_to_description()
 rhub::check_for_cran()

@@ -1,15 +1,15 @@
 ---
 title: "AMERICAS REGIONAL POPULATION TRENDS ANALYSIS"
-subtitle: "FORCED DISPLACEMENT IN 2020"
+subtitle: "Forced Displacement in 2020"
 abstract-title: UNHCR Regional Bureau for the Americas
-abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 from UNHCR Annual Statistical Report. It includes trends and analysis of the major population groups, three leading focus countries and the two major displacement situations in the region."
+abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on __publicly available data__. It includes trends and analysis of the major population groups, three leading focus countries and the two major displacement situations in the region."
 date: "25 Augut 2021"
 author:
-  - name: Contact name1
-    affiliation: Job title1
-    email: <contact1email@unhcr.org>
-  - name: Contact name2
-    affiliation: Job title2
+  - name: Laura Giammarinaro
+    affiliation: Senior DIMA Coordinator
+    email: <Giammari@unhcr.org>
+  - name: Statistics & Data Analysis Team
+    affiliation: DIMA
     email: <contact2email@unhcr.org>
 output: 
   unhcRstyle::unhcr_templ_paged: 
@@ -33,7 +33,7 @@ lot: false
 # Set lot title, default: "List of Tables"
 lot-title: "Tables"
 # Change to false to remove list of figures
-lof: false
+lof: true
 # Set lof title, default: "List of Figures"
 lof-title: "Figures"
 # If you include any <abbr> a list of abbreviations will be built.
@@ -50,42 +50,59 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r packages, include=FALSE, message=FALSE, warning=FALSE}
-# Load required packages for charts with UNHCR style 
-library(unhcRstyle)
-library(ggplot2)
+
+using <- function(...) {
+    libs <- unlist(list(...))
+    req <- unlist(lapply(libs,require,character.only = TRUE))
+    need <- libs[req == FALSE]
+    if (length(need) > 0) { 
+        install.packages(need)
+        lapply(need,require,character.only = TRUE)
+    }
+}
+
+using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize',
+      'viridis', 'treemap',
+      'treemapify', 'patchwork', 'networkD3', 'webshot')
+
 library(tidyverse)
-library(unhcrdatapackage)
+library(ggplot2)
 library(scales)
 library(ragg)
 library(magick)
+library(circlize)
+library(wbstats)
+library(acled.api)
+
+# Load required packages for charts with UNHCR style 
+library(unhcRstyle)
+library(unhcrdatapackage)
 update_geom_font_defaults()
 
 
-
-
-
 ```
-
-
 
 ```{r  include=FALSE, message=FALSE, warning=FALSE}
 ## Loading the stat tables
 end_year_population_totals <- unhcrdatapackage::end_year_population_totals
 reference <- unhcrdatapackage::reference
 end_year_population_totals_long <- unhcrdatapackage::end_year_population_totals_long
-end_year_population_totals_long2 <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))
 
+end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3"))
 
 demographics <- unhcrdatapackage::demographics
 asylum_applications <- unhcrdatapackage::asylum_applications
-asylum_decisions <- unhcrdatapackage::asylum_decisions
+asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
 
 solutions <- unhcrdatapackage::solutions
 solutions_long <- unhcrdatapackage::solutions_long
@@ -95,32 +112,47 @@ solutions_long2 <- dplyr::left_join( x=  solutions_long,
 ```
 
 
-
 ```{r  include=FALSE, message=FALSE, warning=FALSE}
 ## Key Figures calculation
 thisbureau <- "Americas"
+lastyear <- max(end_year_population_totals_long.asy$Year)
 
-allpop <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020  , 
+allpop <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020  , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totaldis <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type %in% c("REF","ASY","VDA") , 
+totaldis <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("REF","ASY","VDA") , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totalIDP <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type =="IDP" , 
+totalref <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("REF") , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totalooc <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type =="OOC" , 
+totalasy <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("ASY") , 
                                      c("Value")])
              , -3),  big.mark=",")
 
-totalsta <- format(round(sum(end_year_population_totals_long2[end_year_population_totals_long2$UNHCRBureau == thisbureau &      end_year_population_totals_long2$Year ==2020 &
-                                       end_year_population_totals_long2$Population.type =="STA" , 
+totalvda <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type %in% c("VDA") , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
+totalIDP <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type =="IDP" , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
+totalooc <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type =="OOC" , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
+totalsta <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==2020 &
+                                       end_year_population_totals_long.asy$Population.type =="STA" , 
                                      c("Value")])
              , -3),  big.mark=",")
 
@@ -150,25 +182,62 @@ totalnat <- format(round(sum(solutions_long2[solutions_long2$UNHCRBureau == this
 
 ```
 
+
+```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE,  include=FALSE, cache = TRUE}
+# Population, GDP & GNP per Capita from WorldBank
+
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
+                                      "NY.GDP.MKTP.CD", ## GDP current https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
+                                      "NY.GDP.PCAP.CD", ## GDP per capita https://data.worldbank.org/indicator/NY.GDP.PCAP.CD 
+                                      "NY.GNP.PCAP.CD" ## GNI per capita, Atlas method (current US$) https://data.worldbank.org/indicator/NY.GNP.PCAP.CD
+                                      ),
+                startdate = 1951, enddate = lastyear, return_wide = TRUE)
+# # Renaming variables for further matching
+names(wb_data)[1] <- "CountryAsylumCode"
+names(wb_data)[2] <- "Year"
+# write.csv(wb_data, "wb_data.csv", row.names = FALSE)
+
+## getting data from ACLED for events... 
+acled.data <- acled.api::acled.api(email.address = Sys.getenv("EMAIL_ADDRESS"),  # see https://developer.acleddata.com/
+                                   access.key = Sys.getenv("ACCESS_KEY"),
+                                   start.date = "2017-01-01",
+                        end.date = lubridate::today(),
+                        country = c("Mexico", "Belize", "Honduras",  "Nicaragua", 
+                              "Guatemala", "El Salvador", "Costa Rica","Panama" , 
+                               "Colombia" , "Venezuela", "Guyana", "Suriname",
+                                "Ecuador" , "Bolivia", "Peru" ,  "Brazil",  
+                                "Chile", "Argentina", "Paraguay", "Uruguay"),
+                        all.variables = TRUE) 
+
+wb_data$yearctr <- paste0(wb_data$CountryAsylumCode, wb_data$Year)
+acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
+
+```
+
+
 :::{.page-break}
 :::
 
 # Key Figures
 
+Almost one in every five persons of concern to UNHCR live in the Americas, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+
+Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
+
 ## Forcible Displacement
 
-As per 2020 statistical reporting in the __`r thisbureau`__, he total population of concern is __`r allpop`__, this includes:          
+As per 2020 statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
- * Total refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
+ * Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
  * Total Internally Displaced Persons __`r totalIDP`__
  * Total Statelessness __`r totalsta`__ 
  * Total Other of Concerns __`r totalooc`__ 
 
 ## Solutions
 
- * Total returned refugees __`r totalret`__ 
- * Total returned IDP __`r totalretipd`__
- * Total resettlement __`r totalrst `__
+ * Total Returned Refugees __`r totalret`__ 
+ * Total Returned IDP __`r totalretipd`__
+ * Total Resettlement __`r totalrst `__
  * Total Naturalisation  __`r totalnat`__
  
 ## Profiles
@@ -176,69 +245,207 @@ As per 2020 statistical reporting in the __`r thisbureau`__, he total population
 Total children below 18
 
 Hosted in urban/peri-urban areas
-          
 
-            
+
+```{r, message=FALSE, warning=FALSE, fig.cap = "**| Population of Concern in 2020 in the Americas**"}
+
+# Create data
+group <- c("IDPs",
+           "Venezuelan Abroad",
+           "Asylum Seekers",
+           "Refugees",
+           "Other of Concerns",
+           "Stateless")
+value2020 <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="IDP" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="VDA" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="ASY" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="REF" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="OOC" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2020 &  end_year_population_totals_long.asy$Population.type =="STA" , 
+                                     c("Value")]))       )
+
+
+
+value2019 <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="IDP" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="VDA" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="ASY" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="REF" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="OOC" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="STA" , 
+                                     c("Value")]))       )
+
+colorPopType <- c("#01b399", # IDP 
+           "#000000", # VDA
+           "#f9ec00", # ASY
+           "#0171ba", # REF
+           "#153764",# OOC
+           "#f04a60") #STA
+
+
+datatree <- data.frame(group,
+                   value2020,
+                   value2019,
+                   colorPopType)
+ 
+# treemap
+# treemap(datatree,
+#             index="group",
+#             vSize="value",
+#             type="index",
+#             vColor="color",
+#             #type="manual", 
+#             #palette = colorPopType,
+#             border.col= "white" ,
+#             )
+
+## Treemapify
+p2020 <- ggplot(datatree, 
+       aes(area = value2020, 
+           fill = group, 
+           label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDPs" = "#01b399",
+                                     "Venezuelan Abroad"="#000000",
+                                     "Asylum Seekers" = "#f9ec00",
+                                     "Refugees" = "#0171ba",
+                                     "Other of Concerns" ="#153764",
+                                     "Stateless"="#f04a60")) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(#title = "Population of Concerns in the Americas ",
+        subtitle = paste0("2020, a total of ", format(round(sum(datatree$value2020), -3),  big.mark=","), " "),
+       x = "",
+       y = "",
+       caption = " ")
+
+
+
+
+p2019 <- ggplot(datatree, 
+       aes(area = value2019, 
+           fill = group, 
+           label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDPs" = "#01b399",
+                                     "Venezuelan Abroad"="#000000",
+                                     "Asylum Seekers" = "#f9ec00",
+                                     "Refugees" = "#0171ba",
+                                     "Other of Concerns" ="#153764",
+                                     "Stateless"="#f04a60")) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(#title = "Population of Concerns in the Americas ",
+       subtitle = paste0("2019, a total of ", format(round(sum(datatree$value2019), -3),  big.mark=","), " "),
+       x = "",
+       y = "",
+       caption = " ")
+
+library(patchwork)
+patchwork <- p2019 + p2020
+patchwork +
+  unhcRstyle::unhcr_theme() +  ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  plot_annotation(
+    title = 'Key figures increase due to the Other of Concerns category',
+    caption = 'Source: UNHCR.org/refugee-statistics '
+  )
+
+```
+
+
 
 :::{.page-break}
 :::
 
 # Regional Overview 
 
+1.  WE NEED DATA DISAGREGATED BY Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad
+2. tHE GRAPHS OF THE COUNTRIES ARE ON 5 YEARS BUT THE TITLE SAIS 20. IS THE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
 
-The total number of persons of concern by end of 2020 stood at 9.8
-million, a slight increase from 2019
 
-The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
+The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
 
-###### Figure 1 **\| Population origin-destination in the region**
+The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
-```{r pop-flows}
-# chords1 <- time_series3 %>% 
-#    group_by(coo = CountryOriginName, coa = CountryAsylumName) %>% 
-#    summarize(total = sum(total), .groups = "drop")
-# 
-# 
-# chords <- popstats %>% 
-#   group_by(coo = coo_name, coa = coa_name) %>% 
-#   summarize(total = sum(total), .groups = "drop")
-# 
-# chords <- chords %>% 
-#   mutate(coo = str_replace(coo, " \\(Bolivarian Republic of\\)", ""),
-#         coa = str_replace(coa, " \\(Bolivarian Republic of\\)", ""),
-#         coo = str_replace(coo, " \\(Plurinational State of\\)", ""),
-#         coa = str_replace(coa, " \\(Plurinational State of\\)", ""),
-#         coo = str_replace(coo, "United States of America", "USA"),
-#         coa = str_replace(coa, "United States of America", "USA"))
-# 
-# circlize::chordDiagram(chords, 
-#              self.link = 1,
-#              grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
-#              annotationTrack = "grid", 
-#              preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
-# 
-# circos.track(track.index = 1, 
-#              panel.fun = function(x, y) {
-#               circos.text(CELL_META$xcenter, 
-#                           CELL_META$ylim[1], 
-#                           CELL_META$sector.index, 
-#                           facing = "clockwise", 
-#                           niceFacing = TRUE,
-#                           adj = c(0, 0.5))
-#                 }, 
-#             bg.border = NA) # here set bg.border to NA is important
+
+
+There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of 2020 stood at __`r totalsta`__. 
+
+
+
+The definition of 'Venezuelans Displaced Abroad' (VDA) in the context of the Population Statistical Reference (PSR is UNHCR’s platform for collection of data on UNHCR’s population of concern globally): Persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
+
+The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
+
+
+
+```{r pop-flows, message=FALSE, warning=FALSE, fig.cap = "**| Population origin-destination in the region**"}
+chords <- end_year_population_totals %>%
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  mutate(across(REF:VDA, ~replace_na(as.numeric(.), 0)),
+         total = REF + ASY + VDA + IDP  + STA + OOC,
+         # Lump together factor levels into "other"
+         CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = total),
+         CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = total)) %>% 
+   group_by(CountryOriginName, CountryAsylumName) %>%
+   summarize(total = sum(total), .groups = "drop")  %>%
+# CountryOriginName = fct_recode(CountryOriginName, "Other" = "China")
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+        CountryOriginName = str_replace(CountryOriginName, " \\(Plurinational State of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, " \\(Plurinational State of\\)", ""),
+        CountryOriginName = str_replace(CountryOriginName, "United States of America", "USA"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"))
+
+circlize::chordDiagram(chords,
+             self.link = 1,
+             #grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
+             annotationTrack = "grid") #,
+            # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
+
+circos.track(track.index = 1,
+             panel.fun = function(x, y) {
+              circos.text(CELL_META$xcenter,
+                          CELL_META$ylim[1],
+                          CELL_META$sector.index,
+                          facing = "clockwise",
+                          niceFacing = TRUE,
+                          adj = c(0, 0.5))
+                },
+            bg.border = NA) # here set bg.border to NA is important
 ```
 
+ 
 
-###### Figure 2 **\| Evolution over time of the different Population of Concern**
+In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
 
-```{r ,message = FALSE, warning = FALSE}
-lastyear <- max(end_year_population_totals_long2$Year)
+```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
+lastyear <- max(end_year_population_totals_long.asy$Year)
 #Prepare data
-multiple_line_df <- end_year_population_totals_long2 %>%
+multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(UNHCRBureau  == thisbureau &
            !(is.na(UNHCRBureau))) %>%
-  group_by(Year, Population.type ) %>%
+  group_by(Year, Population.type, Population.type.label ) %>%
   summarise(Value2 = sum(Value) ) 
 
 #Make plot
@@ -325,36 +532,80 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 
-due mainly to increases in the internally displaced population and the inclusion of assisted host community figures. There were 4 million refugees, 209,000 asylum-seekers, 2,500 returned refugees, 3.5 million internally displaced persons and 155,000 returned IDPs in the region. Persons under UNHCR's statelessness mandate in the region by end of 2020 stood at 2.3 million. 
 
-The Americas hosts 11 per cent of the total persons of concern to UNHCR. 19 per cent of the world's refugee population and 55 per cent of the world's stateless population live in the region. Globally, Pakistan and Bangladesh are among the 10 countries with the largest refugee/asylum-seeker populations while Afghanistan and Myanmar are the third and fifth country of origin of refugees and asylum-seekers.
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__). 
 
-An additional 685,000 persons were identified as 'others of concern'. Others of concern are out of the scope of this report and not included in the analysis. An additional 685,000 persons were identified as 'others of concern' 
+```{r message = FALSE, warning = FALSE, fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
+# # Plot
+# ggplot(multiple_line_df, aes(x = Year, y = Value2, fill=Population.type.label)) + 
+#     #geom_area(alpha=0.6 , size=.5, colour="white") +
+#     geom_bar(position="stack", stat="identity") + 
+#     viridis::scale_fill_viridis(discrete = T) + 
+#   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+#   scale_y_continuous( label = format_si()) + ## Format axis number
+#   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+#   
+#   ## and the chart labels
+#   labs(title = "Forcible Displacement in the Americas ",
+#        subtitle = "Evolution in the past 20 years",
+#        x = "",
+#        y = "",
+#        caption = "Source: UNHCR.org/refugee-statistics ")
+```
 
-The boundaries and names shown and the designations used on this map do not imply official endorsement or acceptance by the United Nations. Dotted line represents approximately the Line of Control in Jammu and Kashmir agreed upon by India and Pakistan. The final status of Jammu and Kashmir has not yet been agreed upon by the parties.
 
+
+```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
+
+acled.data %>% 
+  filter(year == 2020) %>% 
+  group_by(yearctr,country ) %>% 
+  count(country, wt = fatalities) %>% 
+    left_join(wb_data %>% select("SP.POP.TOTL","yearctr"), by = c(  "yearctr"    )) %>%
+  ## get fatalities Percentage
+  mutate(fatalities_per_100k = round(  (n/as.numeric(SP.POP.TOTL)*100000) , 1)) %>% 
+  top_n(10, fatalities_per_100k) %>% 
+  ## Now the chart 
+  ggplot(aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
+  geom_col(fill = "#0072BC") +
+  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), 
+            hjust = "inward", 
+            color = "black") +
+  scale_x_continuous(labels = scales::label_comma()) +
+  labs(x = "Fatalities per 100,000 population", 
+       y = " ", 
+       title = "Conflict-related deaths per 100,000 population",
+       caption = "Source: Acled Data - https://acleddata.com") +
+  unhcRstyle::unhcr_theme()  + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+```
+This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent contries in Americas are from the central America: Belize, Honduras, Mexico, El salvador and Guatemala. ACLED collects real-time data of all reported political violence.
+ 
+ 
 
 :::{.page-break}
 :::
 
 # Regional Analysis 
 
-
+```{r}
+# ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
+#  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
+```
+ 
 ## What displacement?
 
-
-Compared to the previous year, the population groups with increases were
-the returned IDPs with 22 per cent and the number of internally displaced persons increased by
+Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
 12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
-
-###### Figure 2 **\| Largest Countries of Asylum**
-```{r}
+ 
+```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
 #Prepare data2
-bar_df <- end_year_population_totals_long2 %>%
+bar_df <- end_year_population_totals_long.asy %>%
   filter(Population.type  %in% c("REF","ASY","VDA") & 
            Year == lastyear &
            UNHCRBureau  == thisbureau &
@@ -396,17 +647,21 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
        subtitle = paste0("Refugee, Asylum Seekers & Venezuelan Displaced Abroad in ",lastyear), 
        x = "",
        y = "",
-       caption = "Top 10 Countries, UNHCR https://www.unhcr.org/refugee-statistics/") +
+       caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
-###### Figure 4 **\| Countries with the Most within border Concern to UNHCR**
-```{r}
+
+Considering together Refugees, Asylum Seekers and Venezuelan Displaced Abroad, Colombia is the first country with more population, especially for the presence of Venezuelan Displaced Abroad (1,729,537). United States of America has the second largest host has a big component of Refugees (340,844) and Asylum Seekers (997,998). The third country, Peru has a great component of Venezuelan Displaced Abroad (515,039).
+
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). 
+
+```{r message=FALSE, warning=FALSE,  fig.cap = "**| Other Displacement**"}
 #Prepare data2
-bar_df <- end_year_population_totals_long2 %>%
+bar_df <- end_year_population_totals_long.asy %>%
   filter(Population.type  %in% c("IDP","OOC","STA") & 
            Year == lastyear &
            UNHCRBureau  == thisbureau &
@@ -452,7 +707,7 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
        subtitle = paste0("IDPs, Statelessness & Other of Concern in ",lastyear), 
        x = "",
        y = "",
-       caption = "Top 10 Countries, UNHCR https://www.unhcr.org/refugee-statistics/") +
+       caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
   scale_y_continuous( label = format_si(),
                       limits=c(0, 10000000))  + ## Format axis number
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
@@ -460,106 +715,68 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
-UNHCR ASR source of  figures is IDMC, which estimation methodology can differ from other sources: <https://www.unhcr.org/refugee-statistics/download/?url=E1ZxP>
+
+Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
+
+:::{.bg-blue}
+Statistical definition: Other persons of concern (OOC):	Refers to individuals who do not necessarily fall directly into any of the groups above but to whom UNHCR has been given a mandate to provide protection and/or assistance (e.g. based on regional documents, peace agreements, General Assembly resolutions). Persons with whom UNHCR is engaged purely on a good offices basis, such as, for instance, rejected asylum-seekers, should not be included.
+:::
 
 
-Stateless population refers to those individuals without a nationality in their country of habitual residence. Non-stateless population refers to those individuals without a nationality in their country of habitual residence and who are either internally or internationally displaced.
 
 
-The population groups in this chart should not be summed up to calculate the total POCs figures as the stateless population group includes both non-displaced and displaced stateless.
+:::{.bg-blue}
+Statistical definition: Host Community (HST):	A community that hosts large populations of refugees or internally displaced persons, whether in camps, integrated into households, or independently.
+:::
 
-Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)
-Forced displacement as a result of conflict, violence, and other causes undermine sustainable 
-development, and can increase the risk of regional instability, especially when refugees are hosted in 
-neighbouring countries, resulting in possible tensions with local populations. The United Nations General 
-Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development at 
-paragraph 23 recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced 
-persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that 
-Member States resolve to take further effective measures and actions, to “strengthen support and meet 
-the special needs of people living in areas affected by complex humanitarian emergencies”. In addition, 
-target 10.7 recognizes for the first time the contribution of migration to sustainable development by 
-aiming to “facilitate orderly, safe, and responsible migration and mobility of people, including through 
-implementation of planned and well-managed migration policies”.  
-This indicator tracks the number of people displaced across national borders as a result of persecution, 
-conflict, violence, human rights violations, or events seriously disturbing public order. It measures the 
-total count of refugee population by country or territory of origin as a proportion of the total population. 
 
-Goal 10: Reduce inequality within and among countries 
-
-Target name : Facilitate orderly, safe, regular and responsible migration and mobility of people, including through the implementation of planned and well-managed migration policies
-Indicator name 	
-
-Proportion of the population who are refugees, by country of origin
-
-he indicator is defined as the total count of population who have been recognized as refugees as a 
-proportion of the total population of their country of origin, expressed per 100,000 population.  
-Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like 
-situation.  
-Population refers to total resident population in a given country in a given year. 
- 
-Concepts: 
-Refugees recognized by the Government and/or UNHCR include:  
-(a) persons recognized as refugees by Governments having ratified the 1951 United Nations Convention 
-Relating to the Status of Refugees, and/or its 1967 Protocol;  
-Last updated: February 2021 
-(b) persons recognized as refugees under the 1969 Organization of African Unity (OAU) Convention 
-Governing the Specific Aspects of Refugee Problems in Africa;  
-(c) those recognized in accordance with the principles enshrined in the Cartagena Declaration;  
-(d) persons recognized by UNHCR as refugees in accordance with its Statute (otherwise referred to as 
-“mandate” refugees);  
-(e) those who have been granted a complementary form of protection (i.e. non-Convention);  
-(f) persons who have been granted temporary protection on a group basis;  
-Persons in a refugee-like situation refer to those outside their territory of origin who face protection risks 
-similar to those of refugees, but who, for practical or other reasons, have not been formally recognized or 
-issued documentation to that effect.  
- 
-2.b. Unit of measure 
-Number of refugees per 100,000 population in country of origin 
-
-Refugee data are sent to UNHCR Country Offices by member states, usually through national institutions 
-responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of 
-Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, 
-estimations based on positive decisions on asylum applications from previous years are used. 
-
-##### Figure 11 **\| Proportion of the population who are refugees, by country of origin**
-```{r}
-# egris <- 
-#   popstats %>% 
-#   filter(coo_region == "Americas") %>% 
-#   group_by(coo_iso) %>% 
-#   count(wt = refugees, name = "refugees") %>% 
-#   left_join(m49 %>% select(iso3 = `ISO-alpha3 Code`, country = `Country or Area`), by = c(coo_iso = "iso3")) %>% 
-#   left_join(wpp %>% transmute(country = `Region, subregion, country or area *`, pop = 1000*as.numeric(`2020`))) %>% 
-#   mutate(egris = refugees/(pop+refugees)) %>% 
-#   ungroup()
-# 
-# egris %>% 
-#   top_n(10, wt = egris) %>% 
-#   ggplot(aes(egris, fct_reorder(country, egris))) +
-#   geom_col(fill = "#0072BC") +
-#   geom_label(aes(label = scales::percent(egris, accuracy = .01)), 
-#              color = "black", hjust = "inward") +
-#   scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
-#   labs(x = NULL, y = NULL, 
-#        title = paste0("The number of refugees by country of origin\n",
-#                       "as a proportion of the national population of that country of origin")) +
-#   unhcRstyle::unhcr_theme()
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
+end_year_population_totals_long.ori %>%
+  filter(Population.type  %in% c("REF","ASY","VDA") & 
+           Year == lastyear &
+           UNHCRBureau  == thisbureau &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(CountryOriginName, CountryOriginCode) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
+  
+    ## Now merge with WB Data 
+  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == "2020"), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
+  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
+  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
+  geom_col(fill = "#0072BC") +
+  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+  labs(x = NULL, 
+       y = NULL,
+       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
+       subtitle =     "As a proportion of the national population of that country of origin",
+         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
+situation.  Population refers to total resident population in a given country in a given year.") +
+  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
+  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
 
- 
+
+:::{.bg-blue}
+Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
+:::
+
 ## What profiles?
 
-
-##### Figure 5 **\| Where Demographic Composition is available?**
-```{r}
+```{r message=FALSE, warning=FALSE, fig.cap = "**| How far Demographic breakdown is available?**"}
+## percentage of the total population within the country for which demographci breakdown is available
 
 ```
 
-
-##### Figure 6 **\| Demographic Composition**
-```{r}
-
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Demographic breakdown**"}
 demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
 #names(demographics)
 pyramid <-  demographics[ demographics$Year == max(demographics$Year),
@@ -615,8 +832,8 @@ pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
 pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
 
 ## Add images for geneder
-men <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"))
-women <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png"))
+#men <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"))
+#women <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png"))
 
 icon <- data.frame(
    c("men", "women"),
@@ -631,10 +848,10 @@ names(icon)[3] <- "age"
 names(icon)[4] <- "pc"
 
 # Or add to plot as annotation
-men <- magick::image_fill(men, 'none')
-men <- as.raster(men) 
-women <- magick::image_fill(women, 'none')
-women <- as.raster(women) 
+# men <- magick::image_fill(men, 'none')
+# men <- as.raster(men) 
+# women <- magick::image_fill(women, 'none')
+# women <- as.raster(women) 
 
 #annotation_raster(men, 25, 35, 3, 5) + 
 #annotation_raster(women, 25, 35, 3, 5) + 
@@ -657,10 +874,7 @@ ggplot(pyramid3, aes(x = age,
   #ggimage::geom_image(data = icon, aes(image = path, x =age, y = pc)) +
   #annotation_raster(women, 15, 20, "0-4", "5-11") +
   #annotation_raster(men, -15, -20, "0-4", "5-11") + 
-
   unhcRstyle::unhcr_theme()
-
-
 
 # ggplot(data = icon, aes(x = age,  
 #                       y =  pc)) + 
@@ -668,27 +882,19 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
-##### Figure 7 **\| Where Displacement Condition description is available?**
-```{r}
+Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for 2020 show a balance beetwen sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
 
-```
+## Impact of Covid-19, a dramatic drop of solutions 
 
-##### Figure 8 **\| Displacement & Accommodation Type**
-```{r}
-
-```
-
-## Impact of Covid-19, a dramatic drop of figures 
-
-Since the first case of COVID-19 was recorded in December 2019, more than 170 million people worldwide have contracted the virus. In the Asia and the Pacific region, an estimated 30 million people have been confirmed to have contracted COVID-19 and 426,000 COVID-19 deaths have been reported in the region. 
-
+Since the first case of COVID-19 was recorded in December 2019, more than 170 million people worldwide have contracted the virus. The Americas is among the most affected regions  
 
 Durable solutions include voluntary repatriation, resettlement to a third country, local integration, naturalization and return to place of origin prior to displacement (for IDPs). However, a growing number of displaced populations have limited opportunities for a durable solution. The COVID-19 pandemic has only exacerbated these challenges.
 
-The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
+![Costa Rica. UNHCR expands cash assistance programme during COVID-19 crisis](media/image_cbi.jpg)
 
-##### Figure 9 **\| Trends for Solution**
-```{r}
+The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
+ 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Trends for Solution**"}
 multiple_line_df <- solutions_long2 %>%
   filter(UNHCRBureau  == thisbureau &
            !(is.na(UNHCRBureau))) %>%
@@ -748,13 +954,204 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        subtitle = "Evolution in the past 20 years",
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics ")
+       caption = "Source: UNHCR.org/refugee-statistics ")
+```
+
+ The Resettlement solution decreased in the last 5 years. 
+
+
+
+## Refugee Status Determination Processing in the Region
+
+
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Application in 2020**"}
+## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
+
+# htmlwidgets::onStaticRenderComplete('$.each( document.getElementsByTagName("svg"), function( index, value ){value.setAttribute("viewBox", null);});')
+
+
+linksApplication.Ori.Procedure <- asylum_applications %>%
+                    ## Add reference for the filters
+                    dplyr::left_join( unhcrdatapackage::reference %>% 
+                                        select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+                    filter(coa_region == "Americas" & Year == 2020) %>% 
+                    ## Group small records under other
+                    mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = NumberApplications)) %>% 
+                    mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))%>% 
+                    ## Calculate grouped value for Origin to procedure..
+                    group_by(CountryOriginName, ProcedureName ) %>%
+                    summarise(value = sum(NumberApplications) ) %>%
+                    ## Rename variable
+                    rename(source = CountryOriginName) %>%
+                    rename(target = ProcedureName) 
+
+linksApplication.Procedure.Type <- asylum_applications %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, ApplicationType ) %>%
+  summarise(value = sum(NumberApplications) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = ApplicationType) 
+
+linksApplication.Type.Asylum <- asylum_applications %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  mutate(CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = NumberApplications)) %>% 
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""))%>% 
+  
+  mutate(CountryAsylumName = paste0("Asylum in ", CountryAsylumName)) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ApplicationType, CountryAsylumName) %>%
+  summarise(value = sum(NumberApplications) ) %>%
+  ## Rename variable
+  rename(source = ApplicationType) %>%
+  rename(target = CountryAsylumName) 
+
+linksallApplication <- rbind(linksApplication.Ori.Procedure,
+                  linksApplication.Procedure.Type,
+                  linksApplication.Type.Asylum)
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesApplication <- data.frame(
+  name=c(as.character(linksallApplication$source), 
+         as.character(linksallApplication$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallApplication$IDsource <- match(linksallApplication$source, nodesApplication$name)-1 
+linksallApplication$IDtarget <- match(linksallApplication$target, nodesApplication$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallApplication, 
+                              Nodes = nodesApplication,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+#p
+
+# you save it as an html
+networkD3::saveNetwork(p, "application.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/application.png"), vwidth = 800, vheight = 500)
+#getwd()
+# ![ ](graph/application.png)
+
 ```
 
 
-##### Figure 10 **\| Refugee Status Determination trends 
+ 
 
-```{r}
+
+Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in 2020**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+linksDecision.output.Asylum <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == "Americas" & Year == 2020) %>% 
+  ## Group small records under other
+  mutate(CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = Value)) %>% 
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""))%>% 
+  
+  mutate(CountryAsylumName = paste0("Asylum in ", CountryAsylumName)) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(Decision.output, CountryAsylumName) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = Decision.output) %>%
+  rename(target = CountryAsylumName) 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output,
+                  linksDecision.output.Asylum)
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodes$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodes$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decision.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decision.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
 
 ```
 
@@ -765,41 +1162,622 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 :::{.page-break}
 :::
 
-# Country highlights 
+# Country Highlights 
 
 ## Mexico
 
+Recognition rate by Country - and top nationality - RSD  -
+
+ pending  // decision during the year // new 
+ 
+ Check otherwise closed... 
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
+lastyear <- max(end_year_population_totals_long.asy$Year)
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == "Mexico" & Year > 2014 ) %>%
+  group_by(Year, Population.type ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2, 
+                                              colour = Population.type)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  
+  xlim(c(2015, 2025)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  scale_colour_manual( values = c( "REF" = "#a6cee3",
+                                                      "ASY"  = "#1f78b4",
+                                                     "IDP" = "#b2df8a",
+                                                     "STA" = "#33a02c",
+                                                      "OOC" = "#fb9a99",
+                                                      "VDA" = "#e31a1c")) +
+  geom_label(aes(x = lastyear + .5 ,
+                 y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "REF" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 label = "Refugees"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#a6cee3",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear +.5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "ASY" & multiple_line_df$Year == lastyear , c("Value2")]),
+                  label = "Asylum Seekers"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#1f78b4",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   # geom_label(aes(x = lastyear + .5,
+   #                y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "IDP" & multiple_line_df$Year == lastyear , c("Value2")]),
+   #                 label = "Internally Displaced Persons"),
+   #                           hjust = 0,
+   #                           vjust = 0.5,
+   #                           colour = "#b2df8a",
+   #                           fill = "white",
+   #                           label.size = NA,
+   #                           family = "Lato",
+   #                           size = 4) +
+    # geom_label(aes(x = lastyear + .5,
+    #               y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "STA" & multiple_line_df$Year == lastyear , c("Value2")]),
+    #                 label = "Statelessness"),
+    #                          hjust = 0,
+    #                          vjust = 0.5,
+    #                          colour = "#33a02c",
+    #                          fill = "white",
+    #                          label.size = NA,
+    #                          family = "Lato",
+    #                          size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "OOC" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Other of Concerns"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#fb9a99",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "VDA" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Venezuelan Displaced Abroad"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#e31a1c",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Forcible Displacement in the Americas ",
+       subtitle = "Evolution in the past 20 years",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+??? THIS IS THGE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
+
+in the last five years the people of concern significantly increased in Mexico.
+
 ## Brazil
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
+lastyear <- max(end_year_population_totals_long.asy$Year)
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == "Brazil" & Year > 2014 ) %>%
+  group_by(Year, Population.type ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2, 
+                                              colour = Population.type)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  
+  xlim(c(2015, 2025)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  scale_colour_manual( values = c( "REF" = "#a6cee3",
+                                                      "ASY"  = "#1f78b4",
+                                                     "IDP" = "#b2df8a",
+                                                     "STA" = "#33a02c",
+                                                      "OOC" = "#fb9a99",
+                                                      "VDA" = "#e31a1c")) +
+  geom_label(aes(x = lastyear + .5 ,
+                 y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "REF" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 label = "Refugees"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#a6cee3",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear +.5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "ASY" & multiple_line_df$Year == lastyear , c("Value2")]),
+                  label = "Asylum Seekers"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#1f78b4",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   # geom_label(aes(x = lastyear + .5,
+   #                y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "IDP" & multiple_line_df$Year == lastyear , c("Value2")]),
+   #                 label = "Internally Displaced Persons"),
+   #                           hjust = 0,
+   #                           vjust = 0.5,
+   #                           colour = "#b2df8a",
+   #                           fill = "white",
+   #                           label.size = NA,
+   #                           family = "Lato",
+   #                           size = 4) +
+    # geom_label(aes(x = lastyear + .5,
+    #               y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "STA" & multiple_line_df$Year == lastyear , c("Value2")]),
+    #                 label = "Statelessness"),
+    #                          hjust = 0,
+    #                          vjust = 0.5,
+    #                          colour = "#33a02c",
+    #                          fill = "white",
+    #                          label.size = NA,
+    #                          family = "Lato",
+    #                          size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "OOC" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Other of Concerns"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#fb9a99",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "VDA" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Venezuelan Displaced Abroad"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#e31a1c",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Forcible Displacement in the Americas ",
+       subtitle = "Evolution in the past 20 years",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
 
 ## Colombia
 
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Colombia**"}
+lastyear <- max(end_year_population_totals_long.asy$Year)
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == "Colombia" & Year > 2014 ) %>%
+  group_by(Year, Population.type ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2, 
+                                              colour = Population.type)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  
+  xlim(c(2015, 2025)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  scale_colour_manual( values = c( "REF" = "#a6cee3",
+                                                      "ASY"  = "#1f78b4",
+                                                     "IDP" = "#b2df8a",
+                                                     "STA" = "#33a02c",
+                                                      "OOC" = "#fb9a99",
+                                                      "VDA" = "#e31a1c")) +
+  geom_label(aes(x = lastyear + .5 ,
+                 y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "REF" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 label = "Refugees"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#a6cee3",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear +.5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "ASY" & multiple_line_df$Year == lastyear , c("Value2")]),
+                  label = "Asylum Seekers"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#1f78b4",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   # geom_label(aes(x = lastyear + .5,
+   #                y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "IDP" & multiple_line_df$Year == lastyear , c("Value2")]),
+   #                 label = "Internally Displaced Persons"),
+   #                           hjust = 0,
+   #                           vjust = 0.5,
+   #                           colour = "#b2df8a",
+   #                           fill = "white",
+   #                           label.size = NA,
+   #                           family = "Lato",
+   #                           size = 4) +
+    # geom_label(aes(x = lastyear + .5,
+    #               y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "STA" & multiple_line_df$Year == lastyear , c("Value2")]),
+    #                 label = "Statelessness"),
+    #                          hjust = 0,
+    #                          vjust = 0.5,
+    #                          colour = "#33a02c",
+    #                          fill = "white",
+    #                          label.size = NA,
+    #                          family = "Lato",
+    #                          size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "OOC" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Other of Concerns"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#fb9a99",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "VDA" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Venezuelan Displaced Abroad"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#e31a1c",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Forcible Displacement in the Americas ",
+       subtitle = "Evolution in the past 20 years",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+
 ## Ecuador
 
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
+lastyear <- max(end_year_population_totals_long.asy$Year)
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == "Ecuador" & Year > 2014 ) %>%
+  group_by(Year, Population.type ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2, 
+                                              colour = Population.type)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  
+  xlim(c(2015, 2025)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  scale_colour_manual( values = c( "REF" = "#a6cee3",
+                                                      "ASY"  = "#1f78b4",
+                                                     "IDP" = "#b2df8a",
+                                                     "STA" = "#33a02c",
+                                                      "OOC" = "#fb9a99",
+                                                      "VDA" = "#e31a1c")) +
+  geom_label(aes(x = lastyear + .5 ,
+                 y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "REF" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 label = "Refugees"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#a6cee3",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear +.5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "ASY" & multiple_line_df$Year == lastyear , c("Value2")]),
+                  label = "Asylum Seekers"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#1f78b4",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   # geom_label(aes(x = lastyear + .5,
+   #                y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "IDP" & multiple_line_df$Year == lastyear , c("Value2")]),
+   #                 label = "Internally Displaced Persons"),
+   #                           hjust = 0,
+   #                           vjust = 0.5,
+   #                           colour = "#b2df8a",
+   #                           fill = "white",
+   #                           label.size = NA,
+   #                           family = "Lato",
+   #                           size = 4) +
+    # geom_label(aes(x = lastyear + .5,
+    #               y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "STA" & multiple_line_df$Year == lastyear , c("Value2")]),
+    #                 label = "Statelessness"),
+    #                          hjust = 0,
+    #                          vjust = 0.5,
+    #                          colour = "#33a02c",
+    #                          fill = "white",
+    #                          label.size = NA,
+    #                          family = "Lato",
+    #                          size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "OOC" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Other of Concerns"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#fb9a99",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "VDA" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Venezuelan Displaced Abroad"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#e31a1c",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Forcible Displacement in the Americas ",
+       subtitle = "Evolution in the past 20 years",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
 ## Peru
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Peru**"}
+lastyear <- max(end_year_population_totals_long.asy$Year)
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == "Peru" & Year > 2014 ) %>%
+  group_by(Year, Population.type ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2, 
+                                              colour = Population.type)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  
+  xlim(c(2015, 2025)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  scale_colour_manual( values = c( "REF" = "#a6cee3",
+                                                      "ASY"  = "#1f78b4",
+                                                     "IDP" = "#b2df8a",
+                                                     "STA" = "#33a02c",
+                                                      "OOC" = "#fb9a99",
+                                                      "VDA" = "#e31a1c")) +
+  geom_label(aes(x = lastyear + .5 ,
+                 y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "REF" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 label = "Refugees"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#a6cee3",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear +.5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "ASY" & multiple_line_df$Year == lastyear , c("Value2")]),
+                  label = "Asylum Seekers"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#1f78b4",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   # geom_label(aes(x = lastyear + .5,
+   #                y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "IDP" & multiple_line_df$Year == lastyear , c("Value2")]),
+   #                 label = "Internally Displaced Persons"),
+   #                           hjust = 0,
+   #                           vjust = 0.5,
+   #                           colour = "#b2df8a",
+   #                           fill = "white",
+   #                           label.size = NA,
+   #                           family = "Lato",
+   #                           size = 4) +
+    # geom_label(aes(x = lastyear + .5,
+    #               y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "STA" & multiple_line_df$Year == lastyear , c("Value2")]),
+    #                 label = "Statelessness"),
+    #                          hjust = 0,
+    #                          vjust = 0.5,
+    #                          colour = "#33a02c",
+    #                          fill = "white",
+    #                          label.size = NA,
+    #                          family = "Lato",
+    #                          size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "OOC" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Other of Concerns"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#fb9a99",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+    geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Population.type == "VDA" & multiple_line_df$Year == lastyear , c("Value2")]),
+                    label = "Venezuelan Displaced Abroad"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#e31a1c",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Forcible Displacement in the Americas ",
+       subtitle = "Evolution in the past 20 years",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
 
 :::{.page-break}
 :::
 
 # Analysis of Situation 
 
-## Venezuela Siuation
+
+![ ](media/image_hand.jpg)
+
+## Venezuela Situation
+
+As the second-largest displacement crisis in the world, refugees and migrants from Venezuela (Bolivarian Republic of) now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
+
+  
+
+Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
+
+  
+
 
 ## El Salvador, Honduras, Guatemala & Mexico
 
-# Importance of EGRIS
+```{r ,message = FALSE, warning = FALSE, cache = TRUE}
 
-The  Expert  Group  on  Refugee  and  IDP  Statistics,  in  which  UNHCR  belongs  to  the  steering 
-committee, has released the International Recommendations on Refugee Statistics (IRRS), which 
-were adopted by the United Nations Statistical Commission during its 2018 session and is a strong 
-Last updated: February 2021 
-reference for refugee statistics reporting methodologies. UNHCR supports NSOs to build capacity 
-to report on forced displacement in countries that currently lack disaggregated data on refugees.  
+pobp_dict <- jsonlite::fromJSON("https://data.census.gov/api/search/metadata/item?id=ACSPUMS1Y2019.POBP")
+pobp_dict <- pobp_dict$response$metadataContent$ACSPUMS1Y2019.POBP$values %>% as_tibble()
+
+acs <- jsonlite::fromJSON("https://api.census.gov/data/2019/acs/acs1/pums?tabulate=weight(PWGTP)&col+YOEP&row+POBP")
+acs <- acs[-1] %>% map_dfr(~set_names(., unlist(acs[[1]])))
+acs <- acs %>% mutate(across(-POBP, as.numeric), POBP = set_names(pobp_dict$label, pobp_dict$value)[POBP])
+acs <- 
+  acs %>% 
+  rename(coo = POBP) %>% 
+  filter(coo == "Honduras" | coo == "Guatemala" | coo == "El Salvador") %>% 
+  pivot_longer(-coo, names_to = "year", values_to = "pop")
+
+acs_totals <- acs %>% count(coo, wt = pop)
+
+popstats <- jsonlite::fromJSON("https://api.unhcr.org/population/v1/population/?limit=20&dataset=population&displayType=totals&columns%5B%5D=refugees&columns%5B%5D=asylum_seekers&year%5B%5D=2019&coo=HON%2CSAL%2CGUA&coa=USA")$items %>% as_tibble()
+
+data <- 
+  left_join(acs %>% count(coo, wt = pop),
+                  popstats %>% transmute(coo = coo_name, poc = refugees + asylum_seekers)) %>% 
+  mutate(p = poc/n)
+
+data %>% 
+  ggplot() +
+  geom_col(aes(coo, n), fill = unhcRstyle::unhcr_grey ) +
+  geom_col(aes(coo, poc), fill = unhcRstyle::unhcr_blue) +
+  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") +
+  geom_text(aes(coo, n, label = scales::label_comma()(n)), hjust = 1, color = "white") +
+  geom_label(aes(coo, poc/2, label = scales::label_percent()(p))) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(x = NULL, y = "# of individuals",
+       title = "Proportion of People of Concerns to UNHCR ",
+       subtitle = "Highlighting the situation of nationals from Northen Central Americas in the USA",
+       caption = "Data sources: Overlay of US Census Bureau - American Community Survey 2019 & UNHCR Refugee Data Finder") +
+  #theme_minimal() + 
+  coord_flip() +
+  unhcRstyle::unhcr_theme() +
+  theme(axis.text = element_text(size = 6),
+        legend.position = "none",
+        panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear) 
+```
+
+
+# Conclusion: the Importance of EGRIS Recommandations
+
+The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports NSOs to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
+
+
+https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in-central-americas/
+
+# Glossary
+
+UNHCR [Population Statistics Database](https://www.unhcr.org/refugee-statistics/)  contains data about UNHCR's populations of concern from the year 1951 up to 2014 as well as their general composition by location of residence or origin, their status, their evolution over time.
  
-• Expert Group on Refugee and IDP Statistics (EGRIS): 
-https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics 
+Refugees recognized by the Government and/or UNHCR include:   
+
+  *  (a) persons recognized as refugees by Governments having ratified the 1951 United Nations Convention Relating to the Status of Refugees, and/or its 1967 Protocol; 
+  *  (b) persons recognized as refugees under the 1969 Organization of African Unity (OAU) Convention Governing the Specific Aspects of Refugee Problems in Africa;  
+  *  (c) those recognized in accordance with the principles enshrined in the Cartagena Declaration;  
+  *  (d) persons recognized by UNHCR as refugees in accordance with its Statute (otherwise referred to as “mandate” refugees);  
+  *  (e) those who have been granted a complementary form of protection (i.e. non-Convention);  
+  *  (f) persons who have been granted temporary protection on a group basis;  Persons in a refugee-like situation refer to those outside their territory of origin who face protection risks similar to those of refugees, but who, for practical or other reasons, have not been formally recognized or issued documentation to that effect. 
+
+
+
+Every year, UNHCR publish its Population Statistics Reference. it includes detailed statistics from each country on Refugee Status Determination. The data set contains not only reference by country of asylum and country of origin but also: 
+
+ * Type of procedure: RSD conducted by UNHCR (U), the Government (G), or Jointly (J) by UNHCR and the Government.  
+ * Applications refer to "new" applications (N), "re-opened/repeat" applications (R) and/or "appeal" applications (A).  
+ * Applications refer to number of persons (P) or number of cases (C). (Preference: PERSONS)  
+ * Decisions refer to first instance (FI), appeal/administrative review (AR), judicial review (JR), New applications (NA), Repeat/reopened  applications (RA), US Citizenship and Immigration Services (IN), US Executive Office of Immigration Review (EO), Subsidiary protection (SP), First instance and appeal (FA) and/or Temporary asylum (TA).
  
-• International Recommendations on Refugee Statistics (IRRS): 
-https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004 
+ 
+
+UNHCR ASR source of  figures is IDMC, which estimation methodology can differ from other sources: <https://www.unhcr.org/refugee-statistics/download/?url=E1ZxP>
+
+
+Stateless population refers to those individuals without a nationality in their country of habitual residence. Non-stateless population refers to those individuals without a nationality in their country of habitual residence and who are either internally or internationally displaced.
+
+
+The population groups in this chart should not be summed up to calculate the total POCs figures as the stateless population group includes both non-displaced and displaced stateless.
 
 
 :::{.page-break}

@@ -295,7 +295,6 @@ ggplot(data = stacked_df1,
                          fill = CountryClass)) +
                 geom_bar(stat = "identity", 
                          position = "fill") +
-                unhcr_style() +
                 scale_y_continuous(labels = scales::percent) +
                 scale_fill_viridis_d(direction = -1) +
                 geom_hline(yintercept = 0, size = 1, colour = "#333333") +
