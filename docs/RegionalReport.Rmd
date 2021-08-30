@@ -68,7 +68,7 @@ using <- function(...) {
 
 using('tidyverse', 'ggplot2', 'scales',  'wbstats', 'ragg', 'magick', 'acled.api', 'circlize',
       'viridis', 'treemap',
-      'treemapify', 'patchwork')
+      'treemapify', 'patchwork', 'networkD3', 'webshot')
 
 library(tidyverse)
 library(ggplot2)
@@ -102,7 +102,7 @@ end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::en
 
 demographics <- unhcrdatapackage::demographics
 asylum_applications <- unhcrdatapackage::asylum_applications
-asylum_decisions <- unhcrdatapackage::asylum_decisions
+asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
 
 solutions <- unhcrdatapackage::solutions
 solutions_long <- unhcrdatapackage::solutions_long
@@ -967,6 +967,10 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Application in 2020**"}
+## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
+
+# htmlwidgets::onStaticRenderComplete('$.each( document.getElementsByTagName("svg"), function( index, value ){value.setAttribute("viewBox", null);});')
+
 
 linksApplication.Ori.Procedure <- asylum_applications %>%
                     ## Add reference for the filters
@@ -1013,35 +1017,46 @@ linksApplication.Type.Asylum <- asylum_applications %>%
   rename(source = ApplicationType) %>%
   rename(target = CountryAsylumName) 
 
-linksall <- rbind(linksApplication.Ori.Procedure,
+linksallApplication <- rbind(linksApplication.Ori.Procedure,
                   linksApplication.Procedure.Type,
                   linksApplication.Type.Asylum)
 
 
 
 # From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodes <- data.frame(
-  name=c(as.character(linksall$source), 
-         as.character(linksall$target)) %>% unique()
+nodesApplication <- data.frame(
+  name=c(as.character(linksallApplication$source), 
+         as.character(linksallApplication$target)) %>% unique()
 )
 
 # With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksall$IDsource <- match(linksall$source, nodes$name)-1 
-linksall$IDtarget <- match(linksall$target, nodes$name)-1
+linksallApplication$IDsource <- match(linksallApplication$source, nodesApplication$name)-1 
+linksallApplication$IDtarget <- match(linksallApplication$target, nodesApplication$name)-1
 
 # Make the Network
-p <- networkD3::sankeyNetwork(Links = linksall, 
-                              Nodes = nodes,
+p <- networkD3::sankeyNetwork(Links = linksallApplication, 
+                              Nodes = nodesApplication,
                               Source = "IDsource", 
                               Target = "IDtarget",
                               Value = "value", 
                               NodeID = "name", 
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-p
+#p
 
+# you save it as an html
+networkD3::saveNetwork(p, "application.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/application.png"), vwidth = 800, vheight = 500)
+#getwd()
+# ![ ](graph/application.png)
 
 ```
+
+
+ 
+
 
 Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum
 
@@ -1104,7 +1119,7 @@ linksDecision.output.Asylum <- asylum_decisions_long %>%
   rename(source = Decision.output) %>%
   rename(target = CountryAsylumName) 
 
-linksall <- rbind(linksDecision.Ori.Procedure,
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
                   linksDecision.Procedure.Type,
                   linksDecision.Type.Output,
                   linksDecision.output.Asylum)
@@ -1112,29 +1127,36 @@ linksall <- rbind(linksDecision.Ori.Procedure,
 
 
 # From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodes <- data.frame(
-  name=c(as.character(linksall$source), 
-         as.character(linksall$target)) %>% unique()
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
 )
 
 # With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksall$IDsource <- match(linksall$source, nodes$name)-1 
-linksall$IDtarget <- match(linksall$target, nodes$name)-1
+linksallDecision$IDsource <- match(linksallDecision$source, nodes$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodes$name)-1
 
 # Make the Network
-p <- networkD3::sankeyNetwork(Links = linksall, 
-                              Nodes = nodes,
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
                               Source = "IDsource", 
                               Target = "IDtarget",
                               Value = "value", 
                               NodeID = "name", 
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-p
+# you save it as an html
+networkD3::saveNetwork(p, "decision.html")
 
-
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decision.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
 
 ```
+
+
+
 
  
 :::{.page-break}
@@ -1673,7 +1695,7 @@ Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees a
 
 ## El Salvador, Honduras, Guatemala & Mexico
 
-```{r ,message = FALSE, warning = FALSE}
+```{r ,message = FALSE, warning = FALSE, cache = TRUE}
 
 pobp_dict <- jsonlite::fromJSON("https://data.census.gov/api/search/metadata/item?id=ACSPUMS1Y2019.POBP")
 pobp_dict <- pobp_dict$response$metadataContent$ACSPUMS1Y2019.POBP$values %>% as_tibble()
