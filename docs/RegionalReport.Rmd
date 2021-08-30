@@ -1767,6 +1767,9 @@ data %>%
         panel.grid.major.y = element_blank()) ### changing grid line that should appear) 
 ```
 
+# The Americas statistical system of UNHCR Americas
+
+UNHCR Americas has 88 office in 22 countries.
 
 # Conclusion: the Importance of EGRIS Recommandations
 

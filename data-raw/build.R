@@ -82,6 +82,15 @@ end_year_population_totals_long$Population.type.label[end_year_population_totals
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern to UNHCR"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+
+end_year_population_totals_long$Population.type.label.short <- ""
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="IDP"] <- "IDPs"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
+
   
 save(end_year_population_totals_long, file =  "data/end_year_population_totals_long.RData")
 

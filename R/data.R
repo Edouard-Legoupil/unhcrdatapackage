@@ -1,3 +1,6 @@
+
+
+## Reference ##########
 #' @title reference
 #' @description Code Mapping table
 #' @format A data frame with 267 rows and 34 variables:
@@ -40,6 +43,8 @@
 #' @source \url{http://somewhere.important.com/}
 "reference"
 
+
+## Population ##########
 #' @title End-year stock population figures for forcibly displaced displaced and stateless persons
 #' @description Data collated by UNHCR, containing end-year stock population figures for forcibly displaced and stateless persons residing in World. Data is available since 1951.
 #' @format A data frame with 109960 rows and 11 variables:
@@ -71,7 +76,8 @@
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
 #'   \item{\code{Population.type}}{character Type of Solution }
-#'   \item{\code{Population.type.label}}{character Type of Solution }
+#'   \item{\code{Population.type.label}}{character Type of Population }
+#'   \item{\code{Population.type.label.short}}{character Type of Population - short label }
 #'   \item{\code{Value}}{integer Number of person} 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
