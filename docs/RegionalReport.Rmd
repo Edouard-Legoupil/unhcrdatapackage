@@ -373,21 +373,19 @@ patchwork +
   )
 
 ```
+
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993) CAN YOU ADD THE REFERENCE 2019????. 
 
-In 2020 the percentage of Other of concerns (OOC) and Venezuelans Displaced Abroad (VDA) increased in comparison to the 2019 on  the total persons of concern to UNHCR. Venezuelan Displaced Abroad is reletevely new category for UNHCR.
+In 2020 the percentage of Other of concerns (OOC) and Venezuelans Displaced Abroad (VDA) increased in comparison to the 2019 on  the total persons of concern to UNHCR. Venezuelan Displaced Abroad is relatively new category for UNHCR.
 
-
-
-
+:::{.bg-blue}
+The definition of 'Venezuelans Displaced Abroad' (VDA) in the context of the Population Statistical Reference (PSR is UNHCR’s platform for collection of data on UNHCR’s population of concern globally): Persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
+:::
 
 :::{.page-break}
 :::
 
 # Regional Overview 
-
-
-
 
 
 
@@ -400,7 +398,6 @@ There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and
 
 
 
-The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
 
 
@@ -442,7 +439,8 @@ circos.track(track.index = 1,
             bg.border = NA) # here set bg.border to NA is important
 ```
 
- 
+?????? The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
+
 
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
