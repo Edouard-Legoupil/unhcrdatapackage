@@ -2,7 +2,7 @@
 title: "AMERICAS REGIONAL POPULATION TRENDS ANALYSIS"
 subtitle: "Forced Displacement in 2020"
 abstract-title: UNHCR Regional Bureau for the Americas
-abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on __publicly available data__. It includes trends and analysis of the major population groups, three leading focus countries and the two major displacement situations in the region."
+abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on __publicly available data__. It includes trends and analysis of the major population groups, ???three leading focus countries and the ???two major displacement situations in the region."
 date: "25 Augut 2021"
 author:
   - name: Laura Giammarinaro
@@ -228,9 +228,9 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 
 # Key Figures
 
-Almost one in every five persons of concern to UNHCR live in the Americas, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+????Almost one in every five persons of concern to UNHCR live in the Americas, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
 
-Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
+???Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
 
 ## Forcible Displacement
 
@@ -373,6 +373,11 @@ patchwork +
   )
 
 ```
+The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993) CAN YOU ADD THE REFERENCE 2019????. 
+
+In 2020 the percentage of Other of concerns (OOC) and Venezuelans Displaced Abroad (VDA) increased in comparison to the 2019 on  the total persons of concern to UNHCR. Venezuelan Displaced Abroad is reletevely new category for UNHCR.
+
+
 
 
 
@@ -384,7 +389,7 @@ patchwork +
 
 
 
-The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019 (14,961,993). 
+
 
 The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
@@ -394,7 +399,6 @@ There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and
 
 
 
-The definition of 'Venezuelans Displaced Abroad' (VDA) in the context of the Population Statistical Reference (PSR is UNHCR’s platform for collection of data on UNHCR’s population of concern globally): Persons of Venezuelan origin who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
 
 The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
@@ -440,7 +444,6 @@ circos.track(track.index = 1,
 
  
 
-In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time.
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
 lastyear <- max(end_year_population_totals_long.asy$Year)
@@ -540,7 +543,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 
-The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__). 
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in 2020__`r totalooc`__).
+
+
 
 ```{r message = FALSE, warning = FALSE, fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
 # # Plot
@@ -587,7 +592,8 @@ acled.data %>%
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
-This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent contries in Americas are from the central America: Belize, Honduras, Mexico, El salvador and Guatemala. ACLED collects real-time data of all reported political violence.
+
+This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent countries in Americas are from the central America: Belize, Honduras, Mexico, El Salvador and Guatemala. Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality according with mejor socio-ecomomic index. ACLED collects real-time data of all reported political violence.
  
  
 
@@ -603,7 +609,7 @@ This graph shows the 'Conflict-related deaths per 100,000 population'. The five 
  
 ## What displacement?
 
-Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
+??????Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
 12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
  
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
@@ -732,7 +738,7 @@ Statistical definition: Other persons of concern (OOC):	Refers to individuals wh
 :::
 
 
-
+Another new category it was introduced this year: Host Community (HST).
 
 :::{.bg-blue}
 Statistical definition: Host Community (HST):	A community that hosts large populations of refugees or internally displaced persons, whether in camps, integrated into households, or independently.
