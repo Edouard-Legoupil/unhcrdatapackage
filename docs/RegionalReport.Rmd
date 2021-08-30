@@ -250,13 +250,13 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 :::{.page-break}
 :::
 
-# Key Figures
+# Regional Overview
 
 Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
  
 
 
-## Forcible Displacement
+## Forcible Displacement Key Figures
 
 As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
@@ -404,7 +404,7 @@ patchwork +
 
  
 
-## Solutions
+## Solutions Key Figures
 
 Finding solutions that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
 
@@ -420,12 +420,13 @@ In the region, the total recorded solutions account for about __`r allsol.prop` 
 :::{.page-break}
 :::
 
-# Regional Overview 
+## Population Flow
 
 The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
 There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of __`r lastyear`__ stood at __`r totalsta`__. 
 
+The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
 ```{r pop-flows, message=FALSE, warning=FALSE, fig.cap = "**| Population origin-destination in the region**"}
 chords <- end_year_population_totals %>%
@@ -465,9 +466,9 @@ circos.track(track.index = 1,
             bg.border = NA) # here set bg.border to NA is important
 ```
 
-?????? The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
 
+## Evolution over time
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
 
@@ -587,7 +588,7 @@ The evolution in the last 20 years shows a significant increase in Internally Di
 #        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
-
+## Violence in the region
 
 ```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
@@ -796,121 +797,6 @@ situation.  Population refers to total resident population in a given country in
 :::{.bg-blue}
 Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
 :::
-
-## What profiles?
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| How far Demographic breakdown is available?**"}
-## percentage of the total population within the country for which demographic breakdown is available
-
-```
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Demographic breakdown**"}
-demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
-#names(demographics)
-pyramid <-  demographics[ demographics$Year == max(demographics$Year),
-                          c("REGION_UN",
-                          "Female04",
-                              "Female511",
-                              "Female1217",
-                              "Female1859",
-                              "Female60ormore",
-                              "FemaleUnknown",
-                             # "FemaleTotal",
-                              "Male04",
-                              "Male511",
-                              "Male1217",
-                              "Male1859",
-                              "Male60ormore",
-                              "MaleUnknown"#,
-                             # "MaleTotal"       
-                             )]  
-
-
-pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) %>%
-  pivot_longer(
-    cols = Female04:MaleUnknown,
-    names_to = "Class",
-    #names_to = c("Class","REGION_UN" ),
-    #names_sep = "_",
-     #names_repair = "unique",
-    #names_prefix = "",
-    values_to = "Sum",
-    values_drop_na = TRUE
-  ) 
-
-pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
-                                          by = list(pyramid2$Class#, pyramid2$REGION_UN
-                                                    ),
-                                          sum))
-names(pyramid3)[1] <- "Class"
-names(pyramid3)[2] <- "Count"
-
-library(stringr)
-pyramid3 <- pyramid3 %>% 
-  mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
-                            str_detect(Class, "Female") ~ "Female")) %>% 
-  mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
-                         str_detect(Class, "511") ~ "5-11",
-                         str_detect(Class, "1217") ~ "12-17",
-                         str_detect(Class, "1859") ~ "18-59",
-                         str_detect(Class, "60") ~ "60+",
-                         str_detect(Class, "Unknown") ~ "Unknown")) 
-
-pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
-pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
-
-## Add images for geneder
-#men <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"))
-#women <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png"))
-
-icon <- data.frame(
-   c("men", "women"),
-   c(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"),
-                     paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png")),
-   c("0-4","0-4"),
-   c( 15, -15)
-)
-names(icon)[1] <- "icon"
-names(icon)[2] <- "path"
-names(icon)[3] <- "age"
-names(icon)[4] <- "pc"
-
-# Or add to plot as annotation
-# men <- magick::image_fill(men, 'none')
-# men <- as.raster(men) 
-# women <- magick::image_fill(women, 'none')
-# women <- as.raster(women) 
-
-#annotation_raster(men, 25, 35, 3, 5) + 
-#annotation_raster(women, 25, 35, 3, 5) + 
-
-ggplot(pyramid3, aes(x = age, 
-                     fill = gender,
-                      y = ifelse(test = gender == "Female",
-                            yes = -pc, no = pc)) ) + 
-  geom_bar(stat = "identity") +
-  scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
-  labs(title = "Population Pyramid (proportion of age group)  ",
-       subtitle = paste0("For all displaced population as of ", max(demographics$Year)),
-       x = "", 
-       y = "Percent of population",
-       caption =  "Source: UNHCR Population Statistics") +
-#  scale_colour_manual(values = c("pink", "steelblue"),
-  scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
-                      aesthetics = c("colour", "fill")) +
-  coord_flip()+
-  #ggimage::geom_image(data = icon, aes(image = path, x =age, y = pc)) +
-  #annotation_raster(women, 15, 20, "0-4", "5-11") +
-  #annotation_raster(men, -15, -20, "0-4", "5-11") + 
-  unhcRstyle::unhcr_theme()
-
-# ggplot(data = icon, aes(x = age,  
-#                       y =  pc)) + 
-#  ggimage::geom_image(, aes(image = pathc)) 
-
-```
-
-Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for __`r lastyear`__ show a balance between sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
 
 ## Impact of Covid-19, a dramatic drop of solutions 
 
@@ -1362,6 +1248,132 @@ data %>%
         panel.grid.major.y = element_blank()) ### changing grid line that should appear) 
 ```
 
+
+# Challenges on Refugee and IDP Statistics
+
+## Demographic Breakdown
+
+
+Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for __`r lastyear`__ show a balance between sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| How far Demographic breakdown is available?**"}
+## percentage of the total population within the country for which demographic breakdown is available
+
+```
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Demographic breakdown**"}
+demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
+#names(demographics)
+pyramid <-  demographics[ demographics$Year == max(demographics$Year),
+                          c("REGION_UN",
+                          "Female04",
+                              "Female511",
+                              "Female1217",
+                              "Female1859",
+                              "Female60ormore",
+                              "FemaleUnknown",
+                             # "FemaleTotal",
+                              "Male04",
+                              "Male511",
+                              "Male1217",
+                              "Male1859",
+                              "Male60ormore",
+                              "MaleUnknown"#,
+                             # "MaleTotal"       
+                             )]  
+
+
+pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) %>%
+  pivot_longer(
+    cols = Female04:MaleUnknown,
+    names_to = "Class",
+    #names_to = c("Class","REGION_UN" ),
+    #names_sep = "_",
+     #names_repair = "unique",
+    #names_prefix = "",
+    values_to = "Sum",
+    values_drop_na = TRUE
+  ) 
+
+pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
+                                          by = list(pyramid2$Class#, pyramid2$REGION_UN
+                                                    ),
+                                          sum))
+names(pyramid3)[1] <- "Class"
+names(pyramid3)[2] <- "Count"
+
+library(stringr)
+pyramid3 <- pyramid3 %>% 
+  mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
+                            str_detect(Class, "Female") ~ "Female")) %>% 
+  mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
+                         str_detect(Class, "511") ~ "5-11",
+                         str_detect(Class, "1217") ~ "12-17",
+                         str_detect(Class, "1859") ~ "18-59",
+                         str_detect(Class, "60") ~ "60+",
+                         str_detect(Class, "Unknown") ~ "Unknown")) 
+
+pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
+pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
+
+## Add images for geneder
+#men <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"))
+#women <- magick::image_read(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png"))
+
+icon <- data.frame(
+   c("men", "women"),
+   c(paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/men.png"),
+                     paste0(  substring(getwd(), 0 , nchar(getwd()) - 4) ,"inst/women.png")),
+   c("0-4","0-4"),
+   c( 15, -15)
+)
+names(icon)[1] <- "icon"
+names(icon)[2] <- "path"
+names(icon)[3] <- "age"
+names(icon)[4] <- "pc"
+
+# Or add to plot as annotation
+# men <- magick::image_fill(men, 'none')
+# men <- as.raster(men) 
+# women <- magick::image_fill(women, 'none')
+# women <- as.raster(women) 
+
+#annotation_raster(men, 25, 35, 3, 5) + 
+#annotation_raster(women, 25, 35, 3, 5) + 
+
+ggplot(pyramid3, aes(x = age, 
+                     fill = gender,
+                      y = ifelse(test = gender == "Female",
+                            yes = -pc, no = pc)) ) + 
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
+  labs(title = "Population Pyramid (proportion of age group)  ",
+       subtitle = paste0("For all displaced population as of ", max(demographics$Year)),
+       x = "", 
+       y = "Percent of population",
+       caption =  "Source: UNHCR Population Statistics") +
+#  scale_colour_manual(values = c("pink", "steelblue"),
+  scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
+                      aesthetics = c("colour", "fill")) +
+  coord_flip()+
+  #ggimage::geom_image(data = icon, aes(image = path, x =age, y = pc)) +
+  #annotation_raster(women, 15, 20, "0-4", "5-11") +
+  #annotation_raster(men, -15, -20, "0-4", "5-11") + 
+  unhcRstyle::unhcr_theme()
+
+# ggplot(data = icon, aes(x = age,  
+#                       y =  pc)) + 
+#  ggimage::geom_image(, aes(image = pathc)) 
+
+```
+
+
+
+
+
+## Other of Concerns in Central America
+
+## IDP estimation in Colombia
 
 # Conclusion: the Importance of EGRIS Recommandations
 
