@@ -389,7 +389,7 @@ The definition of 'Venezuelans Displaced Abroad' (VDA) in the context of the Pop
 
 
 
-The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
+The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 17 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
 
 
@@ -736,6 +736,7 @@ Statistical definition: Other persons of concern (OOC):	Refers to individuals wh
 :::
 
 
+
 Another new category it was introduced this year: Host Community (HST).
 
 :::{.bg-blue}
@@ -776,6 +777,10 @@ situation.  Population refers to total resident population in a given country in
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
+
+???? the percentage with no dot
+
+Graphs shows that the Venezuela crisis increased exponentially the forced displacement of people from the country in the last years. Nevertheless, relevant proportion of the population displaced from the Central America countries and Mexico.
 
 
 :::{.bg-blue}
@@ -899,7 +904,7 @@ Often demographic data are not available in Americas. Available demographic data
 
 ## Impact of Covid-19, a dramatic drop of solutions 
 
-Since the first case of COVID-19 was recorded in December 2019, more than 170 million people worldwide have contracted the virus. The Americas is among the most affected regions  
+Since the first case of COVID-19 was recorded in December 2019, more than 200 million people worldwide have contracted the virus. The Americas is among the most affected regions  
 
 Durable solutions include voluntary repatriation, resettlement to a third country, local integration, naturalization and return to place of origin prior to displacement (for IDPs). However, a growing number of displaced populations have limited opportunities for a durable solution. The COVID-19 pandemic has only exacerbated these challenges.
 
@@ -969,6 +974,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
+???? are you sure about this data?
+
 
  The Resettlement solution decreased in the last 5 years. 
 
@@ -1282,7 +1289,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 ??? THIS IS THGE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
 
-in the last five years the people of concern significantly increased in Mexico.
+In the last five years the people of concern significantly increased in Mexico. The tension on the Mexican border with USA has created an important boost of Refugees and Asylum-seekers in the country.
 
 ## Brazil
 
@@ -1383,7 +1390,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
-
+Brazil people of concern of UNHCR is increased. Basically Venezuelans in Brazil mwere classified by Other of Concerns (OOC). When a new category were introduced, Venezuelans were put in the new category Venezuelan Displaced Abroad (VDA).  
 
 ## Colombia
 
@@ -1485,6 +1492,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 ```
 
 
+The Americas hosts the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
+Considering together Refugees, Asylum Seekers and Venezuelan Displaced Abroad, Colombia is the first country with more population in Americas, especially for the presence of Venezuelan Displaced Abroad (1,729,537). 
+The evolution in the last 5 years shows a significant increase in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, it is registered an important increase over the last two years of Other of Concerns.
 
 ## Ecuador
 
@@ -1584,6 +1594,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
+
+As neighborhood of Colombia and Venezuela, Ecuador hosts  many  Venezuelan Displaced Abroad in the last years. While Refugees and Asylum seekers are stationary over the last 5 years.
 
 
 ## Peru
@@ -1685,7 +1697,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
-
+As neighborhood of Colombia and Venezuela, Peru faced a boost of people of concern. Many  Venezuelan Displaced Abroad moved in Peru.  Other of concern (that in Peru included also Host Community) and Asylum seekers have boosted over the last 5 years. Refugees remain stationary.
 
 :::{.page-break}
 :::
@@ -1707,6 +1719,9 @@ Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees a
 
 
 ## El Salvador, Honduras, Guatemala & Mexico
+
+The graph shows the proportion of people of concern to UNHCR on the population of origin based in US. For instance, according with the American Community Survey 2019 - Census Bureau - 763,547 Hondurans are based in US.  The 12,64 per cent of them has needed UNHCR support. Similar percentage is reported on people from Guatemala and El Salvador.  
+
 
 ```{r ,message = FALSE, warning = FALSE, cache = TRUE}
 
@@ -1741,7 +1756,7 @@ data %>%
   scale_y_continuous(labels = scales::label_comma()) +
   labs(x = NULL, y = "# of individuals",
        title = "Proportion of People of Concerns to UNHCR ",
-       subtitle = "Highlighting the situation of nationals from Northen Central Americas in the USA",
+       subtitle = "Highlighting the situation of nationals from ???Northen Central Americas in the USA",
        caption = "Data sources: Overlay of US Census Bureau - American Community Survey 2019 & UNHCR Refugee Data Finder") +
   #theme_minimal() + 
   coord_flip() +
