@@ -25,6 +25,7 @@ output:
     back_cover: img/unhcr_backcover.svg
     # Change to false to remove table of content
     toc: true
+    toc_depth: 2
     # Change to true to add number in front of chapters
     number_sections: false
     # Change to true for a self-contained document, but it'll be a litte slower for Pandoc to render
@@ -216,7 +217,7 @@ allsol.prop <- format(round(
 ```
 
 
-```{r getdatawb, message=FALSE, warning=FALSE, echo = FALSE,  include=FALSE, cache = TRUE}
+```{r getdatawb, message=FALSE, warning=FALSE,  echo = FALSE,  include=FALSE, cache = TRUE}
 # Population, GDP & GNP per Capita from WorldBank
 
 wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
@@ -251,7 +252,21 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 :::{.page-break}
 :::
 
-#  Introduction: Key Figures 
+# Introduction & Key Figures 
+
+As part of its [Data Transformation Strategy](https://www.unhcr.org/publications/operations/5dc2e4734/data-transformation-strategy-2020-2025.html), UNHCR has established, in each of its Bureau DIMA, a team of data analyst and statistician. This report is the first edition of a projected annual series, looking at detailed analysis of all publicly available figures.
+
+Charts and graphs in the reports have been prepared to be potentially re-used whenever needed in Factsheet or talking points. The team is also available to revise or build on existent content below.
+
+![UNHCR Presence in the Americas](media/mapAmerica2.png) 
+..
+ 
+
+```{r}
+# ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
+#  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
+```
+
 ## Forcible Displacement
 
 Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
@@ -266,12 +281,8 @@ As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the tot
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
 
- 
 
-
-
-
-```{r, message=FALSE, warning=FALSE, fig.cap = "**| Population of Concern in 2020 in the Americas**"}
+```{r, message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Population of Concern in 2020 in the Americas**"}
 
 # Create data
 group <- c("IDPs",
@@ -347,7 +358,7 @@ plastyear <- ggplot(datatree,
                                      "Refugees" = "#0171ba",
                                      "Other of Concerns" ="#153764",
                                      "Stateless"="#f04a60")) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(legend.position = "none") +
   ## and the chart labels
   labs(#title = "Population of Concerns in the Americas ",
@@ -373,7 +384,7 @@ p2019 <- ggplot(datatree,
                                      "Refugees" = "#0171ba",
                                      "Other of Concerns" ="#153764",
                                      "Stateless"="#f04a60")) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8) + ## Insert UNHCR Style
   theme(legend.position = "none") +
   ## and the chart labels
   labs(#title = "Population of Concerns in the Americas ",
@@ -385,7 +396,7 @@ p2019 <- ggplot(datatree,
 library(patchwork)
 patchwork <- p2019 + plastyear
 patchwork +
-  unhcRstyle::unhcr_theme() +  ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
   theme(legend.position = "none") +
   plot_annotation(
     title = 'Significant increase in Key Figures',
@@ -408,13 +419,48 @@ Finding solutions that enable refugees and other forcibly displaced people to li
  
 
 In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR.
- 
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Ressettlement Trends in the last 25 years in the America**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(solutions_long.asy$UNHCRBureau == thisbureau  &
+           Year > (lastyear - 30) & 
+          Solution.type.label == "Resettlement arrivals" ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-30, lastyear+1)) +
+  #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Resettlement Opportunities have reached its lowest level ever ",
+       subtitle = "Trends in the past 30 years for the Americas Region ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+``` 
 
 
 :::{.page-break}
 :::
 
-# Part I: Regional Analysis 
+# PART I: Regional Analysis 
 
 ## Population Flow  over time
 
@@ -426,7 +472,7 @@ There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and
 
 The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
 
-```{r pop-flows, message=FALSE, warning=FALSE, fig.cap = "**| Population origin-destination in the region**"}
+```{r pop-flows, message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Population origin-destination in the region**"}
 chords <- end_year_population_totals %>%
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
@@ -488,7 +534,7 @@ multiple_line_df <- end_year_population_totals_long.asy %>%
 ggplot(multiple_line_df, aes(x = Year, y = Value2, 
                                               colour = Population.type)) + # Adding reference to color
   geom_line(size = 1) + # Here we mention that it will be a line chart
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   
   xlim(c(2000, lastyear + 8)) +
@@ -561,7 +607,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
                              family = "Lato",
                              size = 4) +
   
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(legend.position = "none") +
   ## and the chart labels
   labs(title = "Forcible Displacement in the Americas ",
@@ -575,15 +621,15 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 The evolution in the last 20 years shows a significant increase in Internally Displaced Persons, specifically in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in __`r lastyear`__, __`r totalooc`__). 
 
 
-```{r message = FALSE, warning = FALSE, fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
+```{r message = FALSE, warning = FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
 # # Plot
 # ggplot(multiple_line_df, aes(x = Year, y = Value2, fill=Population.type.label)) + 
 #     #geom_area(alpha=0.6 , size=.5, colour="white") +
 #     geom_bar(position="stack", stat="identity") + 
 #     viridis::scale_fill_viridis(discrete = T) + 
-#   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+#   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
 #   scale_y_continuous( label = format_si()) + ## Format axis number
-#   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+#   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
 #   
 #   ## and the chart labels
 #   labs(title = "Forcible Displacement in the Americas ",
@@ -597,7 +643,7 @@ The evolution in the last 20 years shows a significant increase in Internally Di
 
 ### Proportion of people who left their countries
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
 end_year_population_totals_long.ori %>%
   filter(Population.type  %in% c("REF","ASY","VDA") & 
            Year == lastyear &
@@ -624,8 +670,8 @@ end_year_population_totals_long.ori %>%
        subtitle =     "As a proportion of the national population of that country of origin",
          caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
 situation.  Population refers to total resident population in a given country in a given year.") +
-  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
-  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8) + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
@@ -638,7 +684,7 @@ Forced displacement as a result of conflict, violence, and other causes undermin
 
 ### Incidence of violence per country
 
-```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
+```{r  message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
 acled.data %>% 
   filter(year == lastyear) %>% 
@@ -659,7 +705,8 @@ acled.data %>%
        y = " ", 
        title = "Conflict-related deaths per 100,000 population",
        caption = "Source: Acled Data - https://acleddata.com") +
-  unhcRstyle::unhcr_theme()  + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)   + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
@@ -668,13 +715,9 @@ This graph shows the 'Conflict-related deaths per 100,000 population'. The five 
  
 
 
-```{r}
-# ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
-#  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
-```
  
  
-```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Largest Countries of Asylum**"}
 
 # 1.  WE NEED DATA DISAGREGATED BY Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad
 # 2. tHE GRAPHS OF THE COUNTRIES ARE ON 5 YEARS BUT THE TITLE SAIS 20. IS THE EVOLUTION OF LAST 5 YEARS AND NOT 20. pLEASE CHECK THE TITLE
@@ -725,8 +768,8 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
        y = "",
        caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
   scale_y_continuous( label = format_si()) + ## Format axis number
-  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
@@ -736,7 +779,7 @@ Considering together Refugees, Asylum Seekers and Venezuelan Displaced Abroad, C
 
 The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). 
 
-```{r message=FALSE, warning=FALSE,  fig.cap = "**| Other Displacement**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Other Displacement**"}
 #Prepare data2
 bar_df <- end_year_population_totals_long.asy %>%
   filter(Population.type  %in% c("IDP","OOC","STA") & 
@@ -777,7 +820,7 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
              size = 4) +
   
   
-  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
   labs(title = "Countries with within borders concerns in the Americas",
@@ -787,7 +830,7 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
        caption = "Top 10 Countries, Source: UNHCR.org/refugee-statistics/") +
   scale_y_continuous( label = format_si(),
                       limits=c(0, 10000000))  + ## Format axis number
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
@@ -798,9 +841,9 @@ Colombia OOC is the sum of Other persons of concern (500,000) and Host Community
 
 ## Refugee Status Determination (RSD) Processing 
 
-### How is RSD application done?
+### How are RSD applications done?
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Application in 2020**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Asylum Application in 2020**"}
 ## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
 
 htmlwidgets::onStaticRenderComplete('$.each( document.getElementsByTagName("svg"), function( index, value ){value.setAttribute("viewBox", null);});')
@@ -930,7 +973,7 @@ topasyl <-  asylum_decisions %>%
     
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") 
 ```
 
 
@@ -973,7 +1016,7 @@ ggplot(topOrigin, aes(y = TotalDecided,
     
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
 ```
 
 ### What are the levels of recognition rate?
@@ -1008,12 +1051,12 @@ ggplot(topasyl, aes(y = RefugeeRecognitionRate,
     
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
 ```
 
 And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. Central America people have good Refugee Recognition Rate (especially Honduras, Nicaragua, El Salvador, Cuba, Guatemala, Haiti and Mexico).
 
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=7, size="small",  fig.cap = "**| Recognition rate by Country of Origin in 2020**"}
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Origin in 2020**"}
 ggplot(topOrigin, aes(y = RefugeeRecognitionRate, 
              x = reorder(CountryOriginName, RefugeeRecognitionRate))) + 
   scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
@@ -1031,16 +1074,16 @@ ggplot(topOrigin, aes(y = RefugeeRecognitionRate,
     
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
 ```
 
 
-### How RSD decisions are being issued?
+### How are RSD decisions being issued?
 ????? This chart shows the RSD decisions are issued in Americas.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes how it is issued the RSD applications. The forth line the results of the RSD applications.And the fifth and last vertical line shows where the asylium is issued.  
 
 Most RSD applications comes from Venezuelan (first line on the left). Most of the asylium activity is issued by USA, Canada, Brazil, Costa Rica and Mexico
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in 2020**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Asylum Decision in 2020**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -1138,7 +1181,7 @@ webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decisio
 :::{.page-break}
 :::
 
-# Part II: Analysis of Situation 
+# PART II: Analysis of Situation 
 
 
 ![ ](media/image_hand.jpg)
@@ -1165,7 +1208,7 @@ multiple_line_df <- solutions_long.asy %>%
 ggplot(multiple_line_df, aes(x = Year, y = Value2, 
                                               colour = Solution.type)) + # Adding reference to color
   geom_line(size = 1) + # Here we mention that it will be a line chart
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   
   xlim(c(2000, lastyear + 8)) +
@@ -1207,7 +1250,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
     
   
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(legend.position = "none") +
   ## and the chart labels
   labs(title = "Solution for Displacement in the Americas ",
@@ -1221,16 +1264,13 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
  
 
 
-
-
-
 ## Venezuela Situation
 
 As the second-largest displacement crisis in the world, refugees and migrants from Venezuela now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
 
 Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
 
-```{r ,message=FALSE, warning=FALSE, fig.cap = "**| Venezuelan Diaspora Abroad**"}
+```{r ,message=FALSE, warning=FALSE, comment = "", fig.height=8, size="small", fig.cap = "**| Venezuelan Diaspora Abroad**"}
 ## Map showing the venezuelan exodus
 allVene <- end_year_population_totals_long.asy %>%
   filter(  Year == lastyear &
@@ -1257,7 +1297,7 @@ ggplot(data = world) +
   #coord_sf(xlim = c(-25, 65), ylim = c(25, 75), expand = FALSE) + ## Clipping on Mediterranean Sea
   geom_point(data = allVene, aes(x = Longitude, y = Latitude , size = Value2 ), 
              alpha = 0.6, colour = "red") +
-  scale_size_area( max_size = 10) +
+  scale_size_area( max_size = 20) +
  #   coord_sf(crs = "+proj=robin") +
   labs(title = "Top 10 Countries hosting Venezuelans of Concern",
        subtitle = "As of 2020",
@@ -1265,7 +1305,7 @@ ggplot(data = world) +
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics ") + 
   
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(#panel.grid.major = element_line(color = gray(.5),  linetype = "dashed", size = 0.5),
         panel.grid.major = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
@@ -1280,7 +1320,7 @@ ggplot(data = world) +
 
 ## Central America
 
-```{r ,message=FALSE, warning=FALSE, fig.cap = "**| People from Central America in the USA**"}
+```{r ,message=FALSE, warning=FALSE, comment = "", fig.height=3, size="small", ig.cap = "**| People from Central America in the USA**"}
 
 pobp_dict <- jsonlite::fromJSON("https://data.census.gov/api/search/metadata/item?id=ACSPUMS1Y2019.POBP")
 pobp_dict <- pobp_dict$response$metadataContent$ACSPUMS1Y2019.POBP$values %>% as_tibble()
@@ -1307,7 +1347,7 @@ data %>%
   ggplot() +
   geom_col(aes(coo, n), fill = unhcRstyle::unhcr_grey ) +
   geom_col(aes(coo, poc), fill = unhcRstyle::unhcr_blue) +
-  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  +
   geom_text(aes(coo, n, label = scales::label_comma()(n)), hjust = 1, color = "white") +
   geom_label(aes(coo, poc/2, label = scales::label_percent()(p))) +
   scale_y_continuous(labels = scales::label_comma()) +
@@ -1317,7 +1357,7 @@ data %>%
        caption = "Data sources: Overlay of US Census Bureau - American Community Survey 2019 & UNHCR Refugee Data Finder") +
   #theme_minimal() + 
   coord_flip() +
-  unhcRstyle::unhcr_theme() +
+  unhcRstyle::unhcr_theme(base_size = 8)  +
   theme(axis.text = element_text(size = 6),
         legend.position = "none",
         panel.grid.major.x = element_line(color = "#cbcbcb"), 
@@ -1325,7 +1365,9 @@ data %>%
 ```
 
 
-# Part III: Challenges on Refugee and IDP Statistics
+:::{.page-break}
+:::
+# PART III: Challenges on Refugee and IDP Statistics
 
 ## Using Survey to get demographic Breakdown
 
@@ -1337,7 +1379,7 @@ Often demographic data are not available in Americas. Available demographic data
 
 ```
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Demographic breakdown**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Demographic breakdown**"}
 demographics <- merge(x = demographics, by.x="CountryOriginCode", y = reference, by.y= "iso_3", all.x = TRUE)
 #names(demographics)
 pyramid <-  demographics[ demographics$Year == max(demographics$Year),
@@ -1435,7 +1477,7 @@ ggplot(pyramid3, aes(x = age,
   #ggimage::geom_image(data = icon, aes(image = path, x =age, y = pc)) +
   #annotation_raster(women, 15, 20, "0-4", "5-11") +
   #annotation_raster(men, -15, -20, "0-4", "5-11") + 
-  unhcRstyle::unhcr_theme()
+  unhcRstyle::unhcr_theme(base_size = 8) 
 
 # ggplot(data = icon, aes(x = age,  
 #                       y =  pc)) + 
@@ -1445,98 +1487,31 @@ ggplot(pyramid3, aes(x = age,
 
 ## Other of Concerns in El Salvador, Honduras, Guatemala & Mexico
 
+In Honduras, El Salvador, Guatemala and Mexico, The situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs. Currently, "_Mixed movements_" and "_people in transit_" have been categorized in the ‘Other persons of concern’ (OoC) category. The following summarizes the OoC figures (2018-2020) for El Salvador and Honduras, Guatemala and Mexico.  
 
-Mixed movements and people in transit have been categorized in the ‘Other persons of concern’ (OoC) category in Honduras, El Salvador, Guatemala and Mexico.
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| OOC in Central America**"}
 
+```
  
 
-The situation had a dedicated section on the 2020 Global Trends. The situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs.   Currently there is no unified standard for recording mixed movements  and people in transit in Popdata, therefore they have been categorized in the ‘Other persons of concern’ (OoC) category.
+Guatemala and Mexico operations have similar method: The figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on border data and the proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR. In El Salvador and Honduras as well, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during the year that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the government upon return of the populations and information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR. 
 
- 
-
-How have mixed movements and people in transit been estimated in OoC? Initially, the reporting of mixed movements was made mainly for planning and programmatic purposes and not so much for statistical purposes. No category exists that clearly fits for mixed movements. Beside institutional/political background as to why it is done this way, which may be acceptable internally, it might prompt external readers to question the overall accuracy of our statistical reporting.  It is also noted that categorizing those persons in need of international protection in OoCs is also problematic. The following summarizes the OoC figures (2018-2020) for El Salvador and Honduras, Guatemala and Mexico.  
-   
-Guatemala and Mexico operations have similar method. The figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on border data and the proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR. 
-In El Salvador and Honduras as well, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during the year that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the government upon return of the populations and information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR. 
-
- 
-
-Reflecting mixed movements into official UNHCR figures comes a few challenges: 
-1.    Statistical vs Operational categories: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.  
-2.    Reporting challenge: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’. 
-3.    Political Sensitiveness: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum. 
-4.    Technical Challenge: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries. 
-
- 
-
-The scarcity and low quality of data in this context can justify the use of best available source as soon as this is correctly documented. According to the draft ‘UNHCR Statistical Quality Assurance Framework’: ‘UNHCR publishes statistics … including definitions of concepts, target populations, indicators and other terminology describing the output and its limitations for easier interpretation by users.’ 
-Following the 10 points plan of actions on mixed movements, UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. 
-
- 
-
-To set up a system that would allow to both address operational demand and statistical consistency, the following plan of action is suggested below for discussion: 
-1.    Develop and validate specific operational reporting categories for mixed movement (table at the end). 
-2.    articulate the reporting of those categories between operational portal and Popdata. 
-3.    Refine the explanation notes on the Popdata. All the methodology and estimation of UNHCR data must be reproducible and transparent.
-
- 
-
- What are the main limitations of on ‘Other persons of concern’ category for Honduras, El Salvador, Guatemala and Mexico? There are questions related to (i) different sources of data and duplications (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes. 
-Why UNHCR report data with those above limitations? The scarcity and low quality of data in this context can justify the use of not totally appropriate of data. At same time, UNHCR fully committed to explain in the details our statistical procedure according to our ‘UNHCR Statistical Quality Assurance Framework’.
-
-
-
-NCA and Mexico situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs. 
-
-<<<<<<< HEAD
-## Other of Concerns in Central America and Mexico
-
-=======
-Mixed movements (sometimes called mixed migration) refer to situations where a number of people are travelling together, generally in an irregular manner, using the same routes and means of transport, but for different reasons: UNHCR - The 10-Point Plan in Action -  
-
-Currently there is no unified standard for recording mixed movements and people in transit in Popdata, therefore they have been categorized in the ‘Other persons of concern’ (OoC) category
-
-In Guatemala, the figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on (1) apprehensions in MEX and USA of NCA nationals, and (2) proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR.
- 
-
-In El Salvador, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during January and December that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the
-
-government upon return of the populations, multiplied by the total population deported during the period. The information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR.
-
-For Honduras and Mexico, there is no specific disclaimer in UNHCR Statistical reporting explaining how the estimates is generated.
-
-Reflecting mixed movements into official UNHCR figures comes a few challenges:
- 
-
-1. Statistical vs Operational categories: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.
-
-2. Reporting challenge: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’.
-
-3. Political Sensitiveness: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum.
- 
-
-4. Technical Challenge: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries.
+The main limitations of the method used to measure  ‘Other persons of concern’ category for Honduras, El Salvador, Guatemala and Mexico are related to (i) different sources of data and duplication (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes.  
 
 The scarcity and low quality of data in this context can justify the use of best available source as soon as this is correctly documented. According to the draft ‘UNHCR Statistical Quality Assurance Framework’: ‘UNHCR publishes statistics … including definitions of concepts, target populations, indicators and other terminology describing the output and its limitations for easier interpretation by users.
 
-How have mixed movements been reported? Mixed movements and people in transit have been categorized in the ‘Other persons of concern’ (OoC) category.
+Reflecting mixed movements into official UNHCR figures comes some challenges:  
 
-Why do UNHCR report mixed movements and people in transit on ‘Other persons of concern’ category for NCA countries and Mexico? Initially, the reporting of mixed movements was made mainly for planning and programmatic purposes and not so much for statistical purposes. No category exists that clearly fits for mixed movements. Beside institutional/political background as to why it is done this way, which may be acceptable internally, it might prompt external readers to question the overall accuracy of our
+  1. __Statistical vs Operational categories__: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.    
+  
+  2. __Reporting challenge__: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’.   
+  
+  3. __Political Sensitiveness__: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum.   
+  
+  4. __Technical Challenge__: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries. 
 
-statistical reporting in NCA and beyond. It is also noted that categorizing those persons in need of international protection in OoCs is also problematic.
+Following the [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. To set up a system that would allow to both address operational demand and statistical consistency, it could be both needed to develop and validate specific operational reporting categories for mixed movement  and to articulate the reporting of those categories between [UNHCR operational portal for Central America](https://data.unhcr.org/es/situations/cam) and UNHCR Official Statistical Reporting. 
 
-What are the main limitations of on ‘Other persons of concern’ category for NCA countries and Mexico? There are questions related to (i) different sources of data and duplications (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes.
-
-Why UNHCR report data with those above limitations? The scarcity and low quality of data in this context can justify the use of not totally appropriate of data. At same time, UNHCR fully committed to explain in the details our statistical procedure according to our ‘UNHCR Statistical Quality Assurance Framework’.
-
-Following the [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. Indeed, in the last submissions of Popdata, OoC data in NCA countries and Mexico has generated internal debates.
-
-To set up a system that would allow to both address operational demand and statistical consistency, the following plan of action is suggested below for discussion:
-
-1. Develop and validate specific operational reporting categories for mixed movement (table at the end).
-
-2. articulate the reporting of those categories between operational portal and Popdata. 
->>>>>>> 5df9a081f7f9f54a96aafbed9c989bfb7183adb6
 
 ## IDP estimation in Colombia
 
@@ -1544,8 +1519,7 @@ Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of wo
 
 ```{r}
  
-1429
-## Chart comparing UNHCR & IDMC figures
+## Chart comparing UNHCR & IDMC figures 
 
 ```
  
@@ -1641,7 +1615,7 @@ thiscountry <- "Argentina"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Argentina**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Argentina**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -1659,11 +1633,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -1679,7 +1653,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Argentina**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Argentina**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -1699,8 +1673,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -1716,7 +1690,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Argentina**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Argentina**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -1803,7 +1777,7 @@ thiscountry <- "Brazil"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -1821,11 +1795,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -1841,7 +1815,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 Solutions
 
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Brazil**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Brazil**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -1861,8 +1835,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -1878,7 +1852,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Brazil**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Brazil**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -1968,7 +1942,7 @@ thiscountry <- "Canada"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Canada**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Canada**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -1986,11 +1960,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2006,7 +1980,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 Solutions
 
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Canada**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Canada**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -2026,8 +2000,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2044,7 +2018,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Canada**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Canada**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2131,7 +2105,7 @@ thiscountry <- "Chile"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Chile**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Chile**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -2149,11 +2123,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2169,7 +2143,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Chile**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Chile**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -2189,8 +2163,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2205,7 +2179,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Chile**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Chile**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2294,7 +2268,7 @@ thiscountry <- "Colombia"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Colombia**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Colombia**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -2312,11 +2286,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2332,7 +2306,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 No solutions recorded in __`r thiscountry`__
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions**"}
 # #Prepare data
 # multiple_line_df <- solutions_long.asy %>%
 #   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -2352,8 +2326,8 @@ No solutions recorded in __`r thiscountry`__
 #   xlim(c(lastyear-5, lastyear+1)) +
 #   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 # 
-#   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-#   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+#   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+#   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
 #   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
 #         panel.grid.major.x  = element_blank(), 
 #         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2368,7 +2342,7 @@ No solutions recorded in __`r thiscountry`__
 
 RSD activities are mostly for Venezuelan
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Colombia**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Colombia**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2456,7 +2430,7 @@ thiscountry <- "Ecuador"
 Population of Concern
 
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -2474,11 +2448,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   xlim(c(lastyear-5, lastyear+1)) +
   scale_y_continuous( label = format_si()) + ## Format axis number
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2494,7 +2468,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions  in Ecuador**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions  in Ecuador**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -2514,8 +2488,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2533,7 +2507,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Ecuador**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Ecuador**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2620,7 +2594,7 @@ thiscountry <- "Mexico"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
 
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
@@ -2639,11 +2613,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2659,7 +2633,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Mexico**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Mexico**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -2678,8 +2652,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2695,7 +2669,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Mexic0**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Mexic0**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2782,7 +2756,7 @@ thiscountry <- "Peru"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern  in Peru**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern  in Peru**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -2800,11 +2774,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2820,7 +2794,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Peru**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Peru**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -2840,8 +2814,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2859,7 +2833,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Peru**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Peru**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2950,7 +2924,7 @@ thiscountry <- "United States of America"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in United States of America**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in United States of America**"}
 
 thiscountry <- "United States of America"
 
@@ -2972,11 +2946,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -2992,7 +2966,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 Solutions
 
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in United States of America**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in United States of America**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 15) & 
@@ -3013,8 +2987,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-15, lastyear+1)) +
   #facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -3030,7 +3004,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in United States of America**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in United States of America**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -3119,7 +3093,7 @@ thiscountry <- "Venezuela (Bolivarian Republic of)"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Venezuela**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Venezuela**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -3137,11 +3111,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -3156,7 +3130,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Venezuela**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions in Venezuela**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -3176,8 +3150,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"),
         panel.grid.major.x  = element_blank(),
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -3192,7 +3166,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Venezuela**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Venezuela**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -3279,7 +3253,7 @@ thiscountry <- "Panama"
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Panama**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Evolution over time of the different Population of Concern in Panama**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -3297,11 +3271,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc"
            ) + # here we configure that it will be bar chart+
   
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -3317,7 +3291,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Solutions**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
@@ -3337,8 +3311,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -3356,7 +3330,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Panama**"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Asylum Decision in Panama**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
