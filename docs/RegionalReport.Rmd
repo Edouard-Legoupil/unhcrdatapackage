@@ -593,6 +593,48 @@ The evolution in the last 20 years shows a significant increase in Internally Di
 
 ## Violence  & Displacement
 
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
+end_year_population_totals_long.ori %>%
+  filter(Population.type  %in% c("REF","ASY","VDA") & 
+           Year == lastyear &
+           UNHCRBureau  == thisbureau &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(CountryOriginName, CountryOriginCode) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
+  
+    ## Now merge with WB Data 
+  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
+  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
+  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
+  geom_col(fill = "#0072BC") +
+  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+  labs(x = NULL, 
+       y = NULL,
+       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
+       subtitle =     "As a proportion of the national population of that country of origin",
+         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
+situation.  Population refers to total resident population in a given country in a given year.") +
+  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
+  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+```
+
+
+
+:::{.bg-blue}
+Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
+:::
+
+
 ```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
 acled.data %>% 
@@ -621,7 +663,6 @@ acled.data %>%
 
 This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent countries in Americas are from the central America: Belize, Honduras, Mexico, El Salvador and Guatemala. Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality according with mejor socio-ecomomic index. ACLED collects real-time data of all reported political violence.
  
- 
 
 
 ```{r}
@@ -629,10 +670,6 @@ This graph shows the 'Conflict-related deaths per 100,000 population'. The five 
 #  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
 ```
  
-
-
-Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
-12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
  
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
 
@@ -753,49 +790,8 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 ```
 
 
-Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  
 
 Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
-
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
-end_year_population_totals_long.ori %>%
-  filter(Population.type  %in% c("REF","ASY","VDA") & 
-           Year == lastyear &
-           UNHCRBureau  == thisbureau &
-           !(is.na(UNHCRBureau))) %>%
-  group_by(CountryOriginName, CountryOriginCode) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  #mutate( value3 =  format_si(Value2)) %>%
-  arrange(desc(Value2)) %>%
-  head(10) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
-  
-    ## Now merge with WB Data 
-  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
-  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
-  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
-  geom_col(fill = "#0072BC") +
-  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
-             color = "black", hjust = "inward") +
-  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
-  labs(x = NULL, 
-       y = NULL,
-       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
-       subtitle =     "As a proportion of the national population of that country of origin",
-         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
-situation.  Population refers to total resident population in a given country in a given year.") +
-  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
-  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
-  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-        panel.grid.major.y = element_blank()) ### changing grid line that should appear
-```
-
-
-
-:::{.bg-blue}
-Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
-:::
 
 ## Refugee Status Determination (RSD) Processing 
 
@@ -1204,7 +1200,7 @@ As the second-largest displacement crisis in the world, refugees and migrants fr
 
 Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
 
-## El Salvador, Honduras, Guatemala & Mexico
+## Central America
 
 ```{r ,message = FALSE, warning = FALSE, cache = TRUE}
 
@@ -1369,13 +1365,85 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
+## Other of Concerns in El Salvador, Honduras, Guatemala & Mexico
 
+NCA and Mexico situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs. 
 
+Mixed movements (sometimes called mixed migration) refer to situations where a number of people are travelling together, generally in an irregular manner, using the same routes and means of transport, but for different reasons: UNHCR - The 10-Point Plan in Action -  
 
+Currently there is no unified standard for recording mixed movements and people in transit in Popdata, therefore they have been categorized in the ‘Other persons of concern’ (OoC) category
 
-## Other of Concerns in Central America
+In Guatemala, the figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on (1) apprehensions in MEX and USA of NCA nationals, and (2) proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR.
+ 
+
+In El Salvador, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during January and December that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the
+
+government upon return of the populations, multiplied by the total population deported during the period. The information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR.
+
+For Honduras and Mexico, there is no specific disclaimer in UNHCR Statistical reporting explaining how the estimates is generated.
+
+Reflecting mixed movements into official UNHCR figures comes a few challenges:
+ 
+
+1. Statistical vs Operational categories: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.
+
+2. Reporting challenge: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’.
+
+3. Political Sensitiveness: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum.
+ 
+
+4. Technical Challenge: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries.
+
+The scarcity and low quality of data in this context can justify the use of best available source as soon as this is correctly documented. According to the draft ‘UNHCR Statistical Quality Assurance Framework’: ‘UNHCR publishes statistics … including definitions of concepts, target populations, indicators and other terminology describing the output and its limitations for easier interpretation by users.
+
+How have mixed movements been reported? Mixed movements and people in transit have been categorized in the ‘Other persons of concern’ (OoC) category.
+
+Why do UNHCR report mixed movements and people in transit on ‘Other persons of concern’ category for NCA countries and Mexico? Initially, the reporting of mixed movements was made mainly for planning and programmatic purposes and not so much for statistical purposes. No category exists that clearly fits for mixed movements. Beside institutional/political background as to why it is done this way, which may be acceptable internally, it might prompt external readers to question the overall accuracy of our
+
+statistical reporting in NCA and beyond. It is also noted that categorizing those persons in need of international protection in OoCs is also problematic.
+
+What are the main limitations of on ‘Other persons of concern’ category for NCA countries and Mexico? There are questions related to (i) different sources of data and duplications (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes.
+
+Why UNHCR report data with those above limitations? The scarcity and low quality of data in this context can justify the use of not totally appropriate of data. At same time, UNHCR fully committed to explain in the details our statistical procedure according to our ‘UNHCR Statistical Quality Assurance Framework’.
+
+Following the [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. Indeed, in the last submissions of Popdata, OoC data in NCA countries and Mexico has generated internal debates.
+
+To set up a system that would allow to both address operational demand and statistical consistency, the following plan of action is suggested below for discussion:
+
+1. Develop and validate specific operational reporting categories for mixed movement (table at the end).
+
+2. articulate the reporting of those categories between operational portal and Popdata. 
 
 ## IDP estimation in Colombia
+
+Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. 
+
+```{r}
+ 
+1429
+## Chart comparing UNHCR & IDMC figures
+
+```
+ 
+
+Total number of IDPs as of 31 December 2020 as per [IDMC](https://www.internal-displacement.org/countries/colombia): 4,922,000 
+ 
+
+This figure refers to people internally displaced since 1985 by the armed conflict in Colombia.  Pending further information and evidence, those who are in a situation of displacement, but progressing 
+
+towards a durable solution have not been included. IDMC includes some information on [potential caveheat](https://www.internal-displacement.org/sites/default/files/2021-05/figure-analysis-col_0.pdf)
+ 
+
+:::{.bg-blue}
+
+This figure was obtained from the RUV, which is maintained by the Colombian government’s UARIV. It is based on the total number of people displaced in Colombia according to the RUV. From this total number, IDMC subtracts registered IDPs who are deceased as well as those who have made progress towards a durable solution. Estimates of the latter are based on RUV’s vulnerability assessment, which evaluates IDPs’ vulnerabilities associated with housing, family reunification, access to identification documents, nutrition, health, education and income.  
+
+We have high confidence in this figure as Colombia’s RUV is the most comprehensive register of IDPs in the world. However, Colombian law holds that displaced people can declare themselves as such for up to two years after they become displaced. Combined with the administrative processes for reviewing cases, this can lead to a time lag between the start date of displacement and the time of its registration in the Colombian government’s database. For this reason, this figure is likely to be a slight underestimate and it may not represent the full extent of displacement in the country. This said, it provides the most representative and accurate picture of internal displacement to date in Colombia. 
+:::{.bg-blue}
+
+Maybe a revision of the IDPs in Colombia can change this figure using EGRIS IRIS - the Composite indicator measurement on HH Survey.  
+
+
 
 # Conclusion: the Importance of EGRIS Recommandations
 
