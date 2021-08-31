@@ -36,7 +36,7 @@ lot: false
 # Set lot title, default: "List of Tables"
 lot-title: "Tables"
 # Change to false to remove list of figures
-lof: true
+lof: false
 # Set lof title, default: "List of Figures"
 lof-title: "List of Figures"
 # If you include any <abbr> a list of abbreviations will be built.
