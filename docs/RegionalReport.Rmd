@@ -1221,14 +1221,57 @@ As the second-largest displacement crisis in the world, refugees and migrants fr
 
 Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
 
-```{r}
+```{r ,message=FALSE, warning=FALSE, fig.cap = "**| Venezuelan Diaspora Abroad**"}
 ## Map showing the venezuelan exodus
+allVene <- end_year_population_totals_long.asy %>%
+  filter(  Year == lastyear &
+           Population.type != "IDP"  &
+           CountryOriginCode == "VEN"&
+           CountryAsylumCode != "VEN") %>%
+  group_by( CountryAsylumName, Latitude, Longitude) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  arrange(desc(Value2)) %>%
+  head(10) # %>%  
+  ## Change to robinson  world projection
+  #  mutate %>% 
+
+## Getting world map for mapping
+world <- 
+rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+  filter(continent == "North America" | continent == "South America")
+## Remove Antartica
+world <- world[ world$sov_a3 != "ATA", ]
+
+# plot
+ggplot(data = world) + 
+  geom_sf(fill = "antiquewhite", colour = "#7f7f7f", size = 0.2) + 
+  #coord_sf(xlim = c(-25, 65), ylim = c(25, 75), expand = FALSE) + ## Clipping on Mediterranean Sea
+  geom_point(data = allVene, aes(x = Longitude, y = Latitude , size = Value2 ), 
+             alpha = 0.6, colour = "red") +
+  scale_size_area( max_size = 10) +
+ #   coord_sf(crs = "+proj=robin") +
+  labs(title = "Top 10 Countries hosting Venezuelans of Concern",
+       subtitle = "As of 2020",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ") + 
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(#panel.grid.major = element_line(color = gray(.5),  linetype = "dashed", size = 0.5),
+        panel.grid.major = element_blank(),
+        panel.background = element_rect(fill = "aliceblue"),
+        axis.text.x  = element_blank(),
+        axis.text.y  = element_blank(),
+        legend.position = "none"
+        )
+
+
 ```
 
 
 ## Central America
 
-```{r ,message = FALSE, warning = FALSE, cache = TRUE}
+```{r ,message=FALSE, warning=FALSE, fig.cap = "**| People from Central America in the USA**"}
 
 pobp_dict <- jsonlite::fromJSON("https://data.census.gov/api/search/metadata/item?id=ACSPUMS1Y2019.POBP")
 pobp_dict <- pobp_dict$response$metadataContent$ACSPUMS1Y2019.POBP$values %>% as_tibble()
