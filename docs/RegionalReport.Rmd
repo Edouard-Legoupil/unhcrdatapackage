@@ -258,10 +258,10 @@ Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop`
 
 As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
- * Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ & Venezuelan Displaced Abroad __`r totalvda`__, accounting for a toal of __`r totaldis`__  
- * Total Internally Displaced Persons __`r totalIDP`__
- * Total Statelessness __`r totalsta`__ 
- * Total Other of Concerns __`r totalooc`__ 
+ * Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ and Venezuelan Displaced Abroad __`r totalvda`__, accounting for a total of __`r totaldis`__.  
+ * Total Internally Displaced Persons __`r totalIDP`__.
+ * Total Statelessness __`r totalsta`__.
+ * Total Other of Concerns __`r totalooc`__. 
 
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
@@ -890,7 +890,8 @@ webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/appl
 
 This chart shows the RSD procedures in Americas. Below the same graphs by country are reproduced.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes the stage of the RSD applications (the process is different in every country). The forth and last vertical line shows the results of the RSD applications.
 
-Most RSD activities occurs in the US. Most RSD applications comes from Venezuelan. Other relevant country of origin are: Nicaragua, Mexico, Honduras, Haiti, Guatemala, El Salvador and Cuba. Again the Central America countries are the most relevant.
+ Most RSD applications comes from Venezuelan. Other relevant country of origin are: Nicaragua, Mexico, Honduras, Haiti, Guatemala, El Salvador and Cuba. Again the Central America countries are the most relevant. Most RSD activities occurs in the US. Traditionally, Canada has relevant RSD activities as well. Mexico, Brazil and Costa Rica become for different reason important is RSD applications.
+ 
 
 
 
@@ -935,7 +936,7 @@ topasyl <-  asylum_decisions %>%
 
  
 
-Most RSD applications comes from Venezuelan
+Most RSD applications comes from Venezuelan, Colombians and Central America people. Honduras, El Salvador, Nicaragua, Guatemala, Mexico Cuba and Haiti people together have more RSD applications than Venezuelan.
 
 ```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Origin Country in 2020**"}
 topOrigin <-  asylum_decisions %>%
@@ -986,7 +987,7 @@ For the purpose of international comparability, UNHCR only uses these two recogn
 :::
 
 
-Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum.
+Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum. Brazil, Ecuador, Peru and Mexico have higher Refugee Recognition Rate (RRR) in Americas.
 
 
 ```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Asylum in 2020**"}
@@ -1010,7 +1011,7 @@ ggplot(topasyl, aes(y = RefugeeRecognitionRate,
   geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
 ```
 
-And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. 
+And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. Central America people have good Refugee Recognition Rate (especially Honduras, Nicaragua, El Salvador, Cuba, Guatemala, Haiti and Mexico).
 
 ```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=7, size="small",  fig.cap = "**| Recognition rate by Country of Origin in 2020**"}
 ggplot(topOrigin, aes(y = RefugeeRecognitionRate, 
@@ -1035,8 +1036,9 @@ ggplot(topOrigin, aes(y = RefugeeRecognitionRate,
 
 
 ### How RSD decisions are being issued?
+????? This chart shows the RSD decisions are issued in Americas.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes how it is issued the RSD applications. The forth line the results of the RSD applications.And the fifth and last vertical line shows where the asylium is issued.  
 
-
+Most RSD applications comes from Venezuelan (first line on the left). Most of the asylium activity is issued by USA, Canada, Brazil, Costa Rica and Mexico
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in 2020**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
@@ -1215,7 +1217,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
- The Resettlement solution decreased in the last 5 years. 
+ The Resettlement solution decreased in the last 5 years. In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR (In the details: Total Returned Refugees __`r totalret`__, Total Returned IDP __`r totalretipd`__, Total Resettlement __`r totalrst `__ and Total Naturalisation  __`r totalnat`__)
+ 
 
 
 
@@ -1524,6 +1527,9 @@ Maybe a revision of the IDPs in Colombia can change this figure using EGRIS IRIS
 
 
 # Conclusion: the Importance of EGRIS Recommandations
+
+UNHCR Americas has 88 locations in 22 countries in Americas. 14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern country (Chile, Bolivia, Uruguay, Paraguay). Panama and USA produced data for many Caribbean and Central Americas counties. Normally the 'UNHCR data focal point' is a Information Management staff, nevertheless sometime is 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from National Statistics Office. Data from National Statistics Office is the top statistics solution. National Statistics Office are/should be an independent body of the state aims to produce and disseminate statistics. Normally data are produced and disseminate semi-annually by the authority. In the half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
+The relation between UNHCR and National Statistics Offices needed to be strengthen. Only half of UNHCR national has meeting with National Statics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics. 
 
 The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
 
