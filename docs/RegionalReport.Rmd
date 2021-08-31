@@ -1371,7 +1371,8 @@ ggplot(pyramid3, aes(x = age,
 
 
 
-## Other of Concerns in Central America
+## Other of Concerns in Central America and Mexico
+
 
 ## IDP estimation in Colombia
 
