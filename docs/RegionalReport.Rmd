@@ -1539,7 +1539,7 @@ This figure was obtained from the RUV, which is maintained by the Colombian gove
 We have high confidence in this figure as Colombia’s RUV is the most comprehensive register of IDPs in the world. However, Colombian law holds that displaced people can declare themselves as such for up to two years after they become displaced. Combined with the administrative processes for reviewing cases, this can lead to a time lag between the start date of displacement and the time of its registration in the Colombian government’s database. For this reason, this figure is likely to be a slight underestimate and it may not represent the full extent of displacement in the country. This said, it provides the most representative and accurate picture of internal displacement to date in Colombia. 
 :::{.bg-blue}
 
-Maybe a revision of the IDPs in Colombia can change this figure using EGRIS IRIS - the Composite indicator measurement on HH Survey.  
+A revision of the IDPs in Colombia can change this figure using [EGRIS IRIS](https://www.unhcr.org/statistics/unhcrstats/600188974/international-recommendations-internally-displaced-persons-statistics-iris.html) - the Composite indicator measurement on HH Survey could be an opportunity.  
 
 
 
