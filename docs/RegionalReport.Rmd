@@ -1394,6 +1394,47 @@ ggplot(pyramid3, aes(x = age,
 
 ## Other of Concerns in El Salvador, Honduras, Guatemala & Mexico
 
+
+Mixed movements and people in transit have been categorized in the ‘Other persons of concern’ (OoC) category in Honduras, El Salvador, Guatemala and Mexico.
+
+ 
+
+The situation had a dedicated section on the 2020 Global Trends. The situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs.   Currently there is no unified standard for recording mixed movements  and people in transit in Popdata, therefore they have been categorized in the ‘Other persons of concern’ (OoC) category.
+
+ 
+
+How have mixed movements and people in transit been estimated in OoC? Initially, the reporting of mixed movements was made mainly for planning and programmatic purposes and not so much for statistical purposes. No category exists that clearly fits for mixed movements. Beside institutional/political background as to why it is done this way, which may be acceptable internally, it might prompt external readers to question the overall accuracy of our statistical reporting.  It is also noted that categorizing those persons in need of international protection in OoCs is also problematic. The following summarizes the OoC figures (2018-2020) for El Salvador and Honduras, Guatemala and Mexico.  
+   
+Guatemala and Mexico operations have similar method. The figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on border data and the proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR. 
+In El Salvador and Honduras as well, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during the year that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the government upon return of the populations and information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR. 
+
+ 
+
+Reflecting mixed movements into official UNHCR figures comes a few challenges: 
+1.    Statistical vs Operational categories: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.  
+2.    Reporting challenge: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’. 
+3.    Political Sensitiveness: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum. 
+4.    Technical Challenge: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries. 
+
+ 
+
+The scarcity and low quality of data in this context can justify the use of best available source as soon as this is correctly documented. According to the draft ‘UNHCR Statistical Quality Assurance Framework’: ‘UNHCR publishes statistics … including definitions of concepts, target populations, indicators and other terminology describing the output and its limitations for easier interpretation by users.’ 
+Following the 10 points plan of actions on mixed movements, UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. 
+
+ 
+
+To set up a system that would allow to both address operational demand and statistical consistency, the following plan of action is suggested below for discussion: 
+1.    Develop and validate specific operational reporting categories for mixed movement (table at the end). 
+2.    articulate the reporting of those categories between operational portal and Popdata. 
+3.    Refine the explanation notes on the Popdata. All the methodology and estimation of UNHCR data must be reproducible and transparent.
+
+ 
+
+ What are the main limitations of on ‘Other persons of concern’ category for Honduras, El Salvador, Guatemala and Mexico? There are questions related to (i) different sources of data and duplications (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes. 
+Why UNHCR report data with those above limitations? The scarcity and low quality of data in this context can justify the use of not totally appropriate of data. At same time, UNHCR fully committed to explain in the details our statistical procedure according to our ‘UNHCR Statistical Quality Assurance Framework’.
+
+
+
 NCA and Mexico situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs. 
 
 Mixed movements (sometimes called mixed migration) refer to situations where a number of people are travelling together, generally in an irregular manner, using the same routes and means of transport, but for different reasons: UNHCR - The 10-Point Plan in Action -  
