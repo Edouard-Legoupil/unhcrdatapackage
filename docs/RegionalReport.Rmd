@@ -3,7 +3,7 @@ title: "AMERICAS REGIONAL POPULATION TRENDS ANALYSIS"
 subtitle: "Forced Displacement in 2020"
 abstract-title: UNHCR Regional Bureau for the Americas
 abstract: "This report provides a summary overview of population statistics of the Americas region in 2020 based on __officially published and publicly available data__. It includes trends and analysis of the major population groups and major displacement situations in the region."
-date: format(Sys.Date(),  '%d %B %Y')
+date: "September 2021"
 params:
   bureau: Americas
   year: 2020
@@ -38,7 +38,7 @@ lot-title: "Tables"
 # Change to false to remove list of figures
 lof: true
 # Set lof title, default: "List of Figures"
-lof-title: "Figures"
+lof-title: "List of Figures"
 # If you include any <abbr> a list of abbreviations will be built.
 # Set lof title, default: "List of Abbreviations"
 loa-title: "Acronyms"
@@ -105,6 +105,7 @@ end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::en
 
 demographics <- unhcrdatapackage::demographics
 asylum_applications <- unhcrdatapackage::asylum_applications
+asylum_decisions <- unhcrdatapackage::asylum_decisions
 asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
 
 solutions <- unhcrdatapackage::solutions
@@ -250,17 +251,14 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 :::{.page-break}
 :::
 
-# Regional Overview
+#  Introduction: Key Figures 
+## Forcible Displacement
 
 Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
- 
-
-
-## Forcible Displacement Key Figures
 
 As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
- * Total Refugees, Asylum-seekers & Venezuelan Displaced Abroad: __`r totaldis`__  
+ * Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ & Venezuelan Displaced Abroad __`r totalvda`__, accounting for a toal of __`r totaldis`__  
  * Total Internally Displaced Persons __`r totalIDP`__
  * Total Statelessness __`r totalsta`__ 
  * Total Other of Concerns __`r totalooc`__ 
@@ -268,11 +266,6 @@ As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the tot
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
 
-Venezuelan Displaced Abroad is relatively new category for UNHCR.
-
-:::{.bg-blue}
-According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.
-:::
  
 
 
@@ -404,7 +397,7 @@ patchwork +
 
  
 
-## Solutions Key Figures
+## Solutions 
 
 Finding solutions that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
 
@@ -417,10 +410,15 @@ Finding solutions that enable refugees and other forcibly displaced people to li
 In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR.
  
 
+
 :::{.page-break}
 :::
 
-## Population Flow
+# Part I: Regional Analysis 
+
+## Population Flow  over time
+
+### Most movement remains south-to-south
 
 The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
@@ -468,7 +466,14 @@ circos.track(track.index = 1,
 
 
 
-## Evolution over time
+### A new statistical category
+
+
+Venezuelan Displaced Abroad is relatively new category for UNHCR.
+
+:::{.bg-blue}
+According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.
+:::
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
 
@@ -588,7 +593,50 @@ The evolution in the last 20 years shows a significant increase in Internally Di
 #        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
-## Violence in the region
+## Violence  & Displacement
+
+### Proportion of people who left their countries
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
+end_year_population_totals_long.ori %>%
+  filter(Population.type  %in% c("REF","ASY","VDA") & 
+           Year == lastyear &
+           UNHCRBureau  == thisbureau &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(CountryOriginName, CountryOriginCode) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
+  
+    ## Now merge with WB Data 
+  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
+  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
+  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
+  geom_col(fill = "#0072BC") +
+  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+  labs(x = NULL, 
+       y = NULL,
+       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
+       subtitle =     "As a proportion of the national population of that country of origin",
+         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
+situation.  Population refers to total resident population in a given country in a given year.") +
+  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
+  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+```
+
+
+
+:::{.bg-blue}
+Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
+:::
+
+### Incidence of violence per country
 
 ```{r  message=FALSE, warning=FALSE, fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
@@ -618,22 +666,13 @@ acled.data %>%
 
 This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent countries in Americas are from the central America: Belize, Honduras, Mexico, El Salvador and Guatemala. Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality according with mejor socio-ecomomic index. ACLED collects real-time data of all reported political violence.
  
- 
 
-:::{.page-break}
-:::
-
-# Regional Analysis 
 
 ```{r}
 # ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
 #  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
 ```
  
-## What displacement?
-
-??????Compared to the previous year, the population groups with increases were the returned IDPs with 22 per cent and the number of internally displaced persons increased by
-12 per cent. The number of refugees and asylum-seekers both reduced slightly by 4 per cent respectively. The largest decrease was within the refugee returnee category with 75 per cent.
  
 ```{r message=FALSE, warning=FALSE,  fig.cap = "**| Largest Countries of Asylum**"}
 
@@ -754,130 +793,12 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 ```
 
 
-Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. Maybe a revision of the IDPs in Colombia can change this figure.  
 
 Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
 
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
-end_year_population_totals_long.ori %>%
-  filter(Population.type  %in% c("REF","ASY","VDA") & 
-           Year == lastyear &
-           UNHCRBureau  == thisbureau &
-           !(is.na(UNHCRBureau))) %>%
-  group_by(CountryOriginName, CountryOriginCode) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  #mutate( value3 =  format_si(Value2)) %>%
-  arrange(desc(Value2)) %>%
-  head(10) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
-  
-    ## Now merge with WB Data 
-  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
-  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
-  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
-  geom_col(fill = "#0072BC") +
-  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
-             color = "black", hjust = "inward") +
-  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
-  labs(x = NULL, 
-       y = NULL,
-       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
-       subtitle =     "As a proportion of the national population of that country of origin",
-         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
-situation.  Population refers to total resident population in a given country in a given year.") +
-  geom_hline(yintercept = 0, size = 1.3, colour = "#333333") +
-  unhcRstyle::unhcr_theme()+ ## Insert UNHCR Style
-  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-        panel.grid.major.y = element_blank()) ### changing grid line that should appear
-```
-
-
-
-:::{.bg-blue}
-Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
-:::
-
-## Impact of Covid-19, a dramatic drop of solutions 
-
-Since the first case of COVID-19 was recorded in December 2019, more than 170 million people worldwide have contracted the virus. The Americas is among the most affected regions  
-
-Durable solutions include voluntary repatriation, resettlement to a third country, local integration, naturalization and return to place of origin prior to displacement (for IDPs). However, a growing number of displaced populations have limited opportunities for a durable solution. The COVID-19 pandemic has only exacerbated these challenges.
-
-![Costa Rica. UNHCR expands cash assistance programme during COVID-19 crisis](media/image_cbi.jpg)
-
-The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
- 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Trends for Solution**"}
-multiple_line_df <- solutions_long.asy %>%
-  filter(UNHCRBureau  == thisbureau &
-           !(is.na(UNHCRBureau))) %>%
-  group_by(Year, Solution.type ) %>%
-  summarise(Value2 = sum(Value) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2, 
-                                              colour = Solution.type)) + # Adding reference to color
-  geom_line(size = 1) + # Here we mention that it will be a line chart
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  
-  xlim(c(2000, lastyear + 8)) +
-  
-  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
-  scale_colour_manual( values = c( "NAT" = "#a6cee3",
-                                   "RST"  = "#1f78b4",
-                                   "RET" = "#b2df8a")) +
-  geom_label(aes(x = lastyear + .5 ,
-                 y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "NAT" & multiple_line_df$Year == lastyear , c("Value2")]),
-                 label = "Naturalisation"),
-                             hjust = 0,
-                             vjust = 0.5,
-                             colour = "#a6cee3",
-                             fill = "white",
-                             label.size = NA,
-                             family = "Lato",
-                             size = 4) +
-   geom_label(aes(x = lastyear +.5,
-                  y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "RST" & multiple_line_df$Year == lastyear , c("Value2")] + 10000),
-                  label = "Resettlement"),
-                             hjust = 0,
-                             vjust = 0.5,
-                             colour = "#1f78b4",
-                             fill = "white",
-                             label.size = NA,
-                             family = "Lato",
-                             size = 4) +
-   geom_label(aes(x = lastyear + .5,
-                  y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "RET" & multiple_line_df$Year == lastyear , c("Value2")] - 10000),
-                   label = "Return"),
-                             hjust = 0,
-                             vjust = 0.5,
-                             colour = "#b2df8a",
-                             fill = "white",
-                             label.size = NA,
-                             family = "Lato",
-                             size = 4) +
-
-    
-  
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(legend.position = "none") +
-  ## and the chart labels
-  labs(title = "Solution for Displacement in the Americas ",
-       subtitle = "Evolution in the past 20 years",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-```
-
- The Resettlement solution decreased in the last 5 years. 
-
-
-
 ## Refugee Status Determination (RSD) Processing 
 
-RSD application is mostly done through Government
+### How is RSD application done?
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Application in 2020**"}
 ## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
@@ -982,7 +903,8 @@ topasyl <-  asylum_decisions %>%
   summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
             ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
             TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
-  mutate(recognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
+  mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
+         GlobalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
   filter(TotalDecided  != 0) %>%
   filter(TotalDecided  > 1000)  
   
@@ -994,28 +916,6 @@ topasyl <-  asylum_decisions %>%
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
   labs(title = "Number of RSD application per country of asylum in 2020",
-       subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
-       x = " ", 
-       y = " ",
-       caption = "Source: UNHCR.org/refugee-statistics " ) +
-  unhcRstyle::unhcr_theme(base_size = 11) +
-  theme(#axis.text.x = element_blank(),
-    # legend.position = "none",
-    
-    panel.grid.major.x = element_line(color = "#cbcbcb"), 
-    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
-```
-Though, the US has a recognition rate below 5% 
-
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Asylum in 2020**"}
-ggplot(topasyl, aes(y = recognitionRate, 
-             x = reorder(CountryAsylumName, recognitionRate))) + 
-  scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
-  #facet_grid(.~ ctry_asy) +  
-  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
-  coord_flip() +
-  labs(title = "Recognition rate per country of asylum in 2020",
        subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
        x = " ", 
        y = " ",
@@ -1043,7 +943,8 @@ topOrigin <-  asylum_decisions %>%
   summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
             ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
             TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
-  mutate(recognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
+  mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
+         GlobalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided) %>%
   filter(TotalDecided  != 0) %>%
   filter(TotalDecided  > 1000)  
   
@@ -1068,11 +969,46 @@ ggplot(topOrigin, aes(y = TotalDecided,
   geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
 ```
 
+### What are the levels of recognition rate?
+
+
+:::{.bg-blue}
+The __Refugee Recognition Rate (RRR)__ divides the number of asylum-seekers granted Convention refugee status by the total number of accepted (Convention and, where relevant, humanitarian status) and rejected cases. 
+The __Total Recognition Rate (TRR)__ divides the number of asylum-seekers granted Convention refugee status and humanitarian status by the total number of accepted (Convention and, where relevant, humanitarian status) and rejected cases. Non-substantive decisions are, to the extent possible, excluded from both calculations. 
+
+For the purpose of international comparability, UNHCR only uses these two recognition rates and does not report nationally calculated rates, for instance rates disaggregated by RSD stage (1st instance vs. appeal), and by internal processing agency within the country or specific calculations potentially skewing the perception such as recognized/(recognized+rejected) instead of recognized/decided.  
+:::
+
+
+Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum.
+
+
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Asylum in 2020**"}
+ggplot(topasyl, aes(y = RefugeeRecognitionRate, 
+             x = reorder(CountryAsylumName, RefugeeRecognitionRate))) + 
+  scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
+  #facet_grid(.~ ctry_asy) +  
+  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
+  coord_flip() +
+  labs(title = "Recognition rate per country of asylum in 2020",
+       subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
+       x = " ", 
+       y = " ",
+       caption = "Source: UNHCR.org/refugee-statistics " ) +
+  unhcRstyle::unhcr_theme(base_size = 11) +
+  theme(#axis.text.x = element_blank(),
+    # legend.position = "none",
+    
+    panel.grid.major.x = element_line(color = "#cbcbcb"), 
+    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+  geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
+```
+
 And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. 
 
 ```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=7, size="small",  fig.cap = "**| Recognition rate by Country of Origin in 2020**"}
-ggplot(topOrigin, aes(y = recognitionRate, 
-             x = reorder(CountryOriginName, recognitionRate))) + 
+ggplot(topOrigin, aes(y = RefugeeRecognitionRate, 
+             x = reorder(CountryOriginName, RefugeeRecognitionRate))) + 
   scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
@@ -1091,7 +1027,10 @@ ggplot(topOrigin, aes(y = recognitionRate,
   geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
 ```
 
-Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum.
+
+### How RSD decisions are being issued?
+
+
 
 ```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in 2020**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
@@ -1191,18 +1130,103 @@ webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decisio
 :::{.page-break}
 :::
 
-# Analysis of Situation 
+# Part II: Analysis of Situation 
 
 
 ![ ](media/image_hand.jpg)
 
+
+## Impact of Covid-19, a dramatic drop of solutions 
+
+Since the first case of COVID-19 was recorded in December 2019, more than 170 million people worldwide have contracted the virus. The Americas is among the most affected regions  
+
+Durable solutions include voluntary repatriation, resettlement to a third country, local integration, naturalization and return to place of origin prior to displacement (for IDPs). However, a growing number of displaced populations have limited opportunities for a durable solution. The COVID-19 pandemic has only exacerbated these challenges.
+
+![Costa Rica. UNHCR expands cash assistance programme during COVID-19 crisis](media/image_cbi.jpg)
+
+The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
+ 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Trends for Solution**"}
+multiple_line_df <- solutions_long.asy %>%
+  filter(UNHCRBureau  == thisbureau &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(Year, Solution.type ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2, 
+                                              colour = Solution.type)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  
+  xlim(c(2000, lastyear + 8)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  scale_colour_manual( values = c( "NAT" = "#a6cee3",
+                                   "RST"  = "#1f78b4",
+                                   "RET" = "#b2df8a")) +
+  geom_label(aes(x = lastyear + .5 ,
+                 y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "NAT" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 label = "Naturalisation"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#a6cee3",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear +.5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "RST" & multiple_line_df$Year == lastyear , c("Value2")] + 10000),
+                  label = "Resettlement"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#1f78b4",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+   geom_label(aes(x = lastyear + .5,
+                  y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "RET" & multiple_line_df$Year == lastyear , c("Value2")] - 10000),
+                   label = "Return"),
+                             hjust = 0,
+                             vjust = 0.5,
+                             colour = "#b2df8a",
+                             fill = "white",
+                             label.size = NA,
+                             family = "Lato",
+                             size = 4) +
+
+    
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Solution for Displacement in the Americas ",
+       subtitle = "Evolution in the past 20 years",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+```
+
+ The Resettlement solution decreased in the last 5 years. 
+
+
+
+
+
 ## Venezuela Situation
 
-As the second-largest displacement crisis in the world, refugees and migrants from Venezuela (Bolivarian Republic of) now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
+As the second-largest displacement crisis in the world, refugees and migrants from Venezuela now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
 
 Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
 
-## El Salvador, Honduras, Guatemala & Mexico
+```{r}
+## Map showing the venezuelan exodus
+```
+
+
+## Central America
 
 ```{r ,message = FALSE, warning = FALSE, cache = TRUE}
 
@@ -1249,9 +1273,9 @@ data %>%
 ```
 
 
-# Challenges on Refugee and IDP Statistics
+# Part III: Challenges on Refugee and IDP Statistics
 
-## Demographic Breakdown
+## Using Survey to get demographic Breakdown
 
 
 Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for __`r lastyear`__ show a balance between sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
@@ -1367,13 +1391,126 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
+## Other of Concerns in El Salvador, Honduras, Guatemala & Mexico
+
+
+Mixed movements and people in transit have been categorized in the ‘Other persons of concern’ (OoC) category in Honduras, El Salvador, Guatemala and Mexico.
+
+ 
+
+The situation had a dedicated section on the 2020 Global Trends. The situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs.   Currently there is no unified standard for recording mixed movements  and people in transit in Popdata, therefore they have been categorized in the ‘Other persons of concern’ (OoC) category.
+
+ 
+
+How have mixed movements and people in transit been estimated in OoC? Initially, the reporting of mixed movements was made mainly for planning and programmatic purposes and not so much for statistical purposes. No category exists that clearly fits for mixed movements. Beside institutional/political background as to why it is done this way, which may be acceptable internally, it might prompt external readers to question the overall accuracy of our statistical reporting.  It is also noted that categorizing those persons in need of international protection in OoCs is also problematic. The following summarizes the OoC figures (2018-2020) for El Salvador and Honduras, Guatemala and Mexico.  
+   
+Guatemala and Mexico operations have similar method. The figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on border data and the proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR. 
+In El Salvador and Honduras as well, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during the year that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the government upon return of the populations and information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR. 
+
+ 
+
+Reflecting mixed movements into official UNHCR figures comes a few challenges: 
+1.    Statistical vs Operational categories: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.  
+2.    Reporting challenge: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’. 
+3.    Political Sensitiveness: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum. 
+4.    Technical Challenge: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries. 
+
+ 
+
+The scarcity and low quality of data in this context can justify the use of best available source as soon as this is correctly documented. According to the draft ‘UNHCR Statistical Quality Assurance Framework’: ‘UNHCR publishes statistics … including definitions of concepts, target populations, indicators and other terminology describing the output and its limitations for easier interpretation by users.’ 
+Following the 10 points plan of actions on mixed movements, UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. 
+
+ 
+
+To set up a system that would allow to both address operational demand and statistical consistency, the following plan of action is suggested below for discussion: 
+1.    Develop and validate specific operational reporting categories for mixed movement (table at the end). 
+2.    articulate the reporting of those categories between operational portal and Popdata. 
+3.    Refine the explanation notes on the Popdata. All the methodology and estimation of UNHCR data must be reproducible and transparent.
+
+ 
+
+ What are the main limitations of on ‘Other persons of concern’ category for Honduras, El Salvador, Guatemala and Mexico? There are questions related to (i) different sources of data and duplications (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes. 
+Why UNHCR report data with those above limitations? The scarcity and low quality of data in this context can justify the use of not totally appropriate of data. At same time, UNHCR fully committed to explain in the details our statistical procedure according to our ‘UNHCR Statistical Quality Assurance Framework’.
 
 
 
+NCA and Mexico situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs. 
 
-## Other of Concerns in Central America
+Mixed movements (sometimes called mixed migration) refer to situations where a number of people are travelling together, generally in an irregular manner, using the same routes and means of transport, but for different reasons: UNHCR - The 10-Point Plan in Action -  
+
+Currently there is no unified standard for recording mixed movements and people in transit in Popdata, therefore they have been categorized in the ‘Other persons of concern’ (OoC) category
+
+In Guatemala, the figure of OoC correspond to an estimation of flows of deportees/persons in transit with possible protection needs during the year, estimated based on (1) apprehensions in MEX and USA of NCA nationals, and (2) proportion of persons in transit with possible protection needs based on protection monitoring exercises conducted by partners and UNHCR.
+ 
+
+In El Salvador, the figure corresponds to Salvadorian deported population with possible protection needs. The group is estimated as the proportion of deported persons during January and December that reported insecurity/violence as reason for leaving the country, based on interviews conducted by the
+
+government upon return of the populations, multiplied by the total population deported during the period. The information comes from IOM based on data from DGME (Government), but the estimation is made by UNHCR.
+
+For Honduras and Mexico, there is no specific disclaimer in UNHCR Statistical reporting explaining how the estimates is generated.
+
+Reflecting mixed movements into official UNHCR figures comes a few challenges:
+ 
+
+1. Statistical vs Operational categories: Currently there is no unified standard for recording mixed movements, so they have been lumped in the ‘Other persons of concern’ (OoC). It might not be the best option for visibility and understanding of the complexity of different mixed movements.
+
+2. Reporting challenge: In the current system, it is not possible to report the number of assisted individuals for a population category unless that same category is first recorded as a ‘stock’.
+
+3. Political Sensitiveness: Problem with deportees or persons in transit with Protection needs that reflects on a population that was potentially not able to access protection support and/or asylum.
+ 
+
+4. Technical Challenge: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries.
+
+The scarcity and low quality of data in this context can justify the use of best available source as soon as this is correctly documented. According to the draft ‘UNHCR Statistical Quality Assurance Framework’: ‘UNHCR publishes statistics … including definitions of concepts, target populations, indicators and other terminology describing the output and its limitations for easier interpretation by users.
+
+How have mixed movements been reported? Mixed movements and people in transit have been categorized in the ‘Other persons of concern’ (OoC) category.
+
+Why do UNHCR report mixed movements and people in transit on ‘Other persons of concern’ category for NCA countries and Mexico? Initially, the reporting of mixed movements was made mainly for planning and programmatic purposes and not so much for statistical purposes. No category exists that clearly fits for mixed movements. Beside institutional/political background as to why it is done this way, which may be acceptable internally, it might prompt external readers to question the overall accuracy of our
+
+statistical reporting in NCA and beyond. It is also noted that categorizing those persons in need of international protection in OoCs is also problematic.
+
+What are the main limitations of on ‘Other persons of concern’ category for NCA countries and Mexico? There are questions related to (i) different sources of data and duplications (ii) harmonization of methods used to estimate these flows across countries; (iii) awareness / validation from Governments in the region around these figures; (iv) how to properly distinguish flows vs. stocks in UNHCR reporting both for statistical and programmatic (persons assisted) purposes.
+
+Why UNHCR report data with those above limitations? The scarcity and low quality of data in this context can justify the use of not totally appropriate of data. At same time, UNHCR fully committed to explain in the details our statistical procedure according to our ‘UNHCR Statistical Quality Assurance Framework’.
+
+Following the [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. Indeed, in the last submissions of Popdata, OoC data in NCA countries and Mexico has generated internal debates.
+
+To set up a system that would allow to both address operational demand and statistical consistency, the following plan of action is suggested below for discussion:
+
+1. Develop and validate specific operational reporting categories for mixed movement (table at the end).
+
+2. articulate the reporting of those categories between operational portal and Popdata. 
 
 ## IDP estimation in Colombia
+
+Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. 
+
+```{r}
+ 
+1429
+## Chart comparing UNHCR & IDMC figures
+
+```
+ 
+
+Total number of IDPs as of 31 December 2020 as per [IDMC](https://www.internal-displacement.org/countries/colombia): 4,922,000 
+ 
+
+This figure refers to people internally displaced since 1985 by the armed conflict in Colombia.  Pending further information and evidence, those who are in a situation of displacement, but progressing 
+
+towards a durable solution have not been included. IDMC includes some information on [potential caveheat](https://www.internal-displacement.org/sites/default/files/2021-05/figure-analysis-col_0.pdf)
+ 
+
+:::{.bg-blue}
+
+This figure was obtained from the RUV, which is maintained by the Colombian government’s UARIV. It is based on the total number of people displaced in Colombia according to the RUV. From this total number, IDMC subtracts registered IDPs who are deceased as well as those who have made progress towards a durable solution. Estimates of the latter are based on RUV’s vulnerability assessment, which evaluates IDPs’ vulnerabilities associated with housing, family reunification, access to identification documents, nutrition, health, education and income.  
+
+We have high confidence in this figure as Colombia’s RUV is the most comprehensive register of IDPs in the world. However, Colombian law holds that displaced people can declare themselves as such for up to two years after they become displaced. Combined with the administrative processes for reviewing cases, this can lead to a time lag between the start date of displacement and the time of its registration in the Colombian government’s database. For this reason, this figure is likely to be a slight underestimate and it may not represent the full extent of displacement in the country. This said, it provides the most representative and accurate picture of internal displacement to date in Colombia. 
+:::{.bg-blue}
+
+Maybe a revision of the IDPs in Colombia can change this figure using EGRIS IRIS - the Composite indicator measurement on HH Survey.  
+
+
 
 # Conclusion: the Importance of EGRIS Recommandations
 
@@ -1422,11 +1559,6 @@ UNHCR [Population Statistics Database](https://www.unhcr.org/refugee-statistics/
  *  __Venezuelan Displaced Abroad__: People of Venezuelan origin displaced across borders, and  who are likely to be in need of international protection under the criteria contained in the Cartagena Declaration, but who have not applied for asylum in the country in which they are present. Regardless of status, Venezuelans displaced abroad require protection against forced returns, and access to basic services. UNHCR and the International Organization for Migration work together with this population by leading the Regional Inter-Agency Coordination Platform, which is aimed at strengthening the protection dimensions and consistent responses across the region in line with human rights standards.
  
  
-
-
-
-
-
 Every year, UNHCR publish its Population Statistics Reference. it includes detailed statistics from each country on __Refugee Status Determination__. The data set contains not only reference by country of asylum and country of origin but also: 
 
  * Type of procedure: RSD conducted by UNHCR (U), the Government (G), or Jointly (J) by UNHCR and the Government.  
@@ -1440,6 +1572,659 @@ Every year, UNHCR publish its Population Statistics Reference. it includes detai
 :::
 
 ## Country Highlights 
+
+### Argentina
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Argentina"
+```
+
+Population of Concern
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Argentina**"}
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
+  group_by(Year, Population.type.label.short ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + # Adding reference to color
+  #geom_line(size = 1) + # Here we mention that it will be a line chart
+  
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+Solutions
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Argentina**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Argentina**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionarg.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionarg.html"),paste0(getwd(),"/graph/decisionarg.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
+
+### Brazil
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Brazil"
+```
+
+Population of Concern
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
+  group_by(Year, Population.type.label.short ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + # Adding reference to color
+  #geom_line(size = 1) + # Here we mention that it will be a line chart
+  
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+Solutions
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Brazil**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Brazil**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionbra.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionbra.html"),paste0(getwd(),"/graph/decisionbra.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
+
+
+
+
+### Canada
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Canada"
+```
+
+Population of Concern
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Canada**"}
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
+  group_by(Year, Population.type.label.short ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + # Adding reference to color
+  #geom_line(size = 1) + # Here we mention that it will be a line chart
+  
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+Solutions
+
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Canada**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Canada**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisioncan.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisioncan.html"),paste0(getwd(),"/graph/decisioncan.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
+
+### Chile
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Chile"
+```
+
+Population of Concern
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Chile**"}
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
+  group_by(Year, Population.type.label.short ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + # Adding reference to color
+  #geom_line(size = 1) + # Here we mention that it will be a line chart
+  
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Chile is similar to Ecuador ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+Solutions
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Chile**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Chile**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionchl.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionchl.html"),paste0(getwd(),"/graph/decisionchl.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
+
+
 
 ### Colombia
 
@@ -1602,17 +2387,16 @@ webshot::webshot(paste0(getwd(),"/decisioncol.html"),paste0(getwd(),"/graph/deci
 
 ```
 
-
-
-### Venezuela
+### Ecuador
 
 ```{r message=FALSE, warning=FALSE}
-thiscountry <- "Venezuela (Bolivarian Republic of)"
+thiscountry <- "Ecuador"
 ```
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Venezuela**"}
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -1631,195 +2415,29 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            ) + # here we configure that it will be bar chart+
   
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
+  scale_y_continuous( label = format_si()) + ## Format axis number
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
+  labs(title = "In Ecuador, a stable Refugee population ",
+       subtitle = "and a growing population of Venezuelan Abroad ",
        x = "",
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
 
+
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Venezuela**"}
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions  in Ecuador**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) )
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
-                                              #colour = Population.type
-                             )) +
-  geom_bar(stat = "identity",
-           position = "identity",
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"),
-        panel.grid.major.x  = element_blank(),
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-RSD activities are mostly for ..
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Venezuela**"}
-linksDecision.Ori.Procedure <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
-  ## Calculate grouped value for Origin to procedure..
-  group_by(CountryOriginName, ProcedureName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = CountryOriginName) %>%
-  rename(target = ProcedureName) 
-
-linksDecision.Procedure.Type <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ProcedureName, DecisionTypeName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = ProcedureName) %>%
-  rename(target = DecisionTypeName) 
-
-linksDecision.Type.Output <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(DecisionTypeName,Decision.output ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = DecisionTypeName) %>%
-  rename(target = Decision.output)
-
- 
-
-linksallDecision <- rbind(linksDecision.Ori.Procedure,
-                  linksDecision.Procedure.Type,
-                  linksDecision.Type.Output )
-
-
-
-# From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodesDecision <- data.frame(
-  name=c(as.character(linksallDecision$source), 
-         as.character(linksallDecision$target)) %>% unique()
-)
-
-# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
-linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
-
-# Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallDecision, 
-                              Nodes = nodesDecision,
-                              Source = "IDsource", 
-                              Target = "IDtarget",
-                              Value = "value", 
-                              NodeID = "name", 
-                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
-                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-# you save it as an html
-networkD3::saveNetwork(p, "decisionven.html")
-
-# you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionven.html"),paste0(getwd(),"/graph/decisionven.png"), vwidth = 800, vheight = 500)
-#getwd()
-#![ ](graph/decision.png)
-
-```
-
-### United States of America
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "United States of America"
-```
-
-
-Population of Concern
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in United States of America**"}
-
-thiscountry <- "United States of America"
-
-
-#Prepare data
-multiple_line_df <- end_year_population_totals_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
-  group_by(Year, Population.type.label.short ) %>%
-  summarise(Value2 = sum(Value) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + # Adding reference to color
-  #geom_line(size = 1) + # Here we mention that it will be a line chart
-  
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc"
-           ) + # here we configure that it will be bar chart+
-  
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-Solutions
-
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in United States of America**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 15) & 
-          Solution.type.label == "Resettlement arrivals" ) %>%
   group_by(Year, Solution.type.label ) %>%
   summarise(Value2 = sum(Value) )  %>%
   mutate(Year = as.integer(Year) ) 
@@ -1833,8 +2451,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            fill = "#0072bc" ) + # here we configure that it will be bar chart
   
   scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-15, lastyear+1)) +
-  #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
@@ -1842,7 +2460,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "Resettlement in the US has reached its lowest level ever ",
+  labs(title = "Key message for this chart ",
        subtitle = " ",
        x = "",
        y = "",
@@ -1851,9 +2469,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ```
 
 
+
+
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in United States of America**"}
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Ecuador**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -1923,10 +2543,172 @@ p <- networkD3::sankeyNetwork(Links = linksallDecision,
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
 # you save it as an html
-networkD3::saveNetwork(p, "decisionusa.html")
+networkD3::saveNetwork(p, "decisionecu.html")
 
 # you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionusa.html"),paste0(getwd(),"/graph/decisionusa.png"), vwidth = 800, vheight = 500)
+webshot::webshot(paste0(getwd(),"/decisionecu.html"),paste0(getwd(),"/graph/decisionecu.png"), vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
+
+### Mexico
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Mexico"
+```
+
+Population of Concern
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
+
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
+  group_by(Year, Population.type.label.short ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + # Adding reference to color
+  #geom_line(size = 1) + # Here we mention that it will be a line chart
+  
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+Solutions
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Mexico**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Key message for this chart ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Mexic0**"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, "decisionmex.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decisionmex.html"),paste0(getwd(),"/graph/decisionmex.png"), vwidth = 800, vheight = 500)
 #getwd()
 #![ ](graph/decision.png)
 
@@ -2097,16 +2879,22 @@ webshot::webshot(paste0(getwd(),"/decisionper.html"),paste0(getwd(),"/graph/deci
 ```
 
 
-### Ecuador
+
+
+### United States of America
 
 ```{r message=FALSE, warning=FALSE}
-thiscountry <- "Ecuador"
+thiscountry <- "United States of America"
 ```
+
 
 Population of Concern
 
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in United States of America**"}
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Ecuador**"}
+thiscountry <- "United States of America"
+
+
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -2125,46 +2913,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            ) + # here we configure that it will be bar chart+
   
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  xlim(c(lastyear-5, lastyear+1)) +
   scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "In Ecuador, a stable Refugee population ",
-       subtitle = "and a growing population of Venezuelan Abroad ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-
-Solutions
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions  in Ecuador**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
@@ -2178,12 +2929,48 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
+Solutions
 
+
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in United States of America**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 15) & 
+          Solution.type.label == "Resettlement arrivals" ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-15, lastyear+1)) +
+  #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Resettlement in the US has reached its lowest level ever ",
+       subtitle = " ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
 
 
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Ecuador**"}
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in United States of America**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2253,349 +3040,26 @@ p <- networkD3::sankeyNetwork(Links = linksallDecision,
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
 # you save it as an html
-networkD3::saveNetwork(p, "decisionecu.html")
+networkD3::saveNetwork(p, "decisionusa.html")
 
 # you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionecu.html"),paste0(getwd(),"/graph/decisionecu.png"), vwidth = 800, vheight = 500)
-#getwd()
-#![ ](graph/decision.png)
-
-```
-
-### Chile
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Chile"
-```
-
-Population of Concern
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Chile**"}
-#Prepare data
-multiple_line_df <- end_year_population_totals_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
-  group_by(Year, Population.type.label.short ) %>%
-  summarise(Value2 = sum(Value) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + # Adding reference to color
-  #geom_line(size = 1) + # Here we mention that it will be a line chart
-  
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc"
-           ) + # here we configure that it will be bar chart+
-  
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Chile is similar to Ecuador ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-
-Solutions
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Chile**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-RSD activities are mostly for ..
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Chile**"}
-linksDecision.Ori.Procedure <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
-  ## Calculate grouped value for Origin to procedure..
-  group_by(CountryOriginName, ProcedureName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = CountryOriginName) %>%
-  rename(target = ProcedureName) 
-
-linksDecision.Procedure.Type <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ProcedureName, DecisionTypeName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = ProcedureName) %>%
-  rename(target = DecisionTypeName) 
-
-linksDecision.Type.Output <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(DecisionTypeName,Decision.output ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = DecisionTypeName) %>%
-  rename(target = Decision.output)
-
- 
-
-linksallDecision <- rbind(linksDecision.Ori.Procedure,
-                  linksDecision.Procedure.Type,
-                  linksDecision.Type.Output )
-
-
-
-# From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodesDecision <- data.frame(
-  name=c(as.character(linksallDecision$source), 
-         as.character(linksallDecision$target)) %>% unique()
-)
-
-# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
-linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
-
-# Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallDecision, 
-                              Nodes = nodesDecision,
-                              Source = "IDsource", 
-                              Target = "IDtarget",
-                              Value = "value", 
-                              NodeID = "name", 
-                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
-                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-# you save it as an html
-networkD3::saveNetwork(p, "decisionchl.html")
-
-# you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionchl.html"),paste0(getwd(),"/graph/decisionchl.png"), vwidth = 800, vheight = 500)
-#getwd()
-#![ ](graph/decision.png)
-
-```
-
-### Brazil
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Brazil"
-```
-
-Population of Concern
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Brazil**"}
-#Prepare data
-multiple_line_df <- end_year_population_totals_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
-  group_by(Year, Population.type.label.short ) %>%
-  summarise(Value2 = sum(Value) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + # Adding reference to color
-  #geom_line(size = 1) + # Here we mention that it will be a line chart
-  
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc"
-           ) + # here we configure that it will be bar chart+
-  
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-Solutions
-
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Brazil**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-
-RSD activities are mostly for ..
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Brazil**"}
-linksDecision.Ori.Procedure <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
-  ## Calculate grouped value for Origin to procedure..
-  group_by(CountryOriginName, ProcedureName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = CountryOriginName) %>%
-  rename(target = ProcedureName) 
-
-linksDecision.Procedure.Type <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ProcedureName, DecisionTypeName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = ProcedureName) %>%
-  rename(target = DecisionTypeName) 
-
-linksDecision.Type.Output <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(DecisionTypeName,Decision.output ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = DecisionTypeName) %>%
-  rename(target = Decision.output)
-
- 
-
-linksallDecision <- rbind(linksDecision.Ori.Procedure,
-                  linksDecision.Procedure.Type,
-                  linksDecision.Type.Output )
-
-
-
-# From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodesDecision <- data.frame(
-  name=c(as.character(linksallDecision$source), 
-         as.character(linksallDecision$target)) %>% unique()
-)
-
-# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
-linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
-
-# Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallDecision, 
-                              Nodes = nodesDecision,
-                              Source = "IDsource", 
-                              Target = "IDtarget",
-                              Value = "value", 
-                              NodeID = "name", 
-                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
-                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-# you save it as an html
-networkD3::saveNetwork(p, "decisionbra.html")
-
-# you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionbra.html"),paste0(getwd(),"/graph/decisionbra.png"), vwidth = 800, vheight = 500)
+webshot::webshot(paste0(getwd(),"/decisionusa.html"),paste0(getwd(),"/graph/decisionusa.png"), vwidth = 800, vheight = 500)
 #getwd()
 #![ ](graph/decision.png)
 
 ```
 
 
-### Mexico
+
+### Venezuela
 
 ```{r message=FALSE, warning=FALSE}
-thiscountry <- "Mexico"
+thiscountry <- "Venezuela (Bolivarian Republic of)"
 ```
 
 Population of Concern
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Mexico**"}
-
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Venezuela**"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
@@ -2630,32 +3094,32 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
-
 Solutions
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Mexico**"}
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Venezuela**"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
   group_by(Year, Solution.type.label ) %>%
   summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
+  mutate(Year = as.integer(Year) )
 
 #Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
                                               #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
+                             )) +
+  geom_bar(stat = "identity",
+           position = "identity",
            fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
+
   scale_y_continuous( label = format_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"),
+        panel.grid.major.x  = element_blank(),
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
   labs(title = "Key message for this chart ",
@@ -2666,10 +3130,9 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ```
 
-
 RSD activities are mostly for ..
 
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Mexic0**"}
+```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Venezuela**"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -2739,337 +3202,10 @@ p <- networkD3::sankeyNetwork(Links = linksallDecision,
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
 # you save it as an html
-networkD3::saveNetwork(p, "decisionmex.html")
+networkD3::saveNetwork(p, "decisionven.html")
 
 # you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionmex.html"),paste0(getwd(),"/graph/decisionmex.png"), vwidth = 800, vheight = 500)
-#getwd()
-#![ ](graph/decision.png)
-
-```
-
-
-### Canada
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Canada"
-```
-
-Population of Concern
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Canada**"}
-#Prepare data
-multiple_line_df <- end_year_population_totals_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
-  group_by(Year, Population.type.label.short ) %>%
-  summarise(Value2 = sum(Value) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + # Adding reference to color
-  #geom_line(size = 1) + # Here we mention that it will be a line chart
-  
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc"
-           ) + # here we configure that it will be bar chart+
-  
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-Solutions
-
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Canada**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-
-
-RSD activities are mostly for ..
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Canada**"}
-linksDecision.Ori.Procedure <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
-  ## Calculate grouped value for Origin to procedure..
-  group_by(CountryOriginName, ProcedureName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = CountryOriginName) %>%
-  rename(target = ProcedureName) 
-
-linksDecision.Procedure.Type <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ProcedureName, DecisionTypeName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = ProcedureName) %>%
-  rename(target = DecisionTypeName) 
-
-linksDecision.Type.Output <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(DecisionTypeName,Decision.output ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = DecisionTypeName) %>%
-  rename(target = Decision.output)
-
- 
-
-linksallDecision <- rbind(linksDecision.Ori.Procedure,
-                  linksDecision.Procedure.Type,
-                  linksDecision.Type.Output )
-
-
-
-# From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodesDecision <- data.frame(
-  name=c(as.character(linksallDecision$source), 
-         as.character(linksallDecision$target)) %>% unique()
-)
-
-# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
-linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
-
-# Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallDecision, 
-                              Nodes = nodesDecision,
-                              Source = "IDsource", 
-                              Target = "IDtarget",
-                              Value = "value", 
-                              NodeID = "name", 
-                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
-                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-# you save it as an html
-networkD3::saveNetwork(p, "decisioncan.html")
-
-# you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisioncan.html"),paste0(getwd(),"/graph/decisioncan.png"), vwidth = 800, vheight = 500)
-#getwd()
-#![ ](graph/decision.png)
-
-```
-
-
-### Argentina
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Argentina"
-```
-
-Population of Concern
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Evolution over time of the different Population of Concern in Argentina**"}
-#Prepare data
-multiple_line_df <- end_year_population_totals_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5) ) %>%
-  group_by(Year, Population.type.label.short ) %>%
-  summarise(Value2 = sum(Value) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + # Adding reference to color
-  #geom_line(size = 1) + # Here we mention that it will be a line chart
-  
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc"
-           ) + # here we configure that it will be bar chart+
-  
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-
-Solutions
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Solutions in Argentina**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 5)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
-
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Key message for this chart ",
-       subtitle = " ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
-
-```
-
-
-RSD activities are mostly for ..
-
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Asylum Decision in Argentina**"}
-linksDecision.Ori.Procedure <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
-  ## Calculate grouped value for Origin to procedure..
-  group_by(CountryOriginName, ProcedureName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = CountryOriginName) %>%
-  rename(target = ProcedureName) 
-
-linksDecision.Procedure.Type <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ProcedureName, DecisionTypeName ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = ProcedureName) %>%
-  rename(target = DecisionTypeName) 
-
-linksDecision.Type.Output <- asylum_decisions_long %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(DecisionTypeName,Decision.output ) %>%
-  summarise(value = sum(Value) ) %>%
-  ## Rename variable
-  rename(source = DecisionTypeName) %>%
-  rename(target = Decision.output)
-
- 
-
-linksallDecision <- rbind(linksDecision.Ori.Procedure,
-                  linksDecision.Procedure.Type,
-                  linksDecision.Type.Output )
-
-
-
-# From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodesDecision <- data.frame(
-  name=c(as.character(linksallDecision$source), 
-         as.character(linksallDecision$target)) %>% unique()
-)
-
-# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
-linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
-
-# Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallDecision, 
-                              Nodes = nodesDecision,
-                              Source = "IDsource", 
-                              Target = "IDtarget",
-                              Value = "value", 
-                              NodeID = "name", 
-                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
-                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-# you save it as an html
-networkD3::saveNetwork(p, "decisionarg.html")
-
-# you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decisionarg.html"),paste0(getwd(),"/graph/decisionarg.png"), vwidth = 800, vheight = 500)
+webshot::webshot(paste0(getwd(),"/decisionven.html"),paste0(getwd(),"/graph/decisionven.png"), vwidth = 800, vheight = 500)
 #getwd()
 #![ ](graph/decision.png)
 
