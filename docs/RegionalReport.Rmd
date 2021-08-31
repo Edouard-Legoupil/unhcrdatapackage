@@ -38,7 +38,7 @@ lot-title: "Tables"
 # Change to false to remove list of figures
 lof: true
 # Set lof title, default: "List of Figures"
-lof-title: "Figures"
+lof-title: "List of Figures"
 # If you include any <abbr> a list of abbreviations will be built.
 # Set lof title, default: "List of Abbreviations"
 loa-title: "Acronyms"
@@ -250,7 +250,7 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 :::{.page-break}
 :::
 
-#  Key Figures
+#  Introduction: Key Figures
 
 Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
  
@@ -416,7 +416,7 @@ In the region, the total recorded solutions account for about __`r allsol.prop` 
 :::{.page-break}
 :::
 
-# Regional Analysis 
+# Part I: Regional Analysis 
 
 ## Population Flow  over time
 
@@ -890,7 +890,10 @@ webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/appl
 
 ```
 
-Most RSD activities occurs in the US.
+This chart shows the RSD procedures in Americas. Below the same graphs by country are reproduced.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes the stage of the RSD applications (the process is different in every country). The forth and last vertical line shows the results of the RSD applications.
+
+Most RSD activities occurs in the US. Most RSD applications comes from Venezuelan. Other relevant country of origin are: Nicaragua, Mexico, Honduras, Haiti, Guatemala, El Salvador and Cuba. Again the Central America countries are the most relevant.
+
 
 
 ```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Asylum Country in 2020**"}
@@ -929,6 +932,9 @@ topasyl <-  asylum_decisions %>%
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
   geom_hline(yintercept = 0, size = 0.7, colour = "#333333") 
 ```
+
+
+ 
 
 Most RSD applications comes from Venezuelan
 
@@ -1131,7 +1137,7 @@ webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decisio
 :::{.page-break}
 :::
 
-# Analysis of Situation 
+# Part II: Analysis of Situation 
 
 
 ![ ](media/image_hand.jpg)
@@ -1274,9 +1280,9 @@ data %>%
 ```
 
 
-# Challenges on Refugee and IDP Statistics
+# Part III: Challenges on Refugee and IDP Statistics
 
-## Demographic Breakdown
+## Using Survey to get demographic Breakdown
 
 
 Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for __`r lastyear`__ show a balance between sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
