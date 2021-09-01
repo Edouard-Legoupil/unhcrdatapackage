@@ -1518,12 +1518,7 @@ Reflecting mixed movements into official UNHCR figures comes some challenges:
 Following the ?????? [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. To set up a system that would allow to both address operational demand and statistical consistency, it could be both needed to develop and validate specific operational reporting categories for mixed movement  and to articulate the reporting of those categories between [UNHCR operational portal for Central America](https://data.unhcr.org/es/situations/cam) and UNHCR Official Statistical Reporting. 
 
 
-## Temporary Protected Status in USA
 
-From 2011 through 2013, UNHCR included new recipients of Temporary Protected Status (TPS) in the USA Annual Statistical Reporting (ASR). This reporting practice ended as of 2015, when the U.S. Government, without explanation, declined to share TPS data with UNHCR for 2014 reporting purposes. The decision was not revisited subsequently, and UNHCR Washington ceased making requests for TPS data from that time onward.  
-In March 2021, the U.S. Secretary of Homeland Security announced TPS designations for Venezuela and Myanmar, and expanded TPS eligibility for Syrians. 
-
-There is UNHCR internal debate to decide if to reintroduce the data and how. Once a decision is taken on which populations to include, then the decision can follow as to whether to include the entire TPS stock population, or only the new recipient of TPS grants during the reporting period. A final decision will also need to be taken on whether to include U.S. TPS recipients as “refugees” or any other suitable ASR tab/category for instance “refugee-like situations”.
 
 
 
