@@ -269,13 +269,16 @@ Charts and graphs in the reports have been prepared to be potentially re-used wh
 
 ## Forcible Displacement
 
-Almost one in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+One in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
 
 As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
 
  * Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ and Venezuelan Displaced Abroad __`r totalvda`__, accounting for a total of __`r totaldis`__.  
+ 
  * Total Internally Displaced Persons __`r totalIDP`__.
+ 
  * Total Statelessness __`r totalsta`__.
+ 
  * Total Other of Concerns __`r totalooc`__. 
 
 
@@ -1512,7 +1515,11 @@ Reflecting mixed movements into official UNHCR figures comes some challenges:
   
   4. __Technical Challenge__: Because of the methods used to estimate those population categories, there are inherent risk of duplication of records between the different type of flows and across countries. 
 
-Following the [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. To set up a system that would allow to both address operational demand and statistical consistency, it could be both needed to develop and validate specific operational reporting categories for mixed movement  and to articulate the reporting of those categories between [UNHCR operational portal for Central America](https://data.unhcr.org/es/situations/cam) and UNHCR Official Statistical Reporting. 
+Following the ?????? [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. To set up a system that would allow to both address operational demand and statistical consistency, it could be both needed to develop and validate specific operational reporting categories for mixed movement  and to articulate the reporting of those categories between [UNHCR operational portal for Central America](https://data.unhcr.org/es/situations/cam) and UNHCR Official Statistical Reporting. 
+
+
+
+
 
 
 ## IDP Population Estimation in Colombia
@@ -1599,8 +1606,8 @@ This figure refers to people internally displaced since 1985 by the armed confli
 :::{.bg-blue}
 This figure was obtained from the RUV, which is maintained by the Colombian government’s UARIV. It is based on the total number of people displaced in Colombia according to the RUV. From this total number, IDMC subtracts registered IDPs who are deceased as well as those who have made progress towards a durable solution. Estimates of the latter are based on RUV’s vulnerability assessment, which evaluates IDPs’ vulnerabilities associated with housing, family reunification, access to identification documents, nutrition, health, education and income.  
 
-We have high confidence in this figure as Colombia’s RUV is the most comprehensive register of IDPs in the world. However, Colombian law holds that displaced people can declare themselves as such for up to two years after they become displaced. Combined with the administrative processes for reviewing cases, this can lead to a time lag between the start date of displacement and the time of its registration in the Colombian government’s database. For this reason, this figure is likely to be a slight underestimate and it may not represent the full extent of displacement in the country. This said, it provides the most representative and accurate picture of internal displacement to date in Colombia. 
-:::{.bg-blue}
+???We have high confidence in this figure as Colombia’s RUV is the most comprehensive register of IDPs in the world. However, Colombian law holds that displaced people can declare themselves as such for up to two years after they become displaced. Combined with the administrative processes for reviewing cases, this can lead to a time lag between the start date of displacement and the time of its registration in the Colombian government’s database. For this reason, this figure is likely to be a slight underestimate and it may not represent the full extent of displacement in the country. This said, it provides the most representative and accurate picture of internal displacement to date in Colombia. 
+:::
 
 A revision of the IDPs in Colombia can change this figure using [EGRIS IRIS](https://www.unhcr.org/statistics/unhcrstats/600188974/international-recommendations-internally-displaced-persons-statistics-iris.html) - the Composite indicator measurement on HH Survey could be an opportunity.  
 
@@ -1608,8 +1615,8 @@ A revision of the IDPs in Colombia can change this figure using [EGRIS IRIS](htt
 
 # Conclusion: the Importance of EGRIS Recommandations
 
-UNHCR Americas has 88 locations in 22 countries in Americas. 14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern country (Chile, Bolivia, Uruguay, Paraguay). Panama and USA produced data for many Caribbean and Central Americas counties. Normally the 'UNHCR data focal point' is a Information Management staff, nevertheless sometime is 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from National Statistics Office. Data from National Statistics Office is the top statistics solution. National Statistics Office are/should be an independent body of the state aims to produce and disseminate statistics. Normally data are produced and disseminate semi-annually by the authority. In the half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
-The relation between UNHCR and National Statistics Offices needed to be strengthen. Only half of UNHCR national has meeting with National Statics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics. 
+UNHCR Americas has 88 locations in 22 countries in the Americas. 14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern countries (Chile, Bolivia, Uruguay, Paraguay). Panama and the USA produced data for many Caribbean and Central Americas countries. Normally the 'UNHCR data focal point' is a 'Information Management' staff, nevertheless sometimes coming from 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from the National Statistics Office. Data from the National Statistics Office is the top statistics solution. The National Statistics Office is/should be an independent body of the state it aims to produce and disseminate official statistics. Normally data is produced and disseminated semi-annually by the authority. In half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
+The relation between UNHCR and National Statistics Offices needs to be strengthened. Only half of UNHCR nationals have met with National Statistics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics. 
 
 The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
 
