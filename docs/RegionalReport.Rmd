@@ -403,13 +403,13 @@ patchwork +
   theme(legend.position = "none") +
   plot_annotation(
     title = 'Significant increase in Key Figures',
-    subtitle = 'The percentage of Other of concerns (OOC) and Venezuelans Displaced Abroad (VDA) \n increased in comparison to the 2019',
+    subtitle = 'Other of concerns category has \n increased in comparison to the 2019',
     caption = 'Source: UNHCR.org/refugee-statistics '
   )
 
 ```
 
- 
+Other of concerns also includes specific host population and is now included in UNHCR Statistics.  
 
 ## Solutions 
 
@@ -473,7 +473,7 @@ The Americas hosts 20 per cent of the total persons of concern to UNHCR in the w
 
 There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of __`r lastyear`__ stood at __`r totalsta`__. 
 
-The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than ????1% of the population of concern were lumped together as "Other".
+The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
 
 ```{r pop-flows, message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Population origin-destination in the region**"}
 chords <- end_year_population_totals %>%
@@ -515,7 +515,7 @@ circos.track(track.index = 1,
 
 
 
-### A new statistical category
+### Venezuelan Displaced Abroad: a specific statistical category
 
 
 Venezuelan Displaced Abroad is relatively new category for UNHCR.
@@ -642,7 +642,7 @@ The evolution in the last 20 years shows a significant increase in Internally Di
 #        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
-## Violence  & Displacement
+## (Perception of...) Violence  & Displacement
 
 ### Proportion of people who left their countries
 
@@ -780,7 +780,7 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
 
 Considering together Refugees, Asylum Seekers and Venezuelan Displaced Abroad, Colombia is the first country with more population, especially for the presence of Venezuelan Displaced Abroad (1,729,537). United States of America has the second largest host has a big component of Refugees (340,844) and Asylum Seekers (997,998). The third country, Peru has a great component of Venezuelan Displaced Abroad (515,039).
 
-The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over __`r totalIDP`__). 
+
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Other Displacement**"}
 #Prepare data2
@@ -845,6 +845,9 @@ Colombia OOC is the sum of Other persons of concern (500,000) and Host Community
 :::{.page-break}
 :::
 ## Refugee Status Determination (RSD) Processing 
+
+
+As part of statistics collection, UNHCR collate information on Refugee Status Determination (RSD) applications. It is important to recall that those represents "applications" (not applicants!) and therefore interpretation of those data should account for potential built-in double count, specifically for the US where multiple procedures can actually be initiated in parallel 
 
 ### How are RSD applications done?
 
@@ -927,10 +930,10 @@ p <- networkD3::sankeyNetwork(Links = linksallApplication,
 #p
 
 # you save it as an html
-networkD3::saveNetwork(p, "application.html")
+networkD3::saveNetwork(p, "graph/application.html")
 
 # you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/application.png"), vwidth = 800, vheight = 500)
+webshot::webshot(paste0(getwd(),"/graph/application.html"),paste0(getwd(),"/graph/application.png"), vwidth = 800, vheight = 500)
 #getwd()
 # ![ ](graph/application.png)
 
@@ -938,12 +941,14 @@ webshot::webshot(paste0(getwd(),"/application.html"),paste0(getwd(),"/graph/appl
 
 This chart shows the RSD procedures in Americas. Below the same graphs by country are reproduced.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes the stage of the RSD applications (the process is different in every country). The forth and last vertical line shows the results of the RSD applications.
 
- Most RSD applications comes from Venezuelan. Other relevant country of origin are: Nicaragua, Mexico, Honduras, Haiti, Guatemala, El Salvador and Cuba. Again the Central America countries are the most relevant. Most RSD activities occurs in the US. Traditionally, Canada has relevant RSD activities as well. Mexico, Brazil and Costa Rica become for different reason important is RSD applications.
+
+
+Most RSD applications comes from Venezuelan. Other relevant country of origin are: Nicaragua, Mexico, Honduras, Haiti, Guatemala, El Salvador and Cuba. Again the Central America countries are the most relevant. Most RSD activities occurs in the US. Traditionally, Canada has relevant RSD activities as well. Mexico, Brazil and Costa Rica become for different reason important is RSD applications.
  
 
 
 
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Asylum Country in 2020**"}
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small",  fig.cap = "**| Number of Status Determination Decision par Asylum Country in 2020**"}
 topasyl <-  asylum_decisions %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -958,35 +963,33 @@ topasyl <-  asylum_decisions %>%
   mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
          GlobalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
   filter(TotalDecided  != 0) %>%
-  filter(TotalDecided  > 1000)  
+  filter(TotalDecided  > 1000)  %>%
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"))
+  
+#topasyl1 <-  topasyl  %>%
   
  
-  ggplot(topasyl, aes(y = TotalDecided, 
+rsdasyl <-  ggplot(topasyl, aes(y = TotalDecided, 
              x = reorder(CountryAsylumName, TotalDecided))) + 
   scale_y_continuous(labels = format_si()) +
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
-  labs(title = "Number of RSD application per country of asylum in 2020",
-       subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
+  labs(#title = "Number of RSD application  in 2020",
+       subtitle = "Per country of asylum",
        x = " ", 
-       y = " ",
-       caption = "Source: UNHCR.org/refugee-statistics " ) +
-  unhcRstyle::unhcr_theme(base_size = 11) +
+       y = " "  ) +
+  unhcRstyle::unhcr_theme(base_size = 9) +
   theme(#axis.text.x = element_blank(),
     # legend.position = "none",
     
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") 
-```
-
-
- 
-
-Most RSD applications comes from Venezuelan, Colombians and Central America people. Honduras, El Salvador, Nicaragua, Guatemala, Mexico Cuba and Haiti people together have more RSD applications than Venezuelan.
-
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Origin Country in 2020**"}
+  
+##############################################################
+##############################################################
+  
 topOrigin <-  asylum_decisions %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -1001,31 +1004,55 @@ topOrigin <-  asylum_decisions %>%
   mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
          GlobalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided) %>%
   filter(TotalDecided  != 0) %>%
-  filter(TotalDecided  > 1000)  
+  filter(TotalDecided  > 1000)  %>%
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))
   
  
-ggplot(topOrigin, aes(y = TotalDecided, 
+rsdorigin <- ggplot(topOrigin, aes(y = TotalDecided, 
              x = reorder(CountryOriginName, TotalDecided))) + 
   scale_y_continuous(labels = format_si()) +
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
-  labs(title = "Number of RSD application per country of Origin in 2020",
-       subtitle = "Only Countries of Origin with more than 1,000 application during 2020",
+  labs(#title = "Number of RSD application per country of Origin in 2020",
+       subtitle = "Per country of Origin",
        x = " ", 
-       y = " ",
-       caption = "Source: UNHCR.org/refugee-statistics " ) +
-  unhcRstyle::unhcr_theme(base_size = 11) +
+       y = " " ) +
+  unhcRstyle::unhcr_theme(base_size = 9) +
   theme(#axis.text.x = element_blank(),
     # legend.position = "none",
     
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
     panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
+
+
+##########################
+#joining charts
+##################
+library(patchwork)
+patchworkRSDa <- rsdasyl + rsdorigin
+patchworkRSDa +
+  #unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  plot_annotation(
+    title = 'Number of RSD applications in 2020  ',
+   # subtitle = ' ',
+    caption = 'Source: UNHCR.org/refugee-statistics - Only Countries of Origin with more than 1,000 application during 2020 -\n Because of different types of procedure, data from the US may includes multiple applications per applicants compared to other countries '
+  )  
+  
 ```
+
+
+ 
+
+Most RSD applications comes from Venezuelan, Colombians and Central America people. Honduras, El Salvador, Nicaragua, Guatemala, Mexico Cuba and Haiti people together have more RSD applications than Venezuelan.
+
 
 ### What are the levels of recognition rate?
 
+
+Looking at the decision process, we can see that the level of recognition varies widely depending both on the country of Asylum and on the country of Origin. Brazil, Ecuador, Peru and Mexico have higher Refugee Recognition Rate (RRR) in Americas.
 
 :::{.bg-blue}
 The __Refugee Recognition Rate (RRR)__ divides the number of asylum-seekers granted Convention refugee status by the total number of accepted (Convention and, where relevant, humanitarian status) and rejected cases. 
@@ -1035,52 +1062,64 @@ For the purpose of international comparability, UNHCR only uses these two recogn
 :::
 
 
-Looking at the decision process, we can see that the level of recognition varies widely depending on the country of Asylum. Brazil, Ecuador, Peru and Mexico have higher Refugee Recognition Rate (RRR) in Americas.
-
-
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Asylum in 2020**"}
-ggplot(topasyl, aes(y = RefugeeRecognitionRate, 
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=7, size="small",  fig.cap = "**| Refugee Recognition rate in 2020**"}
+recoasyl <- ggplot(topasyl, aes(y = RefugeeRecognitionRate, 
              x = reorder(CountryAsylumName, RefugeeRecognitionRate))) + 
   scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
-  labs(title = "Recognition rate per country of asylum in 2020",
-       subtitle = "Only Countries of asylum with more than 1,000 application during 2020",
+  labs(#title = " ",
+       subtitle = "Per country of asylum",
        x = " ", 
-       y = " ",
-       caption = "Source: UNHCR.org/refugee-statistics " ) +
-  unhcRstyle::unhcr_theme(base_size = 11) +
+       y = " " ) +
+  unhcRstyle::unhcr_theme(base_size = 9) +
   theme(#axis.text.x = element_blank(),
-    # legend.position = "none",
-    
+     # legend.position = "none",
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
-    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+    panel.grid.major.y = element_blank()) + ### changing grid line  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
-```
 
-And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. Central America people have good Refugee Recognition Rate (especially Honduras, Nicaragua, El Salvador, Cuba, Guatemala, Haiti and Mexico).
+## Filter top 10 
 
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Recognition rate by Country of Origin in 2020**"}
-ggplot(topOrigin, aes(y = RefugeeRecognitionRate, 
+#topOrigin <- topOrigin <- 
+
+recoorigin <- ggplot(topOrigin, aes(y = RefugeeRecognitionRate, 
              x = reorder(CountryOriginName, RefugeeRecognitionRate))) + 
   scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
-  labs(title = "Recognition rate per country of Origin in 2020",
-       subtitle = "Only Countries of Origin with more than 1,000 application during 2020",
+  labs(#title = " ",
+       subtitle = "Per country of Origin ",
        x = " ", 
-       y = " ",
-       caption = "Source: UNHCR.org/refugee-statistics " ) +
-  unhcRstyle::unhcr_theme(base_size = 11) +
+       y = " " ) +
+  unhcRstyle::unhcr_theme(base_size = 9) +
   theme(#axis.text.x = element_blank(),
-    # legend.position = "none",
-    
+     # legend.position = "none",
     panel.grid.major.x = element_line(color = "#cbcbcb"), 
-    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
+    panel.grid.major.y = element_blank() ) + ### changing grid line  
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") 
+
+##########################
+#joining charts
+##################
+library(patchwork)
+patchworkRSD <- recoasyl + recoorigin
+patchworkRSD +
+ # unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  plot_annotation(
+    title = 'Refugee Recognition Rate Comparison in 2020 ',
+   # subtitle = ' ',
+    caption = 'Source: UNHCR.org/refugee-statistics - Only Countries of Origin with more than 1,000 application during 2020 -\n Because of different types of procedure, data from the US may includes multiple applications per applicants compared to other countries  '
+  )
+
+
 ```
+
+And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. Central America people have good Refugee Recognition Rate (especially Honduras, Nicaragua, El Salvador, Cuba, Guatemala, Haiti and Mexico).
+
 
 
 ### How are RSD decisions being issued?
@@ -1174,10 +1213,10 @@ p <- networkD3::sankeyNetwork(Links = linksallDecision,
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
 # you save it as an html
-networkD3::saveNetwork(p, "decision.html")
+networkD3::saveNetwork(p, "graph/decision.html")
 
 # you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decision.png"), vwidth = 800, vheight = 500)
+webshot::webshot(paste0(getwd(),"/graph/decision.html"),paste0(getwd(),"/graph/decision.png"), vwidth = 800, vheight = 500)
 #getwd()
 #![ ](graph/decision.png)
 
@@ -1188,11 +1227,7 @@ webshot::webshot(paste0(getwd(),"/decision.html"),paste0(getwd(),"/graph/decisio
 
 # PART II: Analysis of Situation 
 
-
-![ ](media/image_hand.jpg)
-
-
-## Impact of Covid-19, a dramatic drop of solutions 
+## Impact of Covid-19, a dramatic restriction of solutions 
 
 Since the first case of COVID-19 was recorded in December 2019, more than 170 million people worldwide have contracted the virus. The Americas is among the most affected regions  
 
@@ -1273,7 +1308,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 As the second-largest displacement crisis in the world, refugees and migrants from Venezuela now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
 
-Inside Venezuela (Bolivarian Republic of), UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
+Inside Venezuela, UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
 
 ```{r ,message=FALSE, warning=FALSE, comment = "", fig.height=8, size="small", fig.cap = "**| Venezuelan Diaspora Abroad**"}
 ## Map showing the venezuelan exodus
@@ -1284,6 +1319,8 @@ allVene <- end_year_population_totals_long.asy %>%
            CountryAsylumCode != "VEN") %>%
   group_by( CountryAsylumName, Latitude, Longitude) %>%
   summarise(Value2 = sum(Value) )  %>%
+  mutate(Label = format(round(Value2, -3),  big.mark=","))  %>%
+ # mutate(Label2 = unhcRstyle::format_si()Value2)  %>%  # unhcRstyle::format_si(100000000)
   arrange(desc(Value2)) %>%
   head(10) # %>%  
   ## Change to robinson  world projection
@@ -1304,7 +1341,7 @@ ggplot(data = world) +
              alpha = 0.6, colour = "red") +
   scale_size_area( max_size = 20) +
  #   coord_sf(crs = "+proj=robin") +
-  labs(title = "Top 10 Countries hosting Venezuelans of Concern",
+  labs(title = "All Top 10 Countries hosting Venezuelans of Concern are in the Americas",
        subtitle = "As of 2020",
        x = "",
        y = "",
@@ -1373,6 +1410,12 @@ data %>%
 :::{.page-break}
 :::
 # PART III: Challenges on Refugee and IDP Statistics
+
+As for any statistics, it is important to understand the limitation behind the numbers. 
+
+![ ](media/image_hand.jpg)
+
+In this last chapter, we discuss 3 mains statistical challenges specific to the region.
 
 ## Using Survey to get demographic Breakdown
 
@@ -1518,13 +1561,11 @@ Reflecting mixed movements into official UNHCR figures comes some challenges:
 Following the ?????? [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. To set up a system that would allow to both address operational demand and statistical consistency, it could be both needed to develop and validate specific operational reporting categories for mixed movement  and to articulate the reporting of those categories between [UNHCR operational portal for Central America](https://data.unhcr.org/es/situations/cam) and UNHCR Official Statistical Reporting. 
 
 
-
-
-
-
 ## IDP Population Estimation in Colombia
 
 Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. 
+
+The evolution in the last 20 years shows a significant increased in Internally Displaced Persons, especially in Colombia (8,252,788 over `r totalIDP` in the region). 
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE}
 ## Chart comparing UNHCR & IDMC figures 
