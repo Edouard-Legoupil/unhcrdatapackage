@@ -315,3 +315,16 @@ rhub::check_for_cran()
 rhub::check()
 
 
+#### Check IDMC Colombia
+ckanr::ckanr_setup("https://data.humdata.org")
+
+ckanr::package_search("name:idmc-idp-data-for-colombia", as = "table") %>% 
+  purrr::pluck("results", "resources", 1, "url") %>% 
+  purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
+
+read_sans_hxl <- function(file, ...) {
+  hdrs <- readr::read_csv(file, n_max = 0) %>% names()
+  
+  readr::read_csv(file, col_names = hdrs, skip = 2, ...)
+}
+displacement_data_colombia <- read_sans_hxl("data-raw/displacement_data_colombia.csv")
