@@ -1526,7 +1526,7 @@ ckanr::ckanr_setup("https://data.humdata.org")
 
 ckanr::package_search("name:idmc-idp-data-for-colombia", as = "table") %>% 
   purrr::pluck("results", "resources", 1, "url") %>% 
-  purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
+  purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path(here::here("data-raw"), fs::path_file(.))))
 
 read_sans_hxl <- function(file, ...) {
   hdrs <- readr::read_csv(file, n_max = 0) %>% names()
@@ -1534,16 +1534,13 @@ read_sans_hxl <- function(file, ...) {
   readr::read_csv(file, col_names = hdrs, skip = 2, ...)
 }
 
-displacement_data_colombia <- read_sans_hxl("data-raw/displacement_data_colombia.csv")
+displacement_data_colombia <- read_sans_hxl(here::here("data-raw/displacement_data_colombia.csv"))
+names(displacement_data_colombia)[4] <- "IDMC"
 ```
 
 
 ```{r  message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| IDP Population estimates in Colombia**"}
- 
 
-
-
-names(displacement_data_colombia)[4] <- "IDMC"
 #names(unhcr_idp_Colombia)
 unhcr_idp_Colombia <-   end_year_population_totals_long.asy[end_year_population_totals_long.asy$CountryOriginCode == "COL" &
                                                               end_year_population_totals_long.asy$Population.type =="IDP" ,
@@ -1586,7 +1583,7 @@ ggplot(unhcr_idp_Colombia2,
         panel.grid.minor = element_blank()    ) +
   ## and the chart labels
   labs(title = "IDP Population Estimate in Colombia ",
-       subtitle = "Comparison between Data Source",
+       subtitle = "Comparison between Data Sources",
        x = "",
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics & IDMC ") 
@@ -1597,13 +1594,9 @@ ggplot(unhcr_idp_Colombia2,
 Total number of IDPs as of 31 December 2020 as per [IDMC](https://www.internal-displacement.org/countries/colombia): 4,922,000 
  
 
-This figure refers to people internally displaced since 1985 by the armed conflict in Colombia.  Pending further information and evidence, those who are in a situation of displacement, but progressing 
-
-towards a durable solution have not been included. IDMC includes some information on [potential caveheat](https://www.internal-displacement.org/sites/default/files/2021-05/figure-analysis-col_0.pdf)
+This figure refers to people internally displaced since 1985 by the armed conflict in Colombia.  Pending further information and evidence, those who are in a situation of displacement, but progressing towards a durable solution have not been included. Though IDMC includes some information on [potential caveheat](https://www.internal-displacement.org/sites/default/files/2021-05/figure-analysis-col_0.pdf)
  
-
 :::{.bg-blue}
-
 This figure was obtained from the RUV, which is maintained by the Colombian government’s UARIV. It is based on the total number of people displaced in Colombia according to the RUV. From this total number, IDMC subtracts registered IDPs who are deceased as well as those who have made progress towards a durable solution. Estimates of the latter are based on RUV’s vulnerability assessment, which evaluates IDPs’ vulnerabilities associated with housing, family reunification, access to identification documents, nutrition, health, education and income.  
 
 We have high confidence in this figure as Colombia’s RUV is the most comprehensive register of IDPs in the world. However, Colombian law holds that displaced people can declare themselves as such for up to two years after they become displaced. Combined with the administrative processes for reviewing cases, this can lead to a time lag between the start date of displacement and the time of its registration in the Colombian government’s database. For this reason, this figure is likely to be a slight underestimate and it may not represent the full extent of displacement in the country. This said, it provides the most representative and accurate picture of internal displacement to date in Colombia. 
