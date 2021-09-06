@@ -256,16 +256,7 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 
 One in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
 
-As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes:          
-
- * Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ and Venezuelan Displaced Abroad __`r totalvda`__, accounting for a total of __`r totaldis`__.  
- 
- * Total Internally Displaced Persons __`r totalIDP`__.
- 
- * Total Statelessness __`r totalsta`__.
- 
- * Total Other of Concerns __`r totalooc`__. 
-
+As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes: (i) Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ and Venezuelan Displaced Abroad __`r totalvda`__, accounting for a total of __`r totaldis`__; (ii) Total Internally Displaced Persons __`r totalIDP`__ (iii) Total Statelessness __`r totalsta`__ & (iv) Total Other of Concerns __`r totalooc`__. 
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
 
@@ -279,6 +270,20 @@ group <- c("IDPs",
            "Refugees",
            "Other of Concerns",
            "Stateless")
+
+valuelastyearworld <- c(as.integer(sum(end_year_population_totals_long.asy[  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="IDP" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="VDA" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="ASY" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="REF" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[ end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="OOC" , 
+                                     c("Value")])),
+           as.integer(sum(end_year_population_totals_long.asy[  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="STA" , 
+                                     c("Value")]))       )
+
 valuelastyear <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="IDP" , 
                                      c("Value")])),
            as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="VDA" , 
@@ -318,6 +323,7 @@ colorPopType <- c("#01b399", # IDP
 datatree <- data.frame(group,
                    valuelastyear,
                    value2019,
+                   valuelastyearworld,
                    colorPopType)
  
 # treemap
@@ -355,7 +361,28 @@ plastyear <- ggplot(datatree,
        y = "",
        caption = " ")
 
-
+plastyearworld <- ggplot(datatree, 
+       aes(area = valuelastyearworld, 
+           fill = group, 
+           label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDPs" = "#01b399",
+                                     "Venezuelan Abroad"="#000000",
+                                     "Asylum Seekers" = "#f9ec00",
+                                     "Refugees" = "#0171ba",
+                                     "Other of Concerns" ="#153764",
+                                     "Stateless"="#f04a60")) +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(#title = "Population of Concerns in the Americas ",
+        subtitle = paste0( lastyear, ", a total of ", format(round(sum(datatree$valuelastyearworld), -3),  big.mark=","), " "),
+       x = "",
+       y = "",
+       caption = " ")
 
 
 p2019 <- ggplot(datatree, 
@@ -389,6 +416,17 @@ patchwork +
   plot_annotation(
     title = 'Significant increase in Key Figures',
     subtitle = 'Other of concerns category has \n increased in comparison to the 2019',
+    caption = 'Source: UNHCR.org/refugee-statistics '
+  )
+
+
+patchwork1 <- plastyear + plastyearworld
+patchwork1 +
+  unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  plot_annotation(
+    title = ' ',
+    subtitle = 'Americas',
     caption = 'Source: UNHCR.org/refugee-statistics '
   )
 
