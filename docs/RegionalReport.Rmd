@@ -1421,9 +1421,16 @@ To respond to this specific situation, UNHCR has developed a massive [scale-up p
 
 :::{.page-break}
 :::
-# PART III: Discussions on official Refugee and IDP Statistics in the Americas
+
+  # PART III: Challenges on Refugee and IDP Statistics
 
 As for any statistics, it is important to understand the limitation behind the numbers. 
+
+## Americas UNHCR statistical system 
+
+UNHCR Americas has 88 locations in 22 countries in the Americas. 14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern countries (Chile, Bolivia, Uruguay, Paraguay). Panama and the USA produced data for many Caribbean and Central Americas countries. Normally the 'UNHCR data focal point' is a 'Information Management' staff, nevertheless sometimes coming from 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from the National Statistics Office. Data from the National Statistics Office is the top statistics solution. The National Statistics Office is/should be an independent body of the state it aims to produce and disseminate official statistics. Normally data is produced and disseminated semi-annually by the authority. In half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
+The relation between UNHCR and National Statistics Offices needs to be strengthened. Only half of UNHCR nationals have met with National Statistics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics.
+
 
 ![ ](media/image_hand.jpg)
 
@@ -1611,6 +1618,13 @@ Reflecting mixed movements into official UNHCR figures comes some challenges:
 Following the ?????? [10 points plan of actions on mixed movements](https://www.unhcr.org/the-10-point-plan-in-action.html), UNHCR needs to improve its capacity to report mixed movements. The ‘Other persons of concern’ statistical category might need to be broken down into operational sub-categories to facilitate the understanding of the complexity of different mixed movements and enable better programmatic response. To set up a system that would allow to both address operational demand and statistical consistency, it could be both needed to develop and validate specific operational reporting categories for mixed movement  and to articulate the reporting of those categories between [UNHCR operational portal for Central America](https://data.unhcr.org/es/situations/cam) and UNHCR Official Statistical Reporting. 
 
 
+  
+  NICARAGUA
+
+In the ASR 2020 reported 72,458 Nicaraguans, the 1 per cent of population (According to the 2019 revision of the World Population Prospects, Nicaragua has a population of 6,465,501). According with UNHCR data: 8711 Refugees, 62082 RSD and 1665 Other of concern. Nevertheless, for categorization issues others 37,801 Nicaraguans are reported in ASR in other categories for a total of 110,259 Nicaraguans (1.7 per cent of the total population of Nicaragua). For instance, in RSD of Costa Rica there are 39,500 unknown country of origin, more than half of them are Nicaraguan cases of persons who have started their asylum process by making an initial phone appointment but have not yet been able to formalize their applications.
+
+  
+  
 ## IDP Population Estimation in Colombia
 
 Colombia IDP are the Internally Displaced Persons (IDP) is the 17 per cent of world's IDP (8,253,000 over 48,557,439). This is the official figure. This is a historical and cumulative figure of IDPs is being used nowadays. 
@@ -1703,19 +1717,64 @@ This figure was obtained from the RUV, which is maintained by the Colombian gove
 A revision of the IDPs in Colombia can change this figure using [EGRIS IRIS](https://www.unhcr.org/statistics/unhcrstats/600188974/international-recommendations-internally-displaced-persons-statistics-iris.html) - the Composite indicator measurement on HH Survey could be an opportunity.  
 
 
+                       
+# Future remarks: the Importance of EGRIS Recommandations for the official statistics
 
-# Conclusion: the Importance of EGRIS Recommandations
+ 
+The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees. United Nations Statistical Commission is high level statistical authority in world.
 
-UNHCR Americas has 88 locations in 22 countries in the Americas. 
+                       
+:::{.bg-blue}                       
+The official statistics is the only way to secure quality and durable statics on refugee data.The EGRIS book International Recommendations on Refugee Statistics (IRRS) describes the role of official statistics on refugee data, please see chapter 6.
+
+In the world many low and middle-income countries draw their data on refugees from records maintained by UNHCR. In Americas the refugees data are manly produced by the governments. 
+There are different sources and multiple approaches available for the collection of refugee data such as
+administrative registers, population censuses, surveys or combinations of these. Each data collection method has its own strengths and limitations
+
+In Americas Ministries, departments or agencies (e.g. CONARE), are usually the competent authorities for maintaining administrative registers of refugees and asylum seekers. Often, their legal basis and rationale do not include statistical requirements. In these cases, efforts to collaborate and gain cooperation between NSOs and relevant agencies can become problematic. The restrictive laws of ministries that may take precedence over statistics laws, can reduce the power of National Statistics Offices (NSOs) and interrupt the production of statistics. National statistical systems are usually, but not always, directed and coordinated by a NSO
+
+A well-functioning system for production of statistics requires a stable and transparent legal basis which
+can guarantee the independence, integrity and accountability of statistical authorities according to the
+Fundamental Principles of Official Statistics
+
+However, refugee statistics can be very politically sensitive. Dissemination is the time when the statistical product is released to users. It represents one of the most important activities of the national statistical system. Dissemination should be viewed as the link between data availability and the use of statistics for policymaking purposes.
+
+National Statistics Offices (NSOs), empowered by law, can enter into data sharing arrangements with data producing agencies to collect, compile and harmonize data, or to collaborate and share data. These may include informal or formal agreements such as: working groups; Memoranda of Understanding (MOU); consultative committees; interagency committees; and a system of focal points between NSOs and data producers. Such partnerships require mutual understanding of priorities, sharing of expertise, consistency in the integration, interpretation and use of data, and continuous communication about data stewardship, with a feedback loop between the agencies concerned when problems arise so that the issues can be resolved between the agencies concerned.
+
+Sharing data with NSOs may be perceived as risky by immigration authorities, as data may be
+misrepresented in statistical publications. To mitigate the risk of data interpretation issues, it is important to implement oversight structures around the use of the data. 
+
+National statistical systems produce the official data according with the international statistical system. National statistical  systems vary from country to country, depending on the national administrative and governance structures, the evolution of the country’s statistical system, and the state of development of and resources available for official statistics. 
+
+More broadly, national statistical systems are guided by a number of international and regional standards,
+some of which are mandatory and some advisory. These are intended to coordinate the production of
+statistics internationally, to improve the comparability of statistics between countries, and to maintain
+quality standards.
 
 
-![UNHCR Presence in the Americas](media/mapAmerica2.png) 
+Challenges to harmonizing refugee statistics
 
-14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern countries (Chile, Bolivia, Uruguay, Paraguay). Panama and the USA produced data for many Caribbean and Central Americas countries. Normally the 'UNHCR data focal point' is a 'Information Management' staff, nevertheless sometimes coming from 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from the National Statistics Office. Data from the National Statistics Office is the top statistics solution. The National Statistics Office is/should be an independent body of the state it aims to produce and disseminate official statistics. Normally data is produced and disseminated semi-annually by the authority. In half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
-The relation between UNHCR and National Statistics Offices needs to be strengthened. Only half of UNHCR nationals have met with National Statistics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics. 
+The development of comparable refugee statistics across time and space is an important issue for planning
+and policymaking, public debate, the international community, as well as both countries of origin and
+host countries. The production of international refugee statistics calls for the adoption of harmonized and
+standardized definitions, variables and concepts. The nature of this process is complex and faces various
+difficulties and limitations, which include:
+a) Limitations concerning determination of population size owing to use of different data sources and
+different definitions.
+b) Limitations concerning international comparability and the need to harmonize.
 
-The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
 
+To improve access to refugee statistics at the national level:
+
+i) Include refugee publications and statistical databases on national statistics websites.
+ii) Provide training to the media and users in the concepts and definitions relating to refugee and
+asylum statistics.
+iii) Improve access to data by making anonymised databases accessible to users, where possible
+supporting open microdata in secure data enclaves.
+:::
+                       
+                       
+                       
 
 :::{.bg-blue}
 On the 7th and 8th of June 2021, UNHCR together with CENTROESTAD-SICA convened a [virtual workshop](https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in-central-americas/), held in Spanish, to raise awareness on the international recommendations and discuss their implementation in the among statistics office of the Central American Integration System (SICA). Among the take away from the workshop, it appears that there is space to introduce questions in the next census and survey of NSOs: Four National Statistics Offices have committed to introduce questions on internal displacement in their forthcoming census or household surveys.
