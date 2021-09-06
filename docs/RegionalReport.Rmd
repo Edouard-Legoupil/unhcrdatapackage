@@ -56,9 +56,6 @@ editor_options:
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-```
-
-```{r packages, include=FALSE, message=FALSE, warning=FALSE}
 
 using <- function(...) {
     libs <- unlist(list(...))
@@ -246,28 +243,16 @@ acled.data <- acled.api::acled.api(email.address = Sys.getenv("EMAIL_ADDRESS"), 
 wb_data$yearctr <- paste0(wb_data$CountryAsylumCode, wb_data$Year)
 acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 
+## Let's get an average over the last 3 years...
+
+
 ```
 
 
 :::{.page-break}
 :::
 
-# Introduction & Key Figures 
-
-As part of its [Data Transformation Strategy](https://www.unhcr.org/publications/operations/5dc2e4734/data-transformation-strategy-2020-2025.html), UNHCR has established, in each of its Bureau DIMA, a team of data analyst and statistician. This report is the first edition of a projected annual series, looking at detailed analysis of all publicly available figures.
-
-Charts and graphs in the reports have been prepared to be potentially re-used whenever needed in Factsheet or talking points. The team is also available to revise or build on existent content below.
-
-![UNHCR Presence in the Americas](media/mapAmerica2.png) 
-..
- 
-
-```{r}
-# ![UNHCR Presence in the Americas](media/image_mapAmerica.jpg)
-#  ![UNHCR Presence in the Americas](media/image_mapAmerica2.jpg) 
-```
-
-## Forcible Displacement
+# Summary: Key Regional Figures
 
 One in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
 
@@ -411,9 +396,9 @@ patchwork +
 
 Other of concerns also includes specific host population and is now included in UNHCR Statistics.  
 
-## Solutions 
 
-Finding solutions that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
+
+Finding __solutions__ that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
 
  * Total Returned Refugees __`r totalret`__ 
  * Total Returned IDP __`r totalretipd`__
@@ -423,41 +408,15 @@ Finding solutions that enable refugees and other forcibly displaced people to li
 
 In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR.
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Ressettlement Trends in the last 25 years in the America**"}
-#Prepare data
-multiple_line_df <- solutions_long.asy %>%
-  filter(solutions_long.asy$UNHCRBureau == thisbureau  &
-           Year > (lastyear - 30) & 
-          Solution.type.label == "Resettlement arrivals" ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
 
-#Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = format_si()) + ## Format axis number
-  xlim(c(lastyear-30, lastyear+1)) +
-  #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+:::{.page-break}
+:::
 
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Resettlement Opportunities have reached its lowest level ever ",
-       subtitle = "Trends in the past 30 years for the Americas Region ",
-       x = "",
-       y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
+# About this report
 
-``` 
+As part of its [Data Transformation Strategy](https://www.unhcr.org/publications/operations/5dc2e4734/data-transformation-strategy-2020-2025.html), UNHCR has established, in each of its Bureau DIMA, a team of data analyst and statistician. This report is the first edition of a projected annual series, looking at detailed analysis of all publicly available figures.
+
+Charts and graphs in the reports have been prepared using a fully [reproducible analysis](https://unhcr-americas.github.io/reproducibility/index.html#1) approach so that they can be easily re-used whenever needed in Factsheet or talking points. The team is also available to revise or build on existent content below.
 
 
 :::{.page-break}
@@ -467,7 +426,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ## Population Flow  over time
 
-### Most movement remains south-to-south
+Most movement remains south-to-south
 
 The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
 
@@ -498,6 +457,7 @@ chords <- end_year_population_totals %>%
 circlize::chordDiagram(chords,
              self.link = 1,
              #grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
+              # Most movement remains south-to-south
              annotationTrack = "grid") #,
             # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
 
@@ -515,14 +475,9 @@ circos.track(track.index = 1,
 
 
 
-### Venezuelan Displaced Abroad: a specific statistical category
 
+The evolution in the last 20 years shows a significant increase in Internally Displaced Persons, specifically in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in __`r lastyear`__, __`r totalooc`__). 
 
-Venezuelan Displaced Abroad is relatively new category for UNHCR.
-
-:::{.bg-blue}
-According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.
-:::
 
 ```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
 
@@ -621,8 +576,11 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
 
 ```
 
-The evolution in the last 20 years shows a significant increase in Internally Displaced Persons, specifically in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in __`r lastyear`__, __`r totalooc`__). 
 
+:::{.bg-blue}
+__Venezuelan Displaced Abroad is relatively new category for UNHCR__
+According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.
+:::
 
 ```{r message = FALSE, warning = FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Bar Evolution over time of the different Population of Concern**"}
 # # Plot
@@ -642,83 +600,7 @@ The evolution in the last 20 years shows a significant increase in Internally Di
 #        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
-## (Perception of...) Violence  & Displacement
 
-### Proportion of people who left their countries
-
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
-end_year_population_totals_long.ori %>%
-  filter(Population.type  %in% c("REF","ASY","VDA") & 
-           Year == lastyear &
-           UNHCRBureau  == thisbureau &
-           !(is.na(UNHCRBureau))) %>%
-  group_by(CountryOriginName, CountryOriginCode) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  #mutate( value3 =  format_si(Value2)) %>%
-  arrange(desc(Value2)) %>%
-  head(10) %>% 
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
-  
-    ## Now merge with WB Data 
-  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
-  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
-  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
-  geom_col(fill = "#0072BC") +
-  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
-             color = "black", hjust = "inward") +
-  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
-  labs(x = NULL, 
-       y = NULL,
-       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
-       subtitle =     "As a proportion of the national population of that country of origin",
-         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
-situation.  Population refers to total resident population in a given country in a given year.") +
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 8) + ## Insert UNHCR Style
-  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-        panel.grid.major.y = element_blank()) ### changing grid line that should appear
-```
-
-
-
-:::{.bg-blue}
-Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
-:::
-
-### Incidence of violence per country
-
-```{r  message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
-
-acled.data %>% 
-  filter(year == lastyear) %>% 
-  group_by(yearctr,country ) %>% 
-  count(country, wt = fatalities) %>% 
-    left_join(wb_data %>% select("SP.POP.TOTL","yearctr"), by = c(  "yearctr"    )) %>%
-  ## get fatalities Percentage
-  mutate(fatalities_per_100k = round(  (n/as.numeric(SP.POP.TOTL)*100000) , 1)) %>% 
-  top_n(10, fatalities_per_100k) %>% 
-  ## Now the chart 
-  ggplot(aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
-  geom_col(fill = "#0072BC") +
-  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), 
-            hjust = "inward", 
-            color = "black") +
-  scale_x_continuous(labels = scales::label_comma()) +
-  labs(x = "Fatalities per 100,000 population", 
-       y = " ", 
-       title = "Conflict-related deaths per 100,000 population",
-       caption = "Source: Acled Data - https://acleddata.com") +
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 8)   + ## Insert UNHCR Style
-  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-        panel.grid.major.y = element_blank()) ### changing grid line that should appear
-```
-
-This graph shows the 'Conflict-related deaths per 100,000 population'. The five most violent countries in Americas are from the central America: Belize, Honduras, Mexico, El Salvador and Guatemala. Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality according with mejor socio-ecomomic index. ACLED collects real-time data of all reported political violence.
- 
-
-
- 
  
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Largest Countries of Asylum**"}
 
@@ -844,14 +726,24 @@ Colombia OOC is the sum of Other persons of concern (500,000) and Host Community
 
 :::{.page-break}
 :::
-## Refugee Status Determination (RSD) Processing 
+## Displacement & (Perception of...) Violence 
+
+
+
+ 
+
+
+:::{.page-break}
+:::
+
+## Processing of Refugee Status Determination (RSD)  
 
 
 As part of statistics collection, UNHCR collate information on Refugee Status Determination (RSD) applications. It is important to recall that those represents "applications" (not applicants!) and therefore interpretation of those data should account for potential built-in double count, specifically for the US where multiple procedures can actually be initiated in parallel 
 
-### How are RSD applications done?
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Asylum Application in 2020**"}
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Asylum Application in 2020**"}
 ## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
 
 htmlwidgets::onStaticRenderComplete('$.each( document.getElementsByTagName("svg"), function( index, value ){value.setAttribute("viewBox", null);});')
@@ -1049,7 +941,7 @@ patchworkRSDa +
 Most RSD applications comes from Venezuelan, Colombians and Central America people. Honduras, El Salvador, Nicaragua, Guatemala, Mexico Cuba and Haiti people together have more RSD applications than Venezuelan.
 
 
-### What are the levels of recognition rate?
+
 
 
 Looking at the decision process, we can see that the level of recognition varies widely depending both on the country of Asylum and on the country of Origin. Brazil, Ecuador, Peru and Mexico have higher Refugee Recognition Rate (RRR) in Americas.
@@ -1122,8 +1014,7 @@ And for the minority of Venezuelan that can go through this process, the recogni
 
 
 
-### How are RSD decisions being issued?
-????? This chart shows the RSD decisions are issued in Americas.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes how it is issued the RSD applications. The forth line the results of the RSD applications.And the fifth and last vertical line shows where the asylium is issued.  
+This chart shows the RSD decisions are issued in Americas.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes how it is issued the RSD applications. The forth line the results of the RSD applications.And the fifth and last vertical line shows where the asylium is issued.  
 
 Most RSD applications comes from Venezuelan (first line on the left). Most of the asylium activity is issued by USA, Canada, Brazil, Costa Rica and Mexico
 
@@ -1303,10 +1194,88 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
  The Resettlement solution decreased in the last 5 years. In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR (In the details: Total Returned Refugees __`r totalret`__, Total Returned IDP __`r totalretipd`__, Total Resettlement __`r totalrst `__ and Total Naturalisation  __`r totalnat`__)
  
 
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Ressettlement Trends in the last 25 years in the America**"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(solutions_long.asy$UNHCRBureau == thisbureau  &
+           Year > (lastyear - 30) & 
+          Solution.type.label == "Resettlement arrivals" ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  xlim(c(lastyear-30, lastyear+1)) +
+  #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Resettlement Opportunities have reached its lowest level ever ",
+       subtitle = "Trends in the past 30 years for the Americas Region ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+``` 
+
+
 
 ## Venezuela Situation
 
-As the second-largest displacement crisis in the world, refugees and migrants from Venezuela now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
+As the second-largest displacement crisis in the world, refugees and migrants from Venezuela now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. 
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)**"}
+end_year_population_totals_long.ori %>%
+  filter(Population.type  %in% c("REF","ASY","VDA") & 
+           Year == lastyear &
+           UNHCRBureau  == thisbureau &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(CountryOriginName, CountryOriginCode) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
+  
+    ## Now merge with WB Data 
+  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
+  mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) %>% 
+  ggplot(aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
+  geom_col(fill = "#0072BC") +
+  geom_label(aes(label = scales::percent(ref.part, accuracy = .01)),
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .01)) +
+  labs(x = NULL, 
+       y = NULL,
+       title = paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"),
+       subtitle =     "As a proportion of the national population of that country of origin",
+         caption = "Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
+situation.  Population refers to total resident population in a given country in a given year.") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8) + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+```
+
+
+
+:::{.bg-blue}
+Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
+:::
+
+To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
 
 Inside Venezuela, UNHCR protects and assists refugees and Venezuelan nationals. The latter is done in the framework of the Humanitarian Response Plan which targets 4.5 million persons in need. Primarily through the protection cluster and the cluster responsible for shelter, energy and non-food items, UNHCR’s coordination and operational efforts support people on-the-move, at risk of displacement, host communities, as well as limited numbers of spontaneous returns, especially in border areas and along key population movement routes.  
 
@@ -1362,6 +1331,49 @@ ggplot(data = world) +
 
 ## Central America
 
+
+
+
+```{r  message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
+
+acled.data %>% 
+  # filter(year == lastyear) %>% 
+  # group_by(yearctr,country ) %>% 
+  # count(country, wt = fatalities) %>% 
+  
+  ## better to do the average over the last 3 years...
+  filter(year %in% c(2018,2019,2020)) %>% 
+  group_by(country, iso3)  %>% 
+  count(country, wt = fatalities /3) %>% 
+  mutate( yearctr  = paste0(iso3, 2020))  %>% 
+  
+    left_join(wb_data %>% select("SP.POP.TOTL","yearctr"), by = c(  "yearctr"    )) %>%
+  ## get fatalities Percentage
+  mutate(fatalities_per_100k = round(  (n/as.numeric(SP.POP.TOTL)*100000) , 1)) %>% 
+  top_n(10, fatalities_per_100k) %>% 
+  ## Now the chart 
+  ggplot(aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
+  geom_col(fill = "#0072BC") +
+  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), 
+            hjust = "inward", 
+            color = "black") +
+  scale_x_continuous(labels = scales::label_comma()) +
+  labs(x = "Fatalities per 100,000 population", 
+       y = " ", 
+       title = "The five most violent countries in Americas are from the central America",
+       subtitle = "Average Conflict-related deaths per 100,000 population, 2018-2020",
+       caption = "Source: Acled Data - https://acleddata.com") +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)   + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+```
+
+Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality.
+
+As already discussed in the section on violence, those patterns of violence are part of the [root causes](https://www.hsdl.org/?view&did=856841) for the important migration from those region to the United States.
+
+
 ```{r ,message=FALSE, warning=FALSE, cache = TRUE, comment = "", fig.height=3, size="small", ig.cap = "**| People from Central America in the USA**"}
 
 pobp_dict <- jsonlite::fromJSON("https://data.census.gov/api/search/metadata/item?id=ACSPUMS1Y2019.POBP")
@@ -1405,11 +1417,11 @@ data %>%
         panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear) 
 ```
-
+To respond to this specific situation, UNHCR has developed a massive [scale-up plan of its operation](https://reporting.unhcr.org/node/21855)
 
 :::{.page-break}
 :::
-# PART III: Challenges on Refugee and IDP Statistics
+# PART III: Discussions on official Refugee and IDP Statistics in the Americas
 
 As for any statistics, it is important to understand the limitation behind the numbers. 
 
@@ -1533,11 +1545,49 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
+
+## Opportunities for monthly statistcal reporting in the United States
+
+
+
 ## Other of Concerns in El Salvador, Honduras, Guatemala & Mexico
 
 In Honduras, El Salvador, Guatemala and Mexico, The situation is characterized by a complex mixed movement, including flows of thousands of persons transiting towards the north, with a significant - though difficult to quantify - number of persons with possible protection needs. Currently, "_Mixed movements_" and "_people in transit_" have been categorized in the ‘Other persons of concern’ (OoC) category. The following summarizes the OoC figures (2018-2020) for El Salvador and Honduras, Guatemala and Mexico.  
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| OOC in Central America**"}
+
+ooc_central <-   end_year_population_totals_long.asy[end_year_population_totals_long.asy$CountryAsylumCode %in% c("GTM", "SLV", "HND", "MEX") &
+                                                              end_year_population_totals_long.asy$Population.type =="OOC" ,
+                                                            c("CountryAsylumCode","CountryAsylumName", "Year", "Value") ]  %>%
+  group_by(Year, CountryAsylumCode, CountryAsylumName ) %>%
+  summarise(Value = sum(Value) ) 
+
+ggplot(ooc_central, 
+       aes(x=Year, 
+           y=Value, 
+           color=CountryAsylumName, 
+           linetype=CountryAsylumName)) +
+  stat_smooth(size=1.5, 
+              method = "loess", 
+              level = 0.95, 
+              fullrange = TRUE, 
+              se = FALSE) + 
+  # scale_color_manual(values=c(IDMC="orange",
+  #                             UNHCR="sienna" )) + 
+  
+  scale_y_continuous( label = format_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(#legend.position = "none"
+        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()    ) +
+  ## and the chart labels
+  labs(title = "Other of Concerns in Central America ",
+       subtitle = "..",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics & IDMC ") 
 
 ```
  
@@ -1656,7 +1706,12 @@ A revision of the IDPs in Colombia can change this figure using [EGRIS IRIS](htt
 
 # Conclusion: the Importance of EGRIS Recommandations
 
-UNHCR Americas has 88 locations in 22 countries in the Americas. 14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern countries (Chile, Bolivia, Uruguay, Paraguay). Panama and the USA produced data for many Caribbean and Central Americas countries. Normally the 'UNHCR data focal point' is a 'Information Management' staff, nevertheless sometimes coming from 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from the National Statistics Office. Data from the National Statistics Office is the top statistics solution. The National Statistics Office is/should be an independent body of the state it aims to produce and disseminate official statistics. Normally data is produced and disseminated semi-annually by the authority. In half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
+UNHCR Americas has 88 locations in 22 countries in the Americas. 
+
+
+![UNHCR Presence in the Americas](media/mapAmerica2.png) 
+
+14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern countries (Chile, Bolivia, Uruguay, Paraguay). Panama and the USA produced data for many Caribbean and Central Americas countries. Normally the 'UNHCR data focal point' is a 'Information Management' staff, nevertheless sometimes coming from 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from the National Statistics Office. Data from the National Statistics Office is the top statistics solution. The National Statistics Office is/should be an independent body of the state it aims to produce and disseminate official statistics. Normally data is produced and disseminated semi-annually by the authority. In half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
 The relation between UNHCR and National Statistics Offices needs to be strengthened. Only half of UNHCR nationals have met with National Statistics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics. 
 
 The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees.  
@@ -1665,6 +1720,9 @@ The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/e
 :::{.bg-blue}
 On the 7th and 8th of June 2021, UNHCR together with CENTROESTAD-SICA convened a [virtual workshop](https://www.unhcr.org/blogs/egris-international-recommendations-dissemination-in-central-americas/), held in Spanish, to raise awareness on the international recommendations and discuss their implementation in the among statistics office of the Central American Integration System (SICA). Among the take away from the workshop, it appears that there is space to introduce questions in the next census and survey of NSOs: Four National Statistics Offices have committed to introduce questions on internal displacement in their forthcoming census or household surveys.
 :::
+
+
+
 
 
 :::{.page-break}
