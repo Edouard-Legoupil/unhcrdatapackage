@@ -56,7 +56,10 @@ editor_options:
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+```
 
+
+```{r setuppack, include=FALSE, message=FALSE, warning=FALSE}
 using <- function(...) {
     libs <- unlist(list(...))
     req <- unlist(lapply(libs,require,character.only = TRUE))
