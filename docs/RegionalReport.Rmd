@@ -255,14 +255,13 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 :::{.page-break}
 :::
 
-# Summary: Key Regional Figures
+# SUMMARY: Key Regional Figures
 
 One in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
 
 As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes: (i) Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ and Venezuelan Displaced Abroad __`r totalvda`__, accounting for a total of __`r totaldis`__; (ii) Total Internally Displaced Persons __`r totalIDP`__ (iii) Total Statelessness __`r totalsta`__ & (iv) Total Other of Concerns __`r totalooc`__. 
 
 The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
-
 
 ```{r, message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Population of Concern in 2020 in the Americas**"}
 
@@ -341,6 +340,32 @@ datatree <- data.frame(group,
 #             )
 
 ## Treemapify
+
+plastyear1 <- ggplot(datatree, 
+       aes(area = valuelastyear, 
+           fill = group, 
+           label = group)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDPs" = "#01b399",
+                                     "Venezuelan Abroad"="#000000",
+                                     "Asylum Seekers" = "#f9ec00",
+                                     "Refugees" = "#0171ba",
+                                     "Other of Concerns" ="#153764",
+                                     "Stateless"="#f04a60")) +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = "Population of Concerns in the Americas ",
+        subtitle = paste0( lastyear, ", a total of ", format(round(sum(datatree$valuelastyear), -3),  big.mark=","), " "),
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics  ")
+
+plastyear1
+
 plastyear <- ggplot(datatree, 
        aes(area = valuelastyear, 
            fill = group, 
@@ -411,33 +436,31 @@ p2019 <- ggplot(datatree,
        y = "",
        caption = " ")
 
-library(patchwork)
-patchwork <- p2019 + plastyear
-patchwork +
-  unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
-  theme(legend.position = "none") +
-  plot_annotation(
-    title = 'Significant increase in Key Figures',
-    subtitle = 'Other of concerns category has \n increased in comparison to the 2019',
-    caption = 'Source: UNHCR.org/refugee-statistics '
-  )
-
-
-patchwork1 <- plastyear + plastyearworld
-patchwork1 +
-  unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
-  theme(legend.position = "none") +
-  plot_annotation(
-    title = ' ',
-    subtitle = 'Americas',
-    caption = 'Source: UNHCR.org/refugee-statistics '
-  )
+# library(patchwork)
+# patchwork <- p2019 + plastyear
+# patchwork +
+#   unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
+#   theme(legend.position = "none") +
+#   plot_annotation(
+#     title = 'Significant increase in Key Figures',
+#     subtitle = 'Other of concerns category has \n increased in comparison to the 2019',
+#     caption = 'Source: UNHCR.org/refugee-statistics '
+#   )
+# 
+# 
+# patchwork1 <- plastyear + plastyearworld
+# patchwork1 +
+#   unhcRstyle::unhcr_theme(base_size = 8)  +  ## Insert UNHCR Style
+#   theme(legend.position = "none") +
+#   plot_annotation(
+#     title = ' ',
+#     subtitle = 'Americas',
+#     caption = 'Source: UNHCR.org/refugee-statistics '
+#   )
 
 ```
 
 Other of concerns also includes specific host population and is now included in UNHCR Statistics.  
-
-
 
 Finding __solutions__ that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
 
@@ -453,7 +476,7 @@ In the region, the total recorded solutions account for about __`r allsol.prop` 
 :::{.page-break}
 :::
 
-# About this report
+# INTRODUCTION: About this report
 
 As part of its [Data Transformation Strategy](https://www.unhcr.org/publications/operations/5dc2e4734/data-transformation-strategy-2020-2025.html), UNHCR has established, in each of its Bureau DIMA, a team of data analyst and statistician. This report is the first edition of a projected annual series, looking at detailed analysis of all publicly available figures.
 
@@ -476,11 +499,13 @@ There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and
 The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
 
 ```{r pop-flows, message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Population origin-destination in the region**"}
+library(tidyverse)
+library(dplyr)
 chords <- end_year_population_totals %>%
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
   filter(coa_region == thisbureau & Year == lastyear) %>% 
-  mutate(across(REF:VDA, ~replace_na(as.numeric(.), 0)),
+  dplyr::mutate(across(REF:VDA, ~replace_na(as.numeric(.), 0)),
          total = REF + ASY + VDA + IDP  + STA + OOC,
          # Lump together factor levels into "other"
          CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = total),
@@ -1463,21 +1488,16 @@ To respond to this specific situation, UNHCR has developed a massive [scale-up p
 :::{.page-break}
 :::
 
-  # PART III: Challenges on Refugee and IDP Statistics
+# PART III: Challenges on Refugee and IDP Statistics
 
-As for any statistics, it is important to understand the limitation behind the numbers. 
 
-## Americas UNHCR statistical system 
-
-UNHCR Americas has 88 locations in 22 countries in the Americas. 14 UNHCR national offices produce the population data of UNHCR about 44 countries of Americas. 3 UNHCR national offices produced data for more countries. For instance, Argentina produced data for all southern countries (Chile, Bolivia, Uruguay, Paraguay). Panama and the USA produced data for many Caribbean and Central Americas countries. Normally the 'UNHCR data focal point' is a 'Information Management' staff, nevertheless sometimes coming from 'Protection' or 'Registration'. The sources of data (for Refugees and RSD figures) are mostly from the government/Refugees Authority. Sometimes from UNHCR software ProGress, and rarely from the National Statistics Office. Data from the National Statistics Office is the top statistics solution. The National Statistics Office is/should be an independent body of the state it aims to produce and disseminate official statistics. Normally data is produced and disseminated semi-annually by the authority. In half of the country we need the approval of the government to disseminate the final figures (after UNHCR transformation and consolidation).
-The relation between UNHCR and National Statistics Offices needs to be strengthened. Only half of UNHCR nationals have met with National Statistics Offices. Most of the country do not have IDPs estimation and only 2 National Statistics Offices are part of Expert Group on Refugee and IDP Statistics.
 
 
 ![ ](media/image_hand.jpg)
 
 In this last chapter, we discuss 3 mains statistical challenges specific to the region.
 
-## Using Survey to get demographic Breakdown
+## Using Survey to get demographic profiles
 
 
 Often demographic data are not available in Americas. Available demographic data for persons of concern in the region for __`r lastyear`__ show a balance between sex. Of the total population, more than 30 per cent are children below the age of 18 and around the 5 per cent are elderly 60 years and above. More than 35 per cent are between 18-59 years.
@@ -1759,8 +1779,19 @@ A revision of the IDPs in Colombia can change this figure using [EGRIS IRIS](htt
 
 
                        
-# Future remarks: the Importance of EGRIS Recommandations for the official statistics
+# CONCLUSION: the Importance of EGRIS International Recommandations
 
+As for any statistics, it is important to understand the limitation behind the numbers. 11 UNHCR country offices and 3 multi-country offices (Washington, Panama & Buenos Aires) are in charge of gathering the population data of UNHCR about 44 countries of Americas. Although the 'Statistics focal point' within each operation is often an 'Information Management Office', there are situations where it can be either a 'Protection' or 'Registration' officer. 
+
+It is only in a minority of situation that Statistical data within the country are sources through  National Statistics Office (NSO), as often information on Refugees and RSD figures are directly provided by Refugees Authority within the local administration. Indeed, discussions have been established with National Statistics Offices in less than half of the operations. In half of the country, once data have been transformed and consolidated in the format used for its needs,  UNHCR needs to obtain the approval of the government to disseminate the final figures.
+
+It is of strategic important to strengthen or build relations between UNHCR and National Statistics Offices for the following reasons: 
+
+ * NSOs are indeed a key component of the Sustainable Development Goal Framework and remains the authority in charge of providing the data.
+
+ * NSO's are the main stakeholder to mobilize in order to include Refugees and Forcibly Displaced Persons within their National Household Survey programmes.
+ 
+ * Many population estimations request advanced procedures and techniques that can hardly be implemented without the expertise available within NSO
  
 The  [Expert Group on Refugee and IDP Statistics (EGRIS)](https://ec.europa.eu/eurostat/web/expert-group-on-refugee-statistics),  in  which  UNHCR  belongs  to  the  steering committee, has released the [International Recommendations on Refugee Statistics (IRRS)](https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-004) , which were adopted by the United Nations Statistical Commission during its 2018 session and is a strong Last updated: February 2021 reference for refugee statistics reporting methodologies. UNHCR supports National Statistical Offices (NSO) to build capacity to report on forced displacement in countries that currently lack disaggregated data on refugees. United Nations Statistical Commission is high level statistical authority in world.
 
@@ -1774,9 +1805,7 @@ administrative registers, population censuses, surveys or combinations of these.
 
 In Americas Ministries, departments or agencies (e.g. CONARE), are usually the competent authorities for maintaining administrative registers of refugees and asylum seekers. Often, their legal basis and rationale do not include statistical requirements. In these cases, efforts to collaborate and gain cooperation between NSOs and relevant agencies can become problematic. The restrictive laws of ministries that may take precedence over statistics laws, can reduce the power of National Statistics Offices (NSOs) and interrupt the production of statistics. National statistical systems are usually, but not always, directed and coordinated by a NSO
 
-A well-functioning system for production of statistics requires a stable and transparent legal basis which
-can guarantee the independence, integrity and accountability of statistical authorities according to the
-Fundamental Principles of Official Statistics
+A well-functioning system for production of statistics requires a stable and transparent legal basis which can guarantee the independence, integrity and accountability of statistical authorities according to the Fundamental Principles of Official Statistics
 
 However, refugee statistics can be very politically sensitive. Dissemination is the time when the statistical product is released to users. It represents one of the most important activities of the national statistical system. Dissemination should be viewed as the link between data availability and the use of statistics for policymaking purposes.
 
@@ -1828,7 +1857,7 @@ On the 7th and 8th of June 2021, UNHCR together with CENTROESTAD-SICA convened a
 :::{.page-break}
 :::
 
-# Annexes: Glossary of UNHCR Statistical Concept
+# ANNEXES: Glossary of UNHCR Statistical Concept
 
 Forcibly Displaced Population data are sent to UNHCR Country Offices by member states, usually through national institutions responsible for data production in the area of refugee and asylum (National Statistical Offices, Ministry of Interior, Ministry of Justice, and Administrative Tribunals). D. When a country does not report refugee figures to UNHCR, estimations based on positive decisions on asylum applications from previous years are used. 
 
