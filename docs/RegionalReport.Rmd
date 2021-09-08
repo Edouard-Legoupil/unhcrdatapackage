@@ -130,11 +130,40 @@ allpop <- format(round(sum(end_year_population_totals_long.asy[end_year_populati
                                      c("Value")])
              , -3),  big.mark=",")
 
-allpop.prop <- format(round( sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==lastyear  , 
+allpop.prop <- format(round( sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau & 
+                                                                       end_year_population_totals_long.asy$Year ==lastyear  , 
                                      c("Value")]) /
                                sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$Year ==lastyear  , 
-                                     c("Value")]) * 100
-             , 1),  big.mark=",")
+                                     c("Value")]) 
+             , 1)* 100,  big.mark=",")
+
+
+allpop.prop.ref <- format(round( sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau & 
+                                                                           end_year_population_totals_long.asy$Year ==lastyear &
+                                       end_year_population_totals_long.asy$Population.type %in% c("REF") , 
+                                     c("Value")]) /
+                               sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$Year ==lastyear &
+                                       end_year_population_totals_long.asy$Population.type %in% c("REF") , 
+                                     c("Value")]) 
+             , 3)* 100,  big.mark=",")
+
+allpop.prop.asy <- format(round( sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau & 
+                                                                           end_year_population_totals_long.asy$Year ==lastyear &
+                                       end_year_population_totals_long.asy$Population.type %in% c("ASY") , 
+                                     c("Value")]) /
+                               sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$Year ==lastyear &
+                                       end_year_population_totals_long.asy$Population.type %in% c("ASY") , 
+                                     c("Value")]) 
+             , 3)* 100,  big.mark=",")
+
+allpop.prop.idp <- format(round( sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &
+                                                                           end_year_population_totals_long.asy$Year ==lastyear &
+                                       end_year_population_totals_long.asy$Population.type %in% c("IDP") , 
+                                     c("Value")]) /
+                               sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$Year ==lastyear &
+                                       end_year_population_totals_long.asy$Population.type %in% c("IDP") , 
+                                     c("Value")]) 
+             , 3)* 100,  big.mark=",")
 
 
 totaldis <- format(round(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==lastyear &
@@ -184,11 +213,30 @@ totalretipd <- format(round(sum(solutions_long.asy[solutions_long.asy$UNHCRBurea
                                      c("Value")])
              , -3),  big.mark=",")
 
+
+totalrett <- format(round(sum(solutions_long.asy[solutions_long.asy$UNHCRBureau == thisbureau &
+                                                    solutions_long.asy$Year ==lastyear &
+                                                    solutions_long.asy$Solution.type %in% c("RDP","RET") , 
+                                     c("Value")])
+             , -3),  big.mark=",")
+
 totalrst <- format(round(sum(solutions_long.asy[solutions_long.asy$UNHCRBureau == thisbureau &
                                                     solutions_long.asy$Year ==lastyear &
                                                     solutions_long.asy$Solution.type =="RST" , 
                                      c("Value")])
              , -3),  big.mark=",")
+
+
+rst.prop <- format(round( 
+  sum(solutions_long.asy[solutions_long.asy$UNHCRBureau == thisbureau &      solutions_long.asy$Year ==lastyear &
+                                                    solutions_long.asy$Solution.type =="RST" , 
+                                     c("Value")]) / 
+    sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &      end_year_population_totals_long.asy$Year ==lastyear&
+                                                    solutions_long.asy$Solution.type =="RST"  , 
+                                     c("Value")]) 
+    
+             , 3)*100,  big.mark=",")
+
 
 totalnat <- format(round(sum(solutions_long.asy[solutions_long.asy$UNHCRBureau == thisbureau &
                                                     solutions_long.asy$Year ==lastyear &
@@ -257,13 +305,13 @@ acled.data$yearctr <- paste0(acled.data$iso3, acled.data$year)
 
 # SUMMARY: Key Regional Figures
 
-One in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn.
+One in every five persons of concern to UNHCR globally (__`r allpop.prop` %__) live in the __`r thisbureau`__, one of the hardest-hit regions by the pandemic and its socio-economic downturn. As per end `r lastyear` statistical reporting period, the total population of concern in the region is __`r allpop`__. 
 
-As per __`r lastyear`__ statistical reporting in the __`r thisbureau`__, the total population of concern is __`r allpop`__, this includes: (i) Total Refugees __`r totalref`__, Asylum-seekers __`r totalasy`__ and Venezuelan Displaced Abroad __`r totalvda`__, accounting for a total of __`r totaldis`__; (ii) Total Internally Displaced Persons __`r totalIDP`__ (iii) Total Statelessness __`r totalsta`__ & (iv) Total Other of Concerns __`r totalooc`__. 
+This includes: (i)  __`r totalref` Refugees__ (`r allpop.prop.ref` % of global figure), __`r totalasy` Asylum-seekers__ (`r allpop.prop.asy` % of global figure) and  __`r totalvda` Venezuelan Displaced Abroad__ (Venezuelans Displaced Abroad are only reported in the Americas), accounting alltogether for a total of __`r totaldis`Persons__; (ii)  __`r totalIDP` Internally Displaced Persons__ (`r allpop.prop.idp` % of global figure); (iii) __`r totalsta` Total Statelessness __ & (iv)  __`r totalooc` Other of Concerns__. 
 
-The total number of persons of concern by end of 2020 stood at  __`r allpop`__, an increase of more than 20 per cent from 2019.
+The total number of persons of concern increased of more than 20 per cent from 2019, largely linked to an increase of the numbers of persons recorded under "other of concerns" (and more precisely because the inclusion of Host Population in Venezuela & Colombia within that category). .
 
-```{r, message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Population of Concern in 2020 in the Americas**"}
+```{r, message=FALSE, warning=FALSE, comment = "", fig.height=3, size="small", fig.cap = "**| Population of Concern in 2020 in the Americas**"}
 
 # Create data
 group <- c("IDPs",
@@ -359,7 +407,7 @@ plastyear1 <- ggplot(datatree,
   theme(legend.position = "none") +
   ## and the chart labels
   labs(title = "Population of Concerns in the Americas ",
-        subtitle = paste0( lastyear, ", a total of ", format(round(sum(datatree$valuelastyear), -3),  big.mark=","), " "),
+        subtitle = paste0( lastyear, ", a total of ", format(round(sum(datatree$valuelastyear), -3),  big.mark=","), " Individuals"),
        x = "",
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics  ")
@@ -460,17 +508,10 @@ p2019 <- ggplot(datatree,
 
 ```
 
-Other of concerns also includes specific host population and is now included in UNHCR Statistics.  
 
-Finding __solutions__ that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_").
+Finding __solutions__ that enable refugees and other forcibly displaced people to live their lives in dignity and peace is a core part of UNHCR work. They can include voluntary repatriation (aka "_Return_"), resettlement and integration (aka "_Naturalisation_"). There were not any return accounted for this year in the region and  __`r totalrst `__ Resettlement (accounting for __`r rst.prop` %__ of the total recorded resettlement globally this year). Only  __`r totalnat`__ Naturalisation were recorded in the region this year.
 
- * Total Returned Refugees __`r totalret`__ 
- * Total Returned IDP __`r totalretipd`__
- * Total Resettlement __`r totalrst `__
- * Total Naturalisation  __`r totalnat`__
- 
-
-In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR.
+In brief, within the Americas the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR.
 
 
 :::{.page-break}
@@ -478,9 +519,18 @@ In the region, the total recorded solutions account for about __`r allsol.prop` 
 
 # INTRODUCTION: About this report
 
-As part of its [Data Transformation Strategy](https://www.unhcr.org/publications/operations/5dc2e4734/data-transformation-strategy-2020-2025.html), UNHCR has established, in each of its Bureau DIMA, a team of data analyst and statistician. This report is the first edition of a projected annual series, looking at detailed analysis of all publicly available figures.
+UNHCR [Data Transformation Strategy](https://www.unhcr.org/publications/operations/5dc2e4734/data-transformation-strategy-2020-2025.html) aims at positioning the organisation as a trusted leader on data and information related to refugees and other affected populations. This strategy is designed ensure that UNHCR works in an outward-facing, collaborative and transparent way.
 
-Charts and graphs in the reports have been prepared using a fully [reproducible analysis](https://unhcr-americas.github.io/reproducibility/index.html#1) approach so that they can be easily re-used whenever needed in Factsheet or talking points. The team is also available to revise or build on existent content below.
+In 2020, in the frame of this vision, UNHCR has established within DIMA unit in each of its Bureau, a team of data analyst and statistician, i.e. functional profiles that were before only established in HQ. In the Americas and in line with global priorities (i.e. the "_3 Common Data Good Initiative_"), the team priorities have focused around:  
+
+ * harmonization and rationalization of Household Survey Exercise: mainstreaming usage of standardized questionnaire modules, rigorous sampling strategy and related SDG Indicators as well as supporting multiple analysis needs (Situation Analysis, Protection Analysis, Severity Analysis & Vulnerability analysis) from the same data collection exercise.
+ * dissemination of International Recommendations on Refugees and IDPs Statistics among National Statistical Office;
+ * capacity building of staff both in terms of data literacy and advanced statistical analysis (for instance for vulnerability scoring).
+
+
+This report is the first edition of a projected annual series, looking at detailed analysis of all publicly available figures. The report also aims to highlight statistical challenges that needs to be addressed (and potential solutions!) to improve the quality of the data we have.
+
+Charts and graphs in the reports have been prepared using a fully [reproducible analysis](https://unhcr-americas.github.io/reproducibility/index.html#1) approach so that they can be easily re-used whenever needed in fact-sheet, talking points or report. The team is also available to revise  the content below or build additional charts.
 
 
 :::{.page-break}
@@ -488,17 +538,16 @@ Charts and graphs in the reports have been prepared using a fully [reproducible 
 
 # PART I: Regional Analysis 
 
-## Population Flow  over time
+## Most movement remains south-to-south
 
-Most movement remains south-to-south
+The following chart visualizes population movements between source and destination countries in the region for Refugees, Asylum Seekers and Venezuelan Displaced Abroad. For better visualization, countries accounting for less than 2% of the total population were lumped together as "Other". This initial visualization gives a good idea of the magnitude of the displacement from Venezuela within the continent.
 
-The Americas hosts 20 per cent of the total persons of concern to UNHCR in the world. In more details, the 18 per cent of the world's Internally Displaced Persons population, more than 8 million in Colombia. More than 50 per cent of Asylum-seekers (pending cases) of the world are in Americas. 3 per cent of the refugees. 38 per cent of the world People in refugee-like situations and the 37 per cent Others of concern to UNHCR worldwide. Venezuelans displaced abroad are only reported in Americas.
+There are also population inflow from other regions but they remains diverse with the exception of persons from China that appears in the chart below even when applying the 2% threshold. 
 
-There were more than 6.7 million (__`r totaldis`__) refugees, asylum-seekers and Venezuelan displaced abroad  (a new category), more than 8 million internally displaced persons (__`r totalIDP`__) in the region. Persons under UNHCR's statelessness mandate in the region by end of __`r lastyear`__ stood at __`r totalsta`__. 
+```{r pop-flows, message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Population origin-destination in the region**"}
 
-The following chart visualizes population movements between source and destination countries in the region. Countries that account for less than 1% of the population of concern were lumped together as "Other".
+## https://jokergoo.github.io/circlize_book/book/
 
-```{r pop-flows, message=FALSE, warning=FALSE, comment = "", fig.height=7, size="small", fig.cap = "**| Population origin-destination in the region**"}
 library(tidyverse)
 library(dplyr)
 chords <- end_year_population_totals %>%
@@ -506,10 +555,10 @@ chords <- end_year_population_totals %>%
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
   filter(coa_region == thisbureau & Year == lastyear) %>% 
   dplyr::mutate(across(REF:VDA, ~replace_na(as.numeric(.), 0)),
-         total = REF + ASY + VDA + IDP  + STA + OOC,
+         total = REF + ASY + VDA, #+ IDP  + STA + OOC,
          # Lump together factor levels into "other"
-         CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = total),
-         CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = total)) %>% 
+         CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .02, w = total),
+         CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .02, w = total)) %>% 
    group_by(CountryOriginName, CountryAsylumName) %>%
    summarize(total = sum(total), .groups = "drop")  %>%
 # CountryOriginName = fct_recode(CountryOriginName, "Other" = "China")
@@ -521,31 +570,32 @@ chords <- end_year_population_totals %>%
         CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"))
 
 circlize::chordDiagram(chords,
-             self.link = 1,
-             #grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(14),
-              # Most movement remains south-to-south
-             annotationTrack = "grid") #,
-            # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))))
+                       self.link = 1,
+                       grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(15),
+                       annotationTrack = "grid" ,
+                     # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))),
+                      preAllocateTracks = 1.6
+)
 
 circos.track(track.index = 1,
              panel.fun = function(x, y) {
-              circos.text(CELL_META$xcenter,
-                          CELL_META$ylim[1],
-                          CELL_META$sector.index,
-                          facing = "clockwise",
-                          niceFacing = TRUE,
-                          adj = c(0, 0.5))
-                },
-            bg.border = NA) # here set bg.border to NA is important
+               circos.text(CELL_META$xcenter,
+                           CELL_META$ylim[1],
+                           CELL_META$sector.index,
+                           facing = "clockwise",
+                           niceFacing = TRUE,
+                           adj = c(0, 0.5))
+             },
+             bg.border = NA) # here set bg.border to NA is important
+
+
+title(main = "Movement of Forcibly Displaced Population")
+
 ```
 
+The evolution in the last 20 years shows a significant increase in Internally Displaced Persons, an element specifically linked to the population in Colombia. In the last five years, the number of Asylum-seekers also  substantially increased. while the number of Refugees remained relatively stationary over time. Finally, the category Other of Concerns has seen a sharp increase and reflects the growing complexity of displacement crisis in the region (involving population at risk of displacement, host population and mixed movements...). 
 
-
-
-The evolution in the last 20 years shows a significant increase in Internally Displaced Persons, specifically in Colombia (8,252,788 over __`r totalIDP`__). In the last five years, Asylum-seekers increased substantially. Recently a new category were introduced  Venezuelan Displaced Abroad. Refugees are stationary over the time. It is registered an important increase over the last two years of Other of Concerns (in __`r lastyear`__, __`r totalooc`__). 
-
-
-```{r ,message = FALSE, warning = FALSE, fig.cap = "**| Evolution over time of the different Population of Concern**"}
+```{r ,message = FALSE, warning = FALSE,fig.height=6, size="small", fig.cap = "**| Evolution over time of the different Population of Concern**"}
 
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
@@ -558,10 +608,16 @@ multiple_line_df <- end_year_population_totals_long.asy %>%
 ggplot(multiple_line_df, aes(x = Year, y = Value2, 
                                               colour = Population.type)) + # Adding reference to color
   geom_line(size = 1) + # Here we mention that it will be a line chart
+    # stat_smooth(size=1.5, 
+    #           method = "loess", 
+    #           level = 0.95, 
+    #           fullrange = TRUE, 
+    #           se = FALSE) + 
+  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   
-  xlim(c(2000, lastyear + 8)) +
+  xlim(c(2000, lastyear + 7)) +
   
   #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
   scale_colour_manual( values = c( "REF" = "#a6cee3",
@@ -632,12 +688,15 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
                              size = 4) +
   
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
-  theme(legend.position = "none") +
+  theme(legend.position = "none",
+        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
   labs(title = "Forcible Displacement in the Americas ",
        subtitle = "Evolution in the past 20 years",
-       x = "",
-       y = "",
+       x = " ",
+       y = " ",
        caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
@@ -666,7 +725,7 @@ According to interviews and protection monitoring exercises conducted by UNHCR a
 #        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
-
+Colombia remains the country that both host the largest number of displaced population (either across borders or internally).
  
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Largest Countries of Asylum**"}
 
@@ -726,8 +785,7 @@ ggplot(bar_df, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
 ```
 
 
-Considering together Refugees, Asylum Seekers and Venezuelan Displaced Abroad, Colombia is the first country with more population, especially for the presence of Venezuelan Displaced Abroad (1,729,537). United States of America has the second largest host has a big component of Refugees (340,844) and Asylum Seekers (997,998). The third country, Peru has a great component of Venezuelan Displaced Abroad (515,039).
-
+When looking at other population types that did not cross a borders (i.e. other of Concerns & IDPs), obviously the situation of IDPs in Colombia stands out clearly. The second place though is also taken by "Other of Concerns" in Colombia, a figure that indeed includes 787,450 Host Community members and also returnee Colombians from Venezuela.
 
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Other Displacement**"}
@@ -774,7 +832,7 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
-  labs(title = "Countries with within borders concerns in the Americas",
+  labs(title = "Countries with _within borders_ concerns in the Americas",
        subtitle = paste0("IDPs, Statelessness & Other of Concern in ",lastyear), 
        x = "",
        y = "",
@@ -788,125 +846,28 @@ ggplot(bar_df, aes(x = reorder(paste0(CountryAsylumName,"-",Population.type), Va
 
 
 
-Colombia OOC is the sum of Other persons of concern (500,000) and Host Community (787,450). Normally, Other persons of concern are people out of their country, in the special case of Colombia Other persons of concern are mostly returnee Colombians from Venezuela.
 
 :::{.page-break}
 :::
-## Displacement & (Perception of...) Violence 
+## Displacement and (Perception of...) Violence 
 
+Forced displacement as a result of conflict, violence, and other causes undermine sustainable development ( namely _Goal 10: Reduce inequality within and among countries_), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. 
 
-
- 
 
 
 :::{.page-break}
 :::
 
-## Processing of Refugee Status Determination (RSD)  
+## Processing of Refugee Status Determination   
 
+Around `r allpop.prop.asy` % of all Asylum-seekers globally are actually accounted for in the Americas. As part of statistics collection, UNHCR collate information on Refugee Status Determination (RSD) applications. RSD are important as they often represent the first step to long term solution.
 
-As part of statistics collection, UNHCR collate information on Refugee Status Determination (RSD) applications. It is important to recall that those represents "applications" (not applicants!) and therefore interpretation of those data should account for potential built-in double count, specifically for the US where multiple procedures can actually be initiated in parallel 
-
-
-
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Asylum Application in 2020**"}
-## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
-
-htmlwidgets::onStaticRenderComplete('$.each( document.getElementsByTagName("svg"), function( index, value ){value.setAttribute("viewBox", null);});')
-
-
-linksApplication.Ori.Procedure <- asylum_applications %>%
-                    ## Add reference for the filters
-                    dplyr::left_join( unhcrdatapackage::reference %>% 
-                                        select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-                    filter(coa_region == thisbureau & Year == lastyear) %>% 
-                    ## Group small records under other
-                    mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = NumberApplications)) %>% 
-                    mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))%>% 
-                    ## Calculate grouped value for Origin to procedure..
-                    group_by(CountryOriginName, ProcedureName ) %>%
-                    summarise(value = sum(NumberApplications) ) %>%
-                    ## Rename variable
-                    rename(source = CountryOriginName) %>%
-                    rename(target = ProcedureName) 
-
-linksApplication.Procedure.Type <- asylum_applications %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear) %>% 
-  ## Group small records under other
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ProcedureName, ApplicationType ) %>%
-  summarise(value = sum(NumberApplications) ) %>%
-  ## Rename variable
-  rename(source = ProcedureName) %>%
-  rename(target = ApplicationType) 
-
-linksApplication.Type.Asylum <- asylum_applications %>%
-  ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear) %>% 
-  ## Group small records under other
-  mutate(CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = NumberApplications)) %>% 
-  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""))%>% 
-  
-  mutate(CountryAsylumName = paste0("Asylum in ", CountryAsylumName)) %>% 
-  ## Calculate grouped value for Origin to procedure..
-  group_by(ApplicationType, CountryAsylumName) %>%
-  summarise(value = sum(NumberApplications) ) %>%
-  ## Rename variable
-  rename(source = ApplicationType) %>%
-  rename(target = CountryAsylumName) 
-
-linksallApplication <- rbind(linksApplication.Ori.Procedure,
-                  linksApplication.Procedure.Type,
-                  linksApplication.Type.Asylum)
-
-
-
-# From these flows we need to create a node data frame: it lists every entities involved in the flow
-nodesApplication <- data.frame(
-  name=c(as.character(linksallApplication$source), 
-         as.character(linksallApplication$target)) %>% unique()
-)
-
-# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-linksallApplication$IDsource <- match(linksallApplication$source, nodesApplication$name)-1 
-linksallApplication$IDtarget <- match(linksallApplication$target, nodesApplication$name)-1
-
-# Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallApplication, 
-                              Nodes = nodesApplication,
-                              Source = "IDsource", 
-                              Target = "IDtarget",
-                              Value = "value", 
-                              NodeID = "name", 
-                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
-                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
-#p
-
-# you save it as an html
-networkD3::saveNetwork(p, "graph/application.html")
-
-# you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/graph/application.html"),paste0(getwd(),"/graph/application.png"), vwidth = 800, vheight = 500)
-#getwd()
-# ![ ](graph/application.png)
-
-```
-
-This chart shows the RSD procedures in Americas. Below the same graphs by country are reproduced.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes the stage of the RSD applications (the process is different in every country). The forth and last vertical line shows the results of the RSD applications.
-
+It is important to recall that those represents "applications" (not applicants!) and therefore interpretation of those data should account for potential built-in double count, specifically for the US where multiple procedures can actually be initiated in parallel 
 
 
 Most RSD applications comes from Venezuelan. Other relevant country of origin are: Nicaragua, Mexico, Honduras, Haiti, Guatemala, El Salvador and Cuba. Again the Central America countries are the most relevant. Most RSD activities occurs in the US. Traditionally, Canada has relevant RSD activities as well. Mexico, Brazil and Costa Rica become for different reason important is RSD applications.
- 
 
-
-
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small",  fig.cap = "**| Number of Status Determination Decision par Asylum Country in 2020**"}
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Number of Status Determination Decision par Asylum Country in 2020**"}
 topasyl <-  asylum_decisions %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -1001,14 +962,7 @@ patchworkRSDa +
   
 ```
 
-
- 
-
 Most RSD applications comes from Venezuelan, Colombians and Central America people. Honduras, El Salvador, Nicaragua, Guatemala, Mexico Cuba and Haiti people together have more RSD applications than Venezuelan.
-
-
-
-
 
 Looking at the decision process, we can see that the level of recognition varies widely depending both on the country of Asylum and on the country of Origin. Brazil, Ecuador, Peru and Mexico have higher Refugee Recognition Rate (RRR) in Americas.
 
@@ -1020,7 +974,7 @@ For the purpose of international comparability, UNHCR only uses these two recogn
 :::
 
 
-```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=7, size="small",  fig.cap = "**| Refugee Recognition rate in 2020**"}
+```{r echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5, size="small",  fig.cap = "**| Refugee Recognition rate in 2020**"}
 recoasyl <- ggplot(topasyl, aes(y = RefugeeRecognitionRate, 
              x = reorder(CountryAsylumName, RefugeeRecognitionRate))) + 
   scale_y_continuous(labels = scales::label_percent(accuracy = .01)) +
@@ -1077,6 +1031,97 @@ patchworkRSD +
 ```
 
 And for the minority of Venezuelan that can go through this process, the recognition rate is the actually the highest among other country of origin in the region. Central America people have good Refugee Recognition Rate (especially Honduras, Nicaragua, El Salvador, Cuba, Guatemala, Haiti and Mexico).
+
+This chart shows the RSD procedures in Americas. Below the same graphs by country are reproduced.  From left to the right: The first line represent the nationalities of the RSD applications. The second vertical line represent the institution where the RSD people applies: in Americas people applied mostly to the government, and sometimes directly to UNHCR. The third line describes the stage of the RSD applications (the process is different in every country). The forth and last vertical line shows the results of the RSD applications.
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Asylum Application in 2020**"}
+## Check rendering here - https://stackoverflow.com/questions/54987281/sankey-network-within-r-blogdown-wont-render-properly-on-firefox 
+
+htmlwidgets::onStaticRenderComplete('$.each( document.getElementsByTagName("svg"), function( index, value ){value.setAttribute("viewBox", null);});')
+
+
+linksApplication.Ori.Procedure <- asylum_applications %>%
+                    ## Add reference for the filters
+                    dplyr::left_join( unhcrdatapackage::reference %>% 
+                                        select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+                    filter(coa_region == thisbureau & Year == lastyear) %>% 
+                    ## Group small records under other
+                    mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = NumberApplications)) %>% 
+                    mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))%>% 
+                    ## Calculate grouped value for Origin to procedure..
+                    group_by(CountryOriginName, ProcedureName ) %>%
+                    summarise(value = sum(NumberApplications) ) %>%
+                    ## Rename variable
+                    rename(source = CountryOriginName) %>%
+                    rename(target = ProcedureName) 
+
+linksApplication.Procedure.Type <- asylum_applications %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, ApplicationType ) %>%
+  summarise(value = sum(NumberApplications) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = ApplicationType) 
+
+linksApplication.Type.Asylum <- asylum_applications %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear) %>% 
+  ## Group small records under other
+  mutate(CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .01, w = NumberApplications)) %>% 
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""))%>% 
+  
+  mutate(CountryAsylumName = paste0("Asylum in ", CountryAsylumName)) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ApplicationType, CountryAsylumName) %>%
+  summarise(value = sum(NumberApplications) ) %>%
+  ## Rename variable
+  rename(source = ApplicationType) %>%
+  rename(target = CountryAsylumName) 
+
+linksallApplication <- rbind(linksApplication.Ori.Procedure,
+                  linksApplication.Procedure.Type,
+                  linksApplication.Type.Asylum)
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesApplication <- data.frame(
+  name=c(as.character(linksallApplication$source), 
+         as.character(linksallApplication$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallApplication$IDsource <- match(linksallApplication$source, nodesApplication$name)-1 
+linksallApplication$IDtarget <- match(linksallApplication$target, nodesApplication$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallApplication, 
+                              Nodes = nodesApplication,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+#p
+
+# you save it as an html
+networkD3::saveNetwork(p, "graph/application.html")
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/graph/application.html"),paste0(getwd(),"/graph/application.png"), vwidth = 800, vheight = 500)
+#getwd()
+# ![ ](graph/application.png)
+
+```
+
 
 
 
@@ -1194,7 +1239,7 @@ Durable solutions include voluntary repatriation, resettlement to a third countr
 
 The partial or full closure of borders, along with more general restrictions on movement aimed at limiting the pandemic's spread, has dramatically impacted opportunities for displaced people to return to their home countries or resettle to other countries.
  
-```{r message=FALSE, warning=FALSE, fig.cap = "**| Trends for Solution**"}
+```{r message=FALSE, warning=FALSE, fig.height=5, fig.cap = "**| Trends for Solution**"}
 multiple_line_df <- solutions_long.asy %>%
   filter(UNHCRBureau  == thisbureau &
            !(is.na(UNHCRBureau))) %>%
@@ -1205,17 +1250,24 @@ multiple_line_df <- solutions_long.asy %>%
 ggplot(multiple_line_df, aes(x = Year, y = Value2, 
                                               colour = Solution.type)) + # Adding reference to color
   geom_line(size = 1) + # Here we mention that it will be a line chart
+  # stat_smooth(size=1.5, 
+  #             method = "loess", 
+  #             level = 0.95, 
+  #             fullrange = TRUE, 
+  #             se = FALSE) + 
+  # 
+  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   scale_y_continuous( label = format_si()) + ## Format axis number
   
-  xlim(c(2000, lastyear + 8)) +
+  xlim(c(2000, lastyear + 6)) +
   
   #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
   scale_colour_manual( values = c( "NAT" = "#a6cee3",
                                    "RST"  = "#1f78b4",
                                    "RET" = "#b2df8a")) +
   geom_label(aes(x = lastyear + .5 ,
-                 y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "NAT" & multiple_line_df$Year == lastyear , c("Value2")]),
+                 y = as.numeric(multiple_line_df[multiple_line_df$Solution.type == "NAT" & multiple_line_df$Year == lastyear , c("Value2")]) ,
                  label = "Naturalisation"),
                              hjust = 0,
                              vjust = 0.5,
@@ -1244,11 +1296,12 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
                              label.size = NA,
                              family = "Lato",
                              size = 4) +
-
-    
   
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
-  theme(legend.position = "none") +
+  theme(legend.position = "none",
+        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
   labs(title = "Solution for Displacement in the Americas ",
        subtitle = "Evolution in the past 20 years",
@@ -1257,8 +1310,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2,
        caption = "Source: UNHCR.org/refugee-statistics ")
 ```
 
- The Resettlement solution decreased in the last 5 years. In the region, the total recorded solutions account for about __`r allsol.prop` %__ of the total number of people of concern to UNHCR (In the details: Total Returned Refugees __`r totalret`__, Total Returned IDP __`r totalretipd`__, Total Resettlement __`r totalrst `__ and Total Naturalisation  __`r totalnat`__)
- 
+Resettlement solution dramatically decreased in the region.
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small", fig.cap = "**| Ressettlement Trends in the last 25 years in the America**"}
 #Prepare data
@@ -1297,7 +1349,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 ``` 
 
 
-
+:::{.page-break}
+:::
 ## Venezuela Situation
 
 As the second-largest displacement crisis in the world, refugees and migrants from Venezuela now total 5.7 million globally, of which more than 80 percent are hosted by countries in Latin America and the Caribbean. 
@@ -1335,11 +1388,6 @@ situation.  Population refers to total resident population in a given country in
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
 
-
-
-:::{.bg-blue}
-Forced displacement as a result of conflict, violence, and other causes undermine __sustainable development__ (Goal 10: Reduce inequality within and among countries ), and can increase the risk of regional instability, especially when refugees are hosted in neighboring countries, resulting in possible tensions with local populations. The United Nations General Assembly Resolution (A/Res/70/1) that adopted the 2030 Agenda for Sustainable Development recognizes the relevance of the Agenda to meet the needs of refugees, internally displaced persons and migrants on the basis that they are among the most vulnerable. It also explicitly states that Member States resolve to take further effective measures and actions, to “strengthen support and meet the special needs of people living in areas affected by complex humanitarian emergencies”.  The target 10.7 recognizes for the first time the contribution of migration to sustainable development by aiming to “_facilitate orderly, safe, and responsible migration and mobility of people, including through implementation of planned and well-managed migration policies_”.  
-:::
 
 To date, more than 171,000 have been recognized as refugees and over 850,000 asylum claims have also been lodged worldwide. Across the region, just under 2.7 million have been granted some form of residency or regular stay permit.  
 
@@ -1394,15 +1442,16 @@ ggplot(data = world) +
 
 ```
 
+:::{.page-break}
+:::
 
 ## Central America
 
-
-
+Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality.
 
 ```{r  message=FALSE, warning=FALSE, comment = "", fig.height=5, size="small", fig.cap = "**| Conflict-related deaths per 100,000 population (SDG Indicator 16.1.2)**"}
 
-acled.data %>% 
+fata <- acled.data %>% 
   # filter(year == lastyear) %>% 
   # group_by(yearctr,country ) %>% 
   # count(country, wt = fatalities) %>% 
@@ -1416,13 +1465,17 @@ acled.data %>%
     left_join(wb_data %>% select("SP.POP.TOTL","yearctr"), by = c(  "yearctr"    )) %>%
   ## get fatalities Percentage
   mutate(fatalities_per_100k = round(  (n/as.numeric(SP.POP.TOTL)*100000) , 1)) %>% 
-  top_n(10, fatalities_per_100k) %>% 
+  top_n(10, fatalities_per_100k) 
+
+
   ## Now the chart 
-  ggplot(aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
-  geom_col(fill = "#0072BC") +
-  geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), 
-            hjust = "inward", 
-            color = "black") +
+ggplot( data = fata,
+  aes(fatalities_per_100k, fct_reorder(country, fatalities_per_100k))) +
+ # geom_col(fill = "#0072BC") +
+  geom_col( fill = ifelse(fata$iso3 %in% c("BLZ", "SLV", "HND", "MEX", "GTM"), "#e59400", "#CCCCCC")) +
+  # geom_text(aes(label = scales::label_comma()(fatalities_per_100k)), 
+  #           hjust = "inward", 
+  #           color = "black") +
   scale_x_continuous(labels = scales::label_comma()) +
   labs(x = "Fatalities per 100,000 population", 
        y = " ", 
@@ -1434,8 +1487,6 @@ acled.data %>%
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 ```
-
-Central America is the most violence place of Americas and of the entire world. The violence seems concentrated in the big cities and Criminal gangs have territorial control in Central America, where poverty is rampant. In these areas, people experiment poverty and economic inequality.
 
 As already discussed in the section on violence, those patterns of violence are part of the [root causes](https://www.hsdl.org/?view&did=856841) for the important migration from those region to the United States.
 
@@ -1489,9 +1540,6 @@ To respond to this specific situation, UNHCR has developed a massive [scale-up p
 :::
 
 # PART III: Challenges on Refugee and IDP Statistics
-
-
-
 
 ![ ](media/image_hand.jpg)
 
@@ -1613,8 +1661,6 @@ ggplot(pyramid3, aes(x = age,
 
 ```
 
-
-## Opportunities for monthly statistcal reporting in the United States
 
 
 
