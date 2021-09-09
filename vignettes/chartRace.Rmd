@@ -24,7 +24,7 @@ using <- function(...) {
     }
 }
 
-using('tidyverse','gganimate','gghighlight','ggpubr', 'dplyr', 'tidyr', 'gapminder', 'ggplot2',  'ggalt', 'forcats', 'R.utils', 'png', 'grid', 'ggpubr', 'scales', 'bbplot', 'markdown', 'pander', 'ISOcodes', 'wbstats', 'sf', 'rnaturalearth', 'rnaturalearthdata', 'ggspatial')
+using('tidyverse','gganimate','gghighlight','ggpubr', 'dplyr', 'tidyr', 'gapminder', 'ggplot2',  'ggalt', 'forcats', 'R.utils', 'png', 'grid', 'ggpubr', 'scales',  'markdown', 'pander', 'ISOcodes', 'wbstats', 'sf', 'rnaturalearth', 'rnaturalearthdata', 'ggspatial')
 
 library(unhcrdatapackage)
 library(unhcRstyle)
@@ -183,10 +183,10 @@ rank_data.ref <- dplyr::left_join(x = rank_data.ref, y = reference, by = ("Count
 rank_data.ref$REGION_UN <- as.factor(as.character(rank_data.ref$REGION_UN))
 
 ## Merge with World Bank API data
-rank_data1 <- merge(x = rank_data, y = wb_data, by = c("CountryAsylumCode", "Year"), all.x = TRUE)
-rank_data1$Ref.per.pop <- round(rank_data1$Value2 / rank_data1$SP.POP.TOTL *100 , 2)
-rank_data1$Ref.per.gdp <- round(rank_data1$NY.GDP.MKTP.CD / rank_data1$Value2 , 2)
-rank_data1$Ref.per.gdp.cap <-  round(rank_data1$NY.GDP.PCAP.CD / rank_data1$Value2 , 2)
+rank_data.ref <- merge(x = rank_data.ref, y = wb_data, by = c("CountryAsylumCode", "Year"), all.x = TRUE)
+rank_data.ref$Ref.per.pop <- round(rank_data.ref$Value2 / rank_data.ref$SP.POP.TOTL *100 , 2)
+rank_data.ref$Ref.per.gdp <- round(rank_data.ref$NY.GDP.MKTP.CD / rank_data.ref$Value2 , 2)
+rank_data.ref$Ref.per.gdp.cap <-  round(rank_data.ref$NY.GDP.PCAP.CD / rank_data.ref$Value2 , 2)
 
 ```
 
