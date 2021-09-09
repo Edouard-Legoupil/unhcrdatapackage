@@ -108,154 +108,58 @@
     
     
 <p>Note that you can find the source code for all the chart below in the <a href="https://github.com/unhcr/unhcrdatapackage/tree/master/vignettes">Repository</a>.</p>
-<p>“Bar Chart Race” are a specific type of bar chart that moves to show rankings over time. It became recently a quite popular approach to bring a storytelling elements within a longitudinal dataset. Readers are suggested to connect and combine what they see on the chart with other qualitative elements that they know about (elements of history). By using the allegory of F1 Race, it gives a very dynamic dimension.</p>
+<p>“Bar Chart Race” are a specific type of bar chart that moves to show rankings over time. It became recently a quite popular approach to bring a storytelling elements within a longitudinal dataset. Readers are suggested to connect and combine what they see on the chart with other qualitative elements that they know about (elements of history). By using the allegory of F1 Race, it gives a very dynamic visualisation dimension.</p>
 <p>With R, it’s fairly easy to reproduce such visualization - We will show here how to use <code>gganimate</code> R packages to display evolution of refugees &amp; IDP’s number over time based on UNHCR statistics</p>
-<p>The visualization below uses data from UNHCR popstat and data.worldbank API</p>
-<p>Reshape the data to get the top 10 for each year using tidyverse</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">time_series2</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span><span class="op">(</span><span class="va">time_series</span>,
-                                           <span class="co"># ID variables - all the variables to keep but not split apart on</span>
-                                           id.vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Year"</span>, <span class="st">"CountryOriginCode"</span>,<span class="st">"CountryAsylumCode"</span>,<span class="st">"CountryOriginName"</span>,<span class="st">"CountryAsylumName"</span> <span class="op">)</span>,
-                                           <span class="co"># The source columns</span>
-                                           measure.vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span>,<span class="st">"IDP"</span>,
-                                                          <span class="st">"ASY"</span>,<span class="st">"OOC"</span>,<span class="st">"STA"</span>,
-                                                          <span class="st">"VDA"</span><span class="op">)</span>,
-                                           <span class="co"># Name of the destination column that will identify the original</span>
-                                           <span class="co"># column that the measurement came from</span>
-                                           variable.name<span class="op">=</span><span class="st">"Population.type"</span>,
-                                           value.name<span class="op">=</span><span class="st">"Value"</span><span class="op">)</span> 
-
-<span class="co">## Now get the rank from high to low for all countries per  year and population type</span>
-<span class="va">rank_data</span> <span class="op">&lt;-</span> <span class="va">time_series2</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Year</span>, <span class="va">Population.type</span>, <span class="va">CountryAsylumName</span>, <span class="va">CountryAsylumCode</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">summarise</span><span class="op">(</span>Value2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span> <span class="op">)</span> 
-
-
-<span class="co">#str(as.data.frame(rank_data))</span>
-<span class="va">rank_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">rank_data</span><span class="op">)</span>
-
-
-<span class="va">rank_data1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rank_data</span>, y <span class="op">=</span> <span class="va">wb_data</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CountryAsylumCode"</span>, <span class="st">"Year"</span><span class="op">)</span>, all.x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">rank_data1</span><span class="op">$</span><span class="va">Ref.per.pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">rank_data1</span><span class="op">$</span><span class="va">Value2</span> <span class="op">/</span> <span class="va">rank_data1</span><span class="op">$</span><span class="va">SP.POP.TOTL</span> <span class="op">*</span><span class="fl">100</span> , <span class="fl">2</span><span class="op">)</span>
-<span class="va">rank_data1</span><span class="op">$</span><span class="va">Ref.per.gdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">rank_data1</span><span class="op">$</span><span class="va">NY.GDP.MKTP.CD</span> <span class="op">/</span> <span class="va">rank_data1</span><span class="op">$</span><span class="va">Value2</span> , <span class="fl">2</span><span class="op">)</span>
-<span class="va">rank_data1</span><span class="op">$</span><span class="va">Ref.per.gdp.cap</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">rank_data1</span><span class="op">$</span><span class="va">NY.GDP.PCAP.CD</span> <span class="op">/</span> <span class="va">rank_data1</span><span class="op">$</span><span class="va">Value2</span> , <span class="fl">2</span><span class="op">)</span>
-
-
-
-<span class="va">rank_data.ref</span> <span class="op">&lt;-</span> <span class="va">rank_data1</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Year</span>, <span class="va">Population.type</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  
-  <span class="co">## Tried first rank but did not provided ranks as integer... </span>
-  <span class="co"># mutate(ordering = rank(-Value), ties.method = "min") %&gt;%</span>
-  
-  <span class="fu">mutate</span><span class="op">(</span>ordering <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rank.html">rank</a></span><span class="op">(</span><span class="op">-</span><span class="va">Value2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> 
-
-<span class="co">## check our value for rank -- Note that there are different tie method</span>
-<span class="co">#levels(as.factor(rank_data$ordering))</span>
-
-<span class="co">## need to fix manually issue when ex-aequo rank rank = 8.5 </span>
-
-<span class="co">## In 1962</span>
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1962"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">11</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">8.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1962"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Burundi"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">9</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">8.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1962"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Austria"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-
-
-<span class="co">## In 1978</span>
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1978"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">11</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">8.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1978"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Viet Nam"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">9</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">8.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1978"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"United Kingdom"</span> <span class="op">&amp;</span> 
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"REF"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-
-
-<span class="co">## and for IPDs</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span><span class="op">)</span>
-
-<span class="co">## In 1996</span>
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1996"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">11</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">9.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1996"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Somalia"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">11</span>
-
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">9.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1996"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Sri Lanka"</span> <span class="op">&amp;</span> 
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Sri Lanka / Somalia"</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">9.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1996"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Sri Lanka / Somalia"</span> <span class="op">&amp;</span> 
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-
-<span class="co">## in 1997</span>
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1997"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">11</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">9.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1997"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Somalia"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">11</span>
-
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">9.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1997"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Sri Lanka"</span> <span class="op">&amp;</span> 
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Sri Lanka / Somalia"</span>
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">==</span> <span class="fl">9.5</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="st">"1997"</span> <span class="op">&amp;</span>
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">==</span> <span class="st">"Sri Lanka / Somalia"</span> <span class="op">&amp;</span> 
-                      <span class="va">rank_data.ref</span><span class="op">$</span><span class="va">Population.type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-
-
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span><span class="op">)</span>
-
-<span class="co"># Filter only top 10 </span>
-<span class="va">rank_data.ref</span> <span class="op">&lt;-</span> <span class="va">rank_data.ref</span><span class="op">[</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">ordering</span> <span class="op">&lt;=</span> <span class="fl">10</span>, <span class="op">]</span>
-<span class="co">#rank_data$Year = as.Date(as.character(rank_data$Year), format = "%Y")</span>
-
-
-<span class="co">## Regnerate facors modality - </span>
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">CountryAsylumName</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># levels(as.factor(rank_data.ref$CountryAsylumName))</span>
-<span class="co">## Double checking country name</span>
-<span class="co">#table(time_series2$Country, useNA = "ifany")</span>
-<span class="va">reference</span><span class="op">$</span><span class="va">CountryAsylumCode</span> <span class="op">&lt;-</span> <span class="va">reference</span><span class="op">$</span><span class="va">iso_3</span>
-<span class="va">rank_data.ref</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rank_data.ref</span>, y <span class="op">=</span> <span class="va">reference</span>, by <span class="op">=</span> <span class="op">(</span><span class="st">"CountryAsylumCode"</span><span class="op">)</span> <span class="op">)</span>
-<span class="va">rank_data.ref</span><span class="op">$</span><span class="va">REGION_UN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">rank_data.ref</span><span class="op">$</span><span class="va">REGION_UN</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div id="displaced-population-race" class="section level1">
+<p>The visualization below uses data from UNHCR and data.worldbank API</p>
+<div id="top-countries-for-each-statistical-categories" class="section level1">
 <h1 class="hasAnchor">
-<a href="#displaced-population-race" class="anchor"></a>Displaced Population Race</h1>
-<div id="animate" class="section level2">
+<a href="#top-countries-for-each-statistical-categories" class="anchor"></a>Top Countries for each statistical categories</h1>
+<p>UNHCR’s populations of concern status includes:</p>
+<ul>
+<li><p><strong>Refugees (REF)</strong> include individuals recognized under the 1951 Convention relating to the Status of Refugees; its 1967 Protocol; the 1969 OAU Convention Governing the Specific Aspects of Refugee Problems in Africa; those recognised in accordance with the UNHCR Statute; individuals granted complementary forms of protection; or those enjoying temporary protection. Since 2007, the refugee population also includes people in a refugee-like situation.</p></li>
+<li><p><strong>Asylum-seekers (ASY)</strong> are individuals who have sought international protection and whose claims for refugee status have not yet been determined, irrespective of when they may have been lodged.</p></li>
+<li><p><strong>Internally displaced persons (IDP)</strong> are people or groups of individuals who have been forced to leave their homes or places of habitual residence, in particular as a result of, or in order to avoid the effects of armed conflict, situations of generalised violence, violations of human rights, or natural or man-made disasters, and who have not crossed an international border. For the purposes of UNHCR’s statistics, this population only includes conflict-generated IDPs to whom the Office extends protection and/or assistance. Since 2007, the IDP population also includes people in an IDP-like situation. For global IDP estimates, see www.internal-displacement.org.</p></li>
+<li><p><strong>Stateless persons (STA)</strong> are defined under international law as persons who are not considered as nationals by any State under the operation of its law. In other words, they do not possess the nationality of any State. UNHCR statistics refer to persons who fall under the agency’s statelessness mandate because they are stateless according to this international definition, but data from some countries may also include persons with undetermined nationality.</p></li>
+<li><p><strong>Others of concern (OOC)</strong> refers to individuals who do not necessarily fall directly into any of the groups above, but to whom UNHCR extends its protection and/or assistance services, based on humanitarian or other special grounds.</p></li>
+<li><p><strong>Venezuelan Displaced Abroad (VDA)</strong>: People displaced across borders: According to interviews and protection monitoring exercises conducted by UNHCR and partners, Venezuelans claim that they are leaving the country for a variety of reasons, including persecution on account of their individual profiles, insecurity and violence, lack of access to food, medicine and essential services, as well as loss of income as a result of the current human rights, political and socioeconomic situation in Venezuela. Based on these reports, as well as reliable information in the public domain from a wide range of sources about the situation in Venezuela, UNHCR considers that for a number of profiles, international protection considerations are likely to arise under the 1951 Convention/1967 Protocol relating to the Status of Refugees depending on the circumstances of the individual case. While individual circumstances and reasons for departure from Venezuela vary, UNHCR considers that the majority of Venezuelan nationals, or stateless persons who were habitually resident in Venezuela, are in need of international protection under the criteria contained in the Cartagena Declaration on the basis of threats to their lives, security or freedom resulting from the events that are currently seriously disturbing public order in Venezuela.</p></li>
+</ul>
+<p><img src="chartRace_files/figure-html/chart2017facet2-1.png" width="700"></p>
+</div>
+<div id="visualising-evolution-of-refugee-population-over-time-" class="section level1">
+<h1 class="hasAnchor">
+<a href="#visualising-evolution-of-refugee-population-over-time-" class="anchor"></a>Visualising evolution of refugee population over time.</h1>
+<div id="by-country-of-asylum" class="section level2">
 <h2 class="hasAnchor">
-<a href="#animate" class="anchor"></a>Animate</h2>
+<a href="#by-country-of-asylum" class="anchor"></a>By Country of Asylum</h2>
+<p><img src="chartRace_files/figure-html/barchartrace%20-1.gif"><!-- --></p>
+</div>
+<div id="by-country-of-origin" class="section level2">
+<h2 class="hasAnchor">
+<a href="#by-country-of-origin" class="anchor"></a>By Country of Origin</h2>
+</div>
+</div>
+<div id="visualising-evoluation-of-idps-population-over-time-" class="section level1">
+<h1 class="hasAnchor">
+<a href="#visualising-evoluation-of-idps-population-over-time-" class="anchor"></a>Visualising evoluation of IDPs population over time.</h1>
+<p><img src="chartRace_files/figure-html/barchartrace2%20-1.gif"><!-- --></p>
+</div>
+<div id="how-many-refugees-in-relation-with-the-size-of-host-population" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-many-refugees-in-relation-with-the-size-of-host-population" class="anchor"></a>How many refugees in relation with the size of host population?</h1>
+<p><img src="chartRace_files/figure-html/barchartrace31%20-1.gif"><!-- --></p>
+</div>
+<div id="how-many-refugees-in-relation-with-the-wealth-of-host-population" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-many-refugees-in-relation-with-the-wealth-of-host-population" class="anchor"></a>How many refugees in relation with the wealth of host population?</h1>
+<p><img src="chartRace_files/figure-html/barchartrace4%20-1.gif"><!-- --></p>
+</div>
+<div id="how-many-idps-in-relation-with-the-wealth-of-host-population" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-many-idps-in-relation-with-the-wealth-of-host-population" class="anchor"></a>How many IDPs in relation with the wealth of host population?</h1>
+<p><img src="chartRace_files/figure-html/barchartrace41%20-1.gif"><!-- --></p>
+<div id="annexes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#annexes" class="anchor"></a>Annexes</h2>
 <p>For animation, the main challenge is to tune parameters.</p>
 <ul>
 <li>use geom_tile, not geom_bar as this allows for better transitions within gganimate</li>
@@ -265,24 +169,7 @@
 <p>nframes : The number of frames to render (default 100)</p>
 <p>fps : The framerate of the animation in frames/sec (default 10)</p>
 <p>and animate…. the bar chart race…</p>
-<p><img src="chartRace_files/figure-html/barchartrace%20-1.gif"><!-- --></p>
 </div>
-<div id="animate-idps--" class="section level2">
-<h2 class="hasAnchor">
-<a href="#animate-idps--" class="anchor"></a>Animate IDPs..</h2>
-<p><img src="chartRace_files/figure-html/barchartrace2%20-1.gif"><!-- --></p>
-</div>
-</div>
-<div id="race-weighted-by-refugee-ratio" class="section level1">
-<h1 class="hasAnchor">
-<a href="#race-weighted-by-refugee-ratio" class="anchor"></a>Race Weighted by Refugee Ratio</h1>
-<p><img src="chartRace_files/figure-html/barchartrace31%20-1.gif"><!-- --></p>
-</div>
-<div id="race-weighted-by-gdp" class="section level1">
-<h1 class="hasAnchor">
-<a href="#race-weighted-by-gdp" class="anchor"></a>Race Weighted by GDP</h1>
-<p><img src="chartRace_files/figure-html/barchartrace4%20-1.gif"><!-- --></p>
-<p><img src="chartRace_files/figure-html/barchartrace41%20-1.gif"><!-- --></p>
 </div>
   </div>
 
