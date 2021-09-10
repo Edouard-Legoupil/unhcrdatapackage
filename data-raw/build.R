@@ -130,8 +130,8 @@ solutions_long <- solutions_long[solutions_long$Value > 0, ]
 
 solutions_long$Solution.type.label <- ""
 solutions_long$Solution.type.label[solutions_long$Solution.type=="RST"] <- "Resettlement arrivals"
-solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
 solutions_long$Solution.type.label[solutions_long$Solution.type=="NAT"] <- "Naturalisation"
+solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
 solutions_long$Solution.type.label[solutions_long$Solution.type=="RDP"] <- "IDP returns"
 
 save(solutions_long , file =  "data/solutions_long.RData")
@@ -166,10 +166,34 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
                                                          "Male Total"="MaleTotal")
                                                          )
 
+
+names(demographics)
+
+demographics$Population.type.label <- ""
+demographics$Population.type.label[demographics$Population.type=="REF"] <- "Refugees"
+demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Internally Displaced Persons"
+demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum-seekers"
+demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+demographics$Population.type.label[demographics$Population.type=="STA"] <- "Stateless Persons"
+demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+demographics$Population.type.label[demographics$Population.type=="RET"] <- "Refugee returns"
+demographics$Population.type.label[demographics$Population.type=="RDP"] <- "IDP returns"
+
+demographics$Population.type.label.short <- ""
+demographics$Population.type.label.short[demographics$Population.type=="REF"] <- "Refugees"
+demographics$Population.type.label.short[demographics$Population.type=="IDP"] <- "IDPs"
+demographics$Population.type.label.short[demographics$Population.type=="ASY"] <- "Asylum-seekers"
+demographics$Population.type.label.short[demographics$Population.type=="OOC"] <- "Others of Concern"
+demographics$Population.type.label.short[demographics$Population.type=="STA"] <- "Stateless Persons"
+demographics$Population.type.label.short[demographics$Population.type=="VDA"] <- "Venezuelans Abroad"
+demographics$Population.type.label.short[demographics$Population.type=="RET"] <- "Refugee returns"
+demographics$Population.type.label.short[demographics$Population.type=="RDP"] <- "IDP returns"
+
 names(demographics)
 table(demographics$location, useNA = "ifany")
 table(demographics$urbanRural, useNA = "ifany")
 table(demographics$accommodationType, useNA = "ifany")
+table(demographics$Population.type.label.short, useNA = "ifany")
 
 save(demographics, file =  "data/demographics.RData")
 
