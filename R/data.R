@@ -153,6 +153,8 @@
 #'   \item{\code{MaleUnknown}}{integer Male Unknown}
 #'   \item{\code{MaleTotal}}{integer Male}
 #'   \item{\code{Total}}{integer Total} 
+#'   \item{\code{Population.type.label}}{character Type of Population }
+#'   \item{\code{Population.type.label.short}}{character Type of Population - short label }
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "demographics"
