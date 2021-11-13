@@ -75,6 +75,9 @@
       <a href="../articles/Map_Venezuelan.html">Map Venezuelan</a>
     </li>
     <li>
+      <a href="../articles/Mapping_IDP_Location.html">Mapping IDP Location</a>
+    </li>
+    <li>
       <a href="../articles/Mapping_Refugee_Location.html">Mapping Refugee Location</a>
     </li>
     <li>
@@ -97,6 +100,9 @@
     </li>
     <li>
       <a href="../articles/Refugees_Age_Pyramid.html">Refugees Age Pyramid</a>
+    </li>
+    <li>
+      <a href="../articles/Refugees_Chart_Race.html">Refugee Chart Race</a>
     </li>
     <li>
       <a href="../articles/Resettlement_trend.html">Resettlement Trend</a>
@@ -236,24 +242,24 @@
 <span class="co">#             )</span>
 
 <span class="co">## Treemapify</span>
-<span class="fu">ggplot</span><span class="op">(</span><span class="va">datatree</span>, 
-       <span class="fu">aes</span><span class="op">(</span>area <span class="op">=</span> <span class="va">valuelastyear</span>, 
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">datatree</span>, 
+       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>area <span class="op">=</span> <span class="va">valuelastyear</span>, 
            fill <span class="op">=</span> <span class="va">group</span>, 
            label <span class="op">=</span> <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">treemapify</span><span class="fu">::</span><span class="fu"><a href="https://wilkox.org/treemapify/reference/geom_treemap.html">geom_treemap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">treemapify</span><span class="fu">::</span><span class="fu"><a href="https://wilkox.org/treemapify/reference/geom_treemap_text.html">geom_treemap_text</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"white"</span>,
                     place <span class="op">=</span> <span class="st">"centre"</span>, size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span>
  <span class="co"># scale_fill_viridis_c() +</span>
-  <span class="fu">scale_fill_manual</span><span class="op">(</span> values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>   <span class="st">"IDPs"</span> <span class="op">=</span> <span class="st">"#00B398"</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span> values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>   <span class="st">"IDPs"</span> <span class="op">=</span> <span class="st">"#00B398"</span>,
                                      <span class="st">"Venezuelan Abroad"</span><span class="op">=</span><span class="st">"#EF4A60"</span>,
                                      <span class="st">"Asylum Seekers"</span> <span class="op">=</span> <span class="st">"#18375F"</span>,
                                      <span class="st">"Refugees"</span> <span class="op">=</span> <span class="st">"#0072BC"</span>,
                                      <span class="st">"Other of Concern"</span> <span class="op">=</span><span class="st">"#8395b9"</span>,
                                      <span class="st">"Stateless"</span><span class="op">=</span><span class="st">"#E1CC0D"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">unhcRstyle</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/unhcRstyle/man/unhcr_theme.html">unhcr_theme</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>  <span class="op">+</span> <span class="co">## Insert UNHCR Style</span>
-  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
   <span class="co">## and the chart labels</span>
-  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Population of Concern in the Americas"</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Population of Concern in the Americas"</span>,
         subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span> <span class="va">lastyear</span>, <span class="st">", a total of "</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">datatree</span><span class="op">$</span><span class="va">valuelastyear</span><span class="op">)</span>, <span class="op">-</span><span class="fl">3</span><span class="op">)</span>,  big.mark<span class="op">=</span><span class="st">","</span><span class="op">)</span>, <span class="st">" Individuals"</span><span class="op">)</span>,
        x <span class="op">=</span> <span class="st">""</span>,
        y <span class="op">=</span> <span class="st">""</span>,

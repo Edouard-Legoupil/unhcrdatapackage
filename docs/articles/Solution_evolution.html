@@ -75,6 +75,9 @@
       <a href="../articles/Map_Venezuelan.html">Map Venezuelan</a>
     </li>
     <li>
+      <a href="../articles/Mapping_IDP_Location.html">Mapping IDP Location</a>
+    </li>
+    <li>
       <a href="../articles/Mapping_Refugee_Location.html">Mapping Refugee Location</a>
     </li>
     <li>
@@ -97,6 +100,9 @@
     </li>
     <li>
       <a href="../articles/Refugees_Age_Pyramid.html">Refugees Age Pyramid</a>
+    </li>
+    <li>
+      <a href="../articles/Refugees_Chart_Race.html">Refugee Chart Race</a>
     </li>
     <li>
       <a href="../articles/Resettlement_trend.html">Resettlement Trend</a>
@@ -171,9 +177,9 @@
             <span class="fu">summarise</span><span class="op">(</span>Value2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span> <span class="op">)</span> 
 
 <span class="co">#Make plot</span>
-<span class="va">solutionplot</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">solution</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">Value2</span>, 
+<span class="va">solutionplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">solution</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">Value2</span>, 
                                               colour <span class="op">=</span> <span class="va">Solution.type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Adding reference to color</span>
-  <span class="fu">geom_line</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Here we mention that it will be a line chart</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Here we mention that it will be a line chart</span>
   <span class="co"># stat_smooth(size=1.5, </span>
   <span class="co">#             method = "loess", </span>
   <span class="co">#             level = 0.95, </span>
@@ -181,16 +187,16 @@
   <span class="co">#             se = FALSE) + </span>
   <span class="co"># </span>
   
-  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">1.1</span>, colour <span class="op">=</span> <span class="st">"#333333"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_y_continuous</span><span class="op">(</span> label <span class="op">=</span> <span class="fu">unhcRstyle</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/unhcRstyle/man/format_si.html">format_si</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co">## Format axis number</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">1.1</span>, colour <span class="op">=</span> <span class="st">"#333333"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span> label <span class="op">=</span> <span class="fu">unhcRstyle</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/unhcRstyle/man/format_si.html">format_si</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co">## Format axis number</span>
   
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co">#scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette</span>
-  <span class="fu">scale_colour_manual</span><span class="op">(</span> values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="st">"NAT"</span> <span class="op">=</span> <span class="st">"#a6cee3"</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_colour_manual</a></span><span class="op">(</span> values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="st">"NAT"</span> <span class="op">=</span> <span class="st">"#a6cee3"</span>,
                                    <span class="st">"RST"</span>  <span class="op">=</span> <span class="st">"#1f78b4"</span>,
                                    <span class="st">"RET"</span> <span class="op">=</span> <span class="st">"#b2df8a"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_label</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">.5</span> ,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_label</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">.5</span> ,
                  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">solution</span><span class="op">[</span><span class="va">solution</span><span class="op">$</span><span class="va">Solution.type</span> <span class="op">==</span> <span class="st">"NAT"</span> <span class="op">&amp;</span> <span class="va">solution</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="va">lastyear</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value2"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> ,
                  label <span class="op">=</span> <span class="st">"Naturalisation"</span><span class="op">)</span>,
                              hjust <span class="op">=</span> <span class="fl">0</span>,
@@ -200,7 +206,7 @@
                              label.size <span class="op">=</span> <span class="cn">NA</span>,
                              family <span class="op">=</span> <span class="st">"Lato"</span>,
                              size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span>
-   <span class="fu">geom_label</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">lastyear</span> <span class="op">+</span><span class="fl">.5</span>,
+   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_label</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lastyear</span> <span class="op">+</span><span class="fl">.5</span>,
                   y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">solution</span><span class="op">[</span><span class="va">solution</span><span class="op">$</span><span class="va">Solution.type</span> <span class="op">==</span> <span class="st">"RST"</span> <span class="op">&amp;</span> <span class="va">solution</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="va">lastyear</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value2"</span><span class="op">)</span><span class="op">]</span> <span class="op">+</span> <span class="fl">10000</span><span class="op">)</span>,
                   label <span class="op">=</span> <span class="st">"Resettlement"</span><span class="op">)</span>,
                              hjust <span class="op">=</span> <span class="fl">0</span>,
@@ -210,7 +216,7 @@
                              label.size <span class="op">=</span> <span class="cn">NA</span>,
                              family <span class="op">=</span> <span class="st">"Lato"</span>,
                              size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span>
-   <span class="fu">geom_label</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">.5</span>,
+   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_label</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">.5</span>,
                   y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">solution</span><span class="op">[</span><span class="va">solution</span><span class="op">$</span><span class="va">Solution.type</span> <span class="op">==</span> <span class="st">"RET"</span> <span class="op">&amp;</span> <span class="va">solution</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="va">lastyear</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Value2"</span><span class="op">)</span><span class="op">]</span> <span class="op">-</span> <span class="fl">10000</span><span class="op">)</span>,
                    label <span class="op">=</span> <span class="st">"Return"</span><span class="op">)</span>,
                              hjust <span class="op">=</span> <span class="fl">0</span>,
@@ -222,12 +228,12 @@
                              size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="fu">unhcRstyle</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/unhcRstyle/man/unhcr_theme.html">unhcr_theme</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>  <span class="op">+</span> <span class="co">## Insert UNHCR Style</span>
-  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>,
-        panel.grid.major.y  <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#cbcbcb"</span><span class="op">)</span>, 
-        panel.grid.major.x  <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span>, 
-        panel.grid.minor <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co">### changing grid line that should appear</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>,
+        panel.grid.major.y  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#cbcbcb"</span><span class="op">)</span>, 
+        panel.grid.major.x  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>, 
+        panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co">### changing grid line that should appear</span>
   <span class="co">## and the chart labels</span>
-  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Solution for Displacement in the Americas "</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Solution for Displacement in the Americas "</span>,
        subtitle <span class="op">=</span> <span class="st">"Evolution in the past 20 years"</span>,
        x <span class="op">=</span> <span class="st">""</span>,
        y <span class="op">=</span> <span class="st">""</span>,

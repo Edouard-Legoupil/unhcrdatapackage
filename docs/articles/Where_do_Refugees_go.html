@@ -75,6 +75,9 @@
       <a href="../articles/Map_Venezuelan.html">Map Venezuelan</a>
     </li>
     <li>
+      <a href="../articles/Mapping_IDP_Location.html">Mapping IDP Location</a>
+    </li>
+    <li>
       <a href="../articles/Mapping_Refugee_Location.html">Mapping Refugee Location</a>
     </li>
     <li>
@@ -97,6 +100,9 @@
     </li>
     <li>
       <a href="../articles/Refugees_Age_Pyramid.html">Refugees Age Pyramid</a>
+    </li>
+    <li>
+      <a href="../articles/Refugees_Chart_Race.html">Refugee Chart Race</a>
     </li>
     <li>
       <a href="../articles/Resettlement_trend.html">Resettlement Trend</a>
@@ -188,22 +194,22 @@
   <span class="fu">summarise</span><span class="op">(</span>Value3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">Value2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co">#create plot</span>
-<span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">stacked_df1</span>, 
-                     <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">UNHCRBureau</span>,
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">stacked_df1</span>, 
+                     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UNHCRBureau</span>,
                          y <span class="op">=</span> <span class="va">Value3</span>,
                          fill <span class="op">=</span> <span class="va">CountryClass</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-                <span class="fu">geom_bar</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span>, 
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span>, 
                          position <span class="op">=</span> <span class="st">"fill"</span><span class="op">)</span> <span class="op">+</span>
-                <span class="fu">scale_y_continuous</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/label_percent.html">percent</a></span><span class="op">)</span> <span class="op">+</span>
-                <span class="fu">scale_fill_viridis_d</span><span class="op">(</span>direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
-                <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"#333333"</span><span class="op">)</span> <span class="op">+</span>
-                <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Refugees often remain in low-income countries"</span>,
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/label_percent.html">percent</a></span><span class="op">)</span> <span class="op">+</span>
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_d</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"#333333"</span><span class="op">)</span> <span class="op">+</span>
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Refugees often remain in low-income countries"</span>,
                      subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"% of population by Country classification per Region, "</span>, <span class="va">lastyear</span><span class="op">)</span>, 
                      caption <span class="op">=</span> <span class="st">"UNHCR https://www.unhcr.org/refugee-statistics/ - World Bank"</span><span class="op">)</span> <span class="op">+</span>
                 <span class="fu">unhcRstyle</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/unhcRstyle/man/unhcr_theme.html">unhcr_theme</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="co">## Insert UNHCR Style</span>
-                <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span>, 
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span>, 
                       legend.justification <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span> <span class="op">+</span>
-                <span class="fu">guides</span><span class="op">(</span>fill <span class="op">=</span> <span class="fu">guide_legend</span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="Where_do_Refugees_go_files/figure-html/unnamed-chunk-1-1.png" width="672"></p>
 </div>
   </div>
