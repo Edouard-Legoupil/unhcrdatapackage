@@ -1,14 +1,15 @@
-# A data package with UNHCR statistics Database
-
-Please visit: [`unhcrdatapackage`](https://unhcr.github.io/unhcrdatapackage/docs/)
-
-Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world), conveniently packaged for R users. 
+# [`unhcrdatapackage`](https://unhcr.github.io/unhcrdatapackage/docs/): A data package with UNHCR statistics Database
 
 Install from github with `devtools::install_github("unhcr/unhcrdatapackage")`.
 
-The code used to build the package is in `data-raw/build.R` inspired from tutorial @ https://r-pkgs.org/data.html 
+The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users.
 
-You can read the [Global Trend Report](https://www.unhcr.org/5ee200e37.pdf) and check the [different vignettes](https://unhcr.github.io/unhcrdatapackage/docs/articles/) displaying how data can be used:
+This package can be used together with [`unhcRstyle`](https://unhcr-web.github.io/unhcRstyle/docs/) in order to quickly generate statistical reports with UNHCR Brand Style.
+
+You can read the [Global Trend Report](https://www.unhcr.org/refugee-statistics/).
+
+## Chart Library
+The package includes a series of vignettes. You can browse the __[Chart Library](articles/index.html)__ using this link or the top menu to explore how data can be displayed.
 
 ## Data Content
 
@@ -25,7 +26,7 @@ The data presented in this website consists of the following dataset:
 
 Details is provided for each dataset
 
-All data is disaggregated by year, between 1951 and 2019 for stock figures, type of population, country/territory of asylum and origin. 
+All data is disaggregated by year, since 1951 for stock figures, type of population, country/territory of asylum and origin. 
 
 > Note that the term country/territory of asylum has a range of contexts depending on the dataset chosen
 
@@ -45,7 +46,7 @@ Data between tables remains additive therefore the totals should be considered a
 
 ## Contribution are welcome
 
-Contribution - specifically creation of new vgnettes are welcome - please fork and submit pull request.
+Contribution - specifically creation of new vignettes for the chart library are welcome - please [fork](https://github.com/unhcr/unhcrdatapackage) and submit pull request.
 
 ```{r}
 pkgdown::build_site()

@@ -1,8 +1,16 @@
 Type: Package
 Package: unhcrdatapackage
 Title: UNHCR Population statistics Database
-Version: 0.1.2
-Author: Edouard Legoupil, Chao Huang, Hisham Galal
+Version: 0.1.3
+Authors@R: 
+    c(person(given = "Edouard",
+             family = "Legoupil",
+             role = c("aut", "cre"),
+             email = "legoupil@unhcr.org"),
+      person(given = "Hisham",
+             family = "Galal",
+             role = "aut",
+             email = "galalh@unhcr.org"))
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
 Description: This is a data package with all frame organised and reshapped
     for easy consumptions in R Please see

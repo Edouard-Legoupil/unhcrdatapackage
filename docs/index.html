@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UNHCR Population statistics Database • unhcrdatapackage</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -34,32 +34,38 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">unhcrdatapackage</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Chart Library: Top Questions
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/Asylum_processing.html">Asylum Processing</a>
+      <a href="articles/Top_Refugee_hosting_Countries.html">Top Refugee hosting Countries</a>
     </li>
     <li>
+      <a href="articles/Tree_Map_of_Categories.html">Tree Map of Categories</a>
+    </li>
+    <li>
+      <a href="articles/Where_do_Refugees_go.html">Where do Refugees go?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Evolution
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
       <a href="articles/Biggest_decrease_in_Refugee_Population.html">Biggest decrease in Refugee Population</a>
     </li>
     <li>
@@ -75,15 +81,66 @@
       <a href="articles/Evolution_by_Country_of_Origin.html">Evolution by Country of Origin</a>
     </li>
     <li>
-      <a href="articles/Map_Venezuelan.html">Map Venezuelan</a>
+      <a href="articles/Refugee_Over_time.html">Refugee Over time</a>
     </li>
     <li>
-      <a href="articles/Mapping_IDP_Location.html">Mapping IDP Location</a>
+      <a href="articles/Smootheed_Evolution_over_time.html">Smootheed Evolution over time</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Demographics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/Refugees_Age_Pyramid.html">Refugees Age Pyramid</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Status Determination
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/Asylum_processing.html">Asylum Processing</a>
     </li>
     <li>
-      <a href="articles/Mapping_Refugee_Location.html">Mapping Refugee Location</a>
+      <a href="articles/Refugee_Recognition_rate.html">Refugee Recognition rate</a>
     </li>
     <li>
+      <a href="articles/Refugee_Status_Determination_Application.html">Refugee Status Determination Application</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Solutions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/Solution_evolution.html">Solution Evolution</a>
+    </li>
+    <li>
+      <a href="articles/Resettlement_trend.html">Resettlement Trend</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Ratio
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
       <a href="articles/Origin_Destination.html">Population origin-destination</a>
     </li>
     <li>
@@ -92,43 +149,43 @@
     <li>
       <a href="articles/Ratio_Refugee_Host_population.html">Ratio Refugee / Host population</a>
     </li>
-    <li>
-      <a href="articles/Refugee_Over_time.html">Refugee Over time</a>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Maps
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/Mapping_Refugee_Location.html">Mapping Refugee Location</a>
     </li>
     <li>
-      <a href="articles/Refugee_Recognition_rate.html">Refugee Recognition rate</a>
+      <a href="articles/Mapping_IDP_Location.html">Mapping IDP Location</a>
     </li>
     <li>
-      <a href="articles/Refugee_Status_Determination_Application.html">Refugee Status Determination Application</a>
+      <a href="articles/Map_Venezuelan.html">Map Venezuelan</a>
     </li>
-    <li>
-      <a href="articles/Refugees_Age_Pyramid.html">Refugees Age Pyramid</a>
-    </li>
-    <li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Chart Library: Animation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
       <a href="articles/Refugees_Chart_Race.html">Refugee Chart Race</a>
-    </li>
-    <li>
-      <a href="articles/Resettlement_trend.html">Resettlement Trend</a>
-    </li>
-    <li>
-      <a href="articles/Smootheed_Evolution_over_time.html">Smootheed Evolution over time</a>
-    </li>
-    <li>
-      <a href="articles/Solution_evolution.html">Solution Evolution</a>
-    </li>
-    <li>
-      <a href="articles/Top_Refugee_hosting_Countries.html">Top Refugee hosting Countries</a>
-    </li>
-    <li>
-      <a href="articles/Tree_Map_of_Categories.html">Tree Map of Categories</a>
-    </li>
-    <li>
-      <a href="articles/Where_do_Refugees_go.html">Where do Refugees go?</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="news/index.html">News</a>
+</li>
+<li>
+  <a href="reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -150,14 +207,18 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="a-data-package-with-unhcr-statistics-database" class="section level1">
+<div id="unhcrdatapackage-a-data-package-with-unhcr-statistics-database" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#a-data-package-with-unhcr-statistics-database" class="anchor"></a>A data package with UNHCR statistics Database</h1></div>
-<p>Please visit: <a href="https://unhcr.github.io/unhcrdatapackage/docs/"><code>unhcrdatapackage</code></a></p>
-<p>Data are pulled from HDX @ <a href="https://data.humdata.org/dataset/unhcr-population-data-for-world">unhcr-population-data-for-world</a>, conveniently packaged for R users.</p>
+<a href="#unhcrdatapackage-a-data-package-with-unhcr-statistics-database" class="anchor"></a><a href="https://unhcr.github.io/unhcrdatapackage/docs/"><code>unhcrdatapackage</code></a>: A data package with UNHCR statistics Database</h1></div>
 <p>Install from github with <code>devtools::install_github("unhcr/unhcrdatapackage")</code>.</p>
-<p>The code used to build the package is in <code>data-raw/build.R</code> inspired from tutorial @ <a href="https://r-pkgs.org/data.html" class="uri">https://r-pkgs.org/data.html</a></p>
-<p>You can read the <a href="https://www.unhcr.org/5ee200e37.pdf">Global Trend Report</a> and check the <a href="https://unhcr.github.io/unhcrdatapackage/docs/articles/">different vignettes</a> displaying how data can be used:</p>
+<p>The package is inspired from tutorial @ <a href="https://r-pkgs.org/data.html" class="uri">https://r-pkgs.org/data.html</a> (the code used to build the package is in <code>data-raw/build.R</code>). Data are pulled from HDX @ <a href="https://data.humdata.org/dataset/unhcr-population-data-for-world">unhcr-population-data-for-world</a> and are then conveniently packaged for R users.</p>
+<p>This package can be used together with <a href="https://unhcr-web.github.io/unhcRstyle/docs/"><code>unhcRstyle</code></a> in order to quickly generate statistical reports with UNHCR Brand Style.</p>
+<p>You can read the <a href="https://www.unhcr.org/refugee-statistics/">Global Trend Report</a>.</p>
+<div id="chart-library" class="section level2">
+<h2 class="hasAnchor">
+<a href="#chart-library" class="anchor"></a>Chart Library</h2>
+<p>The package includes a series of vignettes. You can browse the <strong><a href="articles/index.html">Chart Library</a></strong> using this link or the top menu to explore how data can be displayed.</p>
+</div>
 <div id="data-content" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-content" class="anchor"></a>Data Content</h2>
@@ -179,7 +240,7 @@
 <h2 class="hasAnchor">
 <a href="#data-structure" class="anchor"></a>Data structure</h2>
 <p>Details is provided for each dataset</p>
-<p>All data is disaggregated by year, between 1951 and 2019 for stock figures, type of population, country/territory of asylum and origin.</p>
+<p>All data is disaggregated by year, since 1951 for stock figures, type of population, country/territory of asylum and origin.</p>
 <blockquote>
 <p>Note that the term country/territory of asylum has a range of contexts depending on the dataset chosen</p>
 </blockquote>
@@ -207,7 +268,7 @@
 <div id="contribution-are-welcome" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contribution-are-welcome" class="anchor"></a>Contribution are welcome</h2>
-<p>Contribution - specifically creation of new vgnettes are welcome - please fork and submit pull request.</p>
+<p>Contribution - specifically creation of new vignettes for the chart library are welcome - please <a href="https://github.com/unhcr/unhcrdatapackage">fork</a> and submit pull request.</p>
 <pre class="{r}"><code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code></pre>
 </div>
 </div>
@@ -232,7 +293,8 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Edouard Legoupil <br><small class="roles"> Maintainer </small>  </li>
+<li>Edouard Legoupil <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Hisham Galal <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
 
@@ -241,7 +303,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Edouard Legoupil.</p>
+  <p>Developed by Edouard Legoupil, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
