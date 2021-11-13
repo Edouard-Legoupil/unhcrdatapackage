@@ -1,0 +1,45 @@
+---
+title: "Refugee Over time"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Refugee Over time}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+```
+
+## How many refugees in the world?
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
+## Loading the stat tables
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  filter(Population.type  == "REF") %>%
+  group_by(Year) %>%
+  summarise(Value2 = sum(Value) ) 
+
+
+#Make plot
+ggplot(data, aes(x = Year, y = Value2)) +
+  geom_line(colour = "#0072bc", size = 1) + # Here we mention that it will be a line chart
+ # geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  scale_y_continuous(label = unhcRstyle::format_si()) + ## Format axis number
+  ## and the chart labels
+  labs(title = "More and More refugees",
+       x = "",
+       y = "",
+       subtitle = "World wide refugee population 1951-2017", 
+       caption = "UNHCR https://www.unhcr.org/refugee-statistics/")
+
+```

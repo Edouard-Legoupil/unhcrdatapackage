@@ -1,0 +1,59 @@
+---
+title: "Biggest decrease in Refugee Population"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Biggest decrease in Refugee Population}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+```
+
+
+## Biggest decrease in Refugee Population in the last 10 years
+
+```{r echo=TRUE, fig.height=7, fig.width=7, warning=FALSE, ,message=FALSE}
+## Loading the stat tables
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+tenyears <- lastyear -10
+## Loading the stat tables
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+
+    filter(Population.type  == "REF")  %>%
+    filter(Year == tenyears | Year == lastyear) %>%
+    group_by( CountryAsylumCode, Year) %>%
+    summarise(Value2 = sum(Value) )  %>%
+    select(CountryAsylumCode, Year, Value2) %>%
+    mutate(Year = paste0("year_",Year )) %>%
+    spread(Year, Value2) %>%
+    mutate(gap = year_2020 - year_2010 ) %>%
+    arrange(desc(gap)) %>%
+    head(10) 
+
+# Make plot
+ggplot(data, aes(x = tenyears, xend = lastyear,
+                                   y = reorder(CountryAsylumCode, gap),
+                                   group = CountryAsylumCode)) + 
+  ggalt::geom_dumbbell(colour = "#dddddd",
+                size = 3,
+                colour_x = "#0072bc",
+                colour_xend = "#FAAB18") + 
+  labs(title = "Where did Refugee Population decreased in the past 10 years?",
+       subtitle = paste0("Biggest decrease in Refugee Population, ", tenyears," - ",lastyear),  
+       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
+  scale_x_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+
+
+```

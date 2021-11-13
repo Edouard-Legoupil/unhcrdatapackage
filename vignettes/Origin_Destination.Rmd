@@ -1,0 +1,69 @@
+---
+title: "Population origin-destination"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Population origin-destination}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+library(circlize)
+```
+
+## Population origin-destination
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
+thisbureau <- "Americas"
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+
+## https://jokergoo.github.io/circlize_book/book/
+
+chords <- unhcrdatapackage::end_year_population_totals %>%
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear) %>% 
+  dplyr::mutate(across(REF:VDA, ~replace_na(as.numeric(.), 0)),
+         total = REF + ASY + VDA, #+ IDP  + STA + OOC,
+         # Lump together factor levels into "other"
+         CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .02, w = total),
+         CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .02, w = total)) %>% 
+   group_by(CountryOriginName, CountryAsylumName) %>%
+   summarize(total = sum(total), .groups = "drop")  %>%
+# CountryOriginName = fct_recode(CountryOriginName, "Other" = "China")
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+        CountryOriginName = str_replace(CountryOriginName, " \\(Plurinational State of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, " \\(Plurinational State of\\)", ""),
+        CountryOriginName = str_replace(CountryOriginName, "United States of America", "USA"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"))
+
+circlize::chordDiagram(chords,
+                       self.link = 1,
+                       grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(15),
+                       annotationTrack = "grid" ,
+                     # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))),
+                      preAllocateTracks = 1.6
+)
+
+circos.track(track.index = 1,
+             panel.fun = function(x, y) {
+               circos.text(CELL_META$xcenter,
+                           CELL_META$ylim[1],
+                           CELL_META$sector.index,
+                           facing = "clockwise",
+                           niceFacing = TRUE,
+                           adj = c(0, 0.5))
+             },
+             bg.border = NA) # here set bg.border to NA is important
+
+
+title(main = "Movement of Forcibly Displaced Population")
+
+```

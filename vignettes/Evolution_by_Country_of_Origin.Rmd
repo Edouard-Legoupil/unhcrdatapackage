@@ -1,0 +1,65 @@
+---
+title: "Evolution by Country of Origin"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Evolution by Country of Origin}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+```
+
+## Evolution by Country of Origin
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
+thisbureau <- "Americas"
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+
+end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3"))
+#Prepare data
+barcentral <- end_year_population_totals_long.ori %>%
+  filter(Population.type  %in% c("REF","ASY") & 
+           Year >2014 &
+           CountryOriginCode %in% c("BLZ", "SLV", "HND", "MEX", "GTM", "NIC", "CRI", "PAN")) %>%
+  group_by( #CountryOriginName,
+            Population.type, Population.type.label.short, Year) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+#Make plot
+barcentralplot <- ggplot(barcentral, aes(x = Year, y = Value2 , 
+                      fill = Population.type.label.short
+                             )) + 
+  geom_bar(stat = "identity", 
+           position="stack"#, 
+           #fill = "#0072bc"
+           ) + # here we configure that it will be bar chart
+  
+ # facet_wrap( vars(CountryOriginName ), ncol = 3) +
+  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+ # xlim(c(2014, lastyear+1)) +
+  #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Global number of Asylum Seekers and Refugees originated from Central America increased by 3! ",
+       subtitle = "Trends in the past 5 years for Honduras, El Salvador, Guatemala, Belize, Mexico,\n Nicaragua, Costa Rica & Panama ",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+barcentralplot
+```

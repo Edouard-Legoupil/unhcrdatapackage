@@ -1,0 +1,132 @@
+---
+title: "Comparison over time by Region"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparison over time by Region}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+```
+
+
+## Comparison over time by Region
+
+```{r , fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
+
+## Loading the stat tables
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  filter(#Population.type  == "REF" &
+           !(is.na(UNHCRBureau))) %>%
+  group_by(Year, UNHCRBureau ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+ 
+#Make plot
+ggplot(data, aes(x = Year, y = Value2, 
+                                              colour = UNHCRBureau)) + # Adding reference to color
+  geom_line(size = 1) + # Here we mention that it will be a line chart
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  
+  xlim(c(1960, lastyear + 8)) +
+  
+  #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+  #scale_fill_manual(name = 'UNHCRBureau', values = c("#b2df8a", "#fb9a99", "#1f78b4", "#33a02c", "#a6cee3")) +
+  #   "WestAfrica" 
+  scale_fill_manual(name = 'UNHCRBureau', values = c( "Americas" = "#a6cee3",
+                                                      "Asia"  = "#1f78b4", 
+                                                     "EastAfrica" = "#b2df8a",  
+                                                     "Europe" = "#33a02c",
+                                                      "MENA" = "#fb9a99", 
+                                                      "SouthAfrica" = "#e31a1c", 
+                                                     "WestAfrica"= "#fdbf6f")) +  
+  geom_label(aes(x = lastyear + .5 , 
+                 y = as.numeric(data[data$UNHCRBureau == "Americas" & data$Year == lastyear , c("Value2")]), 
+                 label = "Americas"), 
+                             hjust = 0, 
+                             vjust = 0.5, 
+                             colour = "#a6cee3",  
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+   geom_label(aes(x = lastyear +.5, 
+                  y = as.numeric(data[data$UNHCRBureau == "Asia" & data$Year == lastyear , c("Value2")]), 
+                  label = "Asia"), 
+                             hjust = 0, 
+                             vjust = 0.5,
+                             colour = "#1f78b4",   
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+   geom_label(aes(x = lastyear + .5,  
+                  y = as.numeric(data[data$UNHCRBureau == "EastAfrica" & data$Year == lastyear , c("Value2")]), 
+                   label = "Eastern Africa"), 
+                             hjust = 0, 
+                             vjust = 0.5, 
+                             colour = "#b2df8a",  
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+    geom_label(aes(x = lastyear + .5,  
+                  y = as.numeric(data[data$UNHCRBureau == "Europe" & data$Year == lastyear , c("Value2")]), 
+                    label = "Europe"), 
+                             hjust = 0, 
+                             vjust = 0.5, 
+                             colour = "#33a02c",  
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+    geom_label(aes(x = lastyear + .5,  
+                  y = as.numeric(data[data$UNHCRBureau == "MENA" & data$Year == lastyear , c("Value2")]), 
+                    label = "Middle East / North Africa"), 
+                             hjust = 0, 
+                             vjust = 0.5,  
+                             colour = "#fb9a99", 
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+    geom_label(aes(x = lastyear + .5,  
+                  y = as.numeric(data[data$UNHCRBureau == "SouthAfrica" & data$Year == lastyear , c("Value2")]), 
+                    label = "Southern Africa"), 
+                             hjust = 0, 
+                             vjust = 0.5, 
+                             colour = "#e31a1c",  
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+    geom_label(aes(x = lastyear + .5,  
+                  y = as.numeric(data[data$UNHCRBureau == "WestAfrica" & data$Year == lastyear , c("Value2")]), 
+                    label = "Western Africa"), 
+                             hjust = 0, 
+                             vjust = 0.5, 
+                             colour = "#fdbf6f",  
+                             fill = "white", 
+                             label.size = NA, 
+                             family = "Lato", 
+                             size = 6) +
+  
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  ## and the chart labels
+  labs(title = "Refugees Population are not equally spread",
+       subtitle = "World wide refugee population 1951-2017",
+       x = "",
+       y = "",
+       caption = "UNHCR https://www.unhcr.org/refugee-statistics/")
+
+```
