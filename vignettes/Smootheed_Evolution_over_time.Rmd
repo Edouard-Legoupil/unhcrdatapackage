@@ -10,15 +10,23 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Smootheed Evolution over time
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+The map is presented with the [Bertin 1953 projection](https://visionscarto.net/bertin-projection-1953)
 
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
@@ -30,6 +38,13 @@ ooc_central <-   end_year_population_totals_long.asy[end_year_population_totals_
                                                             c("CountryAsylumCode","CountryAsylumName", "Year", "Value") ]  %>%
   group_by(Year, CountryAsylumCode, CountryAsylumName ) %>%
   summarise(Value = sum(Value) ) 
+
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
 
 ooc_centralplot <- ggplot(ooc_central, 
        aes(x=Year, 

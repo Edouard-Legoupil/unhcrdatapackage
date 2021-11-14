@@ -7,18 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Tree Map of Categories
-
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+## Prepare Data
+ 
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
  
@@ -59,21 +66,12 @@ valuelastyear <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_p
            as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==lastyear &  end_year_population_totals_long.asy$Population.type =="STA" , 
                                      c("Value")]))       )
 
+```
 
 
-value2019 <- c(as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="IDP" , 
-                                     c("Value")])),
-           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="VDA" , 
-                                     c("Value")])),
-           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="ASY" , 
-                                     c("Value")])),
-           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="REF" , 
-                                     c("Value")])),
-           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="OOC" , 
-                                     c("Value")])),
-           as.integer(sum(end_year_population_totals_long.asy[end_year_population_totals_long.asy$UNHCRBureau == thisbureau &  end_year_population_totals_long.asy$Year ==2019 &  end_year_population_totals_long.asy$Population.type =="STA" , 
-                                     c("Value")]))       )
+## Generate Plot
 
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 colorPopType <- c("#00B398", # IDP 
            "#EF4A60", # VDA
            "#18375F", # ASY
@@ -82,21 +80,9 @@ colorPopType <- c("#00B398", # IDP
            "#E1CC0D") #STA
 datatree <- data.frame(group,
                    valuelastyear,
-                   value2019,
                    valuelastyearworld,
                    colorPopType)
  
-# treemap
-# treemap(datatree,
-#             index="group",
-#             vSize="value",
-#             type="index",
-#             vColor="color",
-#             #type="manual", 
-#             #palette = colorPopType,
-#             border.col= "white" ,
-#             )
-
 ## Treemapify
 ggplot(datatree, 
        aes(area = valuelastyear, 

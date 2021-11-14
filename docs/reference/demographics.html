@@ -8,6 +8,13 @@
 
 <title>Demographics and locations of forcibly displaced displaced and stateless persons — demographics • unhcrdatapackage</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -41,6 +48,7 @@
 
 <meta property="og:title" content="Demographics and locations of forcibly displaced displaced and stateless persons — demographics" />
 <meta property="og:description" content="Data collated by UNHCR, containing information about forcibly displaced populations and stateless persons residing in World. It includes data on their demographics as well as sub-national locations. Data is available from 2001." />
+<meta property="og:image" content="https://unhcr.github.io/unhcrdatapackage/docs/logo.png" />
 
 
 
@@ -266,7 +274,7 @@
   <dt><code>CountryAsylumCode</code></dt><dd><p>character Country of Asylum Code isoA3</p></dd>
   <dt><code>CountryOriginName</code></dt><dd><p>character Country of Origin Name</p></dd>
   <dt><code>CountryAsylumName</code></dt><dd><p>character Country of Asylum Name</p></dd>
-  <dt><code>Population Type</code></dt><dd><p>character Population Type: Population types are expressed in the data as follows:#'   
+  <dt><code>Population.type</code></dt><dd><p>character Population Type: Population types are expressed in the data as follows:#'   
   *    `REF` – Refugee  
   *    `ROC` – People in refugee-like situation  
   *    `ASY` – Asylum seekers  
@@ -275,9 +283,9 @@
   *    `IOC` – People in IDP-like situation  
   *    `STA` – Stateless persons  
   *    `OOC` – Others of concern</p></dd>
-  <dt><code>location</code></dt><dd><p>character location</p></dd>
-  <dt><code>urbanRural</code></dt><dd><p>character Urban  or Rural</p></dd>
-  <dt><code>accommodationType</code></dt><dd><p>character Accommodation Type</p></dd>
+  <dt><code>location</code></dt><dd><p>character location - Variable not used..</p></dd>
+  <dt><code>urbanRural</code></dt><dd><p>character Urban  or Rural - Variable not used..</p></dd>
+  <dt><code>accommodationType</code></dt><dd><p>character Accommodation Type - Variable not used..</p></dd>
   <dt><code>Female04</code></dt><dd><p>integer Female 0-4</p></dd>
   <dt><code>Female511</code></dt><dd><p>integer Female 5-11</p></dd>
   <dt><code>Female1217</code></dt><dd><p>integer Female 12-17</p></dd>
@@ -293,6 +301,8 @@
   <dt><code>MaleUnknown</code></dt><dd><p>integer Male Unknown</p></dd>
   <dt><code>MaleTotal</code></dt><dd><p>integer Male</p></dd>
   <dt><code>Total</code></dt><dd><p>integer Total</p></dd> 
+  <dt><code>Population.type.label</code></dt><dd><p>character Type of Population</p></dd>
+  <dt><code>Population.type.label.short</code></dt><dd><p>character Type of Population - short label</p></dd>
 
 </dl>
 

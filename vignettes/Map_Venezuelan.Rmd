@@ -10,14 +10,21 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Map Venezuelan
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+```{r}
 
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
@@ -38,7 +45,7 @@ allVene <- end_year_population_totals_long.asy %>%
   mutate(Label = format(round(Value2, -3),  big.mark=","))  %>%
  # mutate(Label2 = unhcRstyle::format_si()Value2)  %>%  # unhcRstyle::format_si(100000000)
   arrange(desc(Value2)) %>%
-  head(10) # %>%  
+  head(9) # %>%  
   ## Change to robinson  world projection
   #  mutate %>% 
 
@@ -48,6 +55,12 @@ rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
   filter(continent == "North America" | continent == "South America")
 ## Remove Antartica
 world <- world[ world$sov_a3 != "ATA", ]
+
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 
 # plot
 allveneplot <- ggplot(data = world) + 
@@ -82,9 +95,5 @@ allveneplot <- ggplot(data = world) +
         )
 
 allveneplot 
- 
-
 ```
 
-  
-```

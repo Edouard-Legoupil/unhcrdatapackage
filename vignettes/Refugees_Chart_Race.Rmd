@@ -7,18 +7,27 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Refugee Chart Race
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+The map is presented with the [Bertin 1953 projection](https://visionscarto.net/bertin-projection-1953)
 
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
@@ -151,7 +160,12 @@ rank_data.ref$CountryAsylumName <- as.factor(as.character(rank_data.ref$CountryA
 ## Double checking country name
 #table(end_year_population_totals_long$Country, useNA = "ifany")
 
+```
 
+## Generate Plot
+
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 p <- rank_data.ref[rank_data.ref$Population.type %in% c("REF"), ] %>%
   ggplot(aes(y = Value2,  
              x =   reorder(ordering, desc(ordering)), 

@@ -10,15 +10,21 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Evolution by Country of Origin
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
@@ -34,7 +40,11 @@ barcentral <- end_year_population_totals_long.ori %>%
             Population.type, Population.type.label.short, Year) %>%
   summarise(Value2 = sum(Value) )  %>%
   mutate(Year = as.integer(Year) ) 
+```
 
+
+# Generate plot
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 #Make plot
 barcentralplot <- ggplot(barcentral, aes(x = Year, y = Value2 , 
                       fill = Population.type.label.short

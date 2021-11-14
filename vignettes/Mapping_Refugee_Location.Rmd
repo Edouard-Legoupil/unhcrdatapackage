@@ -10,15 +10,21 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Mapping Refugee Location
- 
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+```{r}
 
 ## Getting world map for mapping
 world <- rnaturalearth::ne_countries(scale = "small", returnclass = "sf")
@@ -45,6 +51,12 @@ data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
 world <- merge(x = world , y = data, by.y = "CountryAsylumCode" , by.x = "iso_a3")
 df3 <- merge(x = data , y = world_points, by.x = "CountryAsylumCode" , by.y = "iso_a3")
 
+
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
 
 # plot
 ggplot(data = world) + 

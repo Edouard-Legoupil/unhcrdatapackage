@@ -10,15 +10,22 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
-library(tidyverse)
 ```
 
-## Relation between Refugee Population & GDP
 
-```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+## Load Packages
 
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(stringr)
+```
+
+## Prepare Data
+
+```{r}
 demographics <- merge(x = unhcrdatapackage::demographics, by.x="CountryOriginCode", 
                       y = unhcrdatapackage::reference, by.y= "iso_3", 
                       all.x = TRUE)
@@ -61,7 +68,6 @@ pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
 names(pyramid3)[1] <- "Class"
 names(pyramid3)[2] <- "Count"
 
-library(stringr)
 pyramid3 <- pyramid3 %>% 
   mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
                             str_detect(Class, "Female") ~ "Female")) %>% 
@@ -74,6 +80,12 @@ pyramid3 <- pyramid3 %>%
 
 pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
 pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
+
+```
+
+## Generate Plot
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+
 
 
 

@@ -12,7 +12,7 @@ A data frame with 182359 rows and 24 variables:
   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
   \item{\code{CountryOriginName}}{character Country of Origin Name}
   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-  \item{\code{Population Type}}{character Population Type: Population types are expressed in the data as follows:#'   
+  \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:#'   
   *    `REF` – Refugee  
   *    `ROC` – People in refugee-like situation  
   *    `ASY` – Asylum seekers  
@@ -21,9 +21,9 @@ A data frame with 182359 rows and 24 variables:
   *    `IOC` – People in IDP-like situation  
   *    `STA` – Stateless persons  
   *    `OOC` – Others of concern  }
-  \item{\code{location}}{character location}
-  \item{\code{urbanRural}}{character Urban  or Rural}
-  \item{\code{accommodationType}}{character Accommodation Type}
+  \item{\code{location}}{character location - Variable not used.. }
+  \item{\code{urbanRural}}{character Urban  or Rural - Variable not used.. }
+  \item{\code{accommodationType}}{character Accommodation Type - Variable not used.. }
   \item{\code{Female04}}{integer Female 0-4}
   \item{\code{Female511}}{integer Female 5-11}
   \item{\code{Female1217}}{integer Female 12-17}
@@ -39,6 +39,8 @@ A data frame with 182359 rows and 24 variables:
   \item{\code{MaleUnknown}}{integer Male Unknown}
   \item{\code{MaleTotal}}{integer Male}
   \item{\code{Total}}{integer Total} 
+  \item{\code{Population.type.label}}{character Type of Population }
+  \item{\code{Population.type.label.short}}{character Type of Population - short label }
 }
 }
 \source{

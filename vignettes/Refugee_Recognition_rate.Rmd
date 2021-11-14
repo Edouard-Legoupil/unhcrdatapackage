@@ -7,18 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Refugee Status Determination Application
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
@@ -63,6 +70,17 @@ topasyl2 <-  topasyl  %>%
   arrange(desc(RefugeeRecognitionRate)) %>%
   head(10)  
 
+## Filter top 10 
+topOrigin2 <-  topOrigin  %>%
+  arrange(desc(RefugeeRecognitionRate)) %>%
+  head(10) 
+```
+
+# Generate plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
+
 recoasyl <- ggplot(topasyl2, aes(y = RefugeeRecognitionRate, 
              x = reorder(CountryAsylumName, RefugeeRecognitionRate))) + 
   scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
@@ -80,10 +98,6 @@ recoasyl <- ggplot(topasyl2, aes(y = RefugeeRecognitionRate,
     panel.grid.major.y = element_blank()) + ### changing grid line  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333")  
 
-## Filter top 10 
-topOrigin2 <-  topOrigin  %>%
-  arrange(desc(RefugeeRecognitionRate)) %>%
-  head(10) 
 
 recoorigin <- ggplot(topOrigin2, aes(y = RefugeeRecognitionRate, 
              x = reorder(CountryOriginName, RefugeeRecognitionRate))) + 

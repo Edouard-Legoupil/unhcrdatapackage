@@ -10,15 +10,21 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Resettlement Trend
-
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+## Prepare Data
+ 
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
  
@@ -36,7 +42,11 @@ bar_rst <- solutions_long.asy %>%
   mutate(Year = as.integer(Year) ) 
 
 bar_rst$Bureau <- factor(bar_rst$Bureau, levels = c( "Rest of the World", "Americas"))
+```
 
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 #Make plot
 rstplot <- ggplot(bar_rst, aes(x = Year, y = Value2 , 
                     fill = Bureau

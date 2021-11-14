@@ -7,18 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Relation between Refugee Population & GDP
+## Prepare Data
 
-```{r ,message = FALSE,echo = TRUE , warning = FALSE}
-
+```{r}
 ## Loading the stat tables
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
@@ -41,7 +48,11 @@ df2 <- merge(x = data, y = wb_data, by = c("CountryAsylumCode" ,"Year"), all.x =
 df2 <- df2[ !(is.na(df2$UNHCRBureau)) & !(is.na(df2$NY.GNP.PCAP.CD)) , ]
 df2$prop <- df2$Value2 / df2$SP.POP.TOTL
 
+```
 
+## Generate Plot
+
+```{r , fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
 ggplot(df2, aes(y = Value2, x = NY.GDP.MKTP.CD)) + 
   geom_point(aes(col = UNHCRBureau)) + 
   #geom_smooth(method = "loess", se = F) +  
@@ -56,6 +67,5 @@ ggplot(df2, aes(y = Value2, x = NY.GDP.MKTP.CD)) +
        caption = "2016 Figures, UNHCR https://www.unhcr.org/refugee-statistics/, World bank") +
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(axis.title = element_text(size = 12))
-
 
 ```

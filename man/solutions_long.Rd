@@ -13,6 +13,7 @@ A data frame with 19298 rows and 7 variables:
   \item{\code{CountryOriginName}}{character Country of Origin Name}
   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
   \item{\code{Solution.type}}{character Type of Solution }
+  \item{\code{Solution.type.label}}{character Type of Solution }
   \item{\code{Value}}{integer Number of person} 
 }
 }

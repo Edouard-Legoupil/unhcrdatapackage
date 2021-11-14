@@ -7,56 +7,64 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
-library(tidyverse)
 ```
 
 
-## Biggest increase in Refugee Population in the last 10 years
+## Load Packages
 
-```{r , fig.height=7, fig.width=7,message = FALSE,echo = TRUE , warning = FALSE}
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+
+```{r}
 ## Loading the stat tables
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 tenyears <- lastyear -10
+## Loading the stat tables
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) %>%
+
     filter(Population.type  == "REF")  %>%
     filter(Year == tenyears | Year == lastyear) %>%
     group_by( CountryAsylumName, Year) %>%
     summarise(Value2 = sum(Value) )  %>%
-    select(CountryAsylumName, Year, Value2) %>%
+    select(CountryAsylumName, Year, Value2) %>% 
+    mutate(CountryAsylumName = str_replace(CountryAsylumName, "Democratic Republic of the Congo", "DRC")) %>% 
     mutate(Year = paste0("year_",Year )) %>%
     spread(Year, Value2) %>%
-    mutate(gap = year_2010 - year_2020) %>%
+    mutate(gap = year_2021 - year_2011 ) %>%
     arrange(desc(gap)) %>%
-    head(10) %>%
-    gather(key = Year, 
-           value = Value2,
-           -CountryAsylumName,
-           -gap) 
-  
-#Make plot
-ggplot(data, 
-       aes(x = CountryAsylumName, 
-           y = Value2, 
-          fill = as.factor(Year))) +
-  
-  coord_flip() +
-  geom_bar(stat = "identity", position = "dodge") +
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_fill_manual(values = c("#0072bc", "#FAAB18")) +
-  labs(title = "Biggest Increase Population",
-       subtitle = paste0("10 Biggest change in Refugee Population, ", tenyears," - ",lastyear), 
+    head(10) 
+```
+
+# Generate plot
+
+```{r echo=TRUE, fig.height=7, fig.width=7, warning=FALSE, ,message=FALSE}
+ggplot(data, aes(x = year_2011, xend = year_2021,
+                                   y = reorder(CountryAsylumName, gap),
+                                   group = CountryAsylumName)) + 
+  ggalt::geom_dumbbell(colour = "#dddddd",
+                size = 3,
+                colour_x = "#0072bc",
+                colour_xend = "#FAAB18") + 
+  labs(title = "Where did Refugee Population increased in the past 10 years?",
+       subtitle = paste0("Biggest increase in Refugee Population, ", tenyears," - ",lastyear),
+       x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_x_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
-
-
 ```

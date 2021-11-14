@@ -10,15 +10,21 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
-library(tidyverse)
 ```
 
 
-## Top Refugee hosting Countries
+## Load Packages
 
-```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+ 
+```{r}
 #Prepare data2
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
@@ -34,6 +40,12 @@ data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
 
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
+```
+
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
 #Make plot
 ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
                            y = Value2)) +

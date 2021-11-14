@@ -10,21 +10,30 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
 end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryOriginCode" = "iso_3"))
+```
+
+```{r, cache = TRUE}
 
 wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
                                       "NY.GDP.MKTP.CD", ## GDP current https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
@@ -36,7 +45,9 @@ wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL",  ## Population total https:
 names(wb_data)[1] <- "CountryAsylumCode"
 names(wb_data)[2] <- "Year"
 
-                                                     
+```
+
+```{r}
 departed <- end_year_population_totals_long.ori %>%
   filter(Population.type  %in% c("REF","ASY","VDA") & 
            Year == lastyear #&
@@ -49,11 +60,20 @@ departed <- end_year_population_totals_long.ori %>%
   mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>%
   
     ## Now merge with WB Data 
-  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
+  left_join(wb_data %>% select("SP.POP.TOTL","CountryAsylumCode", "Year") %>% filter(Year == lastyear-1), by = c(  CountryOriginCode = "CountryAsylumCode"    )) %>%  
   mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  )  %>%
   arrange(desc(ref.part)) %>%
   head(10) #%>% #%>% 
   
+```
+
+
+## Generate Plot
+
+Proportion of the population who are refugees, by country of origin (SDG Indicator 10.7.4)
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
 departedplot <- ggplot(departed,
        aes( x= ref.part, fct_reorder(CountryOriginName, ref.part))) +
  # geom_col(fill = "#0072BC") +

@@ -7,18 +7,27 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+ 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(circlize)
 ```
 
-## Population origin-destination
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+```{r}
 
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
@@ -43,6 +52,12 @@ chords <- unhcrdatapackage::end_year_population_totals %>%
         CountryAsylumName = str_replace(CountryAsylumName, " \\(Plurinational State of\\)", ""),
         CountryOriginName = str_replace(CountryOriginName, "United States of America", "USA"),
         CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"))
+
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 
 circlize::chordDiagram(chords,
                        self.link = 1,

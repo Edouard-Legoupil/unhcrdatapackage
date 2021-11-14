@@ -7,19 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
-library(tidyverse)
 ```
 
 
-## Where do go Refugees go?
+## Load Packages
 
-```{r ,fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
 
+## Prepare Data
+ 
+```{r}
 ## Loading the stat tables
 
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
@@ -37,7 +43,7 @@ wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.P
 # Renaming variables for further matching
 names(wb_data)[1] <- "CountryAsylumCode"
 names(wb_data)[2] <- "Year"
-
+wb_data$Year <- lastyear
 
 df2 <- merge(x = data, y = wb_data, by = c("CountryAsylumCode" ,"Year"), all.x = TRUE)
 df2 <- df2[ !(is.na(df2$UNHCRBureau)) & !(is.na(df2$NY.GNP.PCAP.CD)) , ]
@@ -49,6 +55,14 @@ stacked_df1 <- df2 %>%
                               labels = c("Low-income", "Lower-middle income", "Upper-middle income", "High-income"))) %>%
   group_by(UNHCRBureau, CountryClass) %>%
   summarise(Value3 = sum(as.numeric(Value2)))
+
+```
+
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
+
 
 #create plot
 ggplot(data = stacked_df1, 

@@ -7,18 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Asylum Processing
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
@@ -50,7 +57,8 @@ asylum_decisionAM <- unhcrdatapackage::asylum_decisions %>%
 asylum_applicationsAM <- unhcrdatapackage::asylum_applications  %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>%
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>%
+                      select(coa_region = `UNHCRBureau`, iso_3),  
+                    by = c("CountryAsylumCode" = "iso_3")) %>%
   filter(coa_region == thisbureau #& Year == lastyear
   ) %>%
   group_by(CountryAsylumName, Year ) %>%
@@ -62,7 +70,11 @@ asylum_applicationsAM <- unhcrdatapackage::asylum_applications  %>%
   mutate(applicationrate = Decided / Applied  * 100 ) %>% 
   mutate(applicationrate.cat = cut(applicationrate, breaks=c(0, 25, 50, 75,100, 500)))
 
+```
 
+## Generate plot
+
+```{r echo=TRUE, fig.height=7, fig.width=7, warning=FALSE, ,message=FALSE}
 ## First test combine Number of Application & Ratio as color
 rsdrate <- ggplot(asylum_applicationsAM,
            aes(x = reorder(CountryAsylumName, Applied),
@@ -89,9 +101,6 @@ rsdrate <- ggplot(asylum_applicationsAM,
            y = "",
            caption = "Source: UNHCR.org/refugee-statistics - only for countries with more than 50,000 Asylum Seekers") 
 
-
-
 rsdrate
 
-  
 ```

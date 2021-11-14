@@ -7,20 +7,23 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
-library(tidyverse)
-
-
 ```
 
-## Mapping IDP Location
- 
 
+## Load Packages
 
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
 
 The map is presented with the [Bertin 1953 projection](https://visionscarto.net/bertin-projection-1953)
 
@@ -93,10 +96,10 @@ names(wb_data)[2] <- "Year"
 
 ```{r}
 df4 <- df3 %>%
-   select("CountryAsylumCode", "Year",  "CountryAsylumName", "UNHCRBureau",   "Value2") %>%
+   select("CountryAsylumCode", "Year",  "CountryAsylumName", "UNHCRBureau","economy",   "Value2") %>%
     ## Now merge with WB Data 
   left_join(wb_data %>% select("SP.POP.TOTL","NY.GDP.PCAP.CD", "NY.GDP.MKTP.CD","CountryAsylumCode", "Year") %>%
-              filter(Year == lastyear), 
+              filter(Year == lastyear-1), 
             by = c( "CountryAsylumCode"    )) %>%  
   mutate(idp.gdp2 = round( Value2 /NY.GDP.MKTP.CD , 4)  )  %>% 
   mutate(idp.gdp = round(  Value2 / NY.GDP.PCAP.CD , 4)  )  %>%
@@ -107,9 +110,8 @@ df4$quint2 <- Hmisc::cut2(df4$idp.gdp, g = 4)
 
 ```
 
-
+## Generate Plot
 Maps is created here with [MapSF package](https://riatelab.github.io/mapsf/index.html)
-
 
 ```{r}
 # Select a font already installed on your system !!
@@ -153,7 +155,7 @@ mapsf::mf_map(world2,
 
 mapsf::mf_prop_typo( 
   x = df4, # frame to use.. 
-  var = c("Value2", "quint3"),  ## First value for size, second for color
+  var = c("Value2", "economy"),  ## First value for size, second for color
   inches = .035, # size of the biggest symbol (radius for circles, half width for squares) in inches
   val_max = 90000,  # maximum value used for proportional symbols
   symbol = "circle", ## type of symbol- 'circle' or 'square'
@@ -164,7 +166,7 @@ mapsf::mf_prop_typo(
   leg_no_data = "No data", ## When no data
   col_na = "grey",  ## When no data
   leg_pos = c("topright", "bottomright"),  # position of the legend
-  leg_title = c("Number of IDP", "Ratio IDP/\n GDP Per Capita"), # title of the legend
+  leg_title = c("Number of IDP", "Type of Economy"), # title of the legend
   leg_title_cex = c(.7, .7),  # title font size of the legend
   leg_val_cex = c(.5, .5), # content font size of the legend
   leg_val_rnd = .2, # number of decimal places of the values in the legend

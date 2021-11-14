@@ -7,18 +7,28 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(circlize)
 ```
 
-## Evolution over time of the different Population of Concern
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+```{r}
 
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year) 
@@ -33,6 +43,12 @@ multiple_line_df <- end_year_population_totals_long.asy %>%
            !(is.na(UNHCRBureau))) %>%
   group_by(Year, Population.type, Population.type.label ) %>%
   summarise(Value2 = sum(Value) ) 
+
+``` 
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 
 #Make plot
 evol_america <- ggplot(multiple_line_df, aes(x = Year, y = Value2, 

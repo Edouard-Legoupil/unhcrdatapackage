@@ -7,18 +7,26 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Refugee Status Determination Application
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 
@@ -44,27 +52,6 @@ topasyl1 <-  topasyl  %>%
   head(10)  
   
  
-rsdasyl <-  ggplot(topasyl1, aes(y = TotalDecided, 
-             x = reorder(CountryAsylumName, TotalDecided))) + 
-  scale_y_continuous(labels = unhcRstyle::format_si()) +
-  #facet_grid(.~ ctry_asy) +  
-  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
-  coord_flip() +
-  labs(#title = "Number of RSD application  in 2020",
-       subtitle = "Per country of asylum",
-       x = " ", 
-       y = " "  ) +
-  unhcRstyle::unhcr_theme(base_size = 9) +
-  theme(#axis.text.x = element_blank(),
-    # legend.position = "none",
-    
-    panel.grid.major.x = element_line(color = "#cbcbcb"), 
-    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") 
-  
-##############################################################
-##############################################################
-  
 topOrigin <-  unhcrdatapackage::asylum_decisions %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -85,6 +72,34 @@ topOrigin <-  unhcrdatapackage::asylum_decisions %>%
 topOrigin1 <-  topOrigin  %>%
   arrange(desc(TotalDecided)) %>%
   head(10)   
+ 
+
+```
+
+# Generate plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
+rsdasyl <-  ggplot(topasyl1, aes(y = TotalDecided, 
+             x = reorder(CountryAsylumName, TotalDecided))) + 
+  scale_y_continuous(labels = unhcRstyle::format_si()) +
+  #facet_grid(.~ ctry_asy) +  
+  geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
+  coord_flip() +
+  labs(#title = "Number of RSD application  in 2020",
+       subtitle = "Per country of asylum",
+       x = " ", 
+       y = " "  ) +
+  unhcRstyle::unhcr_theme(base_size = 9) +
+  theme(#axis.text.x = element_blank(),
+    # legend.position = "none",
+    
+    panel.grid.major.x = element_line(color = "#cbcbcb"), 
+    panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") 
+  
+##############################################################
+##############################################################
  
 rsdorigin <- ggplot(topOrigin1, aes(y = TotalDecided, 
              x = reorder(CountryOriginName, TotalDecided))) + 

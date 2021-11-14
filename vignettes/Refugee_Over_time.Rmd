@@ -7,18 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## How many refugees in the world?
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 ## Loading the stat tables
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
@@ -27,7 +34,11 @@ data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
   group_by(Year) %>%
   summarise(Value2 = sum(Value) ) 
 
+```
 
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
 #Make plot
 ggplot(data, aes(x = Year, y = Value2)) +
   geom_line(colour = "#0072bc", size = 1) + # Here we mention that it will be a line chart
@@ -41,5 +52,4 @@ ggplot(data, aes(x = Year, y = Value2)) +
        y = "",
        subtitle = "World wide refugee population 1951-2017", 
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/")
-
 ```

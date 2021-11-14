@@ -7,19 +7,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
-library(tidyverse)
 ```
 
 
-## Comparison over time by Region
+## Load Packages
 
-```{r , fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
 
+## Prepare Data
+
+```{r}
 ## Loading the stat tables
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
@@ -30,7 +36,11 @@ data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
   summarise(Value2 = sum(Value) ) 
 
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
- 
+```
+
+## generate plot
+
+```{r , fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
 #Make plot
 ggplot(data, aes(x = Year, y = Value2, 
                                               colour = UNHCRBureau)) + # Adding reference to color
