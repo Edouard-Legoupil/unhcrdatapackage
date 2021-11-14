@@ -278,9 +278,9 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>applicationrate.cat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">applicationrate</span>, breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">75</span>,<span class="fl">100</span>, <span class="fl">500</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; `summarise()` has grouped output by 'CountryAsylumName'. You can override using the `.groups` argument.</span></code></pre></div>
 </div>
-<div id="generate-plot" class="section level1">
-<h1 class="hasAnchor">
-<a href="#generate-plot" class="anchor"></a>Generate plot</h1>
+<div id="generate-plot" class="section level2">
+<h2 class="hasAnchor">
+<a href="#generate-plot" class="anchor"></a>Generate plot</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## First test combine Number of Application &amp; Ratio as color</span>
 <span class="va">rsdrate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">asylum_applicationsAM</span>,
