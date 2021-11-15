@@ -1,0 +1,179 @@
+ 
+
+
+##### Categories
+Population of Concern
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
+#Prepare data
+multiple_line_df <- end_year_population_totals_long.asy %>%
+        
+  filter(CountryAsylumName  == thiscountry & 
+                 Year > (lastyear - 5) ) %>%
+  group_by(Year, Population.type.label.short ) %>%
+  summarise(Value2 = sum(Value) ) 
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + # Adding reference to color
+  #geom_line(size = 1) + # Here we mention that it will be a line chart
+  
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc"
+           ) + # here we configure that it will be bar chart+
+  
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Evolution of different statistical group in needs of International Displacement ",
+       subtitle = paste0(thiscountry),
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+##### Origin 
+
+
+##### Demographics
+
+ 
+
+##### Source
+
+ 
+
+
+
+##### Solution 
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
+#Prepare data
+multiple_line_df <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 10)  ) %>%
+  group_by(Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+
+
+#Make plot
+ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
+                                              #colour = Population.type
+                             )) + 
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
+  
+  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = 2) +
+
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "Recorded Solutions",
+       subtitle = paste0(thiscountry),
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics ")
+
+```
+
+##### Processing 
+
+RSD activities are mostly for ..
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
+linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
+  ## Calculate grouped value for Origin to procedure..
+  group_by(CountryOriginName, ProcedureName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = CountryOriginName) %>%
+  rename(target = ProcedureName) 
+
+linksDecision.Procedure.Type <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(ProcedureName, DecisionTypeName ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = ProcedureName) %>%
+  rename(target = DecisionTypeName) 
+
+linksDecision.Type.Output <- asylum_decisions_long %>%
+  ## Add reference for the filters
+  dplyr::left_join( unhcrdatapackage::reference %>% 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  ## Group small records under other
+  ## Calculate grouped value for Origin to procedure..
+  group_by(DecisionTypeName,Decision.output ) %>%
+  summarise(value = sum(Value) ) %>%
+  ## Rename variable
+  rename(source = DecisionTypeName) %>%
+  rename(target = Decision.output)
+
+ 
+
+linksallDecision <- rbind(linksDecision.Ori.Procedure,
+                  linksDecision.Procedure.Type,
+                  linksDecision.Type.Output )
+
+
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodesDecision <- data.frame(
+  name=c(as.character(linksallDecision$source), 
+         as.character(linksallDecision$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-1 
+linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
+
+# Make the Network
+p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+                              Nodes = nodesDecision,
+                              Source = "IDsource", 
+                              Target = "IDtarget",
+                              Value = "value", 
+                              NodeID = "name", 
+                              # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
+                              sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+# you save it as an html
+networkD3::saveNetwork(p, paste0(getwd(),"/decision", thiscountry,".html"))
+
+# you convert it as png -- Need first webshot::install_phantomjs()
+webshot::webshot(paste0(getwd(),"/decision", thiscountry,".html"),
+                 paste0(getwd(),"/decision", thiscountry,".png"),
+                 vwidth = 800, vheight = 500)
+#getwd()
+#![ ](graph/decision.png)
+
+```
+

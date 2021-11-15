@@ -1,0 +1,255 @@
+---
+title:  
+output: html_document
+---
+ 
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  message=FALSE, 
+  warning=FALSE,
+  echo = FALSE
+)
+
+library(tidyverse)
+## Loading the stat tables
+end_year_population_totals <- unhcrdatapackage::end_year_population_totals
+reference <- unhcrdatapackage::reference
+end_year_population_totals_long <- unhcrdatapackage::end_year_population_totals_long
+end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))
+
+end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3"))
+
+demographics <- unhcrdatapackage::demographics
+asylum_applications <- unhcrdatapackage::asylum_applications
+asylum_decisions <- unhcrdatapackage::asylum_decisions
+asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
+
+solutions <- unhcrdatapackage::solutions
+solutions_long <- unhcrdatapackage::solutions_long
+solutions_long.asy <- dplyr::left_join( x=  solutions_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))
+```
+
+## Country Statistical Focus{.tabset .tabset-pills}
+
+### Intro
+
+Country Focus: __6 key questions for each country addressed through predefined static charts that can easily be copied as an image and embedded in reports, fact-sheets or presentations__ to accompany a narrative.
+
+The charts includes the 6 following topics:
+
+ 1. Evolution over time of the different __Categories__ of forcibly displaced population?
+ 
+ 2. Evolution of the different Country of __Origin__ of population in need of international protection 
+ 
+ 3. What is the __demographics__ profile of population in need of international protection in the country in relation with the host population?
+ 
+ 4. Evolution of Country seen as  __source__ country?
+ 
+ 5. What are the trends in term of __solutions__ in this  Country?
+ 
+ 6. What is the asylum __processing__ capacity in relation with the demand?
+ 
+```{r message=FALSE, warning=FALSE, output= FALSE}
+lastyear <- 2021
+thisbureau <- "Americas"
+``` 
+
+### America{.tabset .tabset-pills}
+
+#### Argentina
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Argentina"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Brazil
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Brazil"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Canada
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Canada"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Chile
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Chile"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+
+#### Colombia
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Colombia"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Ecuador
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Ecuador"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Mexico
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Mexico"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Peru
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Peru"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+
+#### United States of America
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "United States of America"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Venezuela
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Venezuela (Bolivarian Republic of)"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Panama
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Panama"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+### Asia
+
+We show the data in this tab.
+
+```{r}
+head(mtcars)
+```
+
+### Europe{.tabset .tabset-pills}
+
+#### Country A
+```{r}
+head(mtcars)
+```
+Sentences.
+
+#### Country B {.active}
+
+We show the data in this tab.
+
+```{r}
+head(mtcars)
+```
+
+
+### Northern Africa & Middle-East{.tabset .tabset-pills} 
+
+#### Country A
+```{r}
+head(mtcars)
+```
+Sentences.
+
+#### Country B {.active}
+
+We show the data in this tab.
+
+```{r}
+head(mtcars)
+```
+
+
+### Western Africa{.tabset .tabset-pills}
+#### Country A
+```{r}
+head(mtcars)
+```
+Sentences.
+
+#### Country B {.active}
+
+We show the data in this tab.
+
+```{r}
+head(mtcars)
+```
+
+
+### Eastern Africa{.tabset .tabset-pills}
+```{r}
+head(mtcars)
+```
+
+### Southern Africa{.tabset .tabset-pills}
+```{r}
+head(mtcars)
+```
+
+ 
+
+## {-}
+
+Fee Free to share your comments through [issues ticket](https://github.com/unhcr/unhcrdatapackage/issues/new)
