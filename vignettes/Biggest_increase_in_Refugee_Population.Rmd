@@ -62,7 +62,7 @@ ggplot(data, aes(x = year_2011, xend = year_2021,
        subtitle = paste0("Biggest increase in Refugee Population, ", tenyears," - ",lastyear),
        x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_x_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_x_continuous( label = scales::label_number_si()) + ## Format axis number
   
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 

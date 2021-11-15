@@ -55,8 +55,7 @@ rstplot <- ggplot(bar_rst, aes(x = Year, y = Value2 ,
                    position = "stack"#, 
                   # fill = "#0072bc"
                   ) + # here we configure that it will be bar chart
-          
-          scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+          scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
           xlim(c(lastyear-30, lastyear+1)) +
           #facet_wrap( vars(Solution.type.label ), ncol = 2) +
         
@@ -66,15 +65,15 @@ rstplot <- ggplot(bar_rst, aes(x = Year, y = Value2 ,
                 panel.grid.major.x  = element_blank(), 
                 panel.grid.minor = element_blank()) + ### changing grid line that should appear
           ## and the chart labels
-          labs(title = "When Resettlement is going down in the Americas, it affects the rest of the world. ",
-               subtitle = "Opportunities have reached its lowest level ever in the last 30 years ",
+          labs(title = "When Resettlement is going down in the Americas, 
+                         it affects the rest of the world. ",
+               subtitle = "Opportunities have reached its lowest level ever in 
+                           the last 30 years ",
                x = "",
                y = "",
                caption = "Source: UNHCR.org/refugee-statistics ")
-rstplot
- 
 
+rstplot
 ```
 
   
-```

@@ -58,8 +58,7 @@ ooc_centralplot <- ggplot(ooc_central,
               se = FALSE) + 
   # scale_color_manual(values=c(IDMC="orange",
   #                             UNHCR="sienna" )) + 
-  
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(#legend.position = "none"

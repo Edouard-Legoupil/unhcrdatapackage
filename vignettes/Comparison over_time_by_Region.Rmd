@@ -46,8 +46,7 @@ ggplot(data, aes(x = Year, y = Value2,
                                               colour = UNHCRBureau)) + # Adding reference to color
   geom_line(size = 1) + # Here we mention that it will be a line chart
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
-  
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   xlim(c(1960, lastyear + 8)) +
   
   #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette

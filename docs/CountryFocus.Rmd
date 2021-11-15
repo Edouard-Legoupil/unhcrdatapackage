@@ -4,6 +4,7 @@ output:
   html_document: 
     theme: yeti
     includes:
+      before_body: header.html
       after_body: footer.html
 ---
  

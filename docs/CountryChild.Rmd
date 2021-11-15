@@ -3,7 +3,7 @@
 
 ##### Categories 
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
         
@@ -24,7 +24,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
            ) + # here we configure that it will be bar chart+
   
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Population.type.label.short ), ncol = 3) +
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
@@ -42,7 +43,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ##### Origin 
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
 #Prepare data2
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
@@ -82,7 +83,8 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
        x = " ",
        y = "# of Forcibly displaced people",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
@@ -92,7 +94,7 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
 
 ##### Demographics
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
 
 demographics1 <- demographics %>%
                    dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -198,7 +200,7 @@ pyramidplot
 
 ##### Solution 
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 10)  ) %>%
@@ -221,6 +223,8 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
   facet_wrap( vars(Solution.type.label ), ncol = 2) +
 
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
@@ -236,7 +240,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ##### Processing 
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -321,7 +325,7 @@ webshot::webshot(paste0(getwd(),"/decision", thiscountry,".html"),
 
 ##### Source
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"} 
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9,  size="small"} 
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
@@ -360,7 +364,8 @@ ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country b
        x = "",
        y = "",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 

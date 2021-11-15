@@ -61,8 +61,7 @@ evol_america <- ggplot(multiple_line_df, aes(x = Year, y = Value2,
     #           se = FALSE) + 
   
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
-  
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   xlim(c(2000, lastyear + 7)) +
   
   #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette

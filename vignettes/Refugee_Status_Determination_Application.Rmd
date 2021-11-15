@@ -82,7 +82,7 @@ topOrigin1 <-  topOrigin  %>%
 
 rsdasyl <-  ggplot(topasyl1, aes(y = TotalDecided, 
              x = reorder(CountryAsylumName, TotalDecided))) + 
-  scale_y_continuous(labels = unhcRstyle::format_si()) +
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
@@ -102,8 +102,8 @@ rsdasyl <-  ggplot(topasyl1, aes(y = TotalDecided,
 ##############################################################
  
 rsdorigin <- ggplot(topOrigin1, aes(y = TotalDecided, 
-             x = reorder(CountryOriginName, TotalDecided))) + 
-  scale_y_continuous(labels = unhcRstyle::format_si()) +
+             x = reorder(CountryOriginName, TotalDecided))) +
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = unhcRstyle::unhcr_blue) +
   coord_flip() +
@@ -135,6 +135,4 @@ patchworkRSDa1 <- patchworkRSDa +
   )  
 
 patchworkRSDa1
-
-  
 ```

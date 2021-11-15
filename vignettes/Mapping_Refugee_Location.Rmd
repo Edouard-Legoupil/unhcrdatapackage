@@ -68,7 +68,6 @@ ggplot(data = world) +
   xlab("") +
   ylab("") + 
   ggtitle("Refugee Distribution") + 
-  
   unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
   theme(panel.grid.major = element_line(color = gray(.5), 
                                         linetype = "dashed", size = 0.5),
@@ -77,6 +76,4 @@ ggplot(data = world) +
         axis.text.y  = element_blank(),
         legend.position = "none"
         )
-
-
 ```

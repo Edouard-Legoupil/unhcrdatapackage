@@ -255,8 +255,7 @@
   <span class="co"># </span>
   
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">1.1</span>, colour <span class="op">=</span> <span class="st">"#333333"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span> label <span class="op">=</span> <span class="fu">unhcRstyle</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/unhcRstyle/man/format_si.html">format_si</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co">## Format axis number</span>
-  
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span> label <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number_si.html">label_number_si</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co">## Format axis number</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="va">lastyear</span> <span class="op">+</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co">#scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette</span>
