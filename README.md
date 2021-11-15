@@ -10,7 +10,9 @@ Note, that you can also explore data through  [Refugee Data Finder](https://www.
 
 ## Chart Library
 
-The package includes a series of vignettes that provides recipes to create re-usable charts in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). To explore how data can be displayed, you can browse the __Chart Library__ using this [link](articles/index.html) or the top menu links. For Designers, convenient versions of each plot in __svg__ format (usable with Illustrator/Inkscape or Indesign/Scribus) is also available directly [here](https://github.com/unhcr/unhcrdatapackage/tree/master/inst/svg)
+The package includes a series of vignettes that provides recipes to create re-usable charts in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). To explore how data can be displayed, you can browse the __Chart Library__ using this [link](articles/index.html) or the top menu links. For Designers, convenient versions of each plot in __svg__ format (usable with Illustrator/Inkscape or Indesign/Scribus) is also available directly [here](https://github.com/unhcr/unhcrdatapackage/tree/master/inst/svg).
+
+You can also explore __Country Statistical Focus__, accessible [here](CountryFocus.html) that provides visualization by country in relation to 6 dimensions of displacement:  Categories, Origin, Demographics, Solutions, Processing and Source.   
 
 You can also submit __request for new charts__ [here](https://github.com/unhcr/unhcrdatapackage/issues/new)
 

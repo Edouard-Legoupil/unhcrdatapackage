@@ -62,8 +62,6 @@ stacked_df1 <- df2 %>%
 ## Generate Plot
 
 ```{r ,fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
-
-
 #create plot
 ggplot(data = stacked_df1, 
                      aes(x = UNHCRBureau,
