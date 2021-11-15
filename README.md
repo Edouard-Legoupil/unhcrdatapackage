@@ -1,8 +1,8 @@
-# [`unhcrdatapackage`](https://unhcr.github.io/unhcrdatapackage/docs/): A data package with UNHCR statistics Database <img src="man/figures/logo.png" width="200" align="right" />
+# [`UnhcrDataPackage`](https://unhcr.github.io/unhcrdatapackage/docs/): A data package with UNHCR statistics Database <img src="man/figures/logo.png" width="200" align="right" />
 
 Install from github with `devtools::install_github("unhcr/unhcrdatapackage")`.
 
-The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users.
+The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users intending to build __data stories__.
 
 This package can be used together with [`unhcRstyle`](https://unhcr-web.github.io/unhcRstyle/docs/) in order to quickly generate statistical reports with UNHCR Brand Style using a [reproducible approach](https://unhcr-americas.github.io/reproducibility).
 

@@ -1,8 +1,7 @@
  
 
 
-##### Categories
-Population of Concern
+##### Categories 
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
 #Prepare data
@@ -33,7 +32,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "Evolution of different statistical group in needs of International Displacement ",
+  labs(title = "Evolution of different Forcibly Displaced People",
        subtitle = paste0(thiscountry),
        x = "",
        y = "",
@@ -43,14 +42,158 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ##### Origin 
 
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+#Prepare data2
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+## Loading the stat tables
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
+  filter(CountryAsylumName  == thiscountry & Year == lastyear) %>%   
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
+  group_by( CountryOriginName, SUBREGION) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10)
+
+#Make plot
+ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country by Value
+                           y = Value2)) +
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc") + # here we configure that it will be bar chart+
+  geom_label(aes(x = CountryOriginName, y = Value2, 
+                label =  format(round(Value2, -3),  big.mark=",")), 
+             hjust = 1, 
+             vjust = 0.5, 
+             colour = "white", 
+             fill = NA, 
+             label.size = NA, 
+             family = "Lato", 
+             size = 6) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
+  ## and the chart labels
+  labs(title = paste0("Top 10 Countries of Origin hosted in ",thiscountry, "" ),
+       subtitle = paste0("Data as of ",lastyear), 
+       x = " ",
+       y = "# of Forcibly displaced people",
+       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
+  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+
+```
 
 ##### Demographics
 
  
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
 
-##### Source
+demographics1 <- demographics %>%
+                   dplyr::left_join( unhcrdatapackage::reference %>% 
+                                       select(UNHCRBureau, iso_3),  
+                                     by = c("CountryAsylumCode" = "iso_3")) %>% 
+  filter(CountryAsylumName  == thiscountry & Year == lastyear-1) %>%
+                  mutate ( totGen = FemaleTotal +MaleTotal,
+                           totbreak = Female04 + Female511 + Female1217 + Female1859 + Female60ormore + FemaleUnknown +
+                             Male04 + Male511 + Male1217 + Male1859 + Male60ormore + MaleUnknown,
+                           hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
 
- 
+tot <- format( sum(demographics1$Total) ,  big.mark=",")
+totprop <-   format( round( sum(demographics1$totGen) / 
+    sum(demographics1$Total )  *100,1),  big.mark=",")  
+
+if (totprop == 0 ) {
+  cat(paste0(" Gender disaggregation is not available for all of the ",tot, " persons in", thiscountry ))
+  
+} else {
+#names(demographics)
+pyramid <-  demographics1[ demographics1$Year == max(demographics1$Year),
+                          c(
+                              "Female04",
+                              "Female511",
+                              "Female1217",
+                              "Female1859",
+                              "Female60ormore",
+                              "FemaleUnknown",
+                             # "FemaleTotal",
+                              "Male04",
+                              "Male511",
+                              "Male1217",
+                              "Male1859",
+                              "Male60ormore",
+                              "MaleUnknown"#,
+                             # "MaleTotal"       
+                             )]  
+
+pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) %>%
+  pivot_longer(
+    cols = Female04:MaleUnknown,
+    names_to = "Class",
+    values_to = "Sum",
+    values_drop_na = TRUE
+  ) 
+
+pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
+                                          by = list(pyramid2$Class#, pyramid2$REGION_UN
+                                                    ),
+                                          sum))
+names(pyramid3)[1] <- "Class"
+names(pyramid3)[2] <- "Count"
+
+pyramid3 <- pyramid3 %>% 
+  mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
+                            str_detect(Class, "Female") ~ "Female")) %>% 
+  mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
+                         str_detect(Class, "511") ~ "5-11",
+                         str_detect(Class, "1217") ~ "12-17",
+                         str_detect(Class, "1859") ~ "18-59",
+                         str_detect(Class, "60") ~ "60+",
+                         str_detect(Class, "Unknown") ~ "Unknown")) 
+
+pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
+pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
+
+pyramidplot <- ggplot(pyramid3, aes(x = age, 
+                     fill = gender,
+                      y = ifelse(test = gender == "Female",
+                            yes = -pc, no = pc)) ) + 
+  geom_bar(stat = "identity") +
+  geom_label(aes(x = age,
+                 y = ifelse(test = gender == "Female",
+                            yes = -pc -5 , no = pc),
+                label =  format(round(pc, 1),  big.mark=",") 
+                ),
+             hjust = 0,
+             vjust = 0.5,
+             colour = "black",
+             fill = NA,
+             label.size = NA,
+             family = "Lato",
+             size = 8) +
+  scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
+  labs(title = paste0("Population Pyramid for Forcibly Displaced People in", thiscountry ),
+       subtitle = paste0(" Gender disaggregation is available for ", totprop, " % of the ",tot, " persons in this country" ),
+       x = "", 
+       y = "Percent of population",
+       caption =  "Source: UNHCR Population Statistics as of end 2020") +
+  scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
+                      aesthetics = c("colour", "fill")) +
+  coord_flip()+
+  unhcRstyle::unhcr_theme(base_size = 8) +
+   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+            panel.grid.major.y = element_blank())
+
+pyramidplot
+}
+
+``` 
 
 
 
@@ -177,3 +320,56 @@ webshot::webshot(paste0(getwd(),"/decision", thiscountry,".html"),
 
 ```
 
+
+
+##### Source
+
+ 
+
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+#Prepare data2
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+## Loading the stat tables
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
+  filter(CountryOriginName  == thiscountry & Year == lastyear) %>%   
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
+  group_by( CountryAsylumName, SUBREGION) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10)
+
+#Make plot
+ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
+                           y = Value2)) +
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc") + # here we configure that it will be bar chart+
+  geom_label(aes(x = CountryAsylumName, y = Value2, 
+                label =  format(round(Value2, -3),  big.mark=",")), 
+             hjust = 1, 
+             vjust = 0.5, 
+             colour = "white", 
+             fill = NA, 
+             label.size = NA, 
+             family = "Lato", 
+             size = 6) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
+  ## and the chart labels
+  labs(title = paste0("Top 10 Countries hosting Persons from ",thiscountry, " in needs of International Protection" ),
+       subtitle = paste0("Data as of ",lastyear), 
+       x = "",
+       y = "",
+       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
+  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+
+```

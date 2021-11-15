@@ -1,6 +1,10 @@
 ---
-title:  
-output: html_document
+title:
+output: 
+  html_document: 
+    theme: yeti
+    includes:
+      after_body: footer.html
 ---
  
 
@@ -41,30 +45,35 @@ solutions_long.asy <- dplyr::left_join( x=  solutions_long,
 
 ### Intro
 
-Country Focus: __6 key questions for each country addressed through predefined static charts that can easily be copied as an image and embedded in reports, fact-sheets or presentations__ to accompany a narrative.
+Country Focus: __6 key questions for each country addressed through predefined static charts__  
+
+Charts can easily be copied as an image, or adjusted (for instance changing the title to __support a data story__) and embedded in reports, fact-sheets or presentations to accompany a narrative.
 
 The charts includes the 6 following topics:
 
- 1. Evolution over time of the different __Categories__ of forcibly displaced population?
+ 1. Evolution over time of the different __Categories__ of [Forcibly Displaced People](https://www.unhcr.org/refugee-statistics/insights/explainers/forcibly-displaced-pocs.html)?
  
  2. Evolution of the different Country of __Origin__ of population in need of international protection 
  
  3. What is the __demographics__ profile of population in need of international protection in the country in relation with the host population?
  
- 4. Evolution of Country seen as  __source__ country?
+ 4. What are the trends in term of __solutions__ in this  Country?
  
- 5. What are the trends in term of __solutions__ in this  Country?
+ 5. What is the asylum __processing__ capacity in relation with the demand?
  
- 6. What is the asylum __processing__ capacity in relation with the demand?
+ 6. if relevant, evolution of the Country seen as a displacement  __source__ country?
  
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 lastyear <- 2021
-thisbureau <- "Americas"
 ``` 
 
 ### America{.tabset .tabset-pills}
 
-#### Argentina
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "Americas"
+``` 
+
+#### Argentina{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Argentina"
@@ -73,7 +82,7 @@ thiscountry <- "Argentina"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Brazil
+#### Brazil{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Brazil"
@@ -84,7 +93,7 @@ thiscountry <- "Brazil"
 ```
 
 
-#### Canada
+#### Canada{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Canada"
@@ -95,7 +104,7 @@ thiscountry <- "Canada"
 ```
 
 
-#### Chile
+#### Chile{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Chile"
@@ -107,7 +116,7 @@ thiscountry <- "Chile"
 
 
 
-#### Colombia
+#### Colombia{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Colombia"
@@ -118,7 +127,7 @@ thiscountry <- "Colombia"
 ```
 
 
-#### Ecuador
+#### Ecuador{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Ecuador"
@@ -128,7 +137,7 @@ thiscountry <- "Ecuador"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Mexico
+#### Mexico{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Mexico"
@@ -138,7 +147,7 @@ thiscountry <- "Mexico"
 ```
 
 
-#### Peru
+#### Peru{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Peru"
@@ -150,7 +159,7 @@ thiscountry <- "Peru"
 
 
 
-#### United States of America
+#### USA{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "United States of America"
@@ -161,7 +170,7 @@ thiscountry <- "United States of America"
 ```
 
 
-#### Venezuela
+#### Venezuela{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Venezuela (Bolivarian Republic of)"
@@ -171,7 +180,7 @@ thiscountry <- "Venezuela (Bolivarian Republic of)"
 ```
 
 
-#### Panama
+#### Panama{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Panama"
@@ -180,76 +189,51 @@ thiscountry <- "Panama"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-### Asia
+### Asia{.tabset .tabset-pills}
 
-We show the data in this tab.
 
-```{r}
-head(mtcars)
-```
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "Asia"
+``` 
+
+To come soon...
+ 
 
 ### Europe{.tabset .tabset-pills}
 
-#### Country A
-```{r}
-head(mtcars)
-```
-Sentences.
-
-#### Country B {.active}
-
-We show the data in this tab.
-
-```{r}
-head(mtcars)
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "Europe"
 ```
 
+To come soon...
 
-### Northern Africa & Middle-East{.tabset .tabset-pills} 
+### MENA{.tabset .tabset-pills} 
 
-#### Country A
-```{r}
-head(mtcars)
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "MENA"
 ```
-Sentences.
-
-#### Country B {.active}
-
-We show the data in this tab.
-
-```{r}
-head(mtcars)
-```
-
-
-### Western Africa{.tabset .tabset-pills}
-#### Country A
-```{r}
-head(mtcars)
-```
-Sentences.
-
-#### Country B {.active}
-
-We show the data in this tab.
-
-```{r}
-head(mtcars)
-```
-
-
-### Eastern Africa{.tabset .tabset-pills}
-```{r}
-head(mtcars)
-```
-
-### Southern Africa{.tabset .tabset-pills}
-```{r}
-head(mtcars)
-```
-
+To come soon...
  
 
-## {-}
+### Western Africa{.tabset .tabset-pills}
 
-Fee Free to share your comments through [issues ticket](https://github.com/unhcr/unhcrdatapackage/issues/new)
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "WestAfrica"
+```
+To come soon... 
+
+### Eastern Africa{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "EastAfrica"
+```
+To come soon... 
+
+### Southern Africa{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "SouthAfrica"
+```
+To come soon... 
+
+## {-}

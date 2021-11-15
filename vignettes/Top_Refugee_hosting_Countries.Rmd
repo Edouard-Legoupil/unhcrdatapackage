@@ -29,17 +29,14 @@ library(tidyverse)
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
+                         y= unhcrdatapackage::reference, 
+                         by = c("CountryAsylumCode" = "iso_3"))  %>%
   filter(Population.type  == "REF" & Year == lastyear) %>%
   group_by( CountryAsylumName, SUBREGION) %>%
   summarise(Value2 = sum(Value) )  %>%
   #mutate( value3 =  format_si(Value2)) %>%
   arrange(desc(Value2)) %>%
   head(10)
-
-lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
-
 ```
 
 
