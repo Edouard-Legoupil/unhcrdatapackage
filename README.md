@@ -2,7 +2,7 @@
 
 Install from github with `devtools::install_github("unhcr/unhcrdatapackage")`.
 
-The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users intending to build __data stories__.
+The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users intending to build __data stories__. If you are UNHCR Staff and want to learn R, visit [UNHCR Learn & Connect- R training](https://unhcr.csod.com/ui/lms-learner-playlist/PlaylistDetails?playlistId=e90e2279-e3a4-4ef2-8b74-757f91d224b2)
 
 This package can be used together with [`unhcRstyle`](https://unhcr-web.github.io/unhcRstyle/docs/) in order to quickly generate statistical reports with UNHCR Brand Style using a [reproducible approach](https://unhcr-americas.github.io/reproducibility).
 
@@ -45,7 +45,7 @@ Country/territory of asylum and origin – the full list of UN countries is avai
  *   `UNK` for Various/unknown  
  *   `STA` for Stateless  
 
-## Data protection
+## Data protection & Statistical Disclosure Risk Treatment
 
 Before publishing any statistics on the refugee statistics website, UNHCR applies safeguards to protect confidentiality. Small numbers less than five are rounded to the nearest multiple of five. Additionally data relating to pending asylum applications, new applications and decisions is rounded between five and ten.
 

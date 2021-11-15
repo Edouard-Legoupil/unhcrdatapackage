@@ -69,6 +69,8 @@ navbar:
     menu:
      - text: Refugee Chart Race
        href: articles/Refugees_Chart_Race.html
+  - text: Country Focus
+    href: CountryFocus.html
   - text: News
     href: news/index.html
   - text: Reference

@@ -41,27 +41,37 @@ solutions_long.asy <- dplyr::left_join( x=  solutions_long,
                                                      by = c("CountryAsylumCode" = "iso_3"))
 ```
 
-## Country Statistical Focus{.tabset .tabset-pills}
+## Forcible Displacement Statistics{.tabset .tabset-pills}
 
 ### Intro
+<div class="container">
+<div class="jumbotron">
+<h1 class="title"><span style="color: #0072BC;">__Six Key Questions__</span></h1>
 
-Country Focus: __6 key questions for each country addressed through predefined static charts__  
+   addressed through predefined static charts
+</div>
+</div> 
 
-Charts can easily be copied as an image, or adjusted (for instance changing the title to __support a data story__) and embedded in reports, fact-sheets or presentations to accompany a narrative.
+  1. How the different __Categories__ of Forcibly Displaced People are evolving over time? 
+ 
+  2. What is the main Country of __Origin__ of population in need of international protection 
+ 
+  3. What are the __Demographics__ profile of Forcibly Displaced People in relation with the host population? 
+ 
+  4. What are the trends in term of __Solutions__ in this  Country? 
+ 
+  5. How is the asylum __Processing__ capacity in relation with the demand? 
+ 
+  6. If happening, what is the evolution of a country as a displacement __Source__? 
 
-The charts includes the 6 following topics:
+***
+Charts can easily be copied as an image as is, or adjusted using a [reproducible source code in R statistical language](https://unhcr-americas.github.io/reproducibility). 
 
- 1. Evolution over time of the different __Categories__ of [Forcibly Displaced People](https://www.unhcr.org/refugee-statistics/insights/explainers/forcibly-displaced-pocs.html)?
- 
- 2. Evolution of the different Country of __Origin__ of population in need of international protection 
- 
- 3. What is the __demographics__ profile of population in need of international protection in the country in relation with the host population?
- 
- 4. What are the trends in term of __solutions__ in this  Country?
- 
- 5. What is the asylum __processing__ capacity in relation with the demand?
- 
- 6. if relevant, evolution of the Country seen as a displacement  __source__ country?
+For instance, you can change the title from a _key question_ to a _key message_ to __support data storytelling__.
+
+***
+The resulting charts can be embedded in reports, fact-sheets, social media or presentations to accompany a narrative / campaign. More information on [Forcibly Displaced People is available here](https://www.unhcr.org/refugee-statistics/insights/explainers/forcibly-displaced-pocs.html)
+
  
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 lastyear <- 2021

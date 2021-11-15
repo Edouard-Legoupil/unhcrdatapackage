@@ -3,7 +3,7 @@
 
 ##### Categories 
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
 #Prepare data
 multiple_line_df <- end_year_population_totals_long.asy %>%
         
@@ -42,7 +42,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ##### Origin 
 
-```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
 #Prepare data2
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
@@ -92,8 +92,7 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
 
 ##### Demographics
 
- 
-```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
 
 demographics1 <- demographics %>%
                    dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -199,7 +198,7 @@ pyramidplot
 
 ##### Solution 
 
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
 #Prepare data
 multiple_line_df <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 10)  ) %>%
@@ -237,9 +236,7 @@ ggplot(multiple_line_df, aes(x = Year, y = Value2 #,
 
 ##### Processing 
 
-RSD activities are mostly for ..
-
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=4, size="small"}
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"}
 linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
@@ -324,10 +321,7 @@ webshot::webshot(paste0(getwd(),"/decision", thiscountry,".html"),
 
 ##### Source
 
- 
-
-```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
-#Prepare data2
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, size="small"} 
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 

@@ -189,6 +189,9 @@
   </ul>
 </li>
 <li>
+  <a href="CountryFocus.html">Country Focus</a>
+</li>
+<li>
   <a href="news/index.html">News</a>
 </li>
 <li>
@@ -216,10 +219,10 @@
   <div class="contents col-md-9">
 <div id="unhcrdatapackage-a-data-package-with-unhcr-statistics-database-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#unhcrdatapackage-a-data-package-with-unhcr-statistics-database-" class="anchor"></a><a href="https://unhcr.github.io/unhcrdatapackage/docs/"><code>unhcrdatapackage</code></a>: A data package with UNHCR statistics Database <img src="reference/figures/logo.png" width="200" align="right">
+<a href="#unhcrdatapackage-a-data-package-with-unhcr-statistics-database-" class="anchor"></a><a href="https://unhcr.github.io/unhcrdatapackage/docs/"><code>UnhcrDataPackage</code></a>: A data package with UNHCR statistics Database <img src="reference/figures/logo.png" width="200" align="right">
 </h1></div>
 <p>Install from github with <code>devtools::install_github("unhcr/unhcrdatapackage")</code>.</p>
-<p>The package is inspired from tutorial @ <a href="https://r-pkgs.org/data.html" class="uri">https://r-pkgs.org/data.html</a> (the code used to build the package is in <code>data-raw/build.R</code>). Data are pulled from HDX @ <a href="https://data.humdata.org/dataset/unhcr-population-data-for-world">unhcr-population-data-for-world</a> and are then conveniently packaged for R users.</p>
+<p>The package is inspired from tutorial @ <a href="https://r-pkgs.org/data.html" class="uri">https://r-pkgs.org/data.html</a> (the code used to build the package is in <code>data-raw/build.R</code>). Data are pulled from HDX @ <a href="https://data.humdata.org/dataset/unhcr-population-data-for-world">unhcr-population-data-for-world</a> and are then conveniently packaged for R users intending to build <strong>data stories</strong>. If you are UNHCR Staff and want to learn R, visit <a href="https://unhcr.csod.com/ui/lms-learner-playlist/PlaylistDetails?playlistId=e90e2279-e3a4-4ef2-8b74-757f91d224b2">UNHCR Learn &amp; Connect- R training</a></p>
 <p>This package can be used together with <a href="https://unhcr-web.github.io/unhcRstyle/docs/"><code>unhcRstyle</code></a> in order to quickly generate statistical reports with UNHCR Brand Style using a <a href="https://unhcr-americas.github.io/reproducibility">reproducible approach</a>.</p>
 <p>Note, that you can also explore data through <a href="https://www.unhcr.org/refugee-statistics/">Refugee Data Finder</a>.</p>
 <div id="chart-library" class="section level2">
@@ -270,9 +273,9 @@
 <code>STA</code> for Stateless</li>
 </ul>
 </div>
-<div id="data-protection" class="section level2">
+<div id="data-protection--statistical-disclosure-risk-treatment" class="section level2">
 <h2 class="hasAnchor">
-<a href="#data-protection" class="anchor"></a>Data protection</h2>
+<a href="#data-protection--statistical-disclosure-risk-treatment" class="anchor"></a>Data protection &amp; Statistical Disclosure Risk Treatment</h2>
 <p>Before publishing any statistics on the refugee statistics website, UNHCR applies safeguards to protect confidentiality. Small numbers less than five are rounded to the nearest multiple of five. Additionally data relating to pending asylum applications, new applications and decisions is rounded between five and ten.</p>
 <p>Data between tables remains additive therefore the totals should be considered approximations.</p>
 <pre class="{r}"><code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code></pre>
