@@ -35,11 +35,17 @@ asylum_applications <- unhcrdatapackage::asylum_applications
 asylum_decisions <- unhcrdatapackage::asylum_decisions
 asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
 
-solutions <- unhcrdatapackage::solutions
-solutions_long <- unhcrdatapackage::solutions_long
-solutions_long.asy <- dplyr::left_join( x=  solutions_long, 
+solutions_long.asy <- dplyr::left_join( x=  unhcrdatapackage::solutions_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))
+
+selectedctr <- data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
+  filter( Year == 2021) %>%
+  group_by( UNHCRBureau, SUBREGION, CountryAsylumName) %>%
+  summarise(Value2 = sum(Value) ) %>%
+ filter( Value2 > 50000) 
 ```
 
 ## Forcible Displacement Statistics{.tabset .tabset-pills}
@@ -47,204 +53,249 @@ solutions_long.asy <- dplyr::left_join( x=  solutions_long,
 ### Intro
 <div class="container">
 <div class="jumbotron">
-<h1 class="title"><span style="color: #0072BC;">__Six Key Questions__</span></h1>
+<h1 class="title"><span style="color: #0072BC;">__Seven Key Questions__</span></h1>
 
-   addressed through predefined static charts
+     ... addressed through predefined crafted static charts
 </div>
 </div> 
 
   1. How the different __Categories__ of Forcibly Displaced People are evolving over time? 
  
-  2. What is the main Country of __Origin__ of population in need of international protection 
+  2. What are the main Countries of __Origin__ of population in need of international protection 
  
-  3. What are the __Demographics__ profile of Forcibly Displaced People in relation with the host population? 
+  3. What are the __Demographics__ profiles of Forcibly Displaced People in relation with the host population? 
  
   4. What are the trends in term of __Solutions__ in this  Country? 
  
   5. How is the asylum __Processing__ capacity in relation with the demand? 
  
-  6. If happening, what is the evolution of a country as a displacement __Source__? 
+
+  6. What is the share of in need person of international protection versus regular __Migration__? 
+  
+  7. If happening, what is the evolution of a country as a displacement __Source__? 
 
 ***
 Charts can easily be copied as an image as is, or adjusted using a [reproducible source code in R statistical language](https://unhcr-americas.github.io/reproducibility). 
 
-For instance, you can change the title from a _key question_ to a _key message_ to __support data storytelling__.
+For instance, you can change the title from a _key question_ to a _key message_ or [add annotations](http://www.sthda.com/english/wiki/ggplot2-texts-add-text-annotations-to-a-graph-in-r-software) to __support data storytelling__.
 
 ***
-The resulting charts can be embedded in reports, fact-sheets, social media or presentations to accompany a narrative / campaign. More information on [Forcibly Displaced People is available here](https://www.unhcr.org/refugee-statistics/insights/explainers/forcibly-displaced-pocs.html)
+The resulting charts can be embedded in reports, fact-sheets, social media or presentations to accompany a narrative / campaign. More information on __Forcible Displacement Statistic is available with [UNHCR here](https://www.unhcr.org/refugee-statistics/insights/explainers/forcibly-displaced-pocs.html) and through International Statistical Recommendations on [refugee / asylum seekers](https://unstats.un.org/unsd/demographic-social/Standards-and-Methods/files/Principles_and_Recommendations/International-Migration/2018_1746_EN_08-E.pdf) and [Internally Displaced People](https://www.unhcr.org/statistics/unhcrstats/600188974/international-recommendations-internally-displaced-persons-statistics-iris.html)  
 
  
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 lastyear <- 2021
 ``` 
 
+
+### World{.tabset .tabset-pills}
+
 ### America{.tabset .tabset-pills}
+
+
+#### Regional Overview{.tabset}
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "Americas"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+# as.character(ctr$CountryAsylumName)
+ 
+#  [1] "Dominican Republic"                 "Costa Rica"                        
+#  [3] "El Salvador"                        "Guatemala"                         
+#  [5] "Honduras"                           "Mexico"                            
+#  [7] "Panama"                             "Canada"                            
+#  [9] "United States of America"           "Argentina"                         
+# [11] "Brazil"                             "Chile"                             
+# [13] "Colombia"                           "Ecuador"                           
+# [15] "Peru"                               "Venezuela (Bolivarian Republic of)"
 ``` 
+ 
 
-#### Argentina{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Argentina"
+```{r , child = 'RegionChild.Rmd'}
 ```
 
-```{r , child = 'CountryChild.Rmd'}
-```
+#### Northern America{.tabset}
 
-#### Brazil{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Brazil"
-```
-
-
-```{r , child = 'CountryChild.Rmd'}
-```
-
-
-#### Canada{.tabset}
+##### Canada{.tabset .tabset-pills}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Canada"
 ```
 
 
-```{r , child = 'CountryChild.Rmd'}
+```{r , child = 'CountryChildl1.Rmd'}
 ```
 
 
-#### Chile{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Chile"
-```
-
-
-```{r , child = 'CountryChild.Rmd'}
-```
-
-
-
-#### Colombia{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Colombia"
-```
-
-
-```{r , child = 'CountryChild.Rmd'}
-```
-
-
-#### Ecuador{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Ecuador"
-```
-
-
-```{r , child = 'CountryChild.Rmd'}
-```
-
-#### Mexico{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Mexico"
-```
-
-```{r , child = 'CountryChild.Rmd'}
-```
-
-
-#### Peru{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Peru"
-```
-
-
-```{r , child = 'CountryChild.Rmd'}
-```
-
-
-
-#### USA{.tabset}
+##### USA{.tabset .tabset-pills}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "United States of America"
 ```
 
 
-```{r , child = 'CountryChild.Rmd'}
+```{r , child = 'CountryChildl1.Rmd'}
 ```
 
 
-#### Venezuela{.tabset}
+
+#### Meso America{.tabset}
+
+##### Mexico{.tabset .tabset-pills}
 
 ```{r message=FALSE, warning=FALSE}
-thiscountry <- "Venezuela (Bolivarian Republic of)"
+thiscountry <- "Mexico"
 ```
 
-```{r , child = 'CountryChild.Rmd'}
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+##### Guatemala{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Guatemala"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
 ```
 
 
-#### Panama{.tabset}
+##### El Salvador{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "El Salvador"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### Honduras{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Honduras"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+##### Costa Rica{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Costa Rica"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### Panama{.tabset .tabset-pills}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Panama"
 ```
 
-```{r , child = 'CountryChild.Rmd'}
+```{r , child = 'CountryChildl1.Rmd'}
 ```
 
-### Asia{.tabset .tabset-pills}
+
+#### Caribean{.tabset}
 
 
-```{r message=FALSE, warning=FALSE, output= FALSE}
-thisbureau <- "Asia"
-``` 
+##### Dominican Republic{.tabset .tabset-pills}
 
-To come soon...
- 
-
-### Europe{.tabset .tabset-pills}
-
-```{r message=FALSE, warning=FALSE, output= FALSE}
-thisbureau <- "Europe"
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Dominican Republic"
 ```
 
-To come soon...
-
-### MENA{.tabset .tabset-pills} 
-
-```{r message=FALSE, warning=FALSE, output= FALSE}
-thisbureau <- "MENA"
+```{r , child = 'CountryChildl1.Rmd'}
 ```
-To come soon...
- 
 
-### Western Africa{.tabset .tabset-pills}
 
-```{r message=FALSE, warning=FALSE, output= FALSE}
-thisbureau <- "WestAfrica"
+#### Southern America{.tabset}
+
+##### Argentina{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Argentina"
 ```
-To come soon... 
 
-### Eastern Africa{.tabset .tabset-pills}
-
-```{r message=FALSE, warning=FALSE, output= FALSE}
-thisbureau <- "EastAfrica"
+```{r , child = 'CountryChildl1.Rmd'}
 ```
-To come soon... 
 
-### Southern Africa{.tabset .tabset-pills}
+##### Brazil{.tabset .tabset-pills}
 
-```{r message=FALSE, warning=FALSE, output= FALSE}
-thisbureau <- "SouthAfrica"
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Brazil"
 ```
-To come soon... 
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+
+##### Chile{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Chile"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+##### Colombia{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Colombia"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### Ecuador{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Ecuador"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+##### Peru{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Peru"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+##### Venezuela{.tabset  .tabset-pills}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Venezuela (Bolivarian Republic of)"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+    
 
 ## {-}

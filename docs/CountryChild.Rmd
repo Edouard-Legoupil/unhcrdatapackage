@@ -5,35 +5,37 @@
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
 #Prepare data
-multiple_line_df <- end_year_population_totals_long.asy %>%
-        
+Categories <- end_year_population_totals_long.asy %>%
   filter(CountryAsylumName  == thiscountry & 
                  Year > (lastyear - 5) ) %>%
   group_by(Year, Population.type.label.short ) %>%
-  summarise(Value2 = sum(Value) ) 
+  summarise(Value2 = sum(Value) ) %>%
+  mutate( valabel = scales::label_number_si()(Value2))
+
+ncat <- ifelse( nlevels(as.factor(Categories$Population.type.label.short)) %in% c(2,4), 2,3)
+#levels(as.factor(end_year_population_totals_long.asy$Population.type.label.short))
+Categories$Population.type.label.short <- factor(Categories$Population.type.label.short,
+                                                 levels = c("Refugees","Asylum-seekers","Venezuelans Abroad",
+                                                            "IDPs","Stateless Persons", "Others of Concern")) 
+
 
 #Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + # Adding reference to color
-  #geom_line(size = 1) + # Here we mention that it will be a line chart
-  
+ggplot(Categories, aes(x = Year, 
+                       y = Value2  )) + 
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc"
-           ) + # here we configure that it will be bar chart+
-  
+           ) + # here we configure that it will be bar chart
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Population.type.label.short ), ncol = 3) +
-  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  #xlim(c(lastyear-5, lastyear)) +
+  facet_wrap( vars(Population.type.label.short ), ncol = ncat) +
+  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "Evolution of different Forcibly Displaced People",
+  labs(title = "How the different Categories of Forcibly Displaced People are evolving over time?",
        subtitle = paste0(thiscountry),
        x = "",
        y = "",
@@ -56,7 +58,7 @@ data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
         CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
   group_by( CountryOriginName, SUBREGION) %>%
   summarise(Value2 = sum(Value) )  %>%
-  #mutate( value3 =  format_si(Value2)) %>%
+  mutate( Value3 =  scales::label_number_si()(Value2)) %>%
   arrange(desc(Value2)) %>%
   head(10)
 
@@ -67,7 +69,8 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
            position = "identity", 
            fill = "#0072bc") + # here we configure that it will be bar chart+
   geom_label(aes(x = CountryOriginName, y = Value2, 
-                label =  format(round(Value2, -3),  big.mark=",")), 
+                #label =  format(round(Value2, -3),  big.mark=",")), 
+                label =  Value3), 
              hjust = 1, 
              vjust = 0.5, 
              colour = "white", 
@@ -83,10 +86,9 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
        x = " ",
        y = "# of Forcibly displaced people",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 
@@ -169,7 +171,7 @@ pyramidplot <- ggplot(pyramid3, aes(x = age,
   geom_label(aes(x = age,
                  y = ifelse(test = gender == "Female",
                             yes = -pc -5 , no = pc),
-                label =  format(round(pc, 1),  big.mark=",") 
+                label =  paste0(format(round(pc, 1),  big.mark=","),"%") 
                 ),
              hjust = 0,
              vjust = 0.5,
@@ -177,7 +179,7 @@ pyramidplot <- ggplot(pyramid3, aes(x = age,
              fill = NA,
              label.size = NA,
              family = "Lato",
-             size = 8) +
+             size = 5) +
   scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
   labs(title = paste0("Population Pyramid for Forcibly Displaced People in", thiscountry ),
        subtitle = paste0(" Gender disaggregation is available for ", totprop, " % of the ",tot, " persons in this country" ),
@@ -187,7 +189,7 @@ pyramidplot <- ggplot(pyramid3, aes(x = age,
   scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                       aesthetics = c("colour", "fill")) +
   coord_flip()+
-  unhcRstyle::unhcr_theme(base_size = 8) +
+  unhcRstyle::unhcr_theme(base_size = 14) +
    theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
             panel.grid.major.y = element_blank())
 
@@ -202,30 +204,30 @@ pyramidplot
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
 #Prepare data
-multiple_line_df <- solutions_long.asy %>%
+Solution <- solutions_long.asy %>%
   filter(CountryAsylumName  == thiscountry & Year > (lastyear - 10)  ) %>%
   group_by(Year, Solution.type.label ) %>%
   summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) 
+  mutate(Year = as.integer(Year) ) %>%
+  mutate( valabel = scales::label_number_si()(Value2))
 
 
+ncat <- ifelse( nlevels(as.factor(Solution$Solution.type.label)) %in% c(2,4), 2,3)
+#levels(as.factor(solutions_long.asy$Solution.type.label))
+Solution$Solution.type.label <- factor(Solution$Solution.type.label,
+                                                 levels = c("Naturalisation",  "Resettlement arrivals",
+                                                            "Refugee returns","IDP returns" )) 
 
 #Make plot
-ggplot(multiple_line_df, aes(x = Year, y = Value2 #, 
-                                              #colour = Population.type
-                             )) + 
+ggplot(Solution, aes(x = Year, y = Value2  )) + 
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc" ) + # here we configure that it will be bar chart
-  
-  scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
-  xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = 2) +
-
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
-  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  #xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = ncat) +
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -327,28 +329,29 @@ webshot::webshot(paste0(getwd(),"/decision", thiscountry,".html"),
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9,  size="small"} 
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
-## Loading the stat tables
-data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+Source <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%
-  filter(CountryOriginName  == thiscountry & Year == lastyear) %>%   
+ filter(CountryOriginName  == thiscountry & Year == lastyear) %>%   
   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
         CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
         CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
   group_by( CountryAsylumName, SUBREGION) %>%
   summarise(Value2 = sum(Value) )  %>%
-  #mutate( value3 =  format_si(Value2)) %>%
+  mutate( Value3 =  scales::label_number_si()(Value2)) %>%
   arrange(desc(Value2)) %>%
   head(10)
 
 #Make plot
-ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
+ggplot(Source, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
                            y = Value2)) +
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc") + # here we configure that it will be bar chart+
   geom_label(aes(x = CountryAsylumName, y = Value2, 
-                label =  format(round(Value2, -3),  big.mark=",")), 
+                #label =  format(round(Value2, -3),  big.mark=",")), 
+                label =  Value3), 
              hjust = 1, 
              vjust = 0.5, 
              colour = "white", 
@@ -359,7 +362,7 @@ ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country b
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
-  labs(title = paste0("Top 10 Countries hosting Persons from ",thiscountry, " in needs of International Protection" ),
+  labs(title = paste0("Top 10 Countries hosting Forcibly Displaced People from ",thiscountry ),
        subtitle = paste0("Data as of ",lastyear), 
        x = "",
        y = "",
@@ -367,7 +370,7 @@ ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country b
   #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 
