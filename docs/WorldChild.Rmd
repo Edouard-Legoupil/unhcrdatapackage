@@ -6,8 +6,7 @@
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
 #Prepare data
 Categories <- end_year_population_totals_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & 
-                 Year > (lastyear - 5) ) %>%
+  filter(   Year > (lastyear - 5) ) %>%
   group_by(Year, Population.type.label.short ) %>%
   summarise(Value2 = sum(Value) ) %>%
   mutate( valabel = scales::label_number_si()(Value2))
@@ -36,7 +35,7 @@ ggplot(Categories, aes(x = Year,
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
   labs(title = "How the different Categories of Forcibly Displaced People are evolving over time?",
-       subtitle = paste0(thiscountry),
+       subtitle = " ",
        x = "",
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics ")
@@ -52,7 +51,7 @@ lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%
-  filter(CountryAsylumName  == thiscountry & Year == lastyear) %>%   
+  filter( Year == lastyear) %>%   
   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
         CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
         CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
@@ -81,7 +80,7 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
-  labs(title = paste0("Top 10 Countries of Origin hosted in ",thiscountry, "" ),
+  labs(title = paste0("Top 10 Countries of Origin ","" ),
        subtitle = paste0("Data as of ",lastyear), 
        x = " ",
        y = "# of Forcibly displaced people",
@@ -102,7 +101,7 @@ demographics1 <- demographics %>%
                    dplyr::left_join( unhcrdatapackage::reference %>% 
                                        select(UNHCRBureau, iso_3),  
                                      by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(CountryAsylumName  == thiscountry & Year == lastyear-1) %>%
+  filter( Year == lastyear-1) %>%
                   mutate ( totGen = FemaleTotal +MaleTotal,
                            totbreak = Female04 + Female511 + Female1217 + Female1859 + Female60ormore + FemaleUnknown +
                              Male04 + Male511 + Male1217 + Male1859 + Male60ormore + MaleUnknown,
@@ -113,7 +112,7 @@ totprop <-   format( round( sum(demographics1$totGen) /
     sum(demographics1$Total )  *100,1),  big.mark=",")  
 
 if (totprop == 0 ) {
-  cat(paste0(" Gender disaggregation is not available for all of the ",tot, " persons in", thiscountry ))
+  cat(paste0(" Gender disaggregation is not available for all of the ",tot, " persons in" ))
   
 } else {
 #names(demographics)
@@ -181,8 +180,8 @@ pyramidplot <- ggplot(pyramid3, aes(x = age,
              family = "Lato",
              size = 5) +
   scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
-  labs(title = paste0("Population Pyramid for Forcibly Displaced People in", thiscountry ),
-       subtitle = paste0(" Gender disaggregation is available for ", totprop, " % of the ",tot, " persons in this country" ),
+  labs(title = paste0("Population Pyramid for Forcibly Displaced People" ),
+       subtitle = paste0(" Gender disaggregation is available for ", totprop, " % of the ",tot, " persons" ),
        x = "", 
        y = "Percent of population",
        caption =  "Source: UNHCR Population Statistics as of end 2020") +
@@ -205,7 +204,7 @@ pyramidplot
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
 #Prepare data
 Solution <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 10)  ) %>%
+  filter(Year > (lastyear - 10)  ) %>%
   group_by(Year, Solution.type.label ) %>%
   summarise(Value2 = sum(Value) )  %>%
   mutate(Year = as.integer(Year) ) %>%
@@ -233,7 +232,7 @@ ggplot(Solution, aes(x = Year, y = Value2  )) +
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
   labs(title = "Recorded Solutions",
-       subtitle = paste0(thiscountry),
+       subtitle = "",
        x = "",
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics ")
@@ -247,7 +246,7 @@ linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear  & CountryAsylumName  == thiscountry) %>% 
+  filter(Year == lastyear  ) %>% 
   ## Group small records under other
   mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .01, w = Value)) %>% 
   mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", "")) %>% 
@@ -262,7 +261,7 @@ linksDecision.Procedure.Type <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  filter(Year == lastyear) %>% 
   ## Group small records under other
   ## Calculate grouped value for Origin to procedure..
   group_by(ProcedureName, DecisionTypeName ) %>%
@@ -275,7 +274,7 @@ linksDecision.Type.Output <- asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == thisbureau & Year == lastyear   & CountryAsylumName  == thiscountry) %>% 
+  filter(Year == lastyear ) %>% 
   ## Group small records under other
   ## Calculate grouped value for Origin to procedure..
   group_by(DecisionTypeName,Decision.output ) %>%
@@ -312,11 +311,11 @@ p <- networkD3::sankeyNetwork(Links = linksallDecision,
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
 # you save it as an html
-networkD3::saveNetwork(p, paste0(getwd(),"/decision", thiscountry,".html"))
+networkD3::saveNetwork(p, paste0(getwd(),"/decisionGlobal.html"))
 
 # you convert it as png -- Need first webshot::install_phantomjs()
-webshot::webshot(paste0(getwd(),"/decision", thiscountry,".html"),
-                 paste0(getwd(),"/decision", thiscountry,".png"),
+webshot::webshot(paste0(getwd(),"/decisionGlobal.html"),
+                 paste0(getwd(),"/decisionGlobal.png"),
                  vwidth = 800, vheight = 500)
 #getwd()
 #![ ](graph/decision.png)
@@ -332,7 +331,7 @@ lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 Source <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%
- filter(CountryOriginName  == thiscountry & Year == lastyear) %>%   
+ filter(Year == lastyear) %>%   
   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
         CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
         CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
@@ -362,7 +361,7 @@ ggplot(Source, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
   geom_hline(yintercept = 0, size = 1, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
-  labs(title = paste0("Top 10 Countries hosting Forcibly Displaced People from ",thiscountry ),
+  labs(title = paste0("Top 10 Countries source of Forcibly Displaced People "),
        subtitle = paste0("Data as of ",lastyear), 
        x = "",
        y = "",

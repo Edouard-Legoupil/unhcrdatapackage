@@ -88,8 +88,6 @@ The resulting charts can be embedded in reports, fact-sheets, social media or pr
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 lastyear <- 2021
 
-thisbureau <- "Americas"
-thiscountry <- "Canada"
 ``` 
 
 
