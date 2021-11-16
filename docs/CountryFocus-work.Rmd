@@ -1,0 +1,777 @@
+---
+title:
+output: 
+  html_document: 
+    theme: yeti
+    includes:
+      before_body: header.html
+      after_body: footer.html
+---
+ 
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  message=FALSE, 
+  warning=FALSE,
+  echo = FALSE
+)
+
+library(tidyverse)
+## Loading the stat tables
+end_year_population_totals <- unhcrdatapackage::end_year_population_totals
+reference <- unhcrdatapackage::reference
+end_year_population_totals_long <- unhcrdatapackage::end_year_population_totals_long
+end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))
+
+end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3"))
+
+demographics <- unhcrdatapackage::demographics
+asylum_applications <- unhcrdatapackage::asylum_applications
+asylum_decisions <- unhcrdatapackage::asylum_decisions
+asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
+
+solutions_long.asy <- dplyr::left_join( x=  unhcrdatapackage::solutions_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))
+
+selectedctr <- data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
+  filter( Year == 2021) %>%
+  group_by( UNHCRBureau, SUBREGION, CountryAsylumName) %>%
+  summarise(Value2 = sum(Value) ) %>%
+ filter( Value2 > 50000) 
+```
+
+## Forcible Displacement Statistics{.tabset .tabset-pills}
+
+### Intro
+<div class="container">
+<div class="jumbotron">
+<h1 class="title"><span style="color: #0072BC;">__Seven Key Questions__</span></h1>
+
+     ... addressed through predefined crafted static charts
+</div>
+</div> 
+
+  1. How the different __Categories__ of Forcibly Displaced People are evolving over time? 
+ 
+  2. What is the main Country of __Origin__ of population in need of international protection 
+ 
+  3. What are the __Demographics__ profile of Forcibly Displaced People in relation with the host population? 
+ 
+  4. What are the trends in term of __Solutions__ in this  Country? 
+ 
+  5. How is the asylum __Processing__ capacity in relation with the demand? 
+ 
+
+  6. What is the share of in need person of international protection versus regular __Migration__? 
+  
+  7. If happening, what is the evolution of a country as a displacement __Source__? 
+
+***
+Charts can easily be copied as an image as is, or adjusted using a [reproducible source code in R statistical language](https://unhcr-americas.github.io/reproducibility). 
+
+For instance, you can change the title from a _key question_ to a _key message_ to __support data storytelling__.
+
+***
+The resulting charts can be embedded in reports, fact-sheets, social media or presentations to accompany a narrative / campaign. More information on [Forcibly Displaced People is available here](https://www.unhcr.org/refugee-statistics/insights/explainers/forcibly-displaced-pocs.html)
+
+ 
+```{r message=FALSE, warning=FALSE, output= FALSE}
+lastyear <- 2021
+``` 
+
+### America{.tabset .tabset-pills}
+
+
+#### Regional Overview{.tabset}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "Americas"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+# as.character(ctr$CountryAsylumName)
+ 
+#  [1] "Dominican Republic"                 "Costa Rica"                        
+#  [3] "El Salvador"                        "Guatemala"                         
+#  [5] "Honduras"                           "Mexico"                            
+#  [7] "Panama"                             "Canada"                            
+#  [9] "United States of America"           "Argentina"                         
+# [11] "Brazil"                             "Chile"                             
+# [13] "Colombia"                           "Ecuador"                           
+# [15] "Peru"                               "Venezuela (Bolivarian Republic of)"
+``` 
+ 
+
+```{r , child = 'RegionChild.Rmd'}
+```
+
+#### Northern America{.tabset}
+
+##### Canada{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Canada"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### USA{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "United States of America"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+#### Meso America{.tabset}
+
+##### Mexico{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Mexico"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+##### Guatemala{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Guatemala"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### El Salvador{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "El Salvador"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### Honduras{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Honduras"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+##### Costa Rica{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Costa Rica"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### Panama{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Panama"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+#### Caribean{.tabset}
+
+
+##### Dominican Republic{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Dominican Republic"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+#### Southern America{.tabset}
+
+##### Argentina{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Argentina"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+##### Brazil{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Brazil"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+
+##### Chile{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Chile"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+##### Colombia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Colombia"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+##### Ecuador{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Ecuador"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+##### Peru{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Peru"
+```
+
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+##### Venezuela{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Venezuela (Bolivarian Republic of)"
+```
+
+```{r , child = 'CountryChildl1.Rmd'}
+```
+
+
+
+### Asia{.tabset .tabset-pills}
+
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "Asia"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+#as.character(ctr$CountryAsylumName)
+#  [1] "Australia"                  "Uzbekistan"                 "China"                     
+#  [4] "Cambodia"                   "Malaysia"                   "Myanmar"                   
+#  [7] "Philippines"                "Thailand"                   "Afghanistan"               
+# [10] "Bangladesh"                 "India"                      "Iran (Islamic Republic of)"
+# [13] "Pakistan"
+ 
+``` 
+
+
+#### Australia {.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Australia"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### China {.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "China"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Iran{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Iran (Islamic Republic of)"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Pakistan {.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Pakistan"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Afghanistan {.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Afghanistan"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+### Europe{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "Europe"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+#as.character(ctr$CountryAsylumName)
+#  [1] "Russian Federation"                                  
+#  [2] "Ukraine"                                             
+#  [3] "Estonia"                                             
+#  [4] "Latvia"                                              
+#  [5] "Sweden"                                              
+#  [6] "United Kingdom of Great Britain and Northern Ireland"
+#  [7] "Bosnia and Herzegovina"                              
+#  [8] "Greece"                                              
+#  [9] "Italy"                                               
+# [10] "Serbia"                                              
+# [11] "Spain"                                               
+# [12] "Azerbaijan"                                          
+# [13] "Georgia"                                             
+# [14] "Turkey"                                              
+# [15] "Austria"                                             
+# [16] "Belgium"                                             
+# [17] "Germany"                                             
+# [18] "Netherlands"                                         
+# [19] "Switzerland"                                         
+# [20] "France"                                              
+# [21] "Norway" 
+
+```
+
+
+
+#### UK {.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "United Kingdom of Great Britain and Northern Ireland"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Germany{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Germany"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Russian Federation{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Russian Federation"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### France{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "France"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Norway{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Norway"
+```
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+
+### MENA{.tabset .tabset-pills} 
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "MENA"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+#as.character(ctr$CountryAsylumName)
+
+ # [1] "Algeria"              "Egypt"                "Libya"                "Mauritania"          
+ # [5] "Iraq"                 "Jordan"               "Kuwait"               "Lebanon"             
+ # [9] "Saudi Arabia"         "Syrian Arab Republic" "Yemen" 
+```
+
+
+#### Algeria{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Algeria"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Egypt{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Egypt"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Jordan{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Jordan"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Syria {.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Syrian Arab Republic"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+``` 
+
+### Western Africa{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "WestAfrica"
+```
+
+#### Cameroon{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Cameroon"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Central African Republic{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Central African Republic"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Chad{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Chad"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Burkina Faso{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Burkina Faso"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Côte d'Ivoire{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Côte d'Ivoire"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Mali{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Mali"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Niger{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Niger"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+#### Nigeria{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Nigeria"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+
+
+
+### Eastern Africa{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "EastAfrica"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+#as.character(ctr$CountryAsylumName)
+```
+ 
+
+#### Burundi{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Burundi"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Ethiopia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Ethiopia"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Kenya{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Kenya"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Rwanda{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Rwanda"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Somalia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Somalia"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+#### South Sudan{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "South Sudan"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+#### Uganda{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Uganda"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Tanzania{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "United Republic of Tanzania"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Zambia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Zambia"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Sudan{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Sudan"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+         
+ 
+
+### Southern Africa{.tabset .tabset-pills}
+
+```{r message=FALSE, warning=FALSE, output= FALSE}
+thisbureau <- "SouthAfrica"
+ctr <- selectedctr  %>%
+  filter( UNHCRBureau == thisbureau) %>%
+  select(CountryAsylumName)
+#as.character(ctr$CountryAsylumName)
+```
+
+#### Malawi{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Malawi"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Mozambique{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Mozambique"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Angola{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Angola"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Congo{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Congo"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### Democratic Republic of the Congo{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Democratic Republic of the Congo"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+#### South Africa{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "South Africa"
+```
+
+
+```{r , child = 'CountryChild.Rmd'}
+```
+
+   
+
+## {-}
