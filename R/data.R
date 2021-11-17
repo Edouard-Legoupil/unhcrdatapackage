@@ -247,3 +247,22 @@
 #'}
 #' @source \url{https://www.imf.org}
 "imf"
+
+
+
+#' @title International Migrant Stock 1990-2020
+#' @description International Migrant Stock Estimation are produced by 
+#' United Nations Department of Economic and Social Affairs, Population Division
+#' @format A data frame with 574726 rows and 8 variables:
+#' \describe{
+#'   \item{\code{index}}{double Index}
+#'   \item{\code{CountryOriginName}}{character CRegion, development group, country or area of destination}
+#'   \item{\code{CountryOriginM49}}{double Location code of destination using M49 Code}
+#'   \item{\code{CountryDestinationName}}{character Region, development group, country or area of origin}
+#'   \item{\code{CountryDestinationM49}}{double Location code of origin using M49 Code}
+#'   \item{\code{Value}}{double Number estimation}
+#'   \item{\code{Year}}{character year - every 5 years since 1990}
+#'   \item{\code{Gender}}{character Gender all, male or female} 
+#'}
+#' @source \url{https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2020_international_migrant_stock_documentation.pdf}
+"migrants"

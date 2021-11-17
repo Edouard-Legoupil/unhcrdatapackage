@@ -1,0 +1,116 @@
+---
+title: "Migrant and Forcible Displacement"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Migrant and Forcible Displacement}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+
+
+```{r, cache = TRUE}
+# Population, GDP & GNP per Capita from WorldBank
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+               startdate = 1990, enddate = 2020, return_wide = TRUE)
+# Renaming variables for further matching
+names(wb_data)[1] <- "iso_3"
+names(wb_data)[2] <- "Year"
+
+wb_data$Year <- as.numeric(wb_data$Year)
+```
+
+
+```{r}
+thisbureau <- "Americas"
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+## Loading the stat tables
+# reference <- unhcrdatapackage::reference
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  filter(Population.type  %in% c("ASY", "REF", "VDA")) %>%
+  mutate( iso_3 = CountryAsylumCode)%>% 
+  group_by(Year, iso_3,CountryAsylumName, UNHCRBureau, hcr_subregion) %>%
+  summarise(Asylum_Refugee = sum(Value) ) 
+
+#unhcrdatapackage::migrants
+migrant <-   dplyr::left_join( x= unhcrdatapackage::migrants, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryDestinationM49" = "M49_code")) %>%
+  group_by(Year, iso_3,CountryDestinationName) %>%
+  summarise(Emigrant = sum(Value) ) %>%
+  filter( !(is.na(iso_3))) %>%
+  dplyr::left_join(
+      dplyr::left_join( x= unhcrdatapackage::migrants, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginM49" = "M49_code")) %>%
+      group_by(Year, iso_3,CountryOriginName) %>%
+      summarise(Immigrant = sum(Value) ),    by = c("iso_3",  "Year")) %>%
+  mutate( netmigration = Emigrant - Immigrant )
+
+migrant$Year <- as.numeric(migrant$Year)
+migProfile <-  dplyr::left_join(x = migrant, y = data, by = c("Year","iso_3"))
+
+migProfile2 <-  dplyr::left_join(x = migProfile, y = wb_data, by = c("Year","iso_3"))%>%
+                mutate( pcAsylum_Refugee = (Asylum_Refugee / (SP.POP.TOTL)),
+                        pcEmigrant = (Emigrant / (SP.POP.TOTL)),
+                        pcImmigrant = (Immigrant / (SP.POP.TOTL)),
+                        pcnetmigration = (netmigration / (SP.POP.TOTL))  ) %>%
+  select( Year, iso_3, country, UNHCRBureau,hcr_subregion,
+          SP.POP.TOTL,Asylum_Refugee,pcAsylum_Refugee, 
+           Immigrant,pcImmigrant, Emigrant,pcEmigrant, pcnetmigration) %>%
+ # filter(Year == 2020) %>%
+  arrange(pcnetmigration )%>%
+  filter(!(is.na(UNHCRBureau)))%>%
+  filter( UNHCRBureau == "Americas")%>%
+  filter( hcr_subregion == "Latin America")%>%
+  filter( SP.POP.TOTL > 3000000 )
+#names(migProfile2)
+
+```
+
+
+## Generate plot
+
+```{r echo=TRUE, fig.height=7, fig.width=7, warning=FALSE, ,message=FALSE}
+ggplot(migProfile2, 
+       aes(x= reorder(country, pcnetmigration),
+           y= pcnetmigration, 
+           label= pcnetmigration,
+           fill = Year)) +
+   # facet_wrap( ~ Year, ncol =4) +
+    geom_bar(stat='identity', 
+             aes(fill= Year,
+                 #fill= pcAsylum_Refugee,
+                 color= pcAsylum_Refugee),
+              position="dodge" ) +
+   coord_flip() +
+   scale_color_brewer( type = "seq") +
+    labs(subtitle="Net Migration", 
+         title= "Net Migration", 
+         x="",
+         y = "",
+         
+         caption="UNDESA")
+
+
+
+```
