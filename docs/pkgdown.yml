@@ -11,6 +11,7 @@ articles:
   Map_Venezuelan: Map_Venezuelan.html
   Mapping_IDP_Location: Mapping_IDP_Location.html
   Mapping_Refugee_Location: Mapping_Refugee_Location.html
+  Migrant_and_Forcible_Displacement: Migrant_and_Forcible_Displacement.html
   Origin_Destination: Origin_Destination.html
   Proportion_Refugee_Country_Origin: Proportion_Refugee_Country_Origin.html
   Ratio_Refugee_Host_population: Ratio_Refugee_Host_population.html
@@ -25,7 +26,7 @@ articles:
   Top_Refugee_hosting_Countries: Top_Refugee_hosting_Countries.html
   Tree_Map_of_Categories: Tree_Map_of_Categories.html
   Where_do_Refugees_go: Where_do_Refugees_go.html
-last_built: 2021-11-16T18:49Z
+last_built: 2021-11-17T18:29Z
 urls:
   reference: https://unhcr.github.io/unhcrdatapackage/docs//reference
   article: https://unhcr.github.io/unhcrdatapackage/docs//articles

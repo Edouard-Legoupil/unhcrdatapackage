@@ -2,6 +2,7 @@
 title:
 output: 
   html_document: 
+    code_folding: "hide"
     theme: yeti
     includes:
       before_body: header.html
@@ -13,8 +14,7 @@ output:
 knitr::opts_chunk$set(
   comment = "#>",
   message=FALSE, 
-  warning=FALSE,
-  echo = FALSE
+  warning=FALSE
 )
 
 library(tidyverse)
@@ -45,16 +45,12 @@ selectedctr <- data <- dplyr::left_join( x= unhcrdatapackage::end_year_populatio
   filter( Year == 2021) %>%
   group_by( UNHCRBureau, SUBREGION, CountryAsylumName) %>%
   summarise(Value2 = sum(Value) ) %>%
- filter( Value2 > 50000) 
+ filter( Value2 > 30000) 
 
-
-## For info, this doc has 3 subchild depending on the level of disaggregation
-
+## For info, this doc has 3 sub-child with the 7 key charts depending on the level of disaggregation
 ## ChildWorld.Rmd
 ## ChildRegion.Rmd
 ## ChildCountry.Rmd
-
-
 ```
 
 ## Forcible Displacement Statistics{.tabset .tabset-pills}
@@ -115,14 +111,14 @@ ctr <- selectedctr  %>%
   select(CountryAsylumName)
 # as.character(ctr$CountryAsylumName)
  
-#  [1] "Dominican Republic"                 "Costa Rica"                        
-#  [3] "El Salvador"                        "Guatemala"                         
-#  [5] "Honduras"                           "Mexico"                            
-#  [7] "Panama"                             "Canada"                            
-#  [9] "United States of America"           "Argentina"                         
-# [11] "Brazil"                             "Chile"                             
-# [13] "Colombia"                           "Ecuador"                           
-# [15] "Peru"                               "Venezuela (Bolivarian Republic of)"
+#  "Dominican Republic"                 "Costa Rica"                        
+#  "El Salvador"                        "Guatemala"                         
+#  "Honduras"                           "Mexico"                            
+#  "Panama"                             "Canada"                            
+#  "United States of America"           "Argentina"                         
+#  "Brazil"                             "Chile"                             
+# "Colombia"                           "Ecuador"                           
+#  "Peru"                               "Venezuela (Bolivarian Republic of)"
 ``` 
  
 
@@ -317,18 +313,18 @@ ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)
 #as.character(ctr$CountryAsylumName)
-#  [1] "Australia"                  "Uzbekistan"                 "China"                     
-#  [4] "Cambodia"                   "Malaysia"                   "Myanmar"                   
-#  [7] "Philippines"                "Thailand"                   "Afghanistan"               
-# [10] "Bangladesh"                 "India"                      "Iran (Islamic Republic of)"
-# [13] "Pakistan"
+#  "Australia"                  "Uzbekistan"                 "China"                     
+#  "Cambodia"                   "Malaysia"                   "Myanmar"                   
+#  "Philippines"                "Thailand"                   "Afghanistan"               
+#  "Bangladesh"                 "India"                      "Iran (Islamic Republic of)"
+#  "Pakistan"
  
 ``` 
 
 ```{r , child = 'ChildRegion.Rmd'}
 ```
 
-#### Pacific{.tabset .tabset-pills}
+#### East Asia and the Pacific{.tabset .tabset-pills}
 
 
 ##### Australia {.tabset}
@@ -349,7 +345,78 @@ thiscountry <- "China"
 ```{r , child = 'ChildCountry.Rmd'}
 ```
 
-#### Central Asia{.tabset .tabset-pills}
+#### South Asia{.tabset .tabset-pills}
+
+##### India{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "India"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+#### South East Asia{.tabset .tabset-pills}
+
+##### Thailand{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Thailand"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+##### Bangladesh{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Bangladesh"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+##### Myanmar{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Myanmar"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+##### Philippines{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Philippines"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+##### Cambodia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Cambodia"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+##### Malaysia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Malaysia"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+#### South West Asia{.tabset .tabset-pills}
 
 ##### Iran{.tabset}
 
@@ -448,7 +515,105 @@ thiscountry <- "France"
 ```
 
 
+
+#### Northern Europe{.tabset .tabset-pills}
+
+
+##### Latvia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Latvia"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+
+##### Estonia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Estonia"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+
+##### Norway{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Norway"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+##### Sweden{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Sweden"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+#### Southern Europe{.tabset .tabset-pills}
+
+##### Italy{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Italy"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+##### Spain{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Spain"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+##### Greece{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Greece"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+
 #### Eastern Europe{.tabset .tabset-pills}
+
+
+##### Turkey{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Turkey"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
+
+##### Georgia{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Georgia"
+```
+
+```{r , child = 'ChildCountry.Rmd'}
+```
+
 
 ##### Russian Federation{.tabset}
 
@@ -460,17 +625,6 @@ thiscountry <- "Russian Federation"
 ```
 
 
-
-#### Northern Europe{.tabset .tabset-pills}
-
-##### Norway{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Norway"
-```
-
-```{r , child = 'ChildCountry.Rmd'}
-```
 
 
 ### MENA{.tabset .tabset-pills} 

@@ -49,7 +49,7 @@ ggplot(Categories, aes(x = Year,
 #Prepare data2
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
-data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+Origin <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%
   filter(CountryAsylumName  == thiscountry & Year == lastyear) %>%   
@@ -63,7 +63,7 @@ data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
   head(10)
 
 #Make plot
-ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country by Value
+ggplot(Origin, aes(x = reorder(CountryOriginName, Value2), ## Reordering country by Value
                            y = Value2)) +
   geom_bar(stat = "identity", 
            position = "identity", 

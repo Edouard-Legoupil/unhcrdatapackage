@@ -439,6 +439,9 @@ thiscountry <- "Norway"
 
 ### MENA{.tabset .tabset-pills} 
 
+
+#### Regional Overview{.tabset}
+
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "MENA"
 ctr <- selectedctr  %>%
@@ -451,8 +454,13 @@ ctr <- selectedctr  %>%
  # [9] "Saudi Arabia"         "Syrian Arab Republic" "Yemen" 
 ```
 
+```{r , child = 'RegionChild.Rmd'}
+```
 
-#### Algeria{.tabset}
+#### Northern Africa{.tabset .tabset-pills}
+
+
+##### Algeria{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Algeria"
@@ -463,7 +471,7 @@ thiscountry <- "Algeria"
 ```
 
 
-#### Egypt{.tabset}
+##### Egypt{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Egypt"
@@ -473,8 +481,10 @@ thiscountry <- "Egypt"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
+#### Middle East{.tabset .tabset-pills}
 
-#### Jordan{.tabset}
+
+##### Jordan{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Jordan"
@@ -485,7 +495,7 @@ thiscountry <- "Jordan"
 ```
 
 
-#### Syria {.tabset}
+##### Syria {.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Syrian Arab Republic"
@@ -497,11 +507,20 @@ thiscountry <- "Syrian Arab Republic"
 
 ### Western Africa{.tabset .tabset-pills}
 
+
+#### Regional Overview{.tabset}
+
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "WestAfrica"
 ```
 
-#### Cameroon{.tabset}
+
+```{r , child = 'RegionChild.Rmd'}
+```
+
+#### Central Africa {.tabset .tabset-pills}
+
+##### Cameroon{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Cameroon"
@@ -512,7 +531,7 @@ thiscountry <- "Cameroon"
 ```
 
 
-#### Central African Republic{.tabset}
+##### Central African Republic{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Central African Republic"
@@ -523,7 +542,7 @@ thiscountry <- "Central African Republic"
 ```
 
 
-#### Chad{.tabset}
+##### Chad{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Chad"
@@ -534,7 +553,9 @@ thiscountry <- "Chad"
 ```
 
 
-#### Burkina Faso{.tabset}
+#### West Africa{.tabset .tabset-pills}
+
+##### Burkina Faso{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Burkina Faso"
@@ -545,7 +566,7 @@ thiscountry <- "Burkina Faso"
 ```
 
 
-#### Côte d'Ivoire{.tabset}
+##### Côte d'Ivoire{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Côte d'Ivoire"
@@ -556,7 +577,7 @@ thiscountry <- "Côte d'Ivoire"
 ```
 
 
-#### Mali{.tabset}
+##### Mali{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Mali"
@@ -567,7 +588,7 @@ thiscountry <- "Mali"
 ```
 
 
-#### Niger{.tabset}
+##### Niger{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Niger"
@@ -578,7 +599,7 @@ thiscountry <- "Niger"
 ```
 
 
-#### Nigeria{.tabset}
+##### Nigeria{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Nigeria"
@@ -593,6 +614,9 @@ thiscountry <- "Nigeria"
 
 ### Eastern Africa{.tabset .tabset-pills}
 
+
+#### Regional Overview{.tabset}
+
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "EastAfrica"
 ctr <- selectedctr  %>%
@@ -600,9 +624,15 @@ ctr <- selectedctr  %>%
   select(CountryAsylumName)
 #as.character(ctr$CountryAsylumName)
 ```
+
+
+```{r , child = 'RegionChild.Rmd'}
+```
+
+####  Great Lakes {.tabset .tabset-pills}
  
 
-#### Burundi{.tabset}
+##### Burundi{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Burundi"
@@ -612,7 +642,17 @@ thiscountry <- "Burundi"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Ethiopia{.tabset}
+
+
+##### Rwanda{.tabset}
+
+```{r message=FALSE, warning=FALSE}
+thiscountry <- "Rwanda"
+```
+
+####  East and Horn {.tabset .tabset-pills}
+
+##### Ethiopia{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Ethiopia"
@@ -622,7 +662,7 @@ thiscountry <- "Ethiopia"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Kenya{.tabset}
+##### Kenya{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Kenya"
@@ -632,17 +672,11 @@ thiscountry <- "Kenya"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Rwanda{.tabset}
-
-```{r message=FALSE, warning=FALSE}
-thiscountry <- "Rwanda"
-```
-
 
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Somalia{.tabset}
+##### Somalia{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Somalia"
@@ -651,7 +685,7 @@ thiscountry <- "Somalia"
 
 ```{r , child = 'CountryChild.Rmd'}
 ```
-#### South Sudan{.tabset}
+##### South Sudan{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "South Sudan"
@@ -660,7 +694,7 @@ thiscountry <- "South Sudan"
 
 ```{r , child = 'CountryChild.Rmd'}
 ```
-#### Uganda{.tabset}
+##### Uganda{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Uganda"
@@ -670,7 +704,7 @@ thiscountry <- "Uganda"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Tanzania{.tabset}
+##### Tanzania{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "United Republic of Tanzania"
@@ -680,7 +714,7 @@ thiscountry <- "United Republic of Tanzania"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Zambia{.tabset}
+##### Zambia{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Zambia"
@@ -690,7 +724,7 @@ thiscountry <- "Zambia"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Sudan{.tabset}
+##### Sudan{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Sudan"
@@ -704,6 +738,9 @@ thiscountry <- "Sudan"
 
 ### Southern Africa{.tabset .tabset-pills}
 
+
+#### Regional Overview{.tabset}
+
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "SouthAfrica"
 ctr <- selectedctr  %>%
@@ -712,7 +749,13 @@ ctr <- selectedctr  %>%
 #as.character(ctr$CountryAsylumName)
 ```
 
-#### Malawi{.tabset}
+
+```{r , child = 'RegionChild.Rmd'}
+```
+
+#### Southern Africa{.tabset .tabset-pills}
+
+##### Malawi{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Malawi"
@@ -722,7 +765,7 @@ thiscountry <- "Malawi"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Mozambique{.tabset}
+##### Mozambique{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Mozambique"
@@ -732,7 +775,7 @@ thiscountry <- "Mozambique"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Angola{.tabset}
+##### Angola{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Angola"
@@ -742,7 +785,7 @@ thiscountry <- "Angola"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Congo{.tabset}
+##### Congo{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Congo"
@@ -752,7 +795,9 @@ thiscountry <- "Congo"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### Democratic Republic of the Congo{.tabset}
+#### Middle Africa{.tabset .tabset-pills}
+
+##### Democratic Republic of the Congo{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "Democratic Republic of the Congo"
@@ -762,7 +807,7 @@ thiscountry <- "Democratic Republic of the Congo"
 ```{r , child = 'CountryChild.Rmd'}
 ```
 
-#### South Africa{.tabset}
+##### South Africa{.tabset}
 
 ```{r message=FALSE, warning=FALSE}
 thiscountry <- "South Africa"
