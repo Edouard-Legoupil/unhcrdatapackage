@@ -29,16 +29,16 @@ ggplot(Categories, aes(x = Year,
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   #xlim(c(lastyear-5, lastyear)) +
   facet_wrap( vars(Population.type.label.short ), ncol = ncat) +
-  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "How the different Categories of Forcibly Displaced People are evolving over time?",
+  labs(title = "How Categories of Forcibly Displaced People are evolving over time?",
        subtitle = " ",
        x = "",
        y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage")
 
 ```
 
@@ -136,7 +136,7 @@ ggplot(thismigProfile,
   geom_point(alpha=0.5, 
              shape=21, 
              color="black") +
-  scale_size(range = c(.1, 24), guide=FALSE, ## Do not show Legend
+  scale_size(range = c(.1, 24), guide= "none", ## Do not show Legend
              name="# of Forcibly Displaced People") +
   viridis::scale_fill_viridis(discrete=TRUE,
                               name="Country Income Classification") +
@@ -152,8 +152,8 @@ ggplot(thismigProfile,
        subtitle = "Per Country of Destination as of 2020. \n The size of the circle represents the number of Refugees & Asylum Seekers ", 
        x = "Ratio Asylum / Immigrant",
        y ="Ratio Immigrant / Host Population",
-       caption = "UNDESA Migrant Stock & UNHCR (includes VDA in calculation).\n Only countries with more than 5oK Forcibly Displaced Accorss borders are presented.") +
-  unhcRstyle::unhcr_theme(base_size = 9) +
+       caption = "UNDESA Migrant Stock & UNHCR (includes REF +ASY+VDA in calculation).\n Only countries with more than 50K Forcibly Displaced Accorss borders are presented. (Visualisation: UnhcrDataPackage)") +
+  unhcRstyle::unhcr_theme(base_size = 12) +
   theme(legend.position="bottom", 
         panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_line(color = "#cbcbcb"), 
@@ -203,10 +203,10 @@ ggplot(data, aes(x = reorder(CountryOriginName, Value2), ## Reordering country b
        subtitle = paste0("Data as of ",lastyear), 
        x = " ",
        y = "# of Forcibly displaced people",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage") +
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 
@@ -303,11 +303,11 @@ pyramidplot <- ggplot(pyramid3, aes(x = age,
        subtitle = paste0(" Gender disaggregation is available for ", totprop, " % of the ",tot, " persons" ),
        x = "", 
        y = "Percent of population",
-       caption =  "Source: UNHCR Population Statistics as of end 2020") +
+       caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage") +
   scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                       aesthetics = c("colour", "fill")) +
   coord_flip()+
-  unhcRstyle::unhcr_theme(base_size = 14) +
+  unhcRstyle::unhcr_theme(base_size = 12) +
    theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
             panel.grid.major.y = element_blank())
 
@@ -345,7 +345,7 @@ ggplot(Solution, aes(x = Year, y = Value2  )) +
   #xlim(c(lastyear-5, lastyear+1)) +
   facet_wrap( vars(Solution.type.label ), ncol = ncat) +
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -354,7 +354,7 @@ ggplot(Solution, aes(x = Year, y = Value2  )) +
        subtitle = "",
        x = "",
        y = "",
-       caption = "Source: UNHCR.org/refugee-statistics ")
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage")
 
 ```
 
@@ -477,18 +477,16 @@ ggplot(Source, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country
              label.size = NA, 
              family = "Lato", 
              size = 6) +
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
   labs(title = paste0("Top 10 Countries source of Forcibly Displaced People "),
        subtitle = paste0("Data as of ",lastyear), 
        x = "",
        y = "",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage") + 
+  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
 
