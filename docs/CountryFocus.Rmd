@@ -53,6 +53,19 @@ selectedctr <- data <- dplyr::left_join( x= unhcrdatapackage::end_year_populatio
 ## ChildCountry.Rmd
 ```
 
+
+```{r, echo=FALSE, cache = TRUE, message=FALSE, warning=FALSE}
+# Population, GDP & GNP per Capita from WorldBank
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+               startdate = 1990, enddate = 2020, return_wide = TRUE)
+# Renaming variables for further matching
+names(wb_data)[1] <- "iso_3"
+names(wb_data)[2] <- "Year"
+
+wb_data$Year <- as.numeric(wb_data$Year)
+```
+
+
 ## Forcible Displacement Statistics{.tabset .tabset-pills}
 
 ### Intro
@@ -65,9 +78,9 @@ selectedctr <- data <- dplyr::left_join( x= unhcrdatapackage::end_year_populatio
 </div>
 </div> 
 
-  1. What is the share of Forcibly Displaced People among total __Migrants__? 
+  1. How the different __Categories__ of Forcibly Displaced People are evolving over time? 
 
-  2. How the different __Categories__ of Forcibly Displaced People are evolving over time? 
+  2. What is the share of Forcibly Displaced People among total __Migrants__? 
  
   3. What are the main Countries of __Origin__ of Forcibly Displaced People? 
  
@@ -106,6 +119,10 @@ lastyear <- 2021
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "Americas"
+```
+
+
+```{r,  echo=FALSE}
 ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)
@@ -148,6 +165,8 @@ thiscountry <- "United States of America"
 ```{r , child = 'ChildCountry.Rmd'}
 ```
 
+#### Central America{.tabset .tabset-pills}
+
 ##### Mexico{.tabset }
 
 ```{r message=FALSE, warning=FALSE}
@@ -157,7 +176,6 @@ thiscountry <- "Mexico"
 ```{r , child = 'ChildCountry.Rmd'}
 ```
 
-#### Central America{.tabset .tabset-pills}
 
 ##### Guatemala{.tabset }
 
@@ -309,6 +327,9 @@ thiscountry <- "Venezuela (Bolivarian Republic of)"
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "Asia"
+```
+
+```{r,  echo=FALSE}
 ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)
@@ -453,6 +474,10 @@ thiscountry <- "Afghanistan"
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "Europe"
+```
+
+```{r,  echo=FALSE}
+
 ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)
@@ -634,6 +659,10 @@ thiscountry <- "Russian Federation"
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "MENA"
+```
+
+```{r,  echo=FALSE}
+
 ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)
@@ -803,6 +832,10 @@ thiscountry <- "Nigeria"
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "EastAfrica"
+```
+
+```{r,  echo=FALSE}
+
 ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)
@@ -926,6 +959,10 @@ thiscountry <- "Sudan"
 
 ```{r message=FALSE, warning=FALSE, output= FALSE}
 thisbureau <- "SouthAfrica"
+```
+
+```{r,  echo=FALSE}
+
 ctr <- selectedctr  %>%
   filter( UNHCRBureau == thisbureau) %>%
   select(CountryAsylumName)

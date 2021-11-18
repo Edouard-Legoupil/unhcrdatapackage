@@ -57,6 +57,8 @@ navbar:
        href: articles/Proportion_Refugee_Country_Origin.html
      - text: Ratio Refugee / Host population
        href: articles/Ratio_Refugee_Host_population.html
+     - text: Ratio Refugee Migrant
+       href: articles/Migrant_and_Forcible_Displacement.html
   - text: "Chart Library: Maps"
     menu:
      - text: Mapping Refugee Location

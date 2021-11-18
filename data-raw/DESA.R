@@ -68,16 +68,28 @@ desa2 <-rename(desa1,
                 year.2015.female =  "x2015_27",                                                 
                 year.2020.female =  "x2020_28" )
 
-## let's check the reference
-ref <- as.data.frame(unique(desa2[ , c("CountryDestinationName","CountryDestinationM49")]))
-ref2 <- as.data.frame(unique(desa2[ , c("CountryOriginName","CountryOriginM49")]))
+## let's check the reference to identify aggregation units to remove 
+geounit <- as.data.frame(unique(desa2[ , c("CountryDestinationName","CountryDestinationM49")])) %>%
+       dplyr::left_join( y= unhcrdatapackage::reference, 
+                   by = c("CountryDestinationM49" = "M49_code")) %>%
+  filter(is.na(iso_3)) %>%
+  head(44)
 
-names(desa2)
+#ref2 <- as.data.frame(unique(desa2[ , c("CountryOriginName","CountryOriginM49")]))
 
-levels(as.factor(desa2$datatype))
+## Remove the aggregation geounit... to get correct counts...
+desa3 <-  desa2[  !(desa2$CountryOriginM49 %in% geounit$CountryDestinationM49) &
+                   !(desa2$CountryDestinationM49 %in% geounit$CountryDestinationM49) , ]
+       
+
+
+#names(desa2)
+
+#levels(as.factor(desa2$datatype))
+## Nothing there...
 
 ## let's put in long format
-migrants <- reshape2::melt(desa2,
+migrants <- reshape2::melt(desa3,
                                         # ID variables - all the variables to keep but not split apart on
                                         id.vars=c( "index",
                                                    "CountryOriginName",
@@ -105,6 +117,30 @@ migrants <- migrants[migrants$Value > 0, ]
 migrants$Year <- substr(migrants$Measure, 6,9)  
 migrants$Gender <- substr(migrants$Measure, 11, nchar(as.character(migrants$Measure)))
 migrants$Measure <- NULL
+
+### Let's check the aggregation is correct by comparing aggregation to worldcount...
+immigrant <-  migrants %>%  
+  filter(Gender == "all") %>%
+  group_by(Year, CountryDestinationName) %>%
+  summarise(Emigrant = sum(Value) )  %>%
+  filter(Year ==2020) %>%
+  filter(CountryDestinationName =="France*")
+
+immigrant
+desa2[ desa2$CountryOriginName== "WORLD" & desa2$CountryDestinationName =="France*", c("year.2020.all") ]
+
+emigrant  <- migrants %>% 
+  filter(Gender == "all") %>%
+  group_by(Year, CountryOriginName) %>%
+  summarise(Immigrant = sum(Value) ) %>%
+  filter(Year ==2020) %>%
+  filter(CountryOriginName =="France*")
+
+emigrant 
+desa2[ desa2$CountryDestinationName== "WORLD" & desa2$CountryOriginName =="France*", c("year.2020.all") ]
+  
+
+
 
 sinew::makeOxygen(migrants, add_fields = "source")
 

@@ -30,7 +30,7 @@ ggplot(Categories, aes(x = Year,
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   #xlim(c(lastyear-5, lastyear)) +
   facet_wrap( vars(Population.type.label.short ), ncol = ncat) +
-  unhcRstyle::unhcr_theme(base_size = 14)  + ## Insert UNHCR Style
+  unhcRstyle::unhcr_theme(base_size = 11)  + ## Insert UNHCR Style
   theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
@@ -42,6 +42,87 @@ ggplot(Categories, aes(x = Year,
        caption = "Source: UNHCR.org/refugee-statistics ")
 
 ```
+
+###### Migrants
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
+displaced <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                               y= unhcrdatapackage::reference, 
+                               by = c("CountryOriginCode" = "iso_3")) %>%
+  filter(Population.type  %in% c("ASY", "REF", "VDA")) %>%
+  filter(CountryAsylumName == thiscountry) %>%
+  filter( Year == 2020 ) %>%
+  mutate( iso_3 = CountryOriginCode) %>% 
+  group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
+  summarise(Asylum_Refugee_in = sum(Value) )  %>%
+  filter( iso_3 != "UKN")%>%
+  arrange( desc(Asylum_Refugee_in)) %>%
+  head(10)%>%
+  as.data.frame()
+
+thiscode <-  as.character(unhcrdatapackage::reference[ unhcrdatapackage::reference$ctryname == thiscountry,
+                                          c("M49_code")])
+
+migrant <-   dplyr::left_join( x= unhcrdatapackage::migrants, 
+                               y= unhcrdatapackage::reference, 
+                               by = c("CountryOriginM49" = "M49_code")) %>%
+  filter(CountryDestinationM49 == thiscode) %>%
+  group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
+  summarise(Immigrant = sum(Value) ) %>%
+  #mutate( shareOrgin = (Immigrant / sum(Immigrant))*100 ) %>%
+  filter( Year == 2020 ) %>%
+  as.data.frame()
+
+migrant$Year <- as.numeric(migrant$Year) 
+migrant$shareOrgin <-  round(migrant$Immigrant / sum(migrant$Immigrant),3)*100
+
+#str(migrant)
+#str(displaced)
+
+thismigProfile <-  migrant  %>%
+  dplyr::full_join( displaced[ ,c("Asylum_Refugee_in","iso_3" )], by = c("iso_3")) %>%
+  dplyr::left_join(  wb_data, by = c("Year","iso_3")) %>%
+  ## Calculate a few ration
+  mutate( ratioAsylum_Refugee_in = (Asylum_Refugee_in / SP.POP.TOTL)*100,
+          ratioImmigrant = (Immigrant / SP.POP.TOTL)*100,
+          ratioAsylum_Immigrant = (Asylum_Refugee_in / Immigrant)*100)  %>%
+  arrange( desc(Asylum_Refugee_in)) %>%
+  head(10)
+
+
+ggplot(thismigProfile,
+       aes(x= ratioAsylum_Immigrant, 
+           y= shareOrgin, 
+           size= Asylum_Refugee_in, 
+           fill= INCOME_GRP,
+           label = iso_3)) +
+  geom_point(alpha=0.5, 
+             shape=21, 
+             color="black") +
+  scale_size(range = c(.1, 24), guide=FALSE, ## Do not show Legend
+             name="# of Forcibly Displaced People") +
+  viridis::scale_fill_viridis(discrete=TRUE,
+                              name="Country Income Classification") +
+  # facet_wrap( vars(Year ), ncol = 2) +
+  coord_cartesian(clip = "off") +
+  ggrepel::geom_label_repel(box.padding = 0.5,
+                            size =4,
+                            # max.overlaps = 2 
+                            fill = "white", 
+                            xlim = c(-Inf, Inf), 
+                            ylim = c(-Inf, Inf)) + 
+  labs(title = "Share of Forcibly Displaced People within Migrants",
+       subtitle = "Per Country of Origin as of 2020. \n The size of the circle represents the number of Refugees & Asylum Seekers ", 
+       x = "Ratio Asylum / Immigrant",
+       y ="Ratio Country / Total Immigrant",
+       caption = "UNDESA Migrant Stock & UNHCR (includes VDA in calculation).\n Top Countries with Forced Displacement.") +
+  unhcRstyle::unhcr_theme(base_size = 10) +
+  theme(legend.position="bottom", 
+        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_line(color = "#cbcbcb"), 
+        panel.grid.minor = element_blank())   ### changing grid line that should appear
+```
+
 
 ###### Origin 
 
