@@ -130,6 +130,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Refugee_accessing_durable_solution.html">Refugees accessing durable solutions</a>
+    </li>
+    <li>
       <a href="../articles/Solution_evolution.html">Solution Evolution</a>
     </li>
     <li>
@@ -152,6 +155,9 @@
     </li>
     <li>
       <a href="../articles/Ratio_Refugee_Host_population.html">Ratio Refugee / Host population</a>
+    </li>
+    <li>
+      <a href="../articles/Migrant_and_Forcible_Displacement.html">Ratio Refugee Migrant</a>
     </li>
   </ul>
 </li>
@@ -225,12 +231,17 @@
 
     
     
-<div id="solution-evolution" class="section level2">
+<div id="load-packages" class="section level2">
 <h2 class="hasAnchor">
-<a href="#solution-evolution" class="anchor"></a>Solution Evolution</h2>
+<a href="#load-packages" class="anchor"></a>Load Packages</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">thisbureau</span> <span class="op">&lt;-</span> <span class="st">"Americas"</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="prepare-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#prepare-data" class="anchor"></a>Prepare Data</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">thisbureau</span> <span class="op">&lt;-</span> <span class="st">"Americas"</span>
 <span class="va">lastyear</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu">unhcrdatapackage</span><span class="fu">::</span><span class="va"><a href="../reference/end_year_population_totals_long.html">end_year_population_totals_long</a></span><span class="op">$</span><span class="va">Year</span><span class="op">)</span>
  
 <span class="va">solutions_long.asy</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span> x<span class="op">=</span>  <span class="fu">unhcrdatapackage</span><span class="fu">::</span><span class="va"><a href="../reference/solutions_long.html">solutions_long</a></span>, 
@@ -242,7 +253,13 @@
                      <span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">UNHCRBureau</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
             <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Year</span>, <span class="va">Solution.type</span> <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
             <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Value2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Value</span><span class="op">)</span> <span class="op">)</span> 
-
+<span class="co">#&gt; `summarise()` has grouped output by 'Year'. You can override using the `.groups` argument.</span></code></pre></div>
+</div>
+<div id="generate-plot" class="section level1">
+<h1 class="hasAnchor">
+<a href="#generate-plot" class="anchor"></a>Generate plot</h1>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co">#Make plot</span>
 <span class="va">solutionplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">solution</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">Value2</span>, 
                                               colour <span class="op">=</span> <span class="va">Solution.type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Adding reference to color</span>
@@ -306,7 +323,7 @@
        caption <span class="op">=</span> <span class="st">"Source: UNHCR.org/refugee-statistics "</span><span class="op">)</span>
 
 <span class="va">solutionplot</span></code></pre></div>
-<p><img src="Solution_evolution_files/figure-html/unnamed-chunk-1-1.png" width="672"></p>
+<p><img src="Solution_evolution_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 <p>```</p>
 </div>
   </div>

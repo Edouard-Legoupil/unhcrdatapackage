@@ -18,6 +18,7 @@ articles:
   Refugee_Over_time: Refugee_Over_time.html
   Refugee_Recognition_rate: Refugee_Recognition_rate.html
   Refugee_Status_Determination_Application: Refugee_Status_Determination_Application.html
+  Refugee_accessing_durable_solution: Refugee_accessing_durable_solution.html
   Refugees_Age_Pyramid: Refugees_Age_Pyramid.html
   Refugees_Chart_Race: Refugees_Chart_Race.html
   Resettlement_trend: Resettlement_trend.html
@@ -26,7 +27,7 @@ articles:
   Top_Refugee_hosting_Countries: Top_Refugee_hosting_Countries.html
   Tree_Map_of_Categories: Tree_Map_of_Categories.html
   Where_do_Refugees_go: Where_do_Refugees_go.html
-last_built: 2021-11-17T23:56Z
+last_built: 2021-11-22T19:57Z
 urls:
   reference: https://unhcr.github.io/unhcrdatapackage/docs//reference
   article: https://unhcr.github.io/unhcrdatapackage/docs//articles

@@ -316,7 +316,7 @@ ggplot(Solution, aes(x = Year, y = Value2  )) +
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "Recorded Solutions",
+  labs(title = "Evolution of Solutions",
        subtitle = paste0(thiscountry),
        x = "",
        y = "",
@@ -387,7 +387,7 @@ linksallDecision$IDsource <- match(linksallDecision$source, nodesDecision$name)-
 linksallDecision$IDtarget <- match(linksallDecision$target, nodesDecision$name)-1
 
 # Make the Network
-p <- networkD3::sankeyNetwork(Links = linksallDecision, 
+sankey <- networkD3::sankeyNetwork(Links = linksallDecision, 
                               Nodes = nodesDecision,
                               Source = "IDsource", 
                               Target = "IDtarget",
@@ -395,13 +395,20 @@ p <- networkD3::sankeyNetwork(Links = linksallDecision,
                               NodeID = "name", 
                               # LinkGroup	 character string specifying the groups in the Links. Used to color the links in the network.
                               sinksRight=FALSE) ##  If TRUE, the last nodes are moved to the right border of the plot.
+
+# Add title and caption
+
+sankey <- htmlwidgets::prependContent(sankey, htmltools::tags$h1(paste0("Aylum Processing in ", thiscountry)))
+sankey <- htmlwidgets::appendContent(sankey, htmltools::tags$p("Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage"))
+
+sankey
 # you save it as an html
-networkD3::saveNetwork(p, paste0(getwd(),"/decision/decision", thiscountry,".html"))
+networkD3::saveNetwork(sankey, paste0(getwd(),"/decision/decision", thiscountry,".html"))
 
 # you convert it as png -- Need first webshot::install_phantomjs()
 webshot::webshot(paste0(getwd(),"/decision/decision", thiscountry,".html"),
                  paste0(getwd(),"/decision/decision", thiscountry,".png"),
-                 vwidth = 800, vheight = 500)
+                 vwidth = 1728, vheight = 1152)
 #getwd()
 #![ ](graph/decision.png)
 

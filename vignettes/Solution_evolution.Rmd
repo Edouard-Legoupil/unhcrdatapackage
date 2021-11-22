@@ -10,15 +10,21 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  echo=TRUE,
   comment = "#>"
 )
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
-## Solution Evolution
+## Prepare Data
 
-```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
-
+```{r}
 thisbureau <- "Americas"
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
  
@@ -31,6 +37,12 @@ solution <- solutions_long.asy %>%
                      !(is.na(UNHCRBureau))) %>%
             group_by(Year, Solution.type ) %>%
             summarise(Value2 = sum(Value) ) 
+
+```
+
+# Generate plot
+
+```{r echo=TRUE, fig.height=7, fig.width=7, warning=FALSE, ,message=FALSE}
 
 #Make plot
 solutionplot <- ggplot(solution, aes(x = Year, y = Value2, 
