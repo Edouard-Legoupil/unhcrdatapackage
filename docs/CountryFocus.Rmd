@@ -66,7 +66,7 @@ wb_data$Year <- as.numeric(wb_data$Year)
 ```
 
 
-## Forcible Displacement Statistics{.tabset .tabset-pills}
+## Forced Displacement Statistics{.tabset .tabset-pills}
 
 ### Intro
 <div class="container">
@@ -78,19 +78,19 @@ wb_data$Year <- as.numeric(wb_data$Year)
 </div>
 </div> 
 
-  1. How the different __Categories__ of Forcibly Displaced People are evolving over time? 
-
-  2. What is the share of Forcibly Displaced People among total __Migrants__? 
+  1. How the different __Categories__ of Population of concern to UNHCR are evolving over time?
  
-  3. What are the main Countries of __Origin__ of Forcibly Displaced People? 
+  2. What are the main countries of __Origin__ of Forced Displacement across Borders? 
  
+  3. What are the main countries of __Destination__ of Asylum of Forced Displacement across Borders?
+  
   4. What are the __Demographics__ profiles of Forcibly Displaced People in relation with the host population? 
+
+  5. Is the asylum __Processing__ capacity in relation with the demand? 
  
-  5. What are the trends in term of __Solutions__ in this  Country? 
- 
-  6. Is the asylum __Processing__ capacity in relation with the demand? 
- 
-  7. If happening, what is the evolution of a country as a displacement __Source__? 
+  6. What are the trends in terms of __Solutions__? 
+  
+  7. What is the share of Forcibly Displaced People among total __Migrants__? 
 
 ***
 Charts can easily be copied as an image as is, or adjusted using a [reproducible source code in R statistical language](https://unhcr-americas.github.io/reproducibility). 
@@ -146,7 +146,7 @@ ctr <- selectedctr  %>%
 
 ##### Canada{.tabset  }
 
-```{r message=FALSE, warning=FALSE}
+```{r Canada, message=FALSE, warning=FALSE}
 thiscountry <- "Canada"
 ```
 
@@ -169,7 +169,7 @@ thiscountry <- "United States of America"
 
 ##### Mexico{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Mexico, message=FALSE, warning=FALSE}
 thiscountry <- "Mexico"
 ```
 
@@ -179,7 +179,7 @@ thiscountry <- "Mexico"
 
 ##### Guatemala{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Guatemala, message=FALSE, warning=FALSE}
 thiscountry <- "Guatemala"
 ```
 
@@ -189,7 +189,7 @@ thiscountry <- "Guatemala"
 
 ##### El Salvador{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Salvador, message=FALSE, warning=FALSE}
 thiscountry <- "El Salvador"
 ```
 
@@ -199,7 +199,7 @@ thiscountry <- "El Salvador"
 
 ##### Honduras{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Honduras, message=FALSE, warning=FALSE}
 thiscountry <- "Honduras"
 ```
 
@@ -208,7 +208,7 @@ thiscountry <- "Honduras"
 
 ##### Costa Rica{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r CostaRica, message=FALSE, warning=FALSE}
 thiscountry <- "Costa Rica"
 ```
 
@@ -218,7 +218,7 @@ thiscountry <- "Costa Rica"
 
 ##### Panama{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Panama, message=FALSE, warning=FALSE}
 thiscountry <- "Panama"
 ```
 
@@ -231,7 +231,7 @@ thiscountry <- "Panama"
 
 ##### Dominican Republic{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Dominican, message=FALSE, warning=FALSE}
 thiscountry <- "Dominican Republic"
 ```
 
@@ -243,7 +243,7 @@ thiscountry <- "Dominican Republic"
 
 ##### Argentina{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Argentina, message=FALSE, warning=FALSE}
 thiscountry <- "Argentina"
 ```
 
@@ -252,7 +252,7 @@ thiscountry <- "Argentina"
 
 ##### Brazil{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Brazil, message=FALSE, warning=FALSE}
 thiscountry <- "Brazil"
 ```
 
@@ -265,7 +265,7 @@ thiscountry <- "Brazil"
 
 ##### Chile{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Chile, message=FALSE, warning=FALSE}
 thiscountry <- "Chile"
 ```
 
@@ -277,7 +277,7 @@ thiscountry <- "Chile"
 
 ##### Colombia{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Colombia, message=FALSE, warning=FALSE}
 thiscountry <- "Colombia"
 ```
 
@@ -288,7 +288,7 @@ thiscountry <- "Colombia"
 
 ##### Ecuador{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Ecuador, message=FALSE, warning=FALSE}
 thiscountry <- "Ecuador"
 ```
 
@@ -300,7 +300,7 @@ thiscountry <- "Ecuador"
 
 ##### Peru{.tabset }
 
-```{r message=FALSE, warning=FALSE}
+```{r Peru, message=FALSE, warning=FALSE}
 thiscountry <- "Peru"
 ```
 
@@ -312,7 +312,7 @@ thiscountry <- "Peru"
 
 ##### Venezuela{.tabset  }
 
-```{r message=FALSE, warning=FALSE}
+```{r Venezuela, message=FALSE, warning=FALSE}
 thiscountry <- "Venezuela (Bolivarian Republic of)"
 ```
 
@@ -350,7 +350,7 @@ ctr <- selectedctr  %>%
 
 ##### Australia {.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Australia, message=FALSE, warning=FALSE}
 thiscountry <- "Australia"
 ```
 
@@ -359,7 +359,7 @@ thiscountry <- "Australia"
 
 ##### China {.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r China, message=FALSE, warning=FALSE}
 thiscountry <- "China"
 ```
 
@@ -370,7 +370,7 @@ thiscountry <- "China"
 
 ##### India{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r India, message=FALSE, warning=FALSE}
 thiscountry <- "India"
 ```
 
@@ -392,7 +392,7 @@ thiscountry <- "Thailand"
 
 ##### Bangladesh{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Bangladesh, message=FALSE, warning=FALSE}
 thiscountry <- "Bangladesh"
 ```
 
@@ -402,7 +402,7 @@ thiscountry <- "Bangladesh"
 
 ##### Myanmar{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Myanmar, message=FALSE, warning=FALSE}
 thiscountry <- "Myanmar"
 ```
 
@@ -412,7 +412,7 @@ thiscountry <- "Myanmar"
 
 ##### Philippines{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Philippines, message=FALSE, warning=FALSE}
 thiscountry <- "Philippines"
 ```
 
@@ -421,7 +421,7 @@ thiscountry <- "Philippines"
 
 ##### Cambodia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Cambodia, message=FALSE, warning=FALSE}
 thiscountry <- "Cambodia"
 ```
 
@@ -430,7 +430,7 @@ thiscountry <- "Cambodia"
 
 ##### Malaysia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Malaysia, message=FALSE, warning=FALSE}
 thiscountry <- "Malaysia"
 ```
 
@@ -441,7 +441,7 @@ thiscountry <- "Malaysia"
 
 ##### Iran{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Iran, message=FALSE, warning=FALSE}
 thiscountry <- "Iran (Islamic Republic of)"
 ```
 
@@ -450,7 +450,7 @@ thiscountry <- "Iran (Islamic Republic of)"
 
 ##### Pakistan {.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Pakistan, message=FALSE, warning=FALSE}
 thiscountry <- "Pakistan"
 ```
 
@@ -459,7 +459,7 @@ thiscountry <- "Pakistan"
 
 ##### Afghanistan {.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Afghanistan, message=FALSE, warning=FALSE}
 thiscountry <- "Afghanistan"
 ```
 
@@ -513,7 +513,7 @@ ctr <- selectedctr  %>%
 
 ##### UK {.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r UK, message=FALSE, warning=FALSE}
 thiscountry <- "United Kingdom of Great Britain and Northern Ireland"
 ```
 
@@ -522,7 +522,7 @@ thiscountry <- "United Kingdom of Great Britain and Northern Ireland"
 
 ##### Germany{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Germany, message=FALSE, warning=FALSE}
 thiscountry <- "Germany"
 ```
 
@@ -532,7 +532,7 @@ thiscountry <- "Germany"
 
 ##### France{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r France, message=FALSE, warning=FALSE}
 thiscountry <- "France"
 ```
 
@@ -546,7 +546,7 @@ thiscountry <- "France"
 
 ##### Latvia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Latvia, message=FALSE, warning=FALSE}
 thiscountry <- "Latvia"
 ```
 
@@ -557,7 +557,7 @@ thiscountry <- "Latvia"
 
 ##### Estonia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Estonia, message=FALSE, warning=FALSE}
 thiscountry <- "Estonia"
 ```
 
@@ -568,7 +568,7 @@ thiscountry <- "Estonia"
 
 ##### Norway{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Norway, message=FALSE, warning=FALSE}
 thiscountry <- "Norway"
 ```
 
@@ -578,7 +578,7 @@ thiscountry <- "Norway"
 
 ##### Sweden{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Sweden, message=FALSE, warning=FALSE}
 thiscountry <- "Sweden"
 ```
 
@@ -590,7 +590,7 @@ thiscountry <- "Sweden"
 
 ##### Italy{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Italy, message=FALSE, warning=FALSE}
 thiscountry <- "Italy"
 ```
 
@@ -599,7 +599,7 @@ thiscountry <- "Italy"
 
 ##### Spain{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Spain, message=FALSE, warning=FALSE}
 thiscountry <- "Spain"
 ```
 
@@ -608,7 +608,7 @@ thiscountry <- "Spain"
 
 ##### Greece{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Greece, message=FALSE, warning=FALSE}
 thiscountry <- "Greece"
 ```
 
@@ -622,7 +622,7 @@ thiscountry <- "Greece"
 
 ##### Turkey{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Turkey, message=FALSE, warning=FALSE}
 thiscountry <- "Turkey"
 ```
 
@@ -632,7 +632,7 @@ thiscountry <- "Turkey"
 
 ##### Georgia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Georgia, message=FALSE, warning=FALSE}
 thiscountry <- "Georgia"
 ```
 
@@ -642,7 +642,7 @@ thiscountry <- "Georgia"
 
 ##### Russian Federation{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Russian, message=FALSE, warning=FALSE}
 thiscountry <- "Russian Federation"
 ```
 
@@ -681,7 +681,7 @@ ctr <- selectedctr  %>%
 
 ##### Algeria{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Algeria, message=FALSE, warning=FALSE}
 thiscountry <- "Algeria"
 ```
 
@@ -692,7 +692,7 @@ thiscountry <- "Algeria"
 
 ##### Egypt{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Egypt, message=FALSE, warning=FALSE}
 thiscountry <- "Egypt"
 ```
 
@@ -705,7 +705,7 @@ thiscountry <- "Egypt"
 
 ##### Jordan{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Jordan, message=FALSE, warning=FALSE}
 thiscountry <- "Jordan"
 ```
 
@@ -716,7 +716,7 @@ thiscountry <- "Jordan"
 
 ##### Syria {.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Syria, message=FALSE, warning=FALSE}
 thiscountry <- "Syrian Arab Republic"
 ```
 
@@ -743,7 +743,7 @@ thisbureau <- "WestAfrica"
 
 ##### Cameroon{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Cameroon, message=FALSE, warning=FALSE}
 thiscountry <- "Cameroon"
 ```
 
@@ -754,7 +754,7 @@ thiscountry <- "Cameroon"
 
 ##### Chad{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Chad, message=FALSE, warning=FALSE}
 thiscountry <- "Chad"
 ```
 
@@ -778,7 +778,7 @@ thiscountry <- "Central African Republic"
 
 ##### Burkina Faso{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Burkina, message=FALSE, warning=FALSE}
 thiscountry <- "Burkina Faso"
 ```
 
@@ -791,7 +791,7 @@ thiscountry <- "Burkina Faso"
 
 ##### Mali{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Mali, message=FALSE, warning=FALSE}
 thiscountry <- "Mali"
 ```
 
@@ -802,7 +802,7 @@ thiscountry <- "Mali"
 
 ##### Niger{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Niger, message=FALSE, warning=FALSE}
 thiscountry <- "Niger"
 ```
 
@@ -813,7 +813,7 @@ thiscountry <- "Niger"
 
 ##### Nigeria{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Nigeria, message=FALSE, warning=FALSE}
 thiscountry <- "Nigeria"
 ```
 
@@ -851,7 +851,7 @@ ctr <- selectedctr  %>%
 
 ##### Burundi{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Burundi, message=FALSE, warning=FALSE}
 thiscountry <- "Burundi"
 ```
 
@@ -863,7 +863,7 @@ thiscountry <- "Burundi"
 
 ##### Rwanda{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Rwanda, message=FALSE, warning=FALSE}
 thiscountry <- "Rwanda"
 ```
 
@@ -871,7 +871,7 @@ thiscountry <- "Rwanda"
 
 ##### Ethiopia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Ethiopia, message=FALSE, warning=FALSE}
 thiscountry <- "Ethiopia"
 ```
 
@@ -881,39 +881,38 @@ thiscountry <- "Ethiopia"
 
 ##### Kenya{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Kenya, message=FALSE, warning=FALSE}
 thiscountry <- "Kenya"
 ```
 
 
 ```{r , child = 'ChildCountry.Rmd'}
 ```
-
-
-```{r , child = 'ChildCountry.Rmd'}
-```
+ 
 
 ##### Somalia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Somalia, message=FALSE, warning=FALSE}
 thiscountry <- "Somalia"
 ```
 
 
 ```{r , child = 'ChildCountry.Rmd'}
 ```
+
 ##### South Sudan{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r SouthSudan, message=FALSE, warning=FALSE}
 thiscountry <- "South Sudan"
 ```
 
 
 ```{r , child = 'ChildCountry.Rmd'}
 ```
+
 ##### Uganda{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Uganda, message=FALSE, warning=FALSE}
 thiscountry <- "Uganda"
 ```
 
@@ -923,7 +922,7 @@ thiscountry <- "Uganda"
 
 ##### Tanzania{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Tanzania, message=FALSE, warning=FALSE}
 thiscountry <- "United Republic of Tanzania"
 ```
 
@@ -933,7 +932,7 @@ thiscountry <- "United Republic of Tanzania"
 
 ##### Zambia{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r  Zambia, message=FALSE, warning=FALSE}
 thiscountry <- "Zambia"
 ```
 
@@ -943,7 +942,7 @@ thiscountry <- "Zambia"
 
 ##### Sudan{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Sudan, message=FALSE, warning=FALSE}
 thiscountry <- "Sudan"
 ```
 
@@ -977,7 +976,7 @@ ctr <- selectedctr  %>%
 
 ##### South Africa{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r SouthAfrica, message=FALSE, warning=FALSE}
 thiscountry <- "South Africa"
 ```
 
@@ -988,7 +987,7 @@ thiscountry <- "South Africa"
 
 ##### Malawi{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Malawi, message=FALSE, warning=FALSE}
 thiscountry <- "Malawi"
 ```
 
@@ -998,7 +997,7 @@ thiscountry <- "Malawi"
 
 ##### Mozambique{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Mozambique, message=FALSE, warning=FALSE}
 thiscountry <- "Mozambique"
 ```
 
@@ -1008,7 +1007,7 @@ thiscountry <- "Mozambique"
 
 ##### Angola{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r Angola, message=FALSE, warning=FALSE}
 thiscountry <- "Angola"
 ```
 
@@ -1016,11 +1015,11 @@ thiscountry <- "Angola"
 ```{r , child = 'ChildCountry.Rmd'}
 ```
 
-#### Middle Africa{.tabset .tabset-pills}
+#### Central Africa{.tabset .tabset-pills}
 
 ##### Democratic Republic of the Congo{.tabset}
 
-```{r message=FALSE, warning=FALSE}
+```{r DRC, message=FALSE, warning=FALSE}
 thiscountry <- "Democratic Republic of the Congo"
 ```
 

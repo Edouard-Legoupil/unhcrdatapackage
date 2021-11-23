@@ -1,6 +1,4 @@
  
-
-
 ###### Categories 
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
@@ -10,7 +8,7 @@ Categories <- end_year_population_totals_long.asy %>%
                  Year > (lastyear - 5) ) %>%
   group_by(Year, Population.type.label.short ) %>%
   summarise(Value2 = sum(Value) ) %>%
-  mutate( valabel = scales::label_number_si()(Value2))
+  mutate( valabel = scales::label_number_si(accuracy = 0.1)(Value2))
 
 ncat <- ifelse( nlevels(as.factor(Categories$Population.type.label.short)) %in% c(2,4), 2,3)
 #levels(as.factor(end_year_population_totals_long.asy$Population.type.label.short))
@@ -38,93 +36,15 @@ ggplot(Categories, aes(x = Year,
         panel.grid.major.x  = element_blank(), 
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
-  labs(title = "How Categories of Forcibly Displaced People are evolving over time?",
-       subtitle = paste0(thiscountry),
+  labs(title = "How Categories of Population of concern to UNHCR are evolving over time?",
+       subtitle = paste0("Data as of ",lastyear, "  in ",thiscountry ), 
        x = "",
        y = "",
-       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage")
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage \n Stateless people and Other of Concerns are not categories used for Forcibly
+Displaced People Statistics")
 
 ```
 
-###### Migrants
-
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
-displaced <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                               y= unhcrdatapackage::reference, 
-                               by = c("CountryOriginCode" = "iso_3")) %>%
-  filter(Population.type  %in% c("ASY", "REF", "VDA")) %>%
-  filter(CountryAsylumName == thiscountry) %>%
-  filter( Year == 2020 ) %>%
-  mutate( iso_3 = CountryOriginCode) %>% 
-  group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
-  summarise(Asylum_Refugee_in = sum(Value) )  %>%
-  filter( iso_3 != "UKN") %>%
-  arrange( desc(Asylum_Refugee_in)) %>%
-  head(10)%>%
-  as.data.frame()
-
-thiscode <-  as.character(unhcrdatapackage::reference[ unhcrdatapackage::reference$ctryname == thiscountry,
-                                          c("M49_code")])
-
-migrant <-   dplyr::left_join( x= unhcrdatapackage::migrants, 
-                               y= unhcrdatapackage::reference, 
-                               by = c("CountryOriginM49" = "M49_code")) %>%
-  filter(CountryDestinationM49 == thiscode) %>%
-  group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
-  summarise(Immigrant = sum(Value) ) %>%
-  #mutate( shareOrgin = (Immigrant / sum(Immigrant))*100 ) %>%
-  filter( Year == 2020 ) %>%
-  as.data.frame()
-
-migrant$Year <- as.numeric(migrant$Year) 
-migrant$shareOrgin <-  round(migrant$Immigrant / sum(migrant$Immigrant),3)*100
-
-#str(migrant)
-#str(displaced)
-
-thismigProfile <-  migrant  %>%
-  dplyr::full_join( displaced[ ,c("Asylum_Refugee_in","iso_3" )], by = c("iso_3")) %>%
-  dplyr::left_join(  wb_data, by = c("Year","iso_3")) %>%
-  ## Calculate a few ration
-  mutate( ratioAsylum_Refugee_in = (Asylum_Refugee_in / SP.POP.TOTL)*100,
-          ratioImmigrant = (Immigrant / SP.POP.TOTL)*100,
-          ratioAsylum_Immigrant = (Asylum_Refugee_in / Immigrant)*100)  %>%
-  arrange( desc(Asylum_Refugee_in)) %>%
-  head(10)
-
-
-ggplot(thismigProfile,
-       aes(x= ratioAsylum_Immigrant, 
-           y= shareOrgin, 
-           size= Asylum_Refugee_in, 
-           fill= INCOME_GRP,
-           label = iso_3)) +
-  geom_point(alpha=0.5, 
-             shape=21, 
-             color="black") +
-  scale_size(range = c(.1, 24), guide= "none", ## Do not show Legend
-             name="# of Forcibly Displaced People") +
-  viridis::scale_fill_viridis(discrete=TRUE,
-                              name="Country Income Classification") +
-  # facet_wrap( vars(Year ), ncol = 2) +
-  coord_cartesian(clip = "off") +
-  ggrepel::geom_label_repel(box.padding = 0.5,
-                            size =4,
-                            # max.overlaps = 2 
-                            fill = "white", 
-                            xlim = c(-Inf, Inf), 
-                            ylim = c(-Inf, Inf)) + 
-  labs(title = "Share of Forcibly Displaced People within Migrants",
-       subtitle = "Per Country of Origin as of 2020. \n The size of the circle represents the number of Refugees & Asylum Seekers ", 
-       x = "Ratio Asylum / Immigrant",
-       y ="Ratio Country / Total Immigrant",
-       caption = "UNDESA Migrant Stock & UNHCR (includes VDA in calculation).\n Top Countries with Forced Displacement.(Visualisation: UnhcrDataPackage)") +
-  unhcRstyle::unhcr_theme(base_size = 12) +
-  theme(legend.position="bottom", 
-        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_line(color = "#cbcbcb"), 
-        panel.grid.minor = element_blank())   ### changing grid line that should appear
-```
 
 
 ###### Origin 
@@ -136,15 +56,21 @@ lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 Origin <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%
-  filter(CountryAsylumName  == thiscountry & Year == lastyear) %>%   
+  filter(CountryAsylumName  == thiscountry & Year == lastyear &
+           Population.type  %in%c("REF", "ASY", "VDA" )) %>%   
   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
         CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
         CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
-  group_by( CountryOriginName, SUBREGION) %>%
+  group_by( CountryOriginName) %>%
   summarise(Value2 = sum(Value) )  %>%
-  mutate( Value3 =  scales::label_number_si()(Value2)) %>%
+  mutate( Value3 =  scales::label_number_si(accuracy = 0.1)(Value2)) %>%
   arrange(desc(Value2)) %>%
   head(10)
+
+
+if( nrow(Origin) == 0 ){
+  cat(paste0("There's no recorded countries of Origin i ",thiscountry )) 
+  } else {
 
 #Make plot
 ggplot(Origin, aes(x = reorder(CountryOriginName, Value2), ## Reordering country by Value
@@ -161,22 +87,85 @@ ggplot(Origin, aes(x = reorder(CountryOriginName, Value2), ## Reordering country
              fill = NA, 
              label.size = NA, 
              family = "Lato", 
-             size = 6) +
-  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+             size = 4) + 
   coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
   ## and the chart labels
-  labs(title = paste0("Top 10 Countries of Origin hosted in ",thiscountry, "" ),
-       subtitle = paste0("Data as of ",lastyear), 
+  labs(title = paste0("What are the main Origin of Forced Displacement across Borders?" ),
+       subtitle = paste0("Top 10 Origin -Data as of ",lastyear, "  in ",thiscountry ), 
        x = " ",
        y = "# of Forcibly displaced people",
-       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage") +
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Venezuelan Displaced Abroad Population Group.") +
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
+}
+```
+
+
+
+###### Destination
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9,  size="small"} 
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
+ filter(CountryOriginName  == thiscountry & Year == lastyear &
+           Population.type  %in%c("REF", "ASY", "VDA" )) %>%   
+  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+        CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
+        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
+  group_by( CountryAsylumName) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate( Value3 =  scales::label_number_si(accuracy = 0.1)(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10) %>%
+  filter(Value2 >0)
+
+if( nrow(Destination) ==  0 ){
+  cat(paste0("There's no recorded countries of destination i ",thiscountry ))
+  
+} else {
+
+
+#Make plot
+ggplot(Destination, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
+                           y = Value2)) +
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc") + # here we configure that it will be bar chart+
+  geom_label(aes(x = CountryAsylumName, y = Value2, 
+                #label =  format(round(Value2, -3),  big.mark=",")), 
+                label =  Value3), 
+             hjust = 1, 
+             vjust = 0.5, 
+             colour = "white", 
+             fill = NA, 
+             label.size = NA, 
+             family = "Lato", 
+             size = 4) +
+  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
+  ## and the chart labels
+  labs(title = paste0("What are the main destination of Forcibly Displaced People?" ),
+       
+       subtitle = paste0("Top Destination Countries -Data as of ",lastyear, "  in ",thiscountry ), 
+       x = "",
+       y = "",
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Venezuelan Displaced Abroad Population Group.") +
+  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+  
+}
 
 ```
+
 
 ###### Demographics
 
@@ -186,143 +175,114 @@ demographics1 <- demographics %>%
                    dplyr::left_join( unhcrdatapackage::reference %>% 
                                        select(UNHCRBureau, iso_3),  
                                      by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(CountryAsylumName  == thiscountry & Year == lastyear-1) %>%
-                  mutate ( totGen = FemaleTotal +MaleTotal,
-                           totbreak = Female04 + Female511 + Female1217 + Female1859 + Female60ormore + FemaleUnknown +
-                             Male04 + Male511 + Male1217 + Male1859 + Male60ormore + MaleUnknown,
-                           hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
+  filter(CountryAsylumName  == thiscountry &
+           Year == lastyear-1 &
+           Population.type  %in%c("REF", "ASY", "VDA")) %>%
+  mutate ( totGen = FemaleTotal +MaleTotal,
+           totbreak = Female04 + Female511 + Female1217 + Female1859 + Female60ormore + FemaleUnknown +
+                      Male04 + Male511 + Male1217 + Male1859 + Male60ormore + MaleUnknown,
+           hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
 
-tot <- format( sum(demographics1$Total) ,  big.mark=",")
-totprop <-   format( round( sum(demographics1$totGen) / 
-    sum(demographics1$Total )  *100,1),  big.mark=",")  
 
-if (totprop == 0 ) {
-  cat(paste0(" Gender disaggregation is not available for all of the ",tot, " persons in", thiscountry ))
+
+if( nrow(demographics1) ==  0 ){
+  cat(paste0("There's no recorded Gender disaggregation for Forcibly Displaced People across Borders in ",thiscountry ))
   
 } else {
-#names(demographics)
-pyramid <-  demographics1[ demographics1$Year == max(demographics1$Year),
-                          c(
-                              "Female04",
-                              "Female511",
-                              "Female1217",
-                              "Female1859",
-                              "Female60ormore",
-                              "FemaleUnknown",
-                             # "FemaleTotal",
-                              "Male04",
-                              "Male511",
-                              "Male1217",
-                              "Male1859",
-                              "Male60ormore",
-                              "MaleUnknown"#,
-                             # "MaleTotal"       
-                             )]  
 
-pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) %>%
-  pivot_longer(
-    cols = Female04:MaleUnknown,
-    names_to = "Class",
-    values_to = "Sum",
-    values_drop_na = TRUE
-  ) 
-
-pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
-                                          by = list(pyramid2$Class#, pyramid2$REGION_UN
-                                                    ),
-                                          sum))
-names(pyramid3)[1] <- "Class"
-names(pyramid3)[2] <- "Count"
-
-pyramid3 <- pyramid3 %>% 
-  mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
-                            str_detect(Class, "Female") ~ "Female")) %>% 
-  mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
-                         str_detect(Class, "511") ~ "5-11",
-                         str_detect(Class, "1217") ~ "12-17",
-                         str_detect(Class, "1859") ~ "18-59",
-                         str_detect(Class, "60") ~ "60+",
-                         str_detect(Class, "Unknown") ~ "Unknown")) 
-
-pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
-pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
-
-pyramidplot <- ggplot(pyramid3, aes(x = age, 
-                     fill = gender,
-                      y = ifelse(test = gender == "Female",
-                            yes = -pc, no = pc)) ) + 
-  geom_bar(stat = "identity") +
-  geom_label(aes(x = age,
-                 y = ifelse(test = gender == "Female",
-                            yes = -pc -5 , no = pc),
-                label =  paste0(format(round(pc, 1),  big.mark=","),"%") 
-                ),
-             hjust = 0,
-             vjust = 0.5,
-             colour = "black",
-             fill = NA,
-             label.size = NA,
-             family = "Lato",
-             size = 5) +
-  scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
-  labs(title = paste0("Population Pyramid for Forcibly Displaced People in", thiscountry ),
-       subtitle = paste0(" Gender disaggregation is available for ", totprop, " % of the ",tot, " persons in this country" ),
-       x = "", 
-       y = "Percent of population",
-       caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage") +
-  scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
-                      aesthetics = c("colour", "fill")) +
-  coord_flip()+
-  unhcRstyle::unhcr_theme(base_size = 12) +
-   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-            panel.grid.major.y = element_blank())
-
-pyramidplot
+  tot <- format( sum(demographics1$Total) ,  big.mark=",")
+  totprop <-   format( round( sum(demographics1$totGen) / 
+      sum(demographics1$Total )  *100,1),  big.mark=",")  
+  
+  if (totprop == 0 ) {
+    cat(paste0("There's no recorded Gender disaggregation for all of the ",tot, " persons in", thiscountry ))
+    
+  } else {
+    #names(demographics)
+    pyramid <-  demographics1[ demographics1$Year == max(demographics1$Year),
+                              c(
+                                  "Female04",
+                                  "Female511",
+                                  "Female1217",
+                                  "Female1859",
+                                  "Female60ormore",
+                                  "FemaleUnknown",
+                                 # "FemaleTotal",
+                                  "Male04",
+                                  "Male511",
+                                  "Male1217",
+                                  "Male1859",
+                                  "Male60ormore",
+                                  "MaleUnknown"#,
+                                 # "MaleTotal"       
+                                 )]  
+    
+    pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) %>%
+      pivot_longer(
+        cols = Female04:MaleUnknown,
+        names_to = "Class",
+        values_to = "Sum",
+        values_drop_na = TRUE
+      ) 
+    
+    pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
+                                              by = list(pyramid2$Class#, pyramid2$REGION_UN
+                                                        ),
+                                              sum))
+    names(pyramid3)[1] <- "Class"
+    names(pyramid3)[2] <- "Count"
+    
+    pyramid3 <- pyramid3 %>% 
+      mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
+                                str_detect(Class, "Female") ~ "Female")) %>% 
+      mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
+                             str_detect(Class, "511") ~ "5-11",
+                             str_detect(Class, "1217") ~ "12-17",
+                             str_detect(Class, "1859") ~ "18-59",
+                             str_detect(Class, "60") ~ "60+",
+                             str_detect(Class, "Unknown") ~ "Unknown")) 
+    
+    pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
+    pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
+    
+    pyramidplot <- ggplot(pyramid3, aes(x = age, 
+                         fill = gender,
+                          y = ifelse(test = gender == "Female",
+                                yes = -pc, no = pc)) ) + 
+      geom_bar(stat = "identity") +
+      geom_label(aes(x = age,
+                     y = ifelse(test = gender == "Female",
+                                yes = -pc -5 , no = pc),
+                    label =  paste0(format(round(pc, 1),  big.mark=","),"%") 
+                    ),
+                 hjust = 0,
+                 vjust = 0.5,
+                 colour = "black",
+                 fill = NA,
+                 label.size = NA,
+                 family = "Lato",
+                 size = 4) +
+      scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
+      labs(title = paste0("Population Pyramid for Forcibly Displaced People" ),
+           
+           subtitle = paste0("As of ",lastyear, 
+                             ", gender disaggregation is available for ", totprop, " % of the ",tot,
+                             " individuals in", thiscountry),
+           x = "", 
+           y = "Percent of population",
+           caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Venezuelan Displaced Abroad Population Groups.") +
+      scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
+                          aesthetics = c("colour", "fill")) +
+      coord_flip()+
+      unhcRstyle::unhcr_theme(base_size = 12) +
+       theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank())
+    
+    pyramidplot
+ }
 }
 
 ``` 
-
-
-
-###### Solution 
-
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
-#Prepare data
-Solution <- solutions_long.asy %>%
-  filter(CountryAsylumName  == thiscountry & Year > (lastyear - 10)  ) %>%
-  group_by(Year, Solution.type.label ) %>%
-  summarise(Value2 = sum(Value) )  %>%
-  mutate(Year = as.integer(Year) ) %>%
-  mutate( valabel = scales::label_number_si()(Value2))
-
-
-ncat <- ifelse( nlevels(as.factor(Solution$Solution.type.label)) %in% c(2,4), 2,3)
-#levels(as.factor(solutions_long.asy$Solution.type.label))
-Solution$Solution.type.label <- factor(Solution$Solution.type.label,
-                                                 levels = c("Naturalisation",  "Resettlement arrivals",
-                                                            "Refugee returns","IDP returns" )) 
-
-#Make plot
-ggplot(Solution, aes(x = Year, y = Value2  )) + 
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc" ) + # here we configure that it will be bar chart
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
-  #xlim(c(lastyear-5, lastyear+1)) +
-  facet_wrap( vars(Solution.type.label ), ncol = ncat) +
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
-  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
-        panel.grid.major.x  = element_blank(), 
-        panel.grid.minor = element_blank()) + ### changing grid line that should appear
-  ## and the chart labels
-  labs(title = "Evolution of Solutions",
-       subtitle = paste0(thiscountry),
-       x = "",
-       y = "",
-       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage")
-
-```
 
 ###### Processing 
 
@@ -414,54 +374,141 @@ webshot::webshot(paste0(getwd(),"/decision/decision", thiscountry,".html"),
 
 ```
 
+###### Solution 
 
-
-###### Source
-
-```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9,  size="small"} 
-lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
-Source <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3"))  %>%
- filter(CountryOriginName  == thiscountry & Year == lastyear) %>%   
-  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
-        CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
-        CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
-        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
-  group_by( CountryAsylumName, SUBREGION) %>%
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
+#Prepare data
+Solution <- solutions_long.asy %>%
+  filter(CountryAsylumName  == thiscountry & 
+           Year > (lastyear - 10) &
+            Solution.type.label != "IDP returns" ) %>%
+  mutate(Year = as.factor(Year) ) %>%
+  group_by(Year, Solution.type.label ) %>%
   summarise(Value2 = sum(Value) )  %>%
-  mutate( Value3 =  scales::label_number_si()(Value2)) %>%
-  arrange(desc(Value2)) %>%
-  head(10)
+  mutate( valabel = scales::label_number_si(accuracy = 0.1)(Value2))
+
+
+ncat <- ifelse( nlevels(as.factor(Solution$Solution.type.label)) %in% c(2,4), 2,3)
+#levels(as.factor(solutions_long.asy$Solution.type.label))
+Solution$Solution.type.label <- factor(Solution$Solution.type.label,
+                                                 levels = c("Naturalisation",  "Resettlement arrivals",
+                                                            "Refugee returns","IDP returns" )) 
+
+
+
+if( nrow(Solution) ==  0 ){
+  cat(paste0("There's no recorded solutions in ",thiscountry ))
+  
+} else {
+  
 
 #Make plot
-ggplot(Source, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
-                           y = Value2)) +
+ggplot(Solution, aes(x = Year, y = Value2  )) + 
   geom_bar(stat = "identity", 
            position = "identity", 
-           fill = "#0072bc") + # here we configure that it will be bar chart+
-  geom_label(aes(x = CountryAsylumName, y = Value2, 
-                #label =  format(round(Value2, -3),  big.mark=",")), 
-                label =  Value3), 
-             hjust = 1, 
-             vjust = 0.5, 
-             colour = "white", 
-             fill = NA, 
-             label.size = NA, 
-             family = "Lato", 
-             size = 6) +
-  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
-  ## and the chart labels
-  labs(title = paste0("Top 10 Countries hosting Forcibly Displaced People from ",thiscountry ),
-       subtitle = paste0("Data as of ",lastyear), 
-       x = "",
-       y = "",
-       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage") +
-  #scale_y_continuous( label = unhcRstyle::format_si()) + ## Format axis number
+           fill = "#0072bc" ) + # here we configure that it will be bar chart
   scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
+  #xlim(c(lastyear-5, lastyear+1)) +
+  facet_wrap( vars(Solution.type.label ), ncol = ncat) +
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
   unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
-  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+  theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()) + ### changing grid line that should appear
+  ## and the chart labels
+  labs(title = "What are the trends in terms of Solutions?",
+       subtitle = paste0("Data for Forcibly Displaced People across Borders as of ",lastyear, " filtered for ", thiscountry), 
+       x = "",
+       y = "",
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Venezuelan Displaced Abroad Population Groups.")
+}
 
+```
+
+###### Migrants
+
+```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
+displaced <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                               y= unhcrdatapackage::reference, 
+                               by = c("CountryOriginCode" = "iso_3")) %>%
+  filter(Population.type  %in% c("ASY", "REF", "VDA")) %>%
+  filter(CountryAsylumName == thiscountry) %>%
+  filter( Year == 2020 ) %>%
+  mutate( iso_3 = CountryOriginCode) %>% 
+  group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
+  summarise(Asylum_Refugee_in = sum(Value) )  %>%
+  filter( iso_3 != "UKN") %>%
+  arrange( desc(Asylum_Refugee_in)) %>%
+  head(10)%>%
+  as.data.frame()
+
+thiscode <-  as.character(unhcrdatapackage::reference[ unhcrdatapackage::reference$ctryname == thiscountry,
+                                          c("M49_code")])
+
+migrant <-   dplyr::left_join( x= unhcrdatapackage::migrants, 
+                               y= unhcrdatapackage::reference, 
+                               by = c("CountryOriginM49" = "M49_code")) %>%
+  filter(CountryDestinationM49 == thiscode) %>%
+  group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
+  summarise(Immigrant = sum(Value) ) %>%
+  #mutate( shareOrgin = (Immigrant / sum(Immigrant))*100 ) %>%
+  filter( Year == 2020 ) %>%
+  as.data.frame()
+
+migrant$Year <- as.numeric(migrant$Year) 
+migrant$shareOrgin <-  round(migrant$Immigrant / sum(migrant$Immigrant),3)*100
+
+#str(migrant)
+#str(displaced)
+
+thismigProfile <-  migrant  %>%
+  dplyr::full_join( displaced[ ,c("Asylum_Refugee_in","iso_3" )], by = c("iso_3")) %>%
+  dplyr::left_join(  wb_data, by = c("Year","iso_3")) %>%
+  ## Calculate a few ration
+  mutate( ratioAsylum_Refugee_in = (Asylum_Refugee_in / SP.POP.TOTL)*100,
+          ratioImmigrant = (Immigrant / SP.POP.TOTL)*100,
+          ratioAsylum_Immigrant = (Asylum_Refugee_in / Immigrant)*100)  %>%
+  arrange( desc(Asylum_Refugee_in)) %>%
+  head(10)
+
+
+if( nrow(displaced) ==  0 ){
+  cat(paste0("There's no recorded Forcibly Displaced Poeple across Borders in ",thiscountry ))
+  
+} else {
+
+ggplot(thismigProfile,
+       aes(x= ratioAsylum_Immigrant, 
+           y= shareOrgin, 
+           size= Asylum_Refugee_in, 
+           fill= INCOME_GRP,
+           label = iso_3)) +
+  geom_point(alpha=0.5, 
+             shape=21, 
+             color="black") +
+  scale_size(range = c(.1, 24), guide= "none", ## Do not show Legend
+             name="# of Forcibly Displaced People") +
+  viridis::scale_fill_viridis(discrete=TRUE,
+                              name="Country Income Classification") +
+  # facet_wrap( vars(Year ), ncol = 2) +
+  coord_cartesian(clip = "off") +
+  ggrepel::geom_label_repel(box.padding = 0.5,
+                            size =4,
+                            # max.overlaps = 2 
+                            fill = "white", 
+                            xlim = c(-Inf, Inf), 
+                            ylim = c(-Inf, Inf)) + 
+  labs(title = "Share of Forcibly Displaced People within Migrants",
+       subtitle = "Per Country of Origin as of 2020. \n The size of the circle represents the number of Refugees & Asylum Seekers ", 
+       x = "Ratio Asylum / Immigrant",
+       y ="Ratio Country / Total Immigrant",
+       caption = "UNDESA Migrant Stock & UNHCR (includes REF +ASY+VDA in calculation) as of 2020.\n Only countries with more than 50K Forcibly Displaced Accorss borders are presented. (Visualisation: UnhcrDataPackage)") +
+  unhcRstyle::unhcr_theme(base_size = 12) +
+  theme(legend.position="bottom", 
+        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_line(color = "#cbcbcb"), 
+        panel.grid.minor = element_blank())   ### changing grid line that should appear
+  
+}
 ```

@@ -90,6 +90,7 @@ solutionplot <- ggplot(data = solution2,
             color = "#ff4861", 
             size = 2 ) +
   scale_y_continuous(sec.axis = sec_axis(~./100000),
+                    # name = "% Refugees accessing solutions", 
                      label = scales::label_number_si()) +
   ## Styling chart
   unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
@@ -101,7 +102,7 @@ solutionplot <- ggplot(data = solution2,
   labs(title = "Refugees accessing durable solutions",
        subtitle = "2010-2020",
        x = "",
-       y = "",
+       y = "", ## # of Solution
        caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage \n The red line represent the % Refugees accessing solutions and is scaled on the right axis")
 
 solutionplot
