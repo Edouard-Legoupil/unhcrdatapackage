@@ -18,27 +18,6 @@ knitr::opts_chunk$set(
 )
 
 library(tidyverse)
-## Loading the stat tables
-end_year_population_totals <- unhcrdatapackage::end_year_population_totals
-reference <- unhcrdatapackage::reference
-end_year_population_totals_long <- unhcrdatapackage::end_year_population_totals_long
-end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3"))
-
-end_year_population_totals_long.ori <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
-                                                     by = c("CountryOriginCode" = "iso_3"))
-
-demographics <- unhcrdatapackage::demographics
-asylum_applications <- unhcrdatapackage::asylum_applications
-asylum_decisions <- unhcrdatapackage::asylum_decisions
-asylum_decisions_long <- unhcrdatapackage::asylum_decisions_long
-
-solutions_long.asy <- dplyr::left_join( x=  unhcrdatapackage::solutions_long, 
-                                                     y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3"))
-
 selectedctr <- data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%

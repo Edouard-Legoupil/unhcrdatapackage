@@ -5,11 +5,15 @@
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
 #Prepare data
-Categories <- end_year_population_totals_long.asy %>%
+Categories <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
   filter(   Year > (lastyear - 5) ) %>%
   group_by(Year, Population.type.label.short ) %>%
   summarise(Value2 = sum(Value) ) %>%
-  mutate( valabel = scales::label_number_si( accuracy = 0.1)(Value2))
+  mutate( valabel =  ifelse(Value2 > 1000, 
+                           paste(scales::label_number_si(accuracy = 0.1)(Value2)),
+                           as.character(Value2)) )   
 
 ncat <- ifelse( nlevels(as.factor(Categories$Population.type.label.short)) %in% c(2,4), 2,3)
 #levels(as.factor(end_year_population_totals_long.asy$Population.type.label.short))
@@ -52,24 +56,27 @@ Displaced People Statistics")
 #Prepare data2
 lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
 ## Loading the stat tables
-data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+Origin <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  %>%
   filter( Year == lastyear &
            Population.type  %in%c("REF", "ASY", "VDA" ) ) %>%   
-  mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
-        CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
-        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
+  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""),
+        CountryOriginName = str_replace(CountryOriginName, "Iran \\(Islamic Republic of\\)", "Iran"),
+        CountryOriginName = str_replace(CountryOriginName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
   
   group_by( CountryOriginName,CountryOriginCode  ) %>%
   summarise(DisplacedAcrossBorders = sum(Value) )  %>%
-  mutate( DisplacedAcrossBordersRound =  scales::label_number_si(accuracy = 0.1)(DisplacedAcrossBorders)) %>%
+  mutate(DisplacedAcrossBorders = as.numeric(DisplacedAcrossBorders), 
+         DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
+                           paste(scales::label_number_si(accuracy = 0.1)(DisplacedAcrossBorders)),
+                           as.character(DisplacedAcrossBorders) ) ) %>%
   arrange(desc(DisplacedAcrossBorders)) %>%
   head(10)
 
 
 #Make plot
-ggplot(data, 
+ggplot(Origin, 
        aes(x = reorder(CountryOriginName, DisplacedAcrossBorders), ## Reordering country by Value
            y = DisplacedAcrossBorders)) +
   
@@ -79,18 +86,32 @@ ggplot(data,
   ## Format axis number
   scale_y_continuous( label = scales::label_number_si()) + 
   
-  ## Adding labels
-  geom_label(aes(x = CountryOriginName, y = DisplacedAcrossBorders, 
-                label =  DisplacedAcrossBordersRound), 
-             hjust = 1, 
-             vjust = 0.5, 
-             colour = "white", 
-             fill = NA, 
-             label.size = NA, 
-             family = "Lato", 
-             size = 4) +
-  
-  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
+  ## Position label differently in the bar in white - outside bar in black
+  geom_label( data = subset(Origin, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),
+              aes(x = reorder(CountryOriginName, DisplacedAcrossBorders), 
+                  y = DisplacedAcrossBorders,
+                  label= DisplacedAcrossBordersRound),
+              hjust = -0.1 ,
+              vjust = 0.5, 
+              colour = "black", 
+              fill = NA, 
+              label.size = NA, 
+              family = "Lato", 
+              size = 4   ) +  
+
+  geom_label( data = subset(Origin, DisplacedAcrossBorders >= max(DisplacedAcrossBorders) / 1.5),
+              aes(x = reorder(CountryOriginName, DisplacedAcrossBorders), 
+                  y = DisplacedAcrossBorders,
+                  label= DisplacedAcrossBordersRound),
+              hjust = 1.1 ,
+              vjust = 0.5, 
+              colour = "white", 
+              fill = NA, 
+              label.size = NA, 
+              family = "Lato", 
+              size = 4   ) +   
+  # Add `coord_flip()` to make your vertical bars horizontal:
+  coord_flip() + 
   ## and the chart labels
   labs(title = paste0("What are the main Origin of Forced Displacement across Borders?","" ),
        subtitle = paste0("Top 10 Origin - Data as of ",lastyear), 
@@ -122,7 +143,9 @@ Source <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long
         CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
   group_by( CountryAsylumName, CountryAsylumCode) %>%
   summarise(DisplacedAcrossBorders = sum(Value) )  %>%
-  mutate( DisplacedAcrossBordersRound =  scales::label_number_si(accuracy = 0.1)(DisplacedAcrossBorders)) %>%
+  mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
+                           paste(scales::label_number_si(accuracy = 0.1)(DisplacedAcrossBorders)),
+                           as.character(DisplacedAcrossBorders) ) ) %>%
   arrange(desc(DisplacedAcrossBorders)) %>%
   head(10)
 
@@ -137,21 +160,38 @@ ggplot(Source, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), ## Re
            position = "stack",
            fill = unhcRstyle::unhcr_blue) + 
   
-  geom_label(aes(x = CountryAsylumName, y = DisplacedAcrossBorders, 
-                #label =  format(round(Value2, -3),  big.mark=",")), 
-                label =  DisplacedAcrossBordersRound), 
-             hjust = 1, 
-             vjust = 0.5, 
-             colour = "white", 
-             fill = NA, 
-             label.size = NA, 
-             family = "Lato", 
-             size = 6) +
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
-  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
+  ## Format axis number
+  scale_y_continuous( label = scales::label_number_si()) + 
+  
+  ## Position label differently in the bar in white - outside bar in black
+  geom_label( data = subset(Source, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),
+              aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), 
+                  y = DisplacedAcrossBorders,
+                  label= DisplacedAcrossBordersRound),
+              hjust = -0.1 ,
+              vjust = 0.5, 
+              colour = "black", 
+              fill = NA, 
+              label.size = NA, 
+              family = "Lato", 
+              size = 4   ) +  
+
+  geom_label( data = subset(Source, DisplacedAcrossBorders >= max(DisplacedAcrossBorders) / 1.5),
+              aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), 
+                  y = DisplacedAcrossBorders,
+                  label= DisplacedAcrossBordersRound),
+              hjust = 1.1 ,
+              vjust = 0.5, 
+              colour = "white", 
+              fill = NA, 
+              label.size = NA, 
+              family = "Lato", 
+              size = 4   ) +   
+  # Add `coord_flip()` to make your vertical bars horizontal:
+  coord_flip() + 
   
   ## and the chart labels
-  labs(title = paste0("What are the main Countries of Asylum of Forced Displaced People across Border?"),
+  labs(title = paste0("Main Countries of Asylum of Forced Displaced People across Border?"),
        subtitle = paste0("Top 10 Countries - Data as of ",lastyear), 
        x = "",
        y = "",
@@ -168,7 +208,7 @@ ggplot(Source, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), ## Re
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
 
-demographics1 <- demographics %>%
+demographics1 <- unhcrdatapackage::demographics %>%
                    dplyr::left_join( unhcrdatapackage::reference %>% 
                                        select(UNHCRBureau, iso_3),  
                                      by = c("CountryAsylumCode" = "iso_3")) %>% 
@@ -275,7 +315,7 @@ pyramidplot
 #### Processing 
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6, fig.width=9, size="small"}
-linksDecision.Ori.Procedure <- asylum_decisions_long %>%
+linksDecision.Ori.Procedure <- unhcrdatapackage::asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
@@ -290,7 +330,7 @@ linksDecision.Ori.Procedure <- asylum_decisions_long %>%
   rename(source = CountryOriginName) %>%
   rename(target = ProcedureName) 
 
-linksDecision.Procedure.Type <- asylum_decisions_long %>%
+linksDecision.Procedure.Type <- unhcrdatapackage::asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
@@ -303,7 +343,7 @@ linksDecision.Procedure.Type <- asylum_decisions_long %>%
   rename(source = ProcedureName) %>%
   rename(target = DecisionTypeName) 
 
-linksDecision.Type.Output <- asylum_decisions_long %>%
+linksDecision.Type.Output <- unhcrdatapackage::asylum_decisions_long %>%
   ## Add reference for the filters
   dplyr::left_join( unhcrdatapackage::reference %>% 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) %>% 
@@ -359,13 +399,17 @@ webshot::webshot(paste0(getwd(),"/decision/decisionGlobal.html"),
 
 ```{r message=FALSE, warning=FALSE, comment = "", fig.height=6,fig.width=9, size="small"}
 #Prepare data
-Solution <- solutions_long.asy %>%
+Solution <- unhcrdatapackage::solutions_long  %>%
+            dplyr::left_join(y= unhcrdatapackage::reference, 
+                             by = c("CountryAsylumCode" = "iso_3")) %>%
   filter(Year > (lastyear - 10) &
             Solution.type.label != "IDP returns") %>%
   group_by(Year, Solution.type.label ) %>%
   summarise(Value2 = sum(Value) )  %>%
   mutate(Year = as.factor(Year) ) %>%
-  mutate( valabel = scales::label_number_si(accuracy = 0.1)(Value2))
+  mutate( valabel =  ifelse(Value2 > 1000, 
+                           paste(scales::label_number_si(accuracy = 0.1)(Value2)),
+                           as.character(Value2)) )  
 
 
 ncat <- ifelse( nlevels(as.factor(Solution$Solution.type.label)) %in% c(2,4), 2,3)
