@@ -18,6 +18,14 @@
 #'                     top_n_countries = 4,
 #'                     pop_type = "REF"
 #'                     ) 
+#' 
+#' ## Same with 9 top countries and asylum seekers included
+#' plot_ctr_population_type_abs(year = 2020,
+#'                     country_asylum_iso3c = "USA",
+#'                     top_n_countries = 9,
+#'                     pop_type = "REF"
+#'                     ) 
+#' 
 plot_ctr_population_type_abs <- function(year = 2021,
                                 country_asylum_iso3c = country_asylum_iso3c,
                                 top_n_countries = 9,
@@ -41,7 +49,7 @@ plot_ctr_population_type_abs <- function(year = 2021,
                   Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
     )  |>  
-    dplyr::select(CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
+    dplyr::select(CountryAsylumName, CountryOriginName,!!sym( pop_type )) |>
     dplyr::group_by(CountryAsylumName, CountryOriginName) |>
     dplyr::filter(!!sym(pop_type) != 0) |>
     dplyr::mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
