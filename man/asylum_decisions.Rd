@@ -23,7 +23,7 @@ A data frame with 87495 rows and 16 variables:
   \item{\code{ComplementaryProtection}}{integer Complementary Protection}
   \item{\code{OtherwiseClosed}}{integer Otherwise Closed}
   \item{\code{Rejected}}{integer Rejected}
-  \item{\code{Total Decided}}{integer Total Decided} 
+  \item{\code{TotalDecided}}{integer Total Decided} 
 }
 }
 \source{

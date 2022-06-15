@@ -180,7 +180,7 @@
 #'   \item{\code{ComplementaryProtection}}{integer Complementary Protection}
 #'   \item{\code{OtherwiseClosed}}{integer Otherwise Closed}
 #'   \item{\code{Rejected}}{integer Rejected}
-#'   \item{\code{Total Decided}}{integer Total Decided} 
+#'   \item{\code{TotalDecided}}{integer Total Decided} 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "asylum_decisions"

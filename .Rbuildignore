@@ -1,3 +1,15 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 usethis::use_data_raw()
+
+^dev$
+^LICENSE\.md$
+^README\.Rmd$
+^CODE_OF_CONDUCT\.md$
+^\.github$
+^.*\.Rproj$
+^docs$
+^data-raw$
+^_pkgdown\.yml$
+^unhcrdatapackage\.Rproj$
+^unhcrdatapackagedev\.Rproj$
