@@ -4,17 +4,27 @@
 
 # Check that the usethis package is also installed. If not:
 #install.packages("usethis")
-devtools::document()
+#devtools::document()
 
 #install.packages("pkgdown")
 
 #library("pkgdown")
-pkgdown::build_site()
+#pkgdown::build_site()
 
 
 ## a few other exploration of the package
-devtools::release()
+#devtools::release()
 # devtools::build_win(version = c("R-release", "R-devel"))
+
+## Last #######
+
+# attachment::att_to_description()
+# rhub::check_for_cran()
+# rhub::check()
+
+
+
+#################
 
 #install.packages("sinew")
 #devtools::install_github("mdlincoln/docthis")
@@ -167,7 +177,7 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
                                                          )
 
 
-names(demographics)
+#names(demographics)
 
 demographics$Population.type.label <- ""
 demographics$Population.type.label[demographics$Population.type=="REF"] <- "Refugees"
@@ -189,11 +199,11 @@ demographics$Population.type.label.short[demographics$Population.type=="VDA"] <-
 demographics$Population.type.label.short[demographics$Population.type=="RET"] <- "Refugee returns"
 demographics$Population.type.label.short[demographics$Population.type=="RDP"] <- "IDP returns"
 
-names(demographics)
-table(demographics$location, useNA = "ifany")
-table(demographics$urbanRural, useNA = "ifany")
-table(demographics$accommodationType, useNA = "ifany")
-table(demographics$Population.type.label.short, useNA = "ifany")
+# names(demographics)
+# table(demographics$location, useNA = "ifany")
+# table(demographics$urbanRural, useNA = "ifany")
+# table(demographics$accommodationType, useNA = "ifany")
+# table(demographics$Population.type.label.short, useNA = "ifany")
 
 save(demographics, file =  "data/demographics.RData")
 
@@ -221,13 +231,13 @@ asylum_applications <- plyr::rename(asylum_applications_residing, c("Country of 
 asylum_applications$ApplicationType[asylum_applications$ApplicationTypeCode == "V"] <- "Various"
 asylum_applications$ApplicationTypeCode[asylum_applications$ApplicationType == "New and appeal"] <- "NA"
 
-View(unique(asylum_applications[ ,c("ApplicationTypeCode","ApplicationType")]))
+#View(unique(asylum_applications[ ,c("ApplicationTypeCode","ApplicationType")]))
 
 save(asylum_applications, file =  "data/asylum_applications.RData")
 
-View(unique(asylum_applications[ ,c("ProcedureType",  "ProcedureName")]))
-
-View(unique(asylum_applications[ ,c("ApplicationDataType","ApplicationData")]))
+# View(unique(asylum_applications[ ,c("ProcedureType",  "ProcedureName")]))
+# 
+# View(unique(asylum_applications[ ,c("ApplicationDataType","ApplicationData")]))
 
 ## RSD Decision ##########
 asylum_decisions_residing <- read_sans_hxl("data-raw/asylum_decisions_residing_world.csv")
@@ -251,8 +261,8 @@ asylum_decisions <- plyr::rename(asylum_decisions_residing, c("Country of Origin
 )
 
 
-View(unique(asylum_decisions[ ,c("ProcedureType",  "ProcedureName")]))
-View(unique(asylum_decisions[ ,c("DecisionTypeCode")]))
+# View(unique(asylum_decisions[ ,c("ProcedureType",  "ProcedureName")]))
+# View(unique(asylum_decisions[ ,c("DecisionTypeCode")]))
 
 asylum_decisions$DecisionTypeName <- ""
 asylum_decisions$DecisionTypeCode[is.na(asylum_decisions$DecisionTypeCode) ] <- "NA"
@@ -271,14 +281,14 @@ asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "SP"] <- 
 asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TA"] <- "Temporary asylum"
 asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TP"] <- "Temporary Protection" 
 
-View(unique(asylum_decisions[ ,c("DecisionTypeCode","DecisionTypeName")])) 
+#View(unique(asylum_decisions[ ,c("DecisionTypeCode","DecisionTypeName")])) 
 sinew::makeOxygen(asylum_decisions, add_fields = "source")
 save(asylum_decisions, file =  "data/asylum_decisions.RData")
 
 
 ## RDS Decision Long format ########
 
-names(asylum_decisions)
+#names(asylum_decisions)
 
 asylum_decisions_long <- reshape2::melt(asylum_decisions,
                                                   # ID variables - all the variables to keep but not split apart on
@@ -302,21 +312,18 @@ save(asylum_decisions_long, file =  "data/asylum_decisions_long.RData")
 
 
 ## merge RSD processing ##############
-
-
-asylum <- dplyr::left_join( x= asylum_applications, y = asylum_decisions, by = c("Year",
-                                                                                "CountryOriginCode",
-                                                                                "CountryAsylumCode", 
-                                                                                "CountryOriginName",
-                                                                                "CountryAsylumName",
-                                                                                "ProcedureType" ,
-                                                                                "ProcedureName"  ))
-
-## Difference between applied and processed
-
-#names(asylum)
-asylum$gapapplieddecided <- asylum$TotalDecided - asylum$NumberApplications
-table(asylum$gapapplieddecided, useNA = "ifany")
+# asylum <- dplyr::left_join( x= asylum_applications, y = asylum_decisions, by = c("Year",
+#                                                                                 "CountryOriginCode",
+#                                                                                 "CountryAsylumCode", 
+#                                                                                 "CountryOriginName",
+#                                                                                 "CountryAsylumName",
+#                                                                                 "ProcedureType" ,
+#                                                                                 "ProcedureName"  ))
+# 
+# ## Difference between applied and processed
+# #names(asylum)
+# asylum$gapapplieddecided <- asylum$TotalDecided - asylum$NumberApplications
+# table(asylum$gapapplieddecided, useNA = "ifany")
 
 
 ## Reference ######
@@ -325,30 +332,21 @@ reference <- readr::read_csv("data-raw/reference.csv")
 save(reference, file =  "data/reference.RData")
 sinew::makeOxygen(reference, add_fields = "source")
 
-## IMF ########
-imf <- readxl::read_excel("data-raw/WEO_data.xlsx",sheet = "Sheet1")
 
-sinew::makeOxygen(imf, add_fields = "source")
 
-save(imf, file =  "data/GDP_IMF.RData")
 
-## Last #######
-
-attachment::att_to_description()
-rhub::check_for_cran()
-rhub::check()
 
 
 #### Check IDMC Colombia
-ckanr::ckanr_setup("https://data.humdata.org")
-
-ckanr::package_search("name:idmc-idp-data-for-colombia", as = "table") %>% 
-  purrr::pluck("results", "resources", 1, "url") %>% 
-  purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
-
-read_sans_hxl <- function(file, ...) {
-  hdrs <- readr::read_csv(file, n_max = 0) %>% names()
-  
-  readr::read_csv(file, col_names = hdrs, skip = 2, ...)
-}
-displacement_data_colombia <- read_sans_hxl("data-raw/displacement_data_colombia.csv")
+# ckanr::ckanr_setup("https://data.humdata.org")
+# 
+# ckanr::package_search("name:idmc-idp-data-for-colombia", as = "table") %>% 
+#   purrr::pluck("results", "resources", 1, "url") %>% 
+#   purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
+# 
+# read_sans_hxl <- function(file, ...) {
+#   hdrs <- readr::read_csv(file, n_max = 0) %>% names()
+#   
+#   readr::read_csv(file, col_names = hdrs, skip = 2, ...)
+# }
+# displacement_data_colombia <- read_sans_hxl("data-raw/displacement_data_colombia.csv")
