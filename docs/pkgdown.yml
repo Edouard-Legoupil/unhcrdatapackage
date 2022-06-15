@@ -2,11 +2,33 @@ pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  BumpChart: BumpChart.html
-  Exploration: Exploration.html
-  chartRace: chartRace.html
-  pyramid: pyramid.html
-  region-comparison: region-comparison.html
-  regional-exploration: regional-exploration.html
-last_built: 2021-09-09T16:47Z
+  Asylum_processing: Asylum_processing.html
+  Biggest_decrease_in_Refugee_Population: Biggest_decrease_in_Refugee_Population.html
+  Biggest_increase_in_Refugee_Population: Biggest_increase_in_Refugee_Population.html
+  Comparison over_time_by_Region: Comparison over_time_by_Region.html
+  Evolution_Category: Evolution_Category.html
+  Evolution_by_Country_of_Origin: Evolution_by_Country_of_Origin.html
+  Map_Venezuelan: Map_Venezuelan.html
+  Mapping_IDP_Location: Mapping_IDP_Location.html
+  Mapping_Refugee_Location: Mapping_Refugee_Location.html
+  Migrant_and_Forcible_Displacement: Migrant_and_Forcible_Displacement.html
+  Origin_Destination: Origin_Destination.html
+  Proportion_Refugee_Country_Origin: Proportion_Refugee_Country_Origin.html
+  Ratio_Refugee_Host_population: Ratio_Refugee_Host_population.html
+  Refugee_Over_time: Refugee_Over_time.html
+  Refugee_Recognition_rate: Refugee_Recognition_rate.html
+  Refugee_Status_Determination_Application: Refugee_Status_Determination_Application.html
+  Refugee_accessing_durable_solution: Refugee_accessing_durable_solution.html
+  Refugees_Age_Pyramid: Refugees_Age_Pyramid.html
+  Refugees_Chart_Race: Refugees_Chart_Race.html
+  Resettlement_trend: Resettlement_trend.html
+  Smootheed_Evolution_over_time: Smootheed_Evolution_over_time.html
+  Solution_evolution: Solution_evolution.html
+  Top_Refugee_hosting_Countries: Top_Refugee_hosting_Countries.html
+  Tree_Map_of_Categories: Tree_Map_of_Categories.html
+  Where_do_Refugees_go: Where_do_Refugees_go.html
+last_built: 2021-11-22T19:57Z
+urls:
+  reference: https://unhcr.github.io/unhcrdatapackage/docs//reference
+  article: https://unhcr.github.io/unhcrdatapackage/docs//articles
 

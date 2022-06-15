@@ -1,0 +1,79 @@
+---
+title: "Resettlement Trend"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Resettlement Trend}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+ 
+```{r}
+thisbureau <- "Americas"
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+ 
+solutions_long.asy <- dplyr::left_join( x=  unhcrdatapackage::solutions_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))
+
+bar_rst <- solutions_long.asy %>%
+  mutate(Bureau = ifelse(UNHCRBureau == thisbureau, thisbureau, "Rest of the World")) %>%
+  filter( #solutions_long.asy$UNHCRBureau == thisbureau  &
+           Year > (lastyear - 30) & 
+          Solution.type.label == "Resettlement arrivals" ) %>%
+  group_by(Bureau, Year, Solution.type.label ) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  mutate(Year = as.integer(Year) ) 
+
+bar_rst$Bureau <- factor(bar_rst$Bureau, levels = c( "Rest of the World", "Americas"))
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+#Make plot
+rstplot <- ggplot(bar_rst, aes(x = Year, y = Value2 , 
+                    fill = Bureau
+                             )) + 
+          geom_bar(stat = "identity", 
+                   position = "stack"#, 
+                  # fill = "#0072bc"
+                  ) + # here we configure that it will be bar chart
+          scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+          xlim(c(lastyear-30, lastyear+1)) +
+          #facet_wrap( vars(Solution.type.label ), ncol = 2) +
+        
+          geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+          unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+          theme(panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+                panel.grid.major.x  = element_blank(), 
+                panel.grid.minor = element_blank()) + ### changing grid line that should appear
+          ## and the chart labels
+          labs(title = "When Resettlement is going down in the Americas, 
+                         it affects the rest of the world. ",
+               subtitle = "Opportunities have reached its lowest level ever in 
+                           the last 30 years ",
+               x = "",
+               y = "",
+               caption = "Source: UNHCR.org/refugee-statistics ")
+
+rstplot
+```
+
+  

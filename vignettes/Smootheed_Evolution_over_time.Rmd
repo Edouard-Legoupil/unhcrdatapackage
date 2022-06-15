@@ -1,0 +1,76 @@
+---
+title: "Smootheed Evolution over time"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Smootheed Evolution over time}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+
+The map is presented with the [Bertin 1953 projection](https://visionscarto.net/bertin-projection-1953)
+
+```{r}
+thisbureau <- "Americas"
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+
+end_year_population_totals_long.asy <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3"))
+ooc_central <-   end_year_population_totals_long.asy[end_year_population_totals_long.asy$CountryAsylumCode %in% c("GTM", "SLV", "HND", "MEX") &
+                                                              end_year_population_totals_long.asy$Population.type =="OOC" ,
+                                                            c("CountryAsylumCode","CountryAsylumName", "Year", "Value") ]  %>%
+  group_by(Year, CountryAsylumCode, CountryAsylumName ) %>%
+  summarise(Value = sum(Value) ) 
+
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, warning=FALSE,  echo = TRUE ,message=FALSE}
+
+
+ooc_centralplot <- ggplot(ooc_central, 
+       aes(x=Year, 
+           y=Value, 
+           color=CountryAsylumName)) +
+          # linetype=CountryAsylumName)) +
+  stat_smooth(size=1.5, 
+              method = "loess", 
+              level = 0.95, 
+              fullrange = TRUE, 
+              se = FALSE) + 
+  # scale_color_manual(values=c(IDMC="orange",
+  #                             UNHCR="sienna" )) + 
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(#legend.position = "none"
+        panel.grid.major.y  = element_line(color = "#cbcbcb"), 
+        panel.grid.major.x  = element_blank(), 
+        panel.grid.minor = element_blank()    ) +
+  ## and the chart labels
+  labs(title = "Other of Concern in Central America ",
+      # subtitle = "",
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics & IDMC ") 
+
+ooc_centralplot
+```

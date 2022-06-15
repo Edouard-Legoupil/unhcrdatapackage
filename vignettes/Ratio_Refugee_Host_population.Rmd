@@ -1,0 +1,71 @@
+---
+title: "Ratio Refugee / Host population"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ratio Refugee / Host population}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+
+```{r}
+## Loading the stat tables
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  filter(Population.type  == "REF" & Year == lastyear & !(is.na(UNHCRBureau))) %>%
+  group_by(Year, CountryAsylumName, CountryAsylumCode, UNHCRBureau ) %>%
+  summarise(Value2 = sum(Value) )
+
+# Population, GDP & GNP per Capita from WorldBank
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+               startdate = 1951, enddate = 2020, return_wide = TRUE)
+# Renaming variables for further matching
+names(wb_data)[1] <- "CountryAsylumCode"
+names(wb_data)[2] <- "Year"
+
+
+df2 <- merge(x = data, y = wb_data, by = c("CountryAsylumCode" ,"Year"), all.x = TRUE)
+df2 <- df2[ !(is.na(df2$UNHCRBureau)) & !(is.na(df2$NY.GNP.PCAP.CD)) , ]
+df2$prop <- df2$Value2 / df2$SP.POP.TOTL
+
+```
+
+## Generate Plot
+
+```{r , fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+ggplot(df2, aes(y = Value2, x = NY.GDP.MKTP.CD)) + 
+  geom_point(aes(col = UNHCRBureau)) + 
+  #geom_smooth(method = "loess", se = F) +  
+  scale_x_continuous( label = unhcRstyle::format_si(), ) + ## Format axis number
+  scale_y_continuous( label = unhcRstyle::format_si(), 
+                      limits = c(0, 1000000)) + ## Format axis number
+  scale_color_viridis_d(direction = -1) +
+  labs(title = "Refugee hosting is not correlated with Economic Wealth", 
+       subtitle = "Refugee population Vs GDP", 
+       y = "Refugee", 
+       x = "Gross domestic product (GDP)", 
+       caption = "2016 Figures, UNHCR https://www.unhcr.org/refugee-statistics/, World bank") +
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(axis.title = element_text(size = 12))
+
+```

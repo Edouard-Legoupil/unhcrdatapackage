@@ -1,0 +1,81 @@
+title: unhcrdatapackage
+url: https://unhcr.github.io/unhcrdatapackage/docs/
+template:
+  params:
+    bootswatch: yeti
+
+navbar:
+  title: unhcrdatapackage
+  left:
+  - text: "Chart Library: Top Questions"
+    menu:
+     - text: Top Refugee hosting Countries
+       href: articles/Top_Refugee_hosting_Countries.html
+     - text: Tree Map of Categories
+       href: articles/Tree_Map_of_Categories.html
+     - text: Where do Refugees go?
+       href: articles/Where_do_Refugees_go.html
+  - text: "Chart Library: Evolution"
+    menu:
+     - text: Biggest decrease in Refugee Population
+       href: articles/Biggest_decrease_in_Refugee_Population.html
+     - text: Biggest increase in Refugee Population
+       href: articles/Biggest_increase_in_Refugee_Population.html
+     - text: Comparison over time by Region
+       href: articles/Comparison over_time_by_Region.html
+     - text: Evolution over time of the different Population of Concern
+       href: articles/Evolution_Category.html
+     - text: Evolution by Country of Origin
+       href: articles/Evolution_by_Country_of_Origin.html
+     - text: Refugee Over time
+       href: articles/Refugee_Over_time.html
+     - text: Smootheed Evolution over time
+       href: articles/Smootheed_Evolution_over_time.html
+  - text: "Chart Library: Demographics"
+    menu:
+     - text: Refugees Age Pyramid
+       href: articles/Refugees_Age_Pyramid.html
+  - text: "Chart Library: Status Determination"
+    menu:
+     - text: Asylum Processing
+       href: articles/Asylum_processing.html
+     - text: Refugee Recognition rate
+       href: articles/Refugee_Recognition_rate.html
+     - text: Refugee Status Determination Application
+       href: articles/Refugee_Status_Determination_Application.html
+  - text: "Chart Library: Solutions"
+    menu:
+     - text: Refugees accessing durable solutions
+       href: articles/Refugee_accessing_durable_solution.html
+     - text: Solution Evolution
+       href: articles/Solution_evolution.html
+     - text: Resettlement Trend
+       href: articles/Resettlement_trend.html
+  - text: "Chart Library: Ratio"
+    menu:
+     - text: Population origin-destination
+       href: articles/Origin_Destination.html
+     - text: Proportion of the population who are refugees, by country of origin
+       href: articles/Proportion_Refugee_Country_Origin.html
+     - text: Ratio Refugee / Host population
+       href: articles/Ratio_Refugee_Host_population.html
+     - text: Ratio Refugee Migrant
+       href: articles/Migrant_and_Forcible_Displacement.html
+  - text: "Chart Library: Maps"
+    menu:
+     - text: Mapping Refugee Location
+       href: articles/Mapping_Refugee_Location.html
+     - text: Mapping IDP Location
+       href: articles/Mapping_IDP_Location.html
+     - text: Map Venezuelan
+       href: articles/Map_Venezuelan.html
+  - text: "Chart Library: Animation"
+    menu:
+     - text: Refugee Chart Race
+       href: articles/Refugees_Chart_Race.html
+  - text: Country Focus
+    href: CountryFocus.html
+  - text: News
+    href: news/index.html
+  - text: Reference
+    href: reference/index.html      

@@ -1,0 +1,75 @@
+---
+title: "Top Refugee hosting Countries"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Top Refugee hosting Countries}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+ 
+```{r}
+#Prepare data2
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+## Loading the stat tables
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                         y= unhcrdatapackage::reference, 
+                         by = c("CountryAsylumCode" = "iso_3"))  %>%
+  filter(Population.type  == "REF" & Year == lastyear) %>%
+  group_by( CountryAsylumName, SUBREGION) %>%
+  summarise(Value2 = sum(Value) )  %>%
+  #mutate( value3 =  format_si(Value2)) %>%
+  arrange(desc(Value2)) %>%
+  head(10)
+```
+
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+#Make plot
+ggplot(data, aes(x = reorder(CountryAsylumName, Value2), ## Reordering country by Value
+                           y = Value2)) +
+  geom_bar(stat = "identity", 
+           position = "identity", 
+           fill = "#0072bc") + # here we configure that it will be bar chart+
+  geom_label(aes(x = CountryAsylumName, y = Value2, 
+                label =  format(round(Value2, -3),  big.mark=",")), 
+             hjust = 1, 
+             vjust = 0.5, 
+             colour = "white", 
+             fill = NA, 
+             label.size = NA, 
+             family = "Lato", 
+             size = 6) +
+  geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+  coord_flip() + # Add `coord_flip()` to make your vertical bars horizontal:
+  ## and the chart labels
+  labs(title = "Turkey is by the far the biggest Refugee hosting country",
+       subtitle = paste0("Top 10 Refugee Population per country in ",lastyear), 
+       x = "",
+       y = "",
+       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
+  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
+  unhcRstyle::unhcr_theme(base_size = 8)  + ## Insert UNHCR Style
+  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+        panel.grid.major.y = element_blank()) ### changing grid line that should appear
+
+```

@@ -232,18 +232,22 @@
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "asylum_applications"
 
-#' @title IMF GDP data
-#' @description GDP at constant price for 2020&2021 from IMF
-#' @format A data frame with 193 rows and 8 variables:
+
+
+
+#' @title International Migrant Stock 1990-2020
+#' @description International Migrant Stock Estimation are produced by 
+#' United Nations Department of Economic and Social Affairs, Population Division
+#' @format A data frame with 574726 rows and 8 variables:
 #' \describe{
-#'   \item{\code{ISO}}{character iso3 country code}
-#'   \item{\code{Country}}{character Country name}
-#'   \item{\code{Units}}{character Units of the data}
-#'   \item{\code{Scale}}{logical}
-#'   \item{\code{Country/Series-specific Notes}}{character Data source}
-#'   \item{\code{2020}}{double GDP data for 2020}
-#'   \item{\code{2021}}{character GDP data for 2021}
-#'   \item{\code{Estimates Start After}}{double Estimate time} 
+#'   \item{\code{index}}{double Index}
+#'   \item{\code{CountryOriginName}}{character CRegion, development group, country or area of destination}
+#'   \item{\code{CountryOriginM49}}{double Location code of destination using M49 Code}
+#'   \item{\code{CountryDestinationName}}{character Region, development group, country or area of origin}
+#'   \item{\code{CountryDestinationM49}}{double Location code of origin using M49 Code}
+#'   \item{\code{Value}}{double Number estimation}
+#'   \item{\code{Year}}{character year - every 5 years since 1990}
+#'   \item{\code{Gender}}{character Gender all, male or female} 
 #'}
-#' @source \url{https://www.imf.org}
-"imf"
+#' @source \url{https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2020_international_migrant_stock_documentation.pdf}
+"migrants"

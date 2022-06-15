@@ -1,0 +1,79 @@
+---
+title: "Mapping Refugee Location"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mapping Refugee Location}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+
+```{r}
+
+## Getting world map for mapping
+world <- rnaturalearth::ne_countries(scale = "small", returnclass = "sf")
+centroids <- sf::st_transform(world$geometry, '+init=epsg:3857') %>%  
+  ## Reprojected in order to get centroid
+  sf::st_centroid() %>% 
+  # this is the crs from d, which has no EPSG code:
+  sf::st_transform(., '+init=epsg:4326') %>%
+  # since we want the centroids in long lat:
+  sf::st_geometry()
+world_points <- cbind(world, sf::st_coordinates(centroids))
+
+## Loading the stat tables
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  filter(Population.type  == "REF" & Year == lastyear & !(is.na(UNHCRBureau))) %>%
+  group_by(Year, CountryAsylumName, CountryAsylumCode, UNHCRBureau ) %>%
+  summarise(Value2 = sum(Value) )
+
+# Merge data with geographic coordinates
+world <- merge(x = world , y = data, by.y = "CountryAsylumCode" , by.x = "iso_a3")
+df3 <- merge(x = data , y = world_points, by.x = "CountryAsylumCode" , by.y = "iso_a3")
+
+
+```
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7, message = FALSE,echo = TRUE , warning = FALSE}
+
+# plot
+ggplot(data = world) + 
+  geom_sf(fill = "antiquewhite", colour = "#7f7f7f", size = 0.2) + 
+  coord_sf(xlim = c(-25, 65), ylim = c(25, 75), expand = FALSE) + ## Clipping on Mediterranean Sea
+  geom_point(data = df3, aes(x = X, y = Y , size = Value2 ), 
+             alpha = 0.6, colour = "red") +
+  scale_size_area( max_size = 20) +
+  xlab("") +
+  ylab("") + 
+  ggtitle("Refugee Distribution") + 
+  unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+  theme(panel.grid.major = element_line(color = gray(.5), 
+                                        linetype = "dashed", size = 0.5),
+        panel.background = element_rect(fill = "aliceblue"),
+        axis.text.x  = element_blank(),
+        axis.text.y  = element_blank(),
+        legend.position = "none"
+        )
+```

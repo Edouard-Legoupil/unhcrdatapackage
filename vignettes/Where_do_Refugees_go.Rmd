@@ -1,0 +1,83 @@
+---
+title: "Where do Refugees go?"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Where do Refugees go?}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo=TRUE,
+  comment = "#>"
+)
+```
+
+
+## Load Packages
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Prepare Data
+ 
+```{r}
+## Loading the stat tables
+
+lastyear <- max(unhcrdatapackage::end_year_population_totals_long$Year)
+
+data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  filter(Population.type  == "REF" & Year == lastyear & !(is.na(UNHCRBureau))) %>%
+  group_by(Year, CountryAsylumName, CountryAsylumCode, UNHCRBureau ) %>%
+  summarise(Value2 = sum(Value) )
+
+# Population, GDP & GNP per Capita from WorldBank
+wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+               startdate = 1951, enddate = 2020, return_wide = TRUE)
+# Renaming variables for further matching
+names(wb_data)[1] <- "CountryAsylumCode"
+names(wb_data)[2] <- "Year"
+wb_data$Year <- lastyear
+
+df2 <- merge(x = data, y = wb_data, by = c("CountryAsylumCode" ,"Year"), all.x = TRUE)
+df2 <- df2[ !(is.na(df2$UNHCRBureau)) & !(is.na(df2$NY.GNP.PCAP.CD)) , ]
+df2$prop <- df2$Value2 / df2$SP.POP.TOTL
+
+stacked_df1 <- df2 %>%
+  mutate(CountryClass = cut(NY.GNP.PCAP.CD, 
+                              breaks = c(0, 1005, 3955, 12235, 150000),
+                              labels = c("Low-income", "Lower-middle income", "Upper-middle income", "High-income"))) %>%
+  group_by(UNHCRBureau, CountryClass) %>%
+  summarise(Value3 = sum(as.numeric(Value2)))
+
+```
+
+
+## Generate Plot
+
+```{r ,fig.height=7, fig.width=7 ,message = FALSE,echo = TRUE , warning = FALSE}
+#create plot
+ggplot(data = stacked_df1, 
+                     aes(x = UNHCRBureau,
+                         y = Value3,
+                         fill = CountryClass)) +
+                geom_bar(stat = "identity", 
+                         position = "fill") +
+                scale_y_continuous(labels = scales::percent) +
+                scale_fill_viridis_d(direction = -1) +
+                geom_hline(yintercept = 0, size = 1, colour = "#333333") +
+                labs(title = "Refugees often remain in low-income countries",
+                     subtitle = paste0("% of population by Country classification per Region, ", lastyear), 
+                     caption = "UNHCR https://www.unhcr.org/refugee-statistics/ - World Bank") +
+                unhcRstyle::unhcr_theme() + ## Insert UNHCR Style
+                theme(legend.position = "top", 
+                      legend.justification = "left") +
+                guides(fill = guide_legend(reverse = TRUE))
+ 
+```

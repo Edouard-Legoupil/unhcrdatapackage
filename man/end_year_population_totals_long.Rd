@@ -12,7 +12,9 @@ A data frame with 153809 rows and 7 variables:
   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
   \item{\code{CountryOriginName}}{character Country of Origin Name}
   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-  \item{\code{Solution.type}}{character Type of Solution }
+  \item{\code{Population.type}}{character Type of Solution }
+  \item{\code{Population.type.label}}{character Type of Population }
+  \item{\code{Population.type.label.short}}{character Type of Population - short label }
   \item{\code{Value}}{integer Number of person} 
 }
 }
