@@ -268,13 +268,3 @@ plot_ctr_pyramid(year = 2021,
 
 # Template
 
-```{r}
-# usethis::use_rmarkdown_template(
-#   template_name = "Country_Factsheet",
-#   template_dir = NULL,
-#   template_description = "Key Statistical Facts for each Country",
-#   template_create_dir = TRUE
-# )
-
-```
-
