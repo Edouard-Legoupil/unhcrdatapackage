@@ -9,8 +9,10 @@ navbar:
   left:
   - text: "Chart Library Approach"
     menu:
-     - text: Introducing the chart library
-       href: articles/why-chart-library.html
+     - text: Why a chart library?
+       href: articles/library.html
+     - text: Chart library directory
+       href: articles/chart-library.html
   - text: Country Focus
     href: CountryFocus.html
   - text: News
