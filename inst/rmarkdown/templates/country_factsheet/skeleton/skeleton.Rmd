@@ -39,15 +39,15 @@ library(testthat)
 library(ggplot2)
 library(unhcrthemes)
 library(unhcrdatapackage)
+library(thematic)
+thematic::theme_set( unhcrthemes::theme_unhcr())
+
 ```
 
 
 ## Plot Population type per year
 
-
-
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-
 plot_ctr_population_type_per_year(start_year = params$year,
                          country_asylum_iso3c = params$country,
                           pop_type = c("REF", 
@@ -55,33 +55,22 @@ plot_ctr_population_type_per_year(start_year = params$year,
                                        "VDA", 
                                        "OOC",
                                        "STA",
-                                       "IDP" )
-                  )
+                                       "IDP" )          )
 ```
-
 
 ## Plot Main country of origin - Absolute value
 
 ```{r examples-plot_ctr_population_type_abs, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
-                    top_n_countries = 4,
-                    pop_type = "REF"
-                    ) 
-
-## Same with 9 top countries and asylum seekers included
-plot_ctr_population_type_abs(year = params$year,
-                    country_asylum_iso3c = params$country,
                     top_n_countries = 9,
                     pop_type = "REF"
                     ) 
-
 ```
 
 ## Plot Main country of origin - Percentage
 
 ```{r examples-plot_ctr_population_type_perc, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-
 plot_ctr_population_type_perc(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
@@ -91,21 +80,17 @@ plot_ctr_population_type_perc(year = params$year,
 ## Plot Increases and Decreases in Population Groups
 
 ```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-# 
 # plot_ctr_diff_in_pop_groups(year = params$year,
 #                             country_asylum_iso3c = params$country,
 #                             pop_type = c("REF", "ASY")
 #          )
-
 ```
 
 ## Top Refugee hosting Countries
 
 ```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-# 
 plot_ctr_destination(year = params$year,
                      country_origin_iso3c = params$country,
                      pop_type = c("REF", "ASY")
          )
-
 ```
