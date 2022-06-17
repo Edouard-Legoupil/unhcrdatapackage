@@ -2,12 +2,10 @@
 
 #' Tree map of Population Groups within a country
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Increases and Decreases in Population Groups Graph
 #' @export
 #'
 
@@ -23,6 +21,7 @@ plot_ctr_destination <- function(year = 2021,
                                   pop_type = pop_type) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   
   
 Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
@@ -39,7 +38,8 @@ Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals
    dplyr::group_by( CountryAsylumName) |>
    dplyr::summarise(DisplacedAcrossBorders = sum(Value) )  |>
    dplyr::mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
-                            paste(scales::label_number_si(accuracy = 0.1)(DisplacedAcrossBorders)),
+                            paste(scales::label_number( accuracy = .1,
+                                   scale_cut = scales::cut_short_scale())(DisplacedAcrossBorders)),
                             as.character(DisplacedAcrossBorders) ) ) |>
    dplyr::arrange(desc(DisplacedAcrossBorders)) |>
    head(10) |>
@@ -58,7 +58,7 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
            position = "identity", 
            fill = "#0072bc") + # here we configure that it will be bar chart+
 ## Format axis number
-  scale_y_continuous( label = scales::label_number_si()) + 
+  scale_y_continuous( label = scales::label_number(scale_cut = cut_short_scale())) + 
   
   ## Position label differently in the bar in white - outside bar in black
   geom_label( data = subset(Destination, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),

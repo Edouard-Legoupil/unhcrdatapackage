@@ -2,12 +2,10 @@
 
 #' Increases and Decreases in Population Groups
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Increases and Decreases in Population Groups Graph
 #' @export
 #'
 
@@ -24,6 +22,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
 ) {
     require(ggplot2)
   require(tidyverse)
+  require(scales)
   diff_perc <- function(x){
     x = as.numeric((x - dplyr::lag(x))/dplyr::lag(x)) + 0
     

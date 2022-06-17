@@ -19,6 +19,8 @@ Note, that you can also explore data through  [Refugee Data Finder](https://www.
 
 The package includes a series of functions that provides recipes to create re-usable charts in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). To explore how data can be displayed, you can browse the __Chart Library__ using this [link](articles/index.html) or the top menu links. 
 
+All those functions are then rendered through predefined Report template, aka "__Statistical Factsheet__" got Countries or Regions, generated either as PDF or Powerpoint presentations.
+
 For Designers, convenient versions of each plot in __svg__ format (usable with Illustrator/Inkscape or Indesign/Scribus) can be generated directly  with 
 
 `unhcrthemes::unhcr_save(plot, "plot.svg")`.

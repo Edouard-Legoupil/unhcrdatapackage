@@ -12,7 +12,7 @@ A data frame with 182359 rows and 24 variables:
   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
   \item{\code{CountryOriginName}}{character Country of Origin Name}
   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-  \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:#'   
+  \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:
   *    `REF` – Refugee  
   *    `ROC` – People in refugee-like situation  
   *    `ASY` – Asylum seekers  

@@ -23,24 +23,21 @@ links-to-footnotes: true
 
 ```{r echo = FALSE}
 # `r paste0(params$country, " - ",params$year) `
-knitr::opts_chunk$set(
-	echo = FALSE,
-	fig.align = "center",
-	fig.asp = 0.618,
-	fig.retina = 2,
-	fig.width = 8,
-	message = FALSE,
-	warning = FALSE,
-	comment = "#>",
-	dev = "ragg_png",
-	out.width = "90%"
-)
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = "#>",
+                      message=FALSE, 
+                      warning=FALSE,
+                      fig.retina = 2, 
+                      fig.width = 8,
+                      fig.asp = 0.618,
+                      fig.align = "center",
+                      dev = "ragg_png",
+                      out.width = "90%")
 library(testthat)
 library(ggplot2)
 library(unhcrthemes)
 library(unhcrdatapackage)
-library(thematic)
-thematic::theme_set( unhcrthemes::theme_unhcr())
+theme_set( unhcrthemes::theme_unhcr())
 
 ```
 
@@ -48,7 +45,7 @@ thematic::theme_set( unhcrthemes::theme_unhcr())
 ## Plot Population type per year
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-plot_ctr_population_type_per_year(start_year = params$year,
+plot_ctr_population_type_per_year(start_year = "2016",
                          country_asylum_iso3c = params$country,
                           pop_type = c("REF", 
                                        "ASY", 

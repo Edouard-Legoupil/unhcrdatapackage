@@ -56,7 +56,7 @@
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
 #'   \item{\code{REF}}{integer Number of Refugees: include individuals recognized under the 1951 Convention relating to the Status of Refugees, its 1967 Protocol, the 1969 Organization of African Unity (OAU) Convention Governing the Specific Aspects of Refugee Problems in Africa, the refugee definition contained in the 1984 Cartagena Declaration on Refugees as incorporated into national laws, those recognized in accordance with the UNHCR Statute, individuals granted complementary forms of protection, and those enjoying temporary protection. The refugee population also includes people in refugee-like situations.
 #'   People in refugee-like situation refers to a category which is descriptive in nature and includes groups of people who are outside their country or territory of origin and who face protection risks similar to those of refugees, but for whom refugee status has, for practical or other reasons, not been ascertained.}
-#'   \item{\code{IDP}}{integer Number of Internally Displaced Persons:  (IDPs) are persons or groups of persons who have been forced or obliged to flee or to leave their homes or places of habitual residence, in particular as a result of, or in order to avoid the effects of armed conflict, situations of generalized violence, violations of human rights or natural or human-made disasters, and who have not crossed an internationally recognized State border. For the purposes of UNHCR’s statistics, this population includes only conflict-generated IDPs to whom the Office extends protection and/or assistance. The IDP population also includes people in an IDP-like situation. 
+#'   \item{\code{IDP}}{integer Number of Internally Displaced Persons: (IDPs) are persons or groups of persons who have been forced or obliged to flee or to leave their homes or places of habitual residence, in particular as a result of, or in order to avoid the effects of armed conflict, situations of generalized violence, violations of human rights or natural or human-made disasters, and who have not crossed an internationally recognized State border. For the purposes of UNHCR’s statistics, this population includes only conflict-generated IDPs to whom the Office extends protection and/or assistance. The IDP population also includes people in an IDP-like situation. 
 #'   People in an IDP-like situation refers to a category which is descriptive in nature and includes groups of people who are inside their country of nationality or habitual residence and who face protection risks similar to those of IDPs but who, for practical or other reasons, could not be reported as such.}
 #'   \item{\code{ASY}}{integer Number of Asylum-seekers: Asylum-seekers are individuals who have sought international protection and whose claims for refugee status have not yet been determined.}
 #'   \item{\code{OOC}}{integer Number of Others of Concern to UNHCR: Other groups or persons of concern refers to individuals who do not necessarily fall directly into any of these groups above but to whom UNHCR has extended its protection and/or assistance services, based on humanitarian or other special grounds.}
@@ -126,7 +126,7 @@
 #'   \item{\code{CountryAsylumCode}}{character Country of Asylum Code isoA3}
 #'   \item{\code{CountryOriginName}}{character Country of Origin Name}
 #'   \item{\code{CountryAsylumName}}{character Country of Asylum Name}
-#'   \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:#'   
+#'   \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:
 #'   *    `REF` – Refugee  
 #'   *    `ROC` – People in refugee-like situation  
 #'   *    `ASY` – Asylum seekers  
@@ -231,8 +231,6 @@
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "asylum_applications"
-
-
 
 
 #' @title International Migrant Stock 1990-2020

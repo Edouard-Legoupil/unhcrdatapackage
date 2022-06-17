@@ -24,7 +24,8 @@ Imports:
     systemfonts,
     tidyr,
     tidyverse,
-    treemapify
+    treemapify,
+    unhcrthemes
 Suggests: 
     knitr,
     rmarkdown
