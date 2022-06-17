@@ -21,3 +21,11 @@ pkgdown::build_site()
 # attachment::att_to_description()
 # rhub::check_for_cran()
 # rhub::check()
+
+
+## Trying to clean all packages...
+ip <- installed.packages()
+
+pkgs.to.remove <- ip[!(ip[,"Priority"] %in% c("base", "recommended")), 1]
+
+sapply(pkgs.to.remove, remove.packages)

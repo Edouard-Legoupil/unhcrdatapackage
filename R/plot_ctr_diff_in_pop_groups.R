@@ -190,7 +190,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
                         year),
          subtitle = "Number of people and percentage",
          caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency")  + 
-    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+   #  unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
     theme(axis.line.x = element_line(color="white"),
           axis.text.x = element_text(size=10))
   

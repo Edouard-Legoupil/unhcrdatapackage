@@ -140,7 +140,7 @@ plot_ctr_diff_in_pop_groups(year = 2021,
 
 ```
 
-## Top Refugee hosting Countries
+## Main Destination from this country
 
 ```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
@@ -184,6 +184,7 @@ plot_ctr_pyramid(year = 2021,
 ```
 
  
+
 
 
 ## Asylum Processing
@@ -299,7 +300,17 @@ plot_ctr_pyramid(year = 2021,
 --- 
 
 
+# Template
 
+```{r}
+# usethis::use_rmarkdown_template(
+#   template_name = "Country_Factsheet",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Country",
+#   template_create_dir = TRUE
+# )
+
+```
 
 <!--
 

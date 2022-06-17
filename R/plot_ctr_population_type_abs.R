@@ -129,7 +129,7 @@ p <-
        subtitle = "Number of people",
        caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
-  unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+#  unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),

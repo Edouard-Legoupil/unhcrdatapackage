@@ -50,11 +50,7 @@ plot_ctr_treemap <- function(year = 2021,
                                           "OOC" ="#8395b9",
                                           "STA"="#E1CC0D")) +
          
-       unhcrthemes::theme_unhcr(font_size = 12,
-                           grid = "Y",
-                           axis = "x", 
-                           axis_title = "y", 
-                           legend = FALSE) +
+      # unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ", country_asylum_iso3c),

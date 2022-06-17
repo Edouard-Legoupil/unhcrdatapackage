@@ -79,8 +79,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR Refugee Data Finder") +
-    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x",
-                             axis_title = FALSE, axis_text = "x") +
+    #unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
     stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number_si(accuracy = 1)(..y..), group = Year), 
                  geom = "text", size = 5,
                  vjust = -0.5) +

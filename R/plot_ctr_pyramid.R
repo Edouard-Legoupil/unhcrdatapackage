@@ -131,7 +131,7 @@ if( nrow(demographics1) ==  0 ){
       scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                           aesthetics = c("colour", "fill")) +
       coord_flip()+
-      unhcRstyle::unhcr_theme(base_size = 12) +
+     #  unhcRstyle::unhcr_theme(base_size = 12) +
        theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank())
     

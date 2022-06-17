@@ -52,7 +52,7 @@ if( nrow(Destination) ==  0 ){
 
 
 #Make plot
-ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), ## Reordering country by Value
+p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), ## Reordering country by Value
                            y = DisplacedAcrossBorders)) +
   geom_bar(stat = "identity", 
            position = "identity", 
@@ -97,9 +97,11 @@ ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), 
     
   # Style  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
+ #  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
+  
+  print(p)
   
   }
 }

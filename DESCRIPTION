@@ -19,11 +19,12 @@ Imports:
     forcats,
     ggplot2,
     scales,
+    showtext,
+    sysfonts,
+    systemfonts,
     tidyr,
     tidyverse,
-    treemapify,
-    unhcRstyle,
-    unhcrthemes
+    treemapify
 Suggests: 
     knitr,
     rmarkdown
