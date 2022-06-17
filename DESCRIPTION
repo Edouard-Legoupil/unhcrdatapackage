@@ -31,7 +31,9 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    github::UNHCR-WEB/unhcRstyle
+    vidonne/unhcrdesign
+    vidonne/unhcrthemes
+    vidonne/unhcrdown
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.2.0

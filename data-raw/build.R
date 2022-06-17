@@ -8,7 +8,7 @@
 library(tidyverse)
 library(readr)
 library(sinew)
-library(docthis)
+#library(docthis)
 
 ckanr::ckanr_setup("https://data.humdata.org")
 

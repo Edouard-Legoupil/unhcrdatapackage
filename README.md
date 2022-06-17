@@ -1,6 +1,13 @@
 # [`UnhcrDataPackage`](https://unhcr.github.io/unhcrdatapackage/docs/): A data package with UNHCR statistics Database <img src="man/figures/logo.png" width="200" align="right" />
 
-Install from github with `devtools::install_github("unhcr/unhcrdatapackage")`.
+First install UNHCR branding packages for R as showcased here: https://dataviz.unhcr.org/tools/r/
+
+`devtools::install_github("vidonne/unhcrdesign")`
+`devtools::install_github("vidonne/unhcrthemes")`
+`devtools::install_github("vidonne/unhcrdown")`
+
+
+Install from github with `devtools::install_github("edouard-legoupil/unhcrdatapackage")`.
 
 The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users intending to build __data stories__. If you are UNHCR Staff and want to learn R, visit [UNHCR Learn & Connect- R training](https://unhcr.csod.com/ui/lms-learner-playlist/PlaylistDetails?playlistId=e90e2279-e3a4-4ef2-8b74-757f91d224b2)
 
@@ -10,13 +17,17 @@ Note, that you can also explore data through  [Refugee Data Finder](https://www.
 
 ## Chart Library
 
-The package includes a series of vignettes that provides recipes to create re-usable charts in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). To explore how data can be displayed, you can browse the __Chart Library__ using this [link](articles/index.html) or the top menu links. For Designers, convenient versions of each plot in __svg__ format (usable with Illustrator/Inkscape or Indesign/Scribus) is also available directly [here](https://github.com/unhcr/unhcrdatapackage/tree/master/inst/svg).
+The package includes a series of functions that provides recipes to create re-usable charts in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). To explore how data can be displayed, you can browse the __Chart Library__ using this [link](articles/index.html) or the top menu links. 
+
+For Designers, convenient versions of each plot in __svg__ format (usable with Illustrator/Inkscape or Indesign/Scribus) can be generated directly  with 
+
+`unhcrthemes::unhcr_save(plot, "plot.svg")`.
 
 You can also explore __Country Statistical Focus__, accessible [here](CountryFocus.html) that provides visualization by country in relation to 6 dimensions of displacement:  Categories, Origin, Demographics, Solutions, Processing and Source.   
 
-You can also submit __request for new charts__ [here](https://github.com/unhcr/unhcrdatapackage/issues/new)
+You can also submit __request for new charts__ [here](https://github.com/Edouard-Legoupil/unhcrdatapackage/issues/new)
 
-__Contributions__, specifically creation of new vignettes for the chart library are welcome! Please [fork](https://github.com/unhcr/unhcrdatapackage) and submit pull request.
+__Contributions__, specifically creation of new functions for the chart library are welcome! Please [fork](https://github.com/Edouard-Legoupil/unhcrdatapackage), develop within the [fusen](https://thinkr-open.github.io/fusen/index.html) dev markdown here https://github.com/Edouard-Legoupil/unhcrdatapackage/blob/master/dev/flat_full.Rmd  and submit pull request.
 
 ## Data Content
 
