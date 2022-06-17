@@ -6,8 +6,6 @@
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #'
-#' @return
-#' Population type per year graph
 #' @export
 #'
 #'
@@ -30,6 +28,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
   
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   cols_poptype <- c("Asylum-seekers" = "#18375F",
                     "Refugees" = "#0072BC",
                     "Venezuelans Displaced Abroad" = "#EF4A60", 
@@ -61,7 +60,8 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     geom_text(aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = scales::label_number_si(accuracy = 1)(Value)),
+                  label = scales::label_number( accuracy = 1,
+                                   scale_cut = scales::cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
               size = 5) +
@@ -79,8 +79,9 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR Refugee Data Finder") +
-    #unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
-    stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number_si(accuracy = 1)(..y..), group = Year), 
+    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+    stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number( accuracy = 1,
+                                   scale_cut = scales::cut_short_scale())(..y..), group = Year), 
                  geom = "text", size = 5,
                  vjust = -0.5) +
     theme(legend.direction = "vertical",

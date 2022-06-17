@@ -2,13 +2,11 @@
 
 #' Main country of origin - Percentage
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Main country of origin - Percentage Graph
 #' @export
 #'
 
@@ -25,6 +23,7 @@ plot_ctr_population_type_perc <- function(year = 2021,
                               ) {
     require(ggplot2)
   require(tidyverse)
+  require(scales)
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -119,7 +118,7 @@ p <-
        subtitle = "Percentage",
        caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
- # unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+ unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),

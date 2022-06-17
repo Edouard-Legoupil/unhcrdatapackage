@@ -2,12 +2,10 @@
 
 #' Population Pyramid
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Pyramid Chart
 #' @export
 #'
 
@@ -23,6 +21,7 @@ plot_ctr_pyramid <- function(year = 2021,
                      pop_type = pop_type) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   
   demographics1 <- unhcrdatapackage::demographics |>
                    dplyr::left_join( unhcrdatapackage::reference |> 

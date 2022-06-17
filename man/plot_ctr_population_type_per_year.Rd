@@ -17,9 +17,6 @@ plot_ctr_population_type_per_year(
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)}
 }
-\value{
-Population type per year graph
-}
 \description{
 Graph of population type per year
 }

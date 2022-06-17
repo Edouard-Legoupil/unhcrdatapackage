@@ -183,58 +183,38 @@ plot_ctr_pyramid(year = 2021,
 
 ```
 
- 
-
-
-
 ## Asylum Processing
 
-    Asylum_processing  
     
 
 ## Refugee Recognition rate
 
-    Refugee_Recognition_rate 
     
 
 ## Refugee Status Determination Application
 
-    Refugee_Status_Determination_Application   
     
 
 ## Refugees accessing durable solutions
 
-    Refugee_accessing_durable_solution    
-
-
 ## Solution Evolution
-
-    Solution_evolution    
-
 
 ## Resettlement Trend
 
-    Resettlement_trend    
-
-
 ## Population origin-destination
 
-    Origin_Destination    
     
 
 ## Proportion of the population who are refugees, by country of origin
 
-    Proportion_Refugee_Country_Origin  
     
 
-## Ratio Refugee / Host population
+## Ratio Refugee Vs Host population
 
-    Ratio_Refugee_Host_population  
     
 
 ## Ratio Refugee Migrant
 
-    Migrant_and_Forcible_Displacement 
     
     
 --- 
@@ -244,57 +224,43 @@ plot_ctr_pyramid(year = 2021,
 
 ## Biggest decrease in Refugee Population
 
-    Biggest_decrease_in_Refugee_Population 
     
 
 ## Biggest increase in Refugee Population
 
-    Biggest_increase_in_Refugee_Population 
     
 
 ## Comparison over time by Region
 
-    Comparison over_time_by_Region    
     
 
 ## Evolution over time of the different Population of Concern
 
-    Evolution_Category    
     
 
 ## Evolution by Country of Origin
 
-    Evolution_by_Country_of_Origin 
     
 
 ## Refugee Over time
 
-    Refugee_Over_time    
     
 
 ## Smootheed Evolution over time
 
-    Smootheed_Evolution_over_time  
+## Mapping Refugee Location 
+
+## Mapping IDP Location  
+
     
 
-## Mapping Refugee Location
+## Map Venezuelan  
 
-    Mapping_Refugee_Location   
-    
-
-## Mapping IDP Location
-
-    Mapping_IDP_Location    
-    
-
-## Map Venezuelan
-
-    Map_Venezuelan    
     
 
 ## Refugee Chart Race
 
-    Refugees_Chart_Race
+     
 
 
 --- 
@@ -311,18 +277,4 @@ plot_ctr_pyramid(year = 2021,
 # )
 
 ```
-
-<!--
-
-# There can be development actions
-
-Create a chunk with 'development' actions
-
-- The chunk needs to be named `development` or `dev`
-- It contains functions that are used for package development only
-- Note that you may want to store most of these functions in the 0-dev_history.Rmd file
-
-These are only included in the present flat template file, their content will not be part of the package anywhere else.
--->
-
 

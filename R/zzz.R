@@ -1,5 +1,5 @@
 .onLoad <- function(libname, pkgname) {
-  font_dir <- system.file("fonts", package = "unhcrthemes")
+  font_dir <- system.file("fonts", package = "unhcrdatapackage")
   font_dir <- file.path(font_dir, "Lato")
   sysfonts::font_paths(font_dir)
 

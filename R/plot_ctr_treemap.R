@@ -2,12 +2,10 @@
 
 #' Tree map of Population Groups within a country
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Treemap with share of different groups
 #' @export
 #'
 
@@ -23,6 +21,7 @@ plot_ctr_treemap <- function(year = 2021,
                      pop_type = pop_type) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
 
   datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
     dplyr::filter(Year == year,  #### Parameter
@@ -50,7 +49,7 @@ plot_ctr_treemap <- function(year = 2021,
                                           "OOC" ="#8395b9",
                                           "STA"="#E1CC0D")) +
          
-      # unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
+      unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ", country_asylum_iso3c),

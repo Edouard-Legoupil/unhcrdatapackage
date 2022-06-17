@@ -85,8 +85,6 @@ After inflating the template
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #'
-#' @return
-#' Population type per year graph
 #' @export
 #'
 #'
@@ -98,6 +96,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
   
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   cols_poptype <- c("Asylum-seekers" = "#18375F",
                     "Refugees" = "#0072BC",
                     "Venezuelans Displaced Abroad" = "#EF4A60", 
@@ -129,7 +128,8 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     geom_text(aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = scales::label_number_si(accuracy = 1)(Value)),
+                  label = scales::label_number( accuracy = 1,
+                                   scale_cut = scales::cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
               size = 5) +
@@ -147,8 +147,9 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR Refugee Data Finder") +
-    #unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
-    stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number_si(accuracy = 1)(..y..), group = Year), 
+    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+    stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number( accuracy = 1,
+                                   scale_cut = scales::cut_short_scale())(..y..), group = Year), 
                  geom = "text", size = 5,
                  vjust = -0.5) +
     theme(legend.direction = "vertical",
@@ -215,13 +216,12 @@ After inflating the template
 ```{r function-plot_ctr_population_type_abs}
 #' Main country of origin - Absolute value
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Main country of origin - Absolute value Graph
+#' 
 #' @export
 #'
 
@@ -232,6 +232,7 @@ plot_ctr_population_type_abs <- function(year = 2021,
                               ) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -367,13 +368,11 @@ plot_ctr_population_type_abs(year = 2020,
 ```{r function-plot_ctr_population_type_perc}
 #' Main country of origin - Percentage
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Main country of origin - Percentage Graph
 #' @export
 #'
 
@@ -384,6 +383,7 @@ plot_ctr_population_type_perc <- function(year = 2021,
                               ) {
     require(ggplot2)
   require(tidyverse)
+  require(scales)
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -478,7 +478,7 @@ p <-
        subtitle = "Percentage",
        caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
- # unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+ unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),
@@ -508,12 +508,10 @@ plot_ctr_population_type_perc(year = 2021,
 ```{r function-plot_ctr_diff_in_pop_groups}
 #' Increases and Decreases in Population Groups
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Increases and Decreases in Population Groups Graph
 #' @export
 #'
 
@@ -523,6 +521,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
 ) {
     require(ggplot2)
   require(tidyverse)
+  require(scales)
   diff_perc <- function(x){
     x = as.numeric((x - dplyr::lag(x))/dplyr::lag(x)) + 0
     
@@ -719,12 +718,10 @@ plot_ctr_diff_in_pop_groups(year = 2021,
 ```{r function-plot_ctr_destination}
 #' Tree map of Population Groups within a country
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Increases and Decreases in Population Groups Graph
 #' @export
 #'
 
@@ -733,6 +730,7 @@ plot_ctr_destination <- function(year = 2021,
                                   pop_type = pop_type) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   
   
 Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
@@ -749,7 +747,8 @@ Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals
    dplyr::group_by( CountryAsylumName) |>
    dplyr::summarise(DisplacedAcrossBorders = sum(Value) )  |>
    dplyr::mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
-                            paste(scales::label_number_si(accuracy = 0.1)(DisplacedAcrossBorders)),
+                            paste(scales::label_number( accuracy = .1,
+                                   scale_cut = scales::cut_short_scale())(DisplacedAcrossBorders)),
                             as.character(DisplacedAcrossBorders) ) ) |>
    dplyr::arrange(desc(DisplacedAcrossBorders)) |>
    head(10) |>
@@ -768,7 +767,7 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
            position = "identity", 
            fill = "#0072bc") + # here we configure that it will be bar chart+
 ## Format axis number
-  scale_y_continuous( label = scales::label_number_si()) + 
+  scale_y_continuous( label = scales::label_number(scale_cut = cut_short_scale())) + 
   
   ## Position label differently in the bar in white - outside bar in black
   geom_label( data = subset(Destination, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),
@@ -832,12 +831,10 @@ plot_ctr_destination(year = 2021,
 ```{r function-plot_ctr_treemap}
 #' Tree map of Population Groups within a country
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Treemap with share of different groups
 #' @export
 #'
 
@@ -846,6 +843,7 @@ plot_ctr_treemap <- function(year = 2021,
                      pop_type = pop_type) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
 
   datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
     dplyr::filter(Year == year,  #### Parameter
@@ -873,7 +871,7 @@ plot_ctr_treemap <- function(year = 2021,
                                           "OOC" ="#8395b9",
                                           "STA"="#E1CC0D")) +
          
-      # unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
+      unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ", country_asylum_iso3c),
@@ -903,12 +901,10 @@ plot_ctr_treemap(year = 2021,
 ```{r function-plot_ctr_pyramid}
 #' Population Pyramid
 #'
-#' @param year Numeric value of the year (eg.: 2020)
+#' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
 #' 
-#' @return
-#' Pyramid Chart
 #' @export
 #'
 
@@ -917,6 +913,7 @@ plot_ctr_pyramid <- function(year = 2021,
                      pop_type = pop_type) {
   require(ggplot2)
   require(tidyverse)
+  require(scales)
   
   demographics1 <- unhcrdatapackage::demographics |>
                    dplyr::left_join( unhcrdatapackage::reference |> 
@@ -1045,81 +1042,79 @@ plot_ctr_pyramid(year = 2021,
 
 ``` 
 
- 
 
 
 ## Asylum Processing
-    Asylum_processing  
+
     
 ## Refugee Recognition rate
-    Refugee_Recognition_rate 
+
     
 ## Refugee Status Determination Application
-    Refugee_Status_Determination_Application   
+
     
 ## Refugees accessing durable solutions
-    Refugee_accessing_durable_solution    
+
 
 ## Solution Evolution
-    Solution_evolution    
+
 
 ## Resettlement Trend
-    Resettlement_trend    
+
 
 ## Population origin-destination
-    Origin_Destination    
+
     
 ## Proportion of the population who are refugees, by country of origin
-    Proportion_Refugee_Country_Origin  
+
     
-## Ratio Refugee / Host population
-    Ratio_Refugee_Host_population  
+## Ratio Refugee Vs Host population
+
     
 ## Ratio Refugee Migrant
-    Migrant_and_Forcible_Displacement 
+
     
     
 --- 
 
 # Regional Questions
 
+
 ## Biggest decrease in Refugee Population
-    Biggest_decrease_in_Refugee_Population 
+
     
 ## Biggest increase in Refugee Population
-    Biggest_increase_in_Refugee_Population 
+
     
 ## Comparison over time by Region
-    Comparison over_time_by_Region    
+
     
 ## Evolution over time of the different Population of Concern
-    Evolution_Category    
+
     
 ## Evolution by Country of Origin
-    Evolution_by_Country_of_Origin 
+
     
 ## Refugee Over time
-    Refugee_Over_time    
+
     
 ## Smootheed Evolution over time
-    Smootheed_Evolution_over_time  
+
+## Mapping Refugee Location 
+
+
+## Mapping IDP Location  
     
-## Mapping Refugee Location
-    Mapping_Refugee_Location   
-    
-## Mapping IDP Location
-    Mapping_IDP_Location    
-    
-## Map Venezuelan
-    Map_Venezuelan    
+## Map Venezuelan  
     
 ## Refugee Chart Race
-    Refugees_Chart_Race
+     
 
 
 --- 
 
 # Template
+
 ```{r}
 # usethis::use_rmarkdown_template(
 #   template_name = "Country_Factsheet",
@@ -1132,17 +1127,6 @@ plot_ctr_pyramid(year = 2021,
 
 
 
-<!--
-# There can be development actions
-
-Create a chunk with 'development' actions
-
-- The chunk needs to be named `development` or `dev`
-- It contains functions that are used for package development only
-- Note that you may want to store most of these functions in the 0-dev_history.Rmd file
-
-These are only included in the present flat template file, their content will not be part of the package anywhere else.
--->
 
 ```{r development-inflate, eval=FALSE}
 # Keep eval=FALSE to avoid infinite loop in case you hit the knit button

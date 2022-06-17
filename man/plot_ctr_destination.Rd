@@ -11,14 +11,11 @@ plot_ctr_destination(
 )
 }
 \arguments{
-\item{year}{Numeric value of the year (eg.: 2020)}
+\item{year}{Numeric value of the year (for instance 2020)}
 
 \item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)}
-}
-\value{
-Increases and Decreases in Population Groups Graph
 }
 \description{
 Tree map of Population Groups within a country
