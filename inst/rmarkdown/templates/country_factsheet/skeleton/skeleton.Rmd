@@ -1,5 +1,5 @@
 ---
-title: "Country Factsheet"
+title: "United States - Factsheet | End 2021"
 subtitle:  "tt"  
 date: "`r format(Sys.Date(),  '%d %B %Y')`"
 author:
@@ -7,7 +7,7 @@ author:
     affiliation: Job title
     email: email@unhcr.org
 params:
-  year: "2021"
+  year: 2021
   country: "USA"
   short: "no"
 output:
@@ -15,11 +15,23 @@ output:
     back_html: true
 paged-footnotes: true
 links-to-footnotes: true
+classoption: twocolumn
 # uncomment this line to produce HTML and PDF in RStudio:
 #knit: pagedown::chrome_print
 ---
 
+```{css, echo=FALSE}
+.col-ruler {
+  column-rule: 2px solid #0072bc;
+  column-gap: 30px;
+}
 
+.center {
+  text-align: center;
+}
+
+
+```
 
 ```{r echo = FALSE}
 # `r paste0(params$country, " - ",params$year) `
@@ -41,51 +53,230 @@ theme_set( unhcrthemes::theme_unhcr())
 
 ```
 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+total_poc <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
 
-## Plot Population type per year
+total_ref <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "REF"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
 
-```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-plot_ctr_population_type_per_year(start_year = "2016",
-                         country_asylum_iso3c = params$country,
-                          pop_type = c("REF", 
-                                       "ASY", 
-                                       "VDA", 
-                                       "OOC",
-                                       "STA",
-                                       "IDP" )          )
+total_idp <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "IDP"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_asy <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "ASY"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_ooc <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "OOC"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_vda <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "VDA"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_sta <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "STA"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == as.numeric(params$year)-1,
+                CountryAsylumCode == params$country) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+perc_change_poc <- ((total_poc - total_poc_last_year)/total_poc_last_year)*100
+
+ref_asy__last_year <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == as.numeric(params$year)-1,
+                CountryAsylumCode == params$country,
+                Population.type == "REF" | Population.type == "ASY"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+perc_change_asy_ref <- (( (total_ref + total_asy) - ref_asy__last_year)/ref_asy__last_year)*100
+
+
+
+
+top_ref <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "REF") |> 
+  dplyr::group_by(CountryOriginName) |> 
+  dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
+  dplyr::arrange(desc(Value)) |> 
+  dplyr::mutate(perc = scales::percent(
+    Value / sum(Value),
+    accuracy = 1.5,
+    trim = FALSE
+  )) |> 
+  dplyr::slice(1:3)
+
+
+top_asy <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "ASY") |> 
+  dplyr::group_by(CountryOriginName) |> 
+  dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
+  dplyr::arrange(desc(Value)) |> 
+  dplyr::mutate(perc = scales::percent(
+    Value / sum(Value),
+    accuracy = 1.5,
+    trim = FALSE
+  )) |> 
+  dplyr::slice(1:3)
+
 ```
 
-## Plot Main country of origin - Absolute value
 
-```{r examples-plot_ctr_population_type_abs, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-plot_ctr_population_type_abs(year = params$year,
+
+
+:::: {style="display: flex;"}
+
+::: {.column width="50%"}
+
+::: {.center data-latex=""}
+<span style="color: #0072BC"> __`r format(round(total_ref, 0),  big.mark=",")`__ </span> **Refugees** 
+
+<span style="color: #0072BC"> __`r format(round(total_asy, 0),  big.mark=",")`__ </span> **Asylum-seekers**
+
+<span style="color: #0072BC"> __`r format(round(total_vda, 0),  big.mark=",")`__ </span> **Venezuelans displaced abroad**
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+
+::: {.center data-latex=""}
+<span style="color: #0072BC">  __`r format(round(total_ooc, 0),  big.mark=",")`__ </span> **Others of interest**
+
+<span style="color: #0072BC">  __`r format(round(total_sta, 0),  big.mark=",")`__ </span> **Stateless People**
+
+<span style="color: #0072BC">  __`r format(round(total_idp, 0),  big.mark=",")`__ </span> **Internally Displaced People**
+:::
+
+:::
+
+::::
+
+
+```{r examples-plot_ctr_population_type_per_year, fig.retina = 1, fig.width = 12, fig.asp = 0.618, fig.align = "left", dev = "ragg_png", out.width = "110%"}
+plot_ctr_population_type_per_year(start_year = "2016",
+                         country_asylum_iso3c = params$country,
+                          pop_type = c("REF",
+                                       "ASY",
+                                       "VDA",
+                                       "OOC",
+                                       "STA",
+                                       "IDP" ))
+```
+
+
+::: {.bg-blue}
+
+According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
+
+:::
+
+
+:::: {style="display: flex;"}
+
+::: {.column width="50%"}
+
+```{r examples-plot_ctr_ref_abs, message=FALSE, warning=FALSE, include=FALSE}
+plot_title <- plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
                     pop_type = "REF"
-                    ) 
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year))
 ```
 
-## Plot Main country of origin - Percentage
+```{r examples-plot_ctr_ref_abs_title, fig.retina = 1, fig.height= 15, fig.asp = 0.8, fig.align = "center", dev = "ragg_png", out.width = "100%"}
+plot_title
+```
 
-```{r examples-plot_ctr_population_type_perc, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-plot_ctr_population_type_perc(year = params$year,
+:::
+
+::: {.column width="50%"}
+
+
+```{r examples-plot_ctr_asy_abs, message=FALSE, warning=FALSE, include=FALSE}
+plot_title <- plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
-                    pop_type = "REF"  ) 
+                    pop_type = "ASY"
+                    ) +
+  labs(title = paste0("Asylum-seekers: Main Countries of origin | ", params$year))
 ```
 
-## Plot Increases and Decreases in Population Groups
 
-```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-# plot_ctr_diff_in_pop_groups(year = params$year,
-#                             country_asylum_iso3c = params$country,
-#                             pop_type = c("REF", "ASY")
-#          )
+```{r examples-plot_ctr_asy_abs_title, fig.retina = 1, fig.height= 15, fig.asp = 0.8, fig.align = "center", dev = "ragg_png", out.width = "100%"}
+plot_title
 ```
 
-## Top Refugee hosting Countries
 
-```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+:::
+
+::::
+
+::: {.bg-blue}
+The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
+:::
+
+
+```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 1, fig.height= 14, fig.asp = 0.7, fig.align = "center", dev = "ragg_png", out.width = "100%"}
+plot_ctr_diff_in_pop_groups(year = params$year,
+                            country_asylum_iso3c = params$country,
+                            pop_type = c("REF", "ASY")
+         )
+```
+
+
+
+
+
+```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 7, fig.asp = 0.7, fig.align = "center", dev = "ragg_png", out.width = "100%"}
 plot_ctr_destination(year = params$year,
                      country_origin_iso3c = params$country,
                      pop_type = c("REF", "ASY")
