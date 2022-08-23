@@ -42,55 +42,64 @@ plot_ctr_population_type_abs <- function(year = 2021,
   )
   
   
-  df <-  
-    unhcrdatapackage::end_year_population_totals  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
-                  !is.na(CountryAsylumCode),
-                  Year == year,  #### Parameter
-                  CountryAsylumCode == country_asylum_iso3c, #### Parameter
-    )  |>  
-    dplyr::select(CountryAsylumName, CountryOriginName,!!sym( pop_type )) |>
-    dplyr::group_by(CountryAsylumName, CountryOriginName) |>
-    dplyr::filter(!!sym(pop_type) != 0) |>
-    dplyr::mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
-    dplyr::ungroup() |>
-    dplyr::mutate(
-      origin_data_prot = forcats::fct_lump_n(
-        f = CountryOriginName,
-        n = top_n_countries,  #### Parameter
-        w = pop_type_value,
-        other_level = 'Other nationalities',
-        ties.method = "last"
-      )
-    ) |>
-    dplyr::mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
-                                                              'Other nationalities')) |>
-    dplyr::group_by(CountryAsylumName,origin_data_prot) |>
-    dplyr::summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
-    dplyr::ungroup() |> 
-    dplyr::arrange(desc(pop_type_value)) |>
-    dplyr::filter(pop_type_value != 0L) |>
-    dplyr::mutate(
-      origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
-      origin_data_prot =  suppressWarnings(
-        dplyr::case_when(
-          origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(origin_data_prot,
-                                                                           "Other nationalities",
-                                                                           after = 0),
-          TRUE ~ origin_data_prot
-        )
-      ),
-      perc = scales::percent(
-        pop_type_value / sum(pop_type_value),
-        accuracy = 1,
-        trim = FALSE
-      )
+  df <- 
+  unhcrdatapackage::end_year_population_totals  |> 
+  dplyr::filter(CountryAsylumCode != "UKN",
+                !is.na(CountryAsylumCode),
+                (Year == year | Year == year -1),  #### Parameter
+                CountryAsylumCode == country_asylum_iso3c, #### Parameter
+  )  |>  
+  dplyr::select(Year, CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
+  dplyr::group_by(Year, CountryAsylumName, CountryOriginName) |>
+  dplyr::filter(!!sym(pop_type) != 0) |>
+  dplyr::mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
+  dplyr::ungroup() |>
+  dplyr::group_by(CountryAsylumName, CountryOriginName) |> 
+  dplyr::arrange(Year) |>
+  dplyr::mutate(diff_pop_type_value = scales::percent(((pop_type_value-lag(pop_type_value))/lag(pop_type_value)),
+                                                      accuracy = 1.1,
+                                                      trim = FALSE
+  )) |> 
+  dplyr::ungroup() |>
+  dplyr::filter(Year == year) |> 
+  dplyr::mutate(
+    origin_data_prot = forcats::fct_lump_n(
+      f = CountryOriginName,
+      n = top_n_countries,  #### Parameter
+      w = pop_type_value,
+      other_level = 'Other nationalities',
+      ties.method = "last"
     )
-  
-  CountryAsylum_name_text <- df |> 
-    dplyr::distinct(CountryAsylumName) |> 
-    dplyr::pull()
+  ) |>
+  dplyr::mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
+                                                            'Other nationalities'),
+                diff_pop_type_value = case_when(origin_data_prot == 'Other nationalities' ~ "",
+                                                TRUE ~ diff_pop_type_value)) |>
+  dplyr::group_by(CountryAsylumName, diff_pop_type_value, origin_data_prot) |>
+  dplyr::summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
+  dplyr::ungroup() |> 
+  dplyr::arrange(desc(pop_type_value)) |>
+  dplyr::filter(pop_type_value != 0L) |>
+  dplyr::mutate(
+    origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
+    origin_data_prot =  suppressWarnings(
+      dplyr::case_when(
+        origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(origin_data_prot,
+                                                                         "Other nationalities",
+                                                                         after = 0),
+        TRUE ~ origin_data_prot
+      )
+    ),
+    perc = scales::percent(
+      pop_type_value / sum(pop_type_value),
+      accuracy = 1,
+      trim = TRUE
+    )
+  )
 
+CountryAsylum_name_text <- df |> 
+  dplyr::distinct(CountryAsylumName) |> 
+  dplyr::pull()
 
 
 p <- 
@@ -124,6 +133,50 @@ p <-
     vjust = 0.5,
     colour = "white",
     size = 5
+  ) +
+  geom_text( # positive diff percentage label
+    data = subset(df, with(df, !grepl('-', diff_pop_type_value))),
+    aes(
+      x = pop_type_value,
+      y = origin_data_prot,
+      label = diff_pop_type_value
+    ),
+    hjust = -2.8,
+    vjust = 0.5,
+    colour = "grey",
+    size = 4
+  ) +
+  geom_text( # negative diff percentage label
+    data = subset(df, with(df, grepl('-', diff_pop_type_value))),
+    aes(
+      x = pop_type_value,
+      y = origin_data_prot,
+      label = diff_pop_type_value
+    ),
+    hjust = -2.5,
+    vjust = 0.5,
+    colour = "#0472bc",
+    size = 4
+  ) +
+  geom_text( #increase triangle
+    data = subset(df, with(df, !grepl('-', diff_pop_type_value) & origin_data_prot != "Other nationalities")),
+    aes(x = pop_type_value,
+        y = origin_data_prot),
+    label = intToUtf8(9650),
+    hjust = -4.8 ,
+    vjust = 0.5,
+    color = "#0bb498",
+    size = 7
+  ) +
+  geom_text( #decrease triangle
+    data = subset(df, with(df, grepl('-', diff_pop_type_value) & origin_data_prot != "Other nationalities")),
+    aes(x = pop_type_value,
+        y = origin_data_prot),
+    label = intToUtf8(9660),
+    hjust = -4.8 ,
+    vjust = 0.5,
+    color = "#0472bc",
+    size = 7
   ) +
   labs(title = paste0(CountryAsylum_name_text, ": Main Countries of origin (", cols_poptype[[pop_type]][1], ")", " | ",  year),
        subtitle = "Number of people",

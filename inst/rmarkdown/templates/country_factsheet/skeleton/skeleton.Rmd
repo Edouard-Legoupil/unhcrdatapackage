@@ -1,6 +1,6 @@
 ---
-title: "United States - Factsheet | End 2021"
-subtitle:  "tt"  
+title: "United States | as of End 2021"
+subtitle:  "Statistical Factsheet"  
 date: "`r format(Sys.Date(),  '%d %B %Y')`"
 author:
   - name: Contact Name
@@ -39,12 +39,13 @@ knitr::opts_chunk$set(echo = FALSE,
                       comment = "#>",
                       message=FALSE, 
                       warning=FALSE,
-                      fig.retina = 2, 
-                      fig.width = 8,
-                      fig.asp = 0.618,
+                      fig.width = 6.3,
+                      fig.height = 4.4,
+                      fig.retina = 2,
                       fig.align = "center",
+                      fig.showtext = TRUE,
                       dev = "ragg_png",
-                      out.width = "90%")
+                      dpi = 300)
 library(testthat)
 library(ggplot2)
 library(unhcrthemes)
@@ -54,6 +55,8 @@ theme_set( unhcrthemes::theme_unhcr())
 ```
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+
+## Key figures can be highlighterd with icons https://fontawesome.com/icons/categories/humanitarian 
 total_poc <- unhcrdatapackage::end_year_population_totals_long |> 
   dplyr::filter(Year == params$year,
                 CountryAsylumCode == params$country) |> 
@@ -168,18 +171,22 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 
 
 
+## Key figures
 
-:::: {style="display: flex;"}
+
+:::: {.col2 .col-ruler style="display: flex;"}  
 
 ::: {.column width="50%"}
 
-::: {.center data-latex=""}
-<span style="color: #0072BC"> __`r format(round(total_ref, 0),  big.mark=",")`__ </span> **Refugees** 
+::: {.left data-latex=""}
 
-<span style="color: #0072BC"> __`r format(round(total_asy, 0),  big.mark=",")`__ </span> **Asylum-seekers**
+<i class="fa-solid fa-hands-holding-circle blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ref, 0),  big.mark=",")`]{.blue .lead}** Refugees
 
-<span style="color: #0072BC"> __`r format(round(total_vda, 0),  big.mark=",")`__ </span> **Venezuelans displaced abroad**
+<i class="fa-solid fa-person-walking-dashed-line-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_asy, 0),  big.mark=",")`]{.blue .lead}** Asylum-seekers
 
+<i class="fa-solid fa-person-arrow-up-from-line blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ooc, 0),  big.mark=",")`]{.blue .lead}** *Others of Concerns
+
+ 
 :::
 
 :::
@@ -187,18 +194,32 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 ::: {.column width="50%"}
 
 
-::: {.center data-latex=""}
-<span style="color: #0072BC">  __`r format(round(total_ooc, 0),  big.mark=",")`__ </span> **Others of interest**
+::: {.left data-latex=""}
 
-<span style="color: #0072BC">  __`r format(round(total_sta, 0),  big.mark=",")`__ </span> **Stateless People**
+<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_vda, 0),  big.mark=",")`]{.blue .lead}** Venezuelans displaced abroad
 
-<span style="color: #0072BC">  __`r format(round(total_idp, 0),  big.mark=",")`__ </span> **Internally Displaced People**
+<i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_idp, 0),  big.mark=",")`]{.blue .lead}** Internally displaced people
+
+<i class="fa-solid fa-solid fa-arrows-down-to-people blue" style="font-size: 2em;"></i><br>**[`r format(round(total_sta, 0),  big.mark=",")`]{.blue .lead}** Stateless People
+
+
 :::
 
 :::
 
 ::::
 
+\newpage
+
+
+
+## How the different Categories of Population of concern to UNHCR are evolving over time?
+
+::: {.bg-blue}
+
+According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
+
+:::
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 1, fig.width = 12, fig.asp = 0.618, fig.align = "left", dev = "ragg_png", out.width = "110%"}
 plot_ctr_population_type_per_year(start_year = "2016",
@@ -212,16 +233,15 @@ plot_ctr_population_type_per_year(start_year = "2016",
 ```
 
 
-::: {.bg-blue}
-
-According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
-
-:::
 
 
-:::: {style="display: flex;"}
+## What are the main countries of Origin of Forced Displacement across Borders?
 
-::: {.column width="50%"}
+ 
+The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
+ 
+
+### Refugees
 
 ```{r examples-plot_ctr_ref_abs, message=FALSE, warning=FALSE, include=FALSE}
 plot_title <- plot_ctr_population_type_abs(year = params$year,
@@ -236,10 +256,8 @@ plot_title <- plot_ctr_population_type_abs(year = params$year,
 plot_title
 ```
 
-:::
 
-::: {.column width="50%"}
-
+### Asylum Seekers
 
 ```{r examples-plot_ctr_asy_abs, message=FALSE, warning=FALSE, include=FALSE}
 plot_title <- plot_ctr_population_type_abs(year = params$year,
@@ -256,14 +274,6 @@ plot_title
 ```
 
 
-:::
-
-::::
-
-::: {.bg-blue}
-The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
-:::
-
 
 ```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 1, fig.height= 14, fig.asp = 0.7, fig.align = "center", dev = "ragg_png", out.width = "100%"}
 plot_ctr_diff_in_pop_groups(year = params$year,
@@ -273,6 +283,7 @@ plot_ctr_diff_in_pop_groups(year = params$year,
 ```
 
 
+## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
 
 
 
@@ -282,3 +293,20 @@ plot_ctr_destination(year = params$year,
                      pop_type = c("REF", "ASY")
          )
 ```
+
+## What are the Demographics profiles of Forcibly Displaced People in relation with the host population?
+
+## Is the asylum Processing capacity in relation with the demand?
+
+## What are the trends in terms of Solutions?
+
+## What is the share of Forcibly Displaced People among total Migrants?
+
+
+
+
+
+
+
+
+
