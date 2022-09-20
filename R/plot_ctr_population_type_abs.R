@@ -189,5 +189,5 @@ p <-
         plot.subtitle=element_text(size=19),
         plot.title = element_text(size=23),
         plot.caption = element_text(size=13))
-  print(p)
+  return(p) # print(p)
   }

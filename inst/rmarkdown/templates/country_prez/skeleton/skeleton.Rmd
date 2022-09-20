@@ -1,0 +1,265 @@
+---
+title: "United States | as of End 2021"
+subtitle:  "Statistical Factsheet"  
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+output:
+  unhcrdown::pptx_slides
+params:
+  year: 2021
+  country: "USA"
+  short: "no"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
+library(officedown)
+library(unhcrthemes)
+library(ggplot2)
+library(rvg)
+library(tidyverse)
+library(scales)
+library(lubridate)
+library(unhcrdatapackage) 
+
+# turn off the automatic use of showtext functionality, so that the dml function can works properly
+showtext::showtext_auto(FALSE) 
+
+ 
+```
+
+
+
+ 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+## Key figures can be highlighterd with icons https://fontawesome.com/icons/categories/humanitarian 
+total_poc <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+total_ref <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "REF"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+total_idp <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "IDP"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_asy <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "ASY"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_ooc <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "OOC"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_vda <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "VDA"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_sta <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "STA"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == as.numeric(params$year)-1,
+                CountryAsylumCode == params$country) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+perc_change_poc <- ((total_poc - total_poc_last_year)/total_poc_last_year)*100
+
+ref_asy__last_year <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == as.numeric(params$year)-1,
+                CountryAsylumCode == params$country,
+                Population.type == "REF" | Population.type == "ASY"
+                ) |> 
+  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+  dplyr::pull()
+
+
+perc_change_asy_ref <- (( (total_ref + total_asy) - ref_asy__last_year)/ref_asy__last_year)*100
+
+
+
+
+top_ref <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "REF") |> 
+  dplyr::group_by(CountryOriginName) |> 
+  dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
+  dplyr::arrange(desc(Value)) |> 
+  dplyr::mutate(perc = scales::percent(
+    Value / sum(Value),
+    accuracy = 1.5,
+    trim = FALSE
+  )) |> 
+  dplyr::slice(1:3)
+
+
+top_asy <- unhcrdatapackage::end_year_population_totals_long |> 
+  dplyr::filter(Year == params$year,
+                CountryAsylumCode == params$country,
+                Population.type == "ASY") |> 
+  dplyr::group_by(CountryOriginName) |> 
+  dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
+  dplyr::arrange(desc(Value)) |> 
+  dplyr::mutate(perc = scales::percent(
+    Value / sum(Value),
+    accuracy = 1.5,
+    trim = FALSE
+  )) |> 
+  dplyr::slice(1:3)
+
+```
+
+
+
+## Key figures
+
+
+
+<i class="fa-solid fa-hands-holding-circle blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ref, 0),  big.mark=",")`]{.blue .lead}** Refugees
+
+<i class="fa-solid fa-person-walking-dashed-line-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_asy, 0),  big.mark=",")`]{.blue .lead}** Asylum-seekers
+
+<i class="fa-solid fa-person-arrow-up-from-line blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ooc, 0),  big.mark=",")`]{.blue .lead}** *Others of Concerns
+
+
+<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_vda, 0),  big.mark=",")`]{.blue .lead}** Venezuelans displaced abroad
+
+<i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_idp, 0),  big.mark=",")`]{.blue .lead}** Internally displaced people
+
+<i class="fa-solid fa-solid fa-arrows-down-to-people blue" style="font-size: 2em;"></i><br>**[`r format(round(total_sta, 0),  big.mark=",")`]{.blue .lead}** Stateless People
+
+
+\newpage
+
+
+
+## How the different Categories of Population of concern to UNHCR are evolving over time?
+
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+
+# According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
+plot_ctr_population_type_per_year(start_year = "2016",
+                         country_asylum_iso3c = params$country,
+                          pop_type = c("REF",
+                                       "ASY",
+                                       "VDA",
+                                       "OOC",
+                                       "STA",
+                                       "IDP" )) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+
+## What are the main countries of Origin of Forced Displacement across Borders?
+
+ 
+The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
+ 
+
+### Refugees
+ 
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year)) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+### Asylum Seekers
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "ASY"
+                    ) +
+  labs(title = paste0("Asylum-seekers: Main Countries of origin | ", params$year)) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_diff_in_pop_groups(year = params$year,
+                            country_asylum_iso3c = params$country,
+                            pop_type = c("REF", "ASY")   ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_destination(year = params$year,
+                     country_origin_iso3c = params$country,
+                     pop_type = c("REF", "ASY")
+         ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+---
+
+## What are the Demographics profiles of Forcibly Displaced People in relation with the host population?
+
+---
+
+## Is the asylum Processing capacity in relation with the demand?
+
+---
+
+## What are the trends in terms of Solutions?
+
+---
+
+## What is the share of Forcibly Displaced People among total Migrants?
+
+---
+
+
+

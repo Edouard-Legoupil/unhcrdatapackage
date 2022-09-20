@@ -91,5 +91,5 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
           plot.title = element_text(size=23),
           plot.caption = element_text(size=13))
   
-  print(p)
+  return(p) # print(p)
   }

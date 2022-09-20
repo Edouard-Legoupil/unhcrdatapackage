@@ -19,3 +19,23 @@ template_CtryFactsheet <- function(year = 2021,
  
 }
 
+
+# usethis::use_rmarkdown_template(
+#   template_name = "Regional_Factsheet",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Country",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' 
+#' @export
+#'
+
+template_RegFactsheet <- function(year = 2021,
+                      UNHCRBureau) {
+ 
+}
+

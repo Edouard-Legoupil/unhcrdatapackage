@@ -159,7 +159,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
           plot.title = element_text(size=23),
           plot.caption = element_text(size=13))
   
-  print(p)
+  return(p) # print(p)
   }
 ```
 
@@ -389,7 +389,7 @@ p <-
         plot.subtitle=element_text(size=19),
         plot.title = element_text(size=23),
         plot.caption = element_text(size=13))
-  print(p)
+  return(p) # print(p)
   }
 ```
 
@@ -538,7 +538,7 @@ p <-
         plot.subtitle=element_text(size=19),
         plot.title = element_text(size=23),
         plot.caption = element_text(size=13))
-  print(p)
+  return(p) # print(p)
   }
 ```
 
@@ -745,7 +745,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     theme(axis.line.x = element_line(color="white"),
           axis.text.x = element_text(size=10))
   
-  print(p)
+  return(p) # print(p)
 }
 ```
 
@@ -863,7 +863,7 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
   
-  print(p)
+  return(p) # print(p)
   
   }
 }

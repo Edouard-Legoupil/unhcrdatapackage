@@ -1,0 +1,39 @@
+---
+title: "Why a chart Library?"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Why a chart Library?}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Divisible Content Strategy Gives You More Content With Less Work
+
+As explained in this [blog post](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/), a divisible content strategy is an approach to content creation where you use a single asset to create multiple pieces. For example, you might break an e-book into a few articles, an infographic, social microcontent, or even a brand video. 
+
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png)
+
+
+The chart library is therefore designed to speed up the creation of __microcontent__ that can be then re-embedded wherever needed.
+
+# Do not waste time with charts creation, focus on the message and on the story
+
+Charts with impact should be focused on stry telling: https://medium.economist.com/charting-new-territory-7f5afb293270 
+
+This can be done by: 
+
+ *  changing charts titles and subtitle  
+
+ *  annotating the chart: See tutorial here -> https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate
+ 
+ * highlighting specific part in the chart: See tutorial here -> https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom_
+ 
+ 
+# Start building your country or regional/situational factsheet now 

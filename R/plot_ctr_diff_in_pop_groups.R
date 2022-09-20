@@ -193,5 +193,5 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     theme(axis.line.x = element_line(color="white"),
           axis.text.x = element_text(size=10))
   
-  print(p)
+  return(p) # print(p)
 }
