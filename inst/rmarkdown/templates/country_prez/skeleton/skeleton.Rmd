@@ -1,7 +1,6 @@
 ---
-title: "United States | as of End 2021"
-subtitle:  "Statistical Factsheet"  
-date: "`r format(Sys.Date(),  '%d %B %Y')`"
+title: "United States | Statistical Factsheet"
+subtitle:  "as of End 2021"  
 output:
   unhcrdown::pptx_slides
 params:
@@ -9,7 +8,6 @@ params:
   country: "USA"
   short: "no"
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
@@ -24,13 +22,8 @@ library(unhcrdatapackage)
 
 # turn off the automatic use of showtext functionality, so that the dml function can works properly
 showtext::showtext_auto(FALSE) 
-
- 
 ```
 
-
-
- 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
 ## Key figures can be highlighterd with icons https://fontawesome.com/icons/categories/humanitarian 
@@ -166,15 +159,11 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 <i class="fa-solid fa-solid fa-arrows-down-to-people blue" style="font-size: 2em;"></i><br>**[`r format(round(total_sta, 0),  big.mark=",")`]{.blue .lead}** Stateless People
 
 
-\newpage
+---
 
-
+```{r ph=officer::ph_location_fullsize()}
 
 ## How the different Categories of Population of concern to UNHCR are evolving over time?
-
-
-```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
-
 # According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
 plot_ctr_population_type_per_year(start_year = "2016",
                          country_asylum_iso3c = params$country,
@@ -189,16 +178,19 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 
 
+---
+
+```{r ph=officer::ph_location_fullsize()}
+
 
 ## What are the main countries of Origin of Forced Displacement across Borders?
 
- 
-The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
+#  
+# text <- The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
  
 
 ### Refugees
- 
-```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+  
 plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
@@ -208,10 +200,13 @@ plot_ctr_population_type_abs(year = params$year,
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 
+---
+
+```{r ph=officer::ph_location_fullsize()}
+
 
 ### Asylum Seekers
-
-```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+ 
 plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
@@ -222,8 +217,11 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 
 
+---
 
-```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+```{r ph=officer::ph_location_fullsize()}
+
+
 plot_ctr_diff_in_pop_groups(year = params$year,
                             country_asylum_iso3c = params$country,
                             pop_type = c("REF", "ASY")   ) -> p
@@ -232,9 +230,11 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
+```{r ph=officer::ph_location_fullsize()}
 
-```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+
+## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
+ 
 plot_ctr_destination(year = params$year,
                      country_origin_iso3c = params$country,
                      pop_type = c("REF", "ASY")
