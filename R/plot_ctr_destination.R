@@ -4,7 +4,7 @@
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @export
 #'

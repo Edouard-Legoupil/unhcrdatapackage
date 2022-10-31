@@ -98,10 +98,10 @@ total_ooc <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::pull()
 
 
-total_vda <- unhcrdatapackage::end_year_population_totals_long |> 
+total_oip <- unhcrdatapackage::end_year_population_totals_long |> 
   dplyr::filter(Year == params$year,
                 CountryAsylumCode == params$country,
-                Population.type == "VDA"
+                Population.type == "OIP"
                 ) |> 
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
@@ -196,7 +196,7 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 
 ::: {.left data-latex=""}
 
-<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_vda, 0),  big.mark=",")`]{.blue .lead}** Venezuelans displaced abroad
+<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_oip, 0),  big.mark=",")`]{.blue .lead}** Other people in need of international protection
 
 <i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_idp, 0),  big.mark=",")`]{.blue .lead}** Internally displaced people
 
@@ -226,7 +226,7 @@ plot_ctr_population_type_per_year(start_year = "2016",
                          country_asylum_iso3c = params$country,
                           pop_type = c("REF",
                                        "ASY",
-                                       "VDA",
+                                       "OIP",
                                        "OOC",
                                        "STA",
                                        "IDP" ))

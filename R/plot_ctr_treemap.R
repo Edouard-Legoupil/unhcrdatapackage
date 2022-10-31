@@ -4,7 +4,7 @@
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @export
 #'
@@ -43,7 +43,8 @@ plot_ctr_treemap <- function(year = 2021,
          treemapify::geom_treemap_text(colour = "white",
                            place = "centre", size = 25) +
          scale_fill_manual( values = c(   "IDP" = "#00B398",
-                                          "VDA"="#EF4A60",
+                                         # "VDA"="#EF4A60",
+                                          "OIP"="#EF4A60",
                                           "ASY" = "#18375F",
                                           "REF" = "#0072BC",
                                           "OOC" ="#8395b9",

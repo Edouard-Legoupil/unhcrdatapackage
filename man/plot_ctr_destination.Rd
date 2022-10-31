@@ -15,7 +15,7 @@ plot_ctr_destination(
 
 \item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)}
+\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \description{
 Tree map of Population Groups within a country

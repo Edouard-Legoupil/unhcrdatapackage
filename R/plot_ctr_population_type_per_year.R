@@ -4,7 +4,7 @@
 #'
 #' @param start_year Numeric value of first year  
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
 #'
 #' @export
 #'
@@ -16,7 +16,8 @@
 #'                          country_asylum_iso3c = "PAN",
 #'                           pop_type = c("REF", 
 #'                                        "ASY", 
-#'                                        "VDA", 
+#'                                        #"VDA", 
+#'                                        "OIP", 
 #'                                        "OOC",
 #'                                        "STA",
 #'                                        "IDP" )
@@ -31,7 +32,8 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
   require(scales)
   cols_poptype <- c("Asylum-seekers" = "#18375F",
                     "Refugees" = "#0072BC",
-                    "Venezuelans Displaced Abroad" = "#EF4A60", 
+                    #"Venezuelans Displaced Abroad" = "#EF4A60", 
+                    "Other people in need of international protection" = "#EF4A60", 
                     "Others of Concern to UNHCR" = "#999999",
                     "Internally Displaced Persons" = "#00B398",
                     "Stateless Persons" = "#E1CC0D")

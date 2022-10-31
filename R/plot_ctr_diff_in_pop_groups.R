@@ -4,7 +4,7 @@
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @export
 #'
@@ -51,7 +51,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   df <- replace(df, is.na(df), 0)
   
   df <- df |> 
-    tidyr::gather(v, value, REF_diffabs:VDA_diffperc) |> 
+    tidyr::gather(v, value, REF_diffabs:OIP_diffperc) |> 
     tidyr::separate(v, c("pop_type", "value_type"), sep = "\\_") |> 
     tidyr::spread(key = value_type, value = value) |> 
     dplyr::mutate(diffper =scales::percent(
@@ -71,7 +71,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     scale_fill_manual(
       values = c("ASY" = "#18375F",
                  "REF" = "#0072BC",
-                 "VDA" = "#EF4A60", 
+                 "OIP" = "#EF4A60", 
+                 #"VDA" = "#EF4A60", 
                  "OOC" = "#999999",
                  "IDP" = "#00B398",
                  "STA" = "#E1CC0D"),
@@ -81,7 +82,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     ) +
     scale_x_discrete(labels= c("ASY" = "Asylum-seekers",
                                "REF" = "Refugees",
-                               "VDA" = "Venezuelans Displaced\nAbroad", 
+                               #"VDA" = "Venezuelans Displaced\nAbroad", ,
+                               "OIP" = "Other people in need\n of international protection", 
                                "OOC" = "Others of Concern\nto UNHCR",
                                "IDP" = "Internally Displaced\nPersons",
                                "STA" = "Stateless Persons"),

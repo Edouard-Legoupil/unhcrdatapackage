@@ -18,7 +18,7 @@ plot_ctr_population_type_abs(
 
 \item{top_n_countries}{Numeric value of number of main countries that the graph should display}
 
-\item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)}
+\item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)}
 }
 \description{
 Main country of origin - Absolute value

@@ -5,7 +5,7 @@
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
-#' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)
+#' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)
 #' 
 #' 
 #' @export
@@ -35,7 +35,8 @@ plot_ctr_population_type_abs <- function(year = 2021,
   require(scales)
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
-                       VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
+                       #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
+                       OIP = c("Other people in need of international protection", "#EF4A60"), 
                        OOC = c("Others of Concern to UNHCR", "#999999"),
                        IDP = c("Internally Displaced Persons", "#00B398"),
                        STA = c("Stateless Persons", "#E1CC0D")

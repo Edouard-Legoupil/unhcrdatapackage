@@ -15,7 +15,7 @@ plot_ctr_population_type_per_year(
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)}
+\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)}
 }
 \description{
 Graph of population type per year
@@ -26,7 +26,8 @@ plot_ctr_population_type_per_year(start_year = 2016,
                          country_asylum_iso3c = "PAN",
                           pop_type = c("REF", 
                                        "ASY", 
-                                       "VDA", 
+                                       #"VDA", 
+                                       "OIP", 
                                        "OOC",
                                        "STA",
                                        "IDP" )

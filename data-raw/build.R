@@ -39,7 +39,8 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Asylum-seekers"="ASY",
                                        "Others of Concern to UNHCR"="OOC",
                                        "Stateless Persons"="STA",    
-                                        "Venezuelans Displaced Abroad"="VDA" ))
+                                      #  "Venezuelans Displaced Abroad"="VDA"
+                                       "Other people in need of international protection"="OIP"))
 
 sinew::makeOxygen(end_year_population_totals, add_fields = "source")
 
@@ -68,7 +69,8 @@ end_year_population_totals_long$Population.type.label[end_year_population_totals
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern to UNHCR"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
-end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+#end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OIP"] <- "Other people in need of international protection"
 
 end_year_population_totals_long$Population.type.label.short <- ""
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
@@ -76,7 +78,8 @@ end_year_population_totals_long$Population.type.label.short[end_year_population_
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern"
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
-end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
+#end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OIP"] <- "In need of int. protect."
 
   
 save(end_year_population_totals_long, file =  "data/end_year_population_totals_long.RData")
@@ -162,7 +165,8 @@ demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Inte
 demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum-seekers"
 demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of Concern to UNHCR"
 demographics$Population.type.label[demographics$Population.type=="STA"] <- "Stateless Persons"
-demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+#demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+demographics$Population.type.label[demographics$Population.type=="OIP"] <- "Other people in need of international protection"
 demographics$Population.type.label[demographics$Population.type=="RET"] <- "Refugee returns"
 demographics$Population.type.label[demographics$Population.type=="RDP"] <- "IDP returns"
 
@@ -172,7 +176,8 @@ demographics$Population.type.label.short[demographics$Population.type=="IDP"] <-
 demographics$Population.type.label.short[demographics$Population.type=="ASY"] <- "Asylum-seekers"
 demographics$Population.type.label.short[demographics$Population.type=="OOC"] <- "Others of Concern"
 demographics$Population.type.label.short[demographics$Population.type=="STA"] <- "Stateless Persons"
-demographics$Population.type.label.short[demographics$Population.type=="VDA"] <- "Venezuelans Abroad"
+#demographics$Population.type.label.short[demographics$Population.type=="VDA"] <- "Venezuelans Abroad"
+demographics$Population.type.label.short[demographics$Population.type=="OIP"] <- "In need of int. protect."
 demographics$Population.type.label.short[demographics$Population.type=="RET"] <- "Refugee returns"
 demographics$Population.type.label.short[demographics$Population.type=="RDP"] <- "IDP returns"
 

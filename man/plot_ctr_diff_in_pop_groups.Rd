@@ -15,7 +15,7 @@ plot_ctr_diff_in_pop_groups(
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, VDA, OOC, STA)}
+\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \description{
 Increases and Decreases in Population Groups
