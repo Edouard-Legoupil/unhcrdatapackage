@@ -9,9 +9,8 @@ Authors@R: c(
   )
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
 Description: This is a data package with all frame organised and reshapped
-    for easy consumptions in R Please see
-    https://www.unhcr.org/refugee-statistics/
-    https://data.humdata.org/dataset/unhcr-population-data-for-world
+    for easy consumptions in R. For more information, please see consult
+    [https://www.unhcr.org/refugee-statistics/](https://www.unhcr.org/refugee-statistics).
 License: Creative Commons Attribution 4.0 International Public License
 URL: https://unhcr.github.io/unhcrdatapackage/docs/
 BugReports: https://github.com/unhcr/unhcrdatapackage/issues
@@ -21,21 +20,24 @@ Imports:
     ggplot2,
     scales,
     showtext,
+    stats,
+    stringr,
     sysfonts,
     systemfonts,
     tidyr,
-    tidyverse,
+    tidyselect,
     treemapify,
-    unhcrthemes
+    unhcrthemes,
+    utils
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: 
     knitr
 Remotes:
-    vidonne/unhcrdesign,
-    vidonne/unhcrthemes,
+    vidonne/unhcrthemes
     vidonne/unhcrdown
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

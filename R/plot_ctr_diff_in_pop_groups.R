@@ -6,6 +6,21 @@
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
@@ -20,33 +35,33 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type
 ) {
-    require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   diff_perc <- function(x){
-    x = as.numeric((x - dplyr::lag(x))/dplyr::lag(x)) + 0
+    x = as.numeric((x - lag(x))/lag(x)) + 0
     
   }
   
   
   df <- unhcrdatapackage::end_year_population_totals  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
+    filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   (Year == year-1 | Year == year),  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 
-    dplyr::group_by(Year, CountryAsylumName) |> 
-    dplyr::summarise(dplyr::across(where(is.numeric), sum)) |> 
-    dplyr::ungroup() |> 
-    dplyr::arrange(Year) |> 
-    dplyr::select(-c(Year)) |> 
-    dplyr::group_by(CountryAsylumName) |> 
-    dplyr::summarise(dplyr::across(where(is.numeric), 
+    group_by(Year, CountryAsylumName) |> 
+    summarise(across(where(is.numeric), sum)) |> 
+    ungroup() |> 
+    arrange(Year) |> 
+    select(-c(Year)) |> 
+    group_by(CountryAsylumName) |> 
+    summarise(across(where(is.numeric), 
                                    list(diffabs = diff,
                                         diffperc = diff_perc),
                                    .names = "{.col}_{.fn}")) |> 
-    dplyr::ungroup() |> 
-    dplyr::slice(2) 
+    ungroup() |> 
+    slice(2) 
   
   df <- replace(df, is.na(df), 0)
   
@@ -54,7 +69,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     tidyr::gather(v, value, REF_diffabs:OIP_diffperc) |> 
     tidyr::separate(v, c("pop_type", "value_type"), sep = "\\_") |> 
     tidyr::spread(key = value_type, value = value) |> 
-    dplyr::mutate(diffper =scales::percent(
+    mutate(diffper =percent(
       diffperc,
       accuracy = 1,
       trim = FALSE
@@ -62,7 +77,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   
   
   p <- df |> 
-    dplyr::filter(pop_type %in% pop_type) |>
+    filter(pop_type %in% pop_type) |>
     ggplot() +
     geom_col(aes(x = pop_type, 
                  y = diffabs,
@@ -94,9 +109,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       aes(
         x = pop_type,
         y = diffabs,
-        label = scales::label_number(accuracy = 1,
-                                     scale_cut = scales::cut_short_scale())(diffabs)
-      ),
+        label = label_number(accuracy = 1,
+                              scale_cut = cut_short_scale())(diffabs) ),
       vjust = -0.5 ,
       colour = "black",
       size = 5
@@ -117,8 +131,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       aes(
         x = pop_type,
         y = diffabs,
-        label = scales::label_number(accuracy = 1,
-                                     scale_cut = scales::cut_short_scale())(diffabs)
+        label = label_number(accuracy = 1,
+                             scale_cut = cut_short_scale())(diffabs)
       ),
       vjust = 2.7 ,
       colour = "white",
@@ -140,8 +154,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   #   aes(
   #     x = pop_type,
   #     y = diffabs,
-  #     label = scales::label_number(accuracy = 1,
-  #                                  scale_cut = scales::cut_short_scale())(diffabs)
+  #     label = label_number(accuracy = 1,
+  #                                  scale_cut = cut_short_scale())(diffabs)
   #   ),
   #   vjust = -2.0 ,
   #   colour = "white",
@@ -163,8 +177,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     aes(
       x = pop_type,
       y = diffabs,
-      label = scales::label_number(accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(diffabs)
+      label = label_number(accuracy = 1,
+                            scale_cut = cut_short_scale())(diffabs)
     ),
     vjust =  1.2,
     colour = "black",
@@ -183,15 +197,15 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     ) +
     geom_hline(yintercept = 0, color = "black") +
     labs(title = paste0(df |> 
-                          dplyr::distinct(CountryAsylumName) |> 
-                          dplyr::pull(), 
+                          distinct(CountryAsylumName) |> 
+                          pull(), 
                         ": Increases and Decreases in Population Groups | ",
                         year-1,
                         "-",
                         year),
          subtitle = "Number of people and percentage",
-         caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency")  + 
-    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+         caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency")  + 
+    theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
     theme(axis.line.x = element_line(color="white"),
           axis.text.x = element_text(size=10))
   

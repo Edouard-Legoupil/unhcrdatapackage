@@ -6,6 +6,21 @@
 #' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
@@ -19,31 +34,31 @@
 plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
                                   pop_type = pop_type) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   
   
-Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+Destination <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  |>
-  dplyr::filter(CountryOriginCode  == country_origin_iso3c  & 
+  filter(CountryOriginCode  == country_origin_iso3c  & 
                  Year == year &
                 Population.type  %in% as.vector(pop_type)  )  |>  
-   dplyr::mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
          CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
          CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
          CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) |> 
    
-   dplyr::group_by( CountryAsylumName) |>
-   dplyr::summarise(DisplacedAcrossBorders = sum(Value) )  |>
-   dplyr::mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
-                            paste(scales::label_number( accuracy = .1,
-                                   scale_cut = scales::cut_short_scale())(DisplacedAcrossBorders)),
+   group_by( CountryAsylumName) |>
+   summarise(DisplacedAcrossBorders = sum(Value) )  |>
+   mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
+                            paste(label_number( accuracy = .1,
+                                   scale_cut = cut_short_scale())(DisplacedAcrossBorders)),
                             as.character(DisplacedAcrossBorders) ) ) |>
-   dplyr::arrange(desc(DisplacedAcrossBorders)) |>
+   arrange(desc(DisplacedAcrossBorders)) |>
    head(10) |>
-   dplyr::filter(DisplacedAcrossBorders >0)
+   filter(DisplacedAcrossBorders >0)
 
 if( nrow(Destination) ==  0 ){
   cat(paste0("There's no recorded countries of destination for ",country_origin_iso3c ))
@@ -58,7 +73,7 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
            position = "identity", 
            fill = "#0072bc") + # here we configure that it will be bar chart+
 ## Format axis number
-  scale_y_continuous( label = scales::label_number(scale_cut = cut_short_scale())) + 
+  scale_y_continuous( labels = label_number(scale_cut = cut_short_scale())) + 
   
   ## Position label differently in the bar in white - outside bar in black
   geom_label( data = subset(Destination, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),

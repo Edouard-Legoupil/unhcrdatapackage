@@ -84,6 +84,21 @@ After inflating the template
 #' @param start_year Numeric value of first year  
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
 #'
 #' @export
 #'
@@ -94,9 +109,9 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
                                      pop_type = Population.type
                                      ) {
   
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   cols_poptype <- c("Asylum-seekers" = "#18375F",
                     "Refugees" = "#0072BC",
                     #"Venezuelans Displaced Abroad" = "#EF4A60", 
@@ -107,19 +122,19 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
   
   
   df <- unhcrdatapackage::end_year_population_totals_long  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
+    filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year >= start_year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
                   Population.type %in% pop_type #### Parameter
     )  |>  
-    dplyr::group_by(Year, CountryAsylumName, Population.type.label)  |> 
-    dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
-    dplyr::ungroup()
+    group_by(Year, CountryAsylumName, Population.type.label)  |> 
+    summarise(Value = sum(Value, na.rm = TRUE)) |> 
+    ungroup()
   
   CountryAsylum_name_text <- df |> 
-    dplyr::distinct(CountryAsylumName) |> 
-    dplyr::pull()
+    distinct(CountryAsylumName) |> 
+    pull()
   
   year_breaks <- diff(range(df$Year)) + 1 
   
@@ -129,8 +144,8 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     geom_text(aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = scales::label_number( accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(Value)),
+                  label = label_number( accuracy = 1,
+                                   scale_cut = cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
               size = 5) +
@@ -143,14 +158,17 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     scale_fill_manual(values = cols_poptype,
                       drop = TRUE,
                       limits = force) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = year_breaks)) +
+    scale_x_continuous(breaks = pretty_breaks(n = year_breaks)) +
     scale_y_continuous(expand = expansion(c(0, 0.1))) +
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR Refugee Data Finder") +
-    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
-    stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number( accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(..y..), group = Year), 
+    theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+    stat_summary(fun = sum, aes(x = Year,
+                                y = Value, 
+                                label = label_number( accuracy = 1,
+                                                       scale_cut = cut_short_scale())(..y..), 
+                                group = Year), 
                  geom = "text", size = 5,
                  vjust = -0.5) +
     theme(legend.direction = "vertical",
@@ -223,6 +241,20 @@ After inflating the template
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
 #' 
 #' @export
 #'
@@ -232,9 +264,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
                                 top_n_countries = 9,
                                 pop_type = "REF"
                               ) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -247,25 +279,25 @@ plot_ctr_population_type_abs <- function(year = 2021,
   
   df <- 
   unhcrdatapackage::end_year_population_totals  |> 
-  dplyr::filter(CountryAsylumCode != "UKN",
+  filter(CountryAsylumCode != "UKN",
                 !is.na(CountryAsylumCode),
                 (Year == year | Year == year -1),  #### Parameter
                 CountryAsylumCode == country_asylum_iso3c, #### Parameter
   )  |>  
-  dplyr::select(Year, CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
-  dplyr::group_by(Year, CountryAsylumName, CountryOriginName) |>
-  dplyr::filter(!!sym(pop_type) != 0) |>
-  dplyr::mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
-  dplyr::ungroup() |>
-  dplyr::group_by(CountryAsylumName, CountryOriginName) |> 
-  dplyr::arrange(Year) |>
-  dplyr::mutate(diff_pop_type_value = scales::percent(((pop_type_value-lag(pop_type_value))/lag(pop_type_value)),
+  select(Year, CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
+  group_by(Year, CountryAsylumName, CountryOriginName) |>
+  filter(!!sym(pop_type) != 0) |>
+  mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
+  ungroup() |>
+  group_by(CountryAsylumName, CountryOriginName) |> 
+  arrange(Year) |>
+  mutate(diff_pop_type_value = percent(((pop_type_value-lag(pop_type_value))/lag(pop_type_value)),
                                                       accuracy = 1.1,
                                                       trim = FALSE
   )) |> 
-  dplyr::ungroup() |>
-  dplyr::filter(Year == year) |> 
-  dplyr::mutate(
+  ungroup() |>
+  filter(Year == year) |> 
+  mutate(
     origin_data_prot = forcats::fct_lump_n(
       f = CountryOriginName,
       n = top_n_countries,  #### Parameter
@@ -274,26 +306,26 @@ plot_ctr_population_type_abs <- function(year = 2021,
       ties.method = "last"
     )
   ) |>
-  dplyr::mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
+  mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
                                                             'Other nationalities'),
                 diff_pop_type_value = case_when(origin_data_prot == 'Other nationalities' ~ "",
                                                 TRUE ~ diff_pop_type_value)) |>
-  dplyr::group_by(CountryAsylumName, diff_pop_type_value, origin_data_prot) |>
-  dplyr::summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
-  dplyr::ungroup() |> 
-  dplyr::arrange(desc(pop_type_value)) |>
-  dplyr::filter(pop_type_value != 0L) |>
-  dplyr::mutate(
+  group_by(CountryAsylumName, diff_pop_type_value, origin_data_prot) |>
+  summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
+  ungroup() |> 
+  arrange(desc(pop_type_value)) |>
+  filter(pop_type_value != 0L) |>
+  mutate(
     origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
     origin_data_prot =  suppressWarnings(
-      dplyr::case_when(
+      case_when(
         origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(origin_data_prot,
                                                                          "Other nationalities",
                                                                          after = 0),
         TRUE ~ origin_data_prot
       )
     ),
-    perc = scales::percent(
+    perc = percent(
       pop_type_value / sum(pop_type_value),
       accuracy = 1,
       trim = TRUE
@@ -301,12 +333,11 @@ plot_ctr_population_type_abs <- function(year = 2021,
   )
 
 CountryAsylum_name_text <- df |> 
-  dplyr::distinct(CountryAsylumName) |> 
-  dplyr::pull()
+  distinct(CountryAsylumName) |> 
+  pull()
 
 
-p <- 
-  ggplot(df) +
+p <-  ggplot(df) +
   geom_col(aes(x = pop_type_value, y = origin_data_prot),
            fill = cols_poptype[[pop_type]][2],
            width = 0.8) +
@@ -316,8 +347,8 @@ p <-
     aes(
       x = pop_type_value,
       y = origin_data_prot,
-      label = scales::label_number(accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(pop_type_value)
+      label = label_number(accuracy = 1,
+                           scale_cut = cut_short_scale())(pop_type_value)
     ),
     hjust = -0.1 ,
     vjust = 0.5,
@@ -329,9 +360,8 @@ p <-
     aes(
       x = pop_type_value,
       y = origin_data_prot,
-      label = scales::label_number(accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(pop_type_value)
-    ),
+      label = label_number(accuracy = 1,
+                            scale_cut = cut_short_scale())(pop_type_value)),
     hjust = 1.1 ,
     vjust = 0.5,
     colour = "white",
@@ -383,9 +413,9 @@ p <-
   ) +
   labs(title = paste0(CountryAsylum_name_text, ": Main Countries of origin (", cols_poptype[[pop_type]][1], ")", " | ",  year),
        subtitle = "Number of people",
-       caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
+       caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
-  unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+  theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),
@@ -429,6 +459,21 @@ plot_ctr_population_type_abs(year = 2020,
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
@@ -437,9 +482,9 @@ plot_ctr_population_type_perc <- function(year = 2021,
                                 top_n_countries = 9,
                                 pop_type = "REF"
                               ) {
-    require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                       # VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -452,17 +497,17 @@ plot_ctr_population_type_perc <- function(year = 2021,
   
   df <-  
     unhcrdatapackage::end_year_population_totals  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
+    filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
     )  |>  
-    dplyr::select(CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
-    dplyr::group_by(CountryAsylumName, CountryOriginName) |>
-    dplyr::filter(!!sym(pop_type) != 0) |>
-    dplyr::mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
-    dplyr::ungroup() |>
-    dplyr::mutate(
+    select(CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
+    group_by(CountryAsylumName, CountryOriginName) |>
+    filter(!!sym(pop_type) != 0) |>
+    mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
+    ungroup() |>
+    mutate(
       origin_data_prot = forcats::fct_lump_n(
         f = CountryOriginName,
         n = top_n_countries,  #### Parameter
@@ -471,24 +516,24 @@ plot_ctr_population_type_perc <- function(year = 2021,
         ties.method = "last"
       )
     ) |>
-    dplyr::mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
+    mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
                                                               'Other nationalities')) |>
-    dplyr::group_by(CountryAsylumName,origin_data_prot) |>
-    dplyr::summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
-    dplyr::ungroup() |> 
-    dplyr::arrange(desc(pop_type_value)) |>
-    dplyr::filter(pop_type_value != 0L) |>
-    dplyr::mutate(
+    group_by(CountryAsylumName,origin_data_prot) |>
+    summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
+    ungroup() |> 
+    arrange(desc(pop_type_value)) |>
+    filter(pop_type_value != 0L) |>
+    mutate(
       origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
       origin_data_prot =  suppressWarnings(
-        dplyr::case_when(
+        case_when(
           origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(origin_data_prot,
                                                                            "Other nationalities",
                                                                            after = 0),
           TRUE ~ origin_data_prot
         )
       ),
-      perc = scales::percent(
+      perc = percent(
         pop_type_value / sum(pop_type_value),
         accuracy = 1,
         trim = FALSE
@@ -496,8 +541,8 @@ plot_ctr_population_type_perc <- function(year = 2021,
     )
   
   CountryAsylum_name_text <- df |> 
-    dplyr::distinct(CountryAsylumName) |> 
-    dplyr::pull()
+    distinct(CountryAsylumName) |> 
+    pull()
 
 
 
@@ -533,9 +578,9 @@ p <-
   ) +
   labs(title = paste0(CountryAsylum_name_text, ": Main Countries of origin (", cols_poptype[[pop_type]][1], ")", " | ",  year),
        subtitle = "Percentage",
-       caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
+       caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
- unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+ theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),
@@ -569,6 +614,21 @@ plot_ctr_population_type_perc(year = 2021,
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
@@ -576,33 +636,33 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type
 ) {
-    require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   diff_perc <- function(x){
-    x = as.numeric((x - dplyr::lag(x))/dplyr::lag(x)) + 0
+    x = as.numeric((x - lag(x))/lag(x)) + 0
     
   }
   
   
   df <- unhcrdatapackage::end_year_population_totals  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
+    filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   (Year == year-1 | Year == year),  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 
-    dplyr::group_by(Year, CountryAsylumName) |> 
-    dplyr::summarise(dplyr::across(where(is.numeric), sum)) |> 
-    dplyr::ungroup() |> 
-    dplyr::arrange(Year) |> 
-    dplyr::select(-c(Year)) |> 
-    dplyr::group_by(CountryAsylumName) |> 
-    dplyr::summarise(dplyr::across(where(is.numeric), 
+    group_by(Year, CountryAsylumName) |> 
+    summarise(across(where(is.numeric), sum)) |> 
+    ungroup() |> 
+    arrange(Year) |> 
+    select(-c(Year)) |> 
+    group_by(CountryAsylumName) |> 
+    summarise(across(where(is.numeric), 
                                    list(diffabs = diff,
                                         diffperc = diff_perc),
                                    .names = "{.col}_{.fn}")) |> 
-    dplyr::ungroup() |> 
-    dplyr::slice(2) 
+    ungroup() |> 
+    slice(2) 
   
   df <- replace(df, is.na(df), 0)
   
@@ -610,7 +670,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     tidyr::gather(v, value, REF_diffabs:OIP_diffperc) |> 
     tidyr::separate(v, c("pop_type", "value_type"), sep = "\\_") |> 
     tidyr::spread(key = value_type, value = value) |> 
-    dplyr::mutate(diffper =scales::percent(
+    mutate(diffper =percent(
       diffperc,
       accuracy = 1,
       trim = FALSE
@@ -618,7 +678,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   
   
   p <- df |> 
-    dplyr::filter(pop_type %in% pop_type) |>
+    filter(pop_type %in% pop_type) |>
     ggplot() +
     geom_col(aes(x = pop_type, 
                  y = diffabs,
@@ -650,9 +710,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       aes(
         x = pop_type,
         y = diffabs,
-        label = scales::label_number(accuracy = 1,
-                                     scale_cut = scales::cut_short_scale())(diffabs)
-      ),
+        label = label_number(accuracy = 1,
+                              scale_cut = cut_short_scale())(diffabs) ),
       vjust = -0.5 ,
       colour = "black",
       size = 5
@@ -673,8 +732,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       aes(
         x = pop_type,
         y = diffabs,
-        label = scales::label_number(accuracy = 1,
-                                     scale_cut = scales::cut_short_scale())(diffabs)
+        label = label_number(accuracy = 1,
+                             scale_cut = cut_short_scale())(diffabs)
       ),
       vjust = 2.7 ,
       colour = "white",
@@ -696,8 +755,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   #   aes(
   #     x = pop_type,
   #     y = diffabs,
-  #     label = scales::label_number(accuracy = 1,
-  #                                  scale_cut = scales::cut_short_scale())(diffabs)
+  #     label = label_number(accuracy = 1,
+  #                                  scale_cut = cut_short_scale())(diffabs)
   #   ),
   #   vjust = -2.0 ,
   #   colour = "white",
@@ -719,8 +778,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     aes(
       x = pop_type,
       y = diffabs,
-      label = scales::label_number(accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(diffabs)
+      label = label_number(accuracy = 1,
+                            scale_cut = cut_short_scale())(diffabs)
     ),
     vjust =  1.2,
     colour = "black",
@@ -739,15 +798,15 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     ) +
     geom_hline(yintercept = 0, color = "black") +
     labs(title = paste0(df |> 
-                          dplyr::distinct(CountryAsylumName) |> 
-                          dplyr::pull(), 
+                          distinct(CountryAsylumName) |> 
+                          pull(), 
                         ": Increases and Decreases in Population Groups | ",
                         year-1,
                         "-",
                         year),
          subtitle = "Number of people and percentage",
-         caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency")  + 
-    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+         caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency")  + 
+    theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
     theme(axis.line.x = element_line(color="white"),
           axis.text.x = element_text(size=10))
   
@@ -781,37 +840,52 @@ plot_ctr_diff_in_pop_groups(year = 2021,
 #' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
 plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
                                   pop_type = pop_type) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   
   
-Destination <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+Destination <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3"))  |>
-  dplyr::filter(CountryOriginCode  == country_origin_iso3c  & 
+  filter(CountryOriginCode  == country_origin_iso3c  & 
                  Year == year &
                 Population.type  %in% as.vector(pop_type)  )  |>  
-   dplyr::mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
          CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
          CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
          CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) |> 
    
-   dplyr::group_by( CountryAsylumName) |>
-   dplyr::summarise(DisplacedAcrossBorders = sum(Value) )  |>
-   dplyr::mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
-                            paste(scales::label_number( accuracy = .1,
-                                   scale_cut = scales::cut_short_scale())(DisplacedAcrossBorders)),
+   group_by( CountryAsylumName) |>
+   summarise(DisplacedAcrossBorders = sum(Value) )  |>
+   mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
+                            paste(label_number( accuracy = .1,
+                                   scale_cut = cut_short_scale())(DisplacedAcrossBorders)),
                             as.character(DisplacedAcrossBorders) ) ) |>
-   dplyr::arrange(desc(DisplacedAcrossBorders)) |>
+   arrange(desc(DisplacedAcrossBorders)) |>
    head(10) |>
-   dplyr::filter(DisplacedAcrossBorders >0)
+   filter(DisplacedAcrossBorders >0)
 
 if( nrow(Destination) ==  0 ){
   cat(paste0("There's no recorded countries of destination for ",country_origin_iso3c ))
@@ -826,7 +900,7 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
            position = "identity", 
            fill = "#0072bc") + # here we configure that it will be bar chart+
 ## Format axis number
-  scale_y_continuous( label = scales::label_number(scale_cut = cut_short_scale())) + 
+  scale_y_continuous( labels = label_number(scale_cut = cut_short_scale())) + 
   
   ## Position label differently in the bar in white - outside bar in black
   geom_label( data = subset(Destination, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),
@@ -893,6 +967,20 @@ plot_ctr_destination(year = 2021,
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line 
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
 #' 
 #' @export
 #'
@@ -900,19 +988,19 @@ plot_ctr_destination(year = 2021,
 plot_ctr_treemap <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
 
   datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
-    dplyr::filter(Year == year,  #### Parameter
+    filter(Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 
-    dplyr::select(-c(Year)) |> 
-    dplyr::group_by(CountryAsylumName,  Population.type, 
+    select(-c(Year)) |> 
+    group_by(CountryAsylumName,  Population.type, 
                     Population.type.label, Population.type.label.short) |> 
-    dplyr::summarise(dplyr::across(where(is.numeric), sum)) |> 
-    dplyr::ungroup() 
+    summarise(across(where(is.numeric), sum)) |> 
+    ungroup() 
   
   treemap <- ggplot(datatree, 
        aes(area = Value, 
@@ -931,7 +1019,7 @@ plot_ctr_treemap <- function(year = 2021,
                                           "OOC" ="#8395b9",
                                           "STA"="#E1CC0D")) +
          
-      unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
+      theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ", country_asylum_iso3c),
@@ -965,25 +1053,40 @@ plot_ctr_treemap(year = 2021,
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace str_detect
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
 plot_ctr_pyramid <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   
   demographics1 <- unhcrdatapackage::demographics |>
-                   dplyr::left_join( unhcrdatapackage::reference |> 
+                   left_join( unhcrdatapackage::reference |> 
                                        select(UNHCRBureau, iso_3),  
                                      by = c("CountryAsylumCode" = "iso_3")) |> 
-                   dplyr::filter(CountryAsylumCode  == country_asylum_iso3c &
+                   filter(CountryAsylumCode  == country_asylum_iso3c &
                                Year == year-1 &
                                Population.type  %in% as.vector(pop_type) ) |>
     
-                    dplyr::mutate ( totGen = FemaleTotal +MaleTotal,
+                    mutate ( totGen = FemaleTotal +MaleTotal,
                                totbreak = Female04 + Female511 + Female1217 + 
                                           Female1859 + Female60ormore + FemaleUnknown +
                                           Male04 + Male511 + Male1217 + Male1859 +
@@ -1219,6 +1322,362 @@ template_RegFactsheet <- function(year = 2021,
 }
 
 ```
+
+
+
+# Update Dataset
+    
+```{r function-update_dataset}
+#' Update the data on the package
+#' 
+#' Description
+#' 
+#' @return nothing just refresh the data .rda
+#' 
+#' @export
+update_dataset <- function(){
+  
+  # #install.packages("sinew")
+  # #devtools::install_github("mdlincoln/docthis")
+  # require(tidyverse)
+  # require(readr)
+  # require(sinew)
+  # require(here)  
+  # #library(docthis)
+  # 
+  # ckanr::ckanr_setup("https://data.humdata.org")
+  # 
+  # ckanr::package_search("name:unhcr-population-data-for-world", as = "table") %>% 
+  #   purrr::pluck("results", "resources", 1, "url") %>% 
+  #   purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
+  # 
+  # read_sans_hxl <- function(file, ...) {
+  #   hdrs <- readr::read_csv(file, n_max = 0) %>% names()
+  #   
+  #   readr::read_csv(file, col_names = hdrs, skip = 2, ...)
+  # }
+  # 
+  # 
+  # 
+  # ## Displaced ##########
+  # cat(pate0( ""))
+  # end_year_population_totals <- read_sans_hxl(here::here("data-raw","end_year_population_totals_residing_world.csv"))
+  # 
+  # 
+  # # Rename column to have proper Variable names
+  # end_year_population_totals <- plyr::rename(end_year_population_totals, c("Country of Origin Code"="CountryOriginCode",
+  #                                        "Country of Asylum Code"="CountryAsylumCode", 
+  #                                        "Country of Origin Name"="CountryOriginName",
+  #                                        "Country of Asylum Name"="CountryAsylumName", 
+  #                                        "Refugees"="REF", 
+  #                                        "Internally Displaced Persons"="IDP", 
+  #                                        "Asylum-seekers"="ASY",
+  #                                        "Others of Concern to UNHCR"="OOC",
+  #                                        "Stateless Persons"="STA",    
+  #                                       #  "Venezuelans Displaced Abroad"="VDA"
+  #                                        "Other people in need of international protection"="OIP"))
+  # 
+  # sinew::makeOxygen(end_year_population_totals, add_fields = "source")
+  # 
+  # save(end_year_population_totals, file =  here::here("data","end_year_population_totals.RData"))
+  # 
+  # 
+  # 
+  # 
+  # ## Create a long format for the dataset
+  # 
+  # end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
+  #                                            # ID variables - all the variables to keep but not split apart on
+  #                                            id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
+  #                                            # The source columns
+  #                                            measure.vars=c("REF","IDP", "ASY","OOC","STA","VDA"),
+  #                                            # Name of the destination column that will identify the original
+  #                                            # column that the measurement came from
+  #                                            variable.name="Population.type",
+  #                                            value.name="Value")
+  # 
+  # end_year_population_totals_long <- end_year_population_totals_long[end_year_population_totals_long$Value > 0, ]
+  # 
+  # end_year_population_totals_long$Population.type.label <- ""
+  # end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
+  # end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally Displaced Persons"
+  # end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
+  # end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+  # end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
+  # #end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+  # end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OIP"] <- "Other people in need of international protection"
+  # 
+  # end_year_population_totals_long$Population.type.label.short <- ""
+  # end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
+  # end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="IDP"] <- "IDPs"
+  # end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
+  # end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern"
+  # end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
+  # #end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
+  # end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OIP"] <- "In need of int. protect."
+  # 
+  #   
+  # save(end_year_population_totals_long, file =  here::here("data","end_year_population_totals_long.RData"))
+  # 
+  # 
+  # 
+  # 
+  # ## Solutions ##########
+  # 
+  # solutions_residing <- read_sans_hxl(here::here("data-raw","solutions_residing_world.csv"))
+  # 
+  # sinew::makeOxygen(solutions_residing, add_fields = "source")
+  # # Rename column to have proper Variable names
+  # solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="CountryOriginCode",
+  #                                                                          "Country of Asylum Code"="CountryAsylumCode", 
+  #                                                                          "Country of Origin Name"="CountryOriginName",
+  #                                                                          "Country of Asylum Name"="CountryAsylumName", 
+  #                                                                          "Resettlement arrivals"="RST",
+  #                                                                          "Refugee returns"="RET",
+  #                                                                          "Naturalisation"="NAT",
+  #                                                                          "IDP returns"="RDP" ))
+  # 
+  # save(solutions, file =  here::here("data","solutions.RData"))
+  # sinew::makeOxygen(solutions, add_fields = "source")
+  # 
+  # solutions_long <- reshape2::melt(solutions,
+  #                                                   # ID variables - all the variables to keep but not split apart on
+  #                                                   id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
+  #                                                   # The source columns
+  #                                                   measure.vars=c("NAT","RST", "RET","RDP"),
+  #                                                   # Name of the destination column that will identify the original
+  #                                                   # column that the measurement came from
+  #                                                   variable.name="Solution.type",
+  #                                                   value.name="Value")
+  # 
+  # solutions_long <- solutions_long[solutions_long$Value > 0, ]
+  # 
+  # 
+  # solutions_long$Solution.type.label <- ""
+  # solutions_long$Solution.type.label[solutions_long$Solution.type=="RST"] <- "Resettlement arrivals"
+  # solutions_long$Solution.type.label[solutions_long$Solution.type=="NAT"] <- "Naturalisation"
+  # solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
+  # solutions_long$Solution.type.label[solutions_long$Solution.type=="RDP"] <- "IDP returns"
+  # 
+  # save(solutions_long , file =  here::here("data","solutions_long.RData"))
+  # sinew::makeOxygen(solutions_long , add_fields = "source")
+  # 
+  # ## Demographics ##########
+  # 
+  # demographics_residing <- read_sans_hxl(here::here("data-raw","demographics_residing_world.csv"))
+  # 
+  # names(demographics_residing)
+  # 
+  # sinew::makeOxygen(demographics_residing, add_fields = "source")
+  # # Rename column to have proper Variable names
+  # demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="CountryOriginCode",
+  #                                                          "Country of Asylum Code"="CountryAsylumCode", 
+  #                                                          "Country of Origin Name"="CountryOriginName",
+  #                                                          "Country of Asylum Name"="CountryAsylumName",  
+  #                                                          "Population Type"= "Population.type",
+  #                                                          "Female 0-4"="Female04", 
+  #                                                          "Female 5-11"="Female511", 
+  #                                                          "Female 12-17"="Female1217", 
+  #                                                          "Female 18-59"="Female1859",
+  #                                                          "Female 60 or more"="Female60ormore",
+  #                                                          "Female Unknown"="FemaleUnknown",
+  #                                                          "Female Total"="FemaleTotal", 
+  #                                                          "Male 0-4"="Male04", 
+  #                                                          "Male 5-11"="Male511", 
+  #                                                          "Male 12-17"="Male1217", 
+  #                                                          "Male 18-59"="Male1859",
+  #                                                          "Male 60 or more"="Male60ormore",
+  #                                                          "Male Unknown"="MaleUnknown",
+  #                                                          "Male Total"="MaleTotal")
+  #                                                          )
+  # 
+  # 
+  # #names(demographics)
+  # 
+  # demographics$Population.type.label <- ""
+  # demographics$Population.type.label[demographics$Population.type=="REF"] <- "Refugees"
+  # demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Internally Displaced Persons"
+  # demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum-seekers"
+  # demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+  # demographics$Population.type.label[demographics$Population.type=="STA"] <- "Stateless Persons"
+  # #demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
+  # demographics$Population.type.label[demographics$Population.type=="OIP"] <- "Other people in need of international protection"
+  # demographics$Population.type.label[demographics$Population.type=="RET"] <- "Refugee returns"
+  # demographics$Population.type.label[demographics$Population.type=="RDP"] <- "IDP returns"
+  # 
+  # demographics$Population.type.label.short <- ""
+  # demographics$Population.type.label.short[demographics$Population.type=="REF"] <- "Refugees"
+  # demographics$Population.type.label.short[demographics$Population.type=="IDP"] <- "IDPs"
+  # demographics$Population.type.label.short[demographics$Population.type=="ASY"] <- "Asylum-seekers"
+  # demographics$Population.type.label.short[demographics$Population.type=="OOC"] <- "Others of Concern"
+  # demographics$Population.type.label.short[demographics$Population.type=="STA"] <- "Stateless Persons"
+  # #demographics$Population.type.label.short[demographics$Population.type=="VDA"] <- "Venezuelans Abroad"
+  # demographics$Population.type.label.short[demographics$Population.type=="OIP"] <- "In need of int. protect."
+  # demographics$Population.type.label.short[demographics$Population.type=="RET"] <- "Refugee returns"
+  # demographics$Population.type.label.short[demographics$Population.type=="RDP"] <- "IDP returns"
+  # 
+  # # names(demographics)
+  # # table(demographics$location, useNA = "ifany")
+  # # table(demographics$urbanRural, useNA = "ifany")
+  # # table(demographics$accommodationType, useNA = "ifany")
+  # # table(demographics$Population.type.label.short, useNA = "ifany")
+  # 
+  # save(demographics, file =  here::here("data","demographics.RData"))
+  # 
+  # ## RSD Application ########## 
+  # asylum_applications_residing <- read_sans_hxl(here::here("data-raw","asylum_applications_residing_world.csv"))
+  # 
+  # sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
+  # 
+  # # Rename column to have proper Variable names
+  # asylum_applications <- plyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
+  #                                                                     "Country of Asylum Code"="CountryAsylumCode", 
+  #                                                                     "Country of Origin Name"="CountryOriginName",
+  #                                                                     "Country of Asylum Name"="CountryAsylumName", 
+  #                                                                     "Procedure Type"="ProcedureType",                      
+  #                                                                     "Procedure Name"="ProcedureName",                      
+  #                                                                     "Application Type Code"="ApplicationTypeCode",               
+  #                                                                     "Application Type"="ApplicationType",                    
+  #                                                                     "Application Data Type"="ApplicationDataType",               
+  #                                                                     "Application Data"="ApplicationData",                    
+  #                                                                     "Application Average Persons Per Case"="ApplicationAveragePersonsPerCase",
+  #                                                                     "Number of Applications"="NumberApplications" 
+  # )
+  # )
+  # 
+  # asylum_applications$ApplicationType[asylum_applications$ApplicationTypeCode == "V"] <- "Various"
+  # asylum_applications$ApplicationTypeCode[asylum_applications$ApplicationType == "New and appeal"] <- "NA"
+  # 
+  # #View(unique(asylum_applications[ ,c("ApplicationTypeCode","ApplicationType")]))
+  # 
+  # save(asylum_applications, file =  here::here("data","asylum_applications.RData"))
+  # 
+  # # View(unique(asylum_applications[ ,c("ProcedureType",  "ProcedureName")]))
+  # # 
+  # # View(unique(asylum_applications[ ,c("ApplicationDataType","ApplicationData")]))
+  # 
+  # ## RSD Decision ##########
+  # asylum_decisions_residing <- read_sans_hxl(here::here("data-raw","asylum_decisions_residing_world.csv"))
+  # 
+  # sinew::makeOxygen(asylum_decisions_residing, add_fields = "source")
+  # # Rename column to have proper Variable names
+  # asylum_decisions <- plyr::rename(asylum_decisions_residing, c("Country of Origin Code"="CountryOriginCode",
+  #                                                                "Country of Asylum Code"="CountryAsylumCode", 
+  #                                                                "Country of Origin Name"="CountryOriginName",
+  #                                                                "Country of Asylum Name"="CountryAsylumName", 
+  #                                                                "Procedure Type"="ProcedureType",                    
+  #                                                                "Procedure Name"="ProcedureName",                    
+  #                                                                "Decision Type Code"="DecisionTypeCode",                
+  #                                                                "Decision Data Type"="DecisionDataType",                
+  #                                                                "Decision Data"="DecisionData",                     
+  #                                                                "Decisions Average Persons Per Case"= "DecisionsAveragePersonsPerCase",
+  #                                                                "Complementary Protection"="ComplementaryProtection",          
+  #                                                                "Otherwise Closed" ="OtherwiseClosed",                
+  #                                                                "Total Decided" = "TotalDecided"
+  #                                                                )
+  # )
+  # 
+  # 
+  # # View(unique(asylum_decisions[ ,c("ProcedureType",  "ProcedureName")]))
+  # # View(unique(asylum_decisions[ ,c("DecisionTypeCode")]))
+  # 
+  # asylum_decisions$DecisionTypeName <- ""
+  # asylum_decisions$DecisionTypeCode[is.na(asylum_decisions$DecisionTypeCode) ] <- "NA"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "FI"] <- "First instance"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "AR"] <- "Re-opened/repeat"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "FA"] <- "First instance and appeal"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "BL"] <- "BL"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "NA"] <- "New applications"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "RA"] <- "Repeat/reopened applications"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "CA"] <- "CA"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "EO"] <- "US Executive Office of Immigration Review"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "IN"] <- "US Citizenship and Immigration Services"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TR"] <- "TR"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "JR"] <- "Judicial Review "
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "SP"] <- "Subsidiary protection"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TA"] <- "Temporary asylum"
+  # asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TP"] <- "Temporary Protection" 
+  # 
+  # #View(unique(asylum_decisions[ ,c("DecisionTypeCode","DecisionTypeName")])) 
+  # sinew::makeOxygen(asylum_decisions, add_fields = "source")
+  # save(asylum_decisions, file =  here::here("data","asylum_decisions.RData"))
+  # 
+  # 
+  # ## RDS Decision Long format ########
+  # 
+  # #names(asylum_decisions)
+  # 
+  # asylum_decisions_long <- reshape2::melt(asylum_decisions,
+  #                                                   # ID variables - all the variables to keep but not split apart on
+  #                                                   id.vars=c("Year", "CountryOriginCode","CountryAsylumCode",
+  #                                                             "CountryOriginName","CountryAsylumName",
+  #                                                             "ProcedureType",  "ProcedureName",
+  #                                                             "DecisionTypeCode","DecisionTypeName",
+  #                                                             "DecisionData","DecisionsAveragePersonsPerCase"),
+  #                                                   # The source columns
+  #                                                   measure.vars=c("Recognized","ComplementaryProtection","OtherwiseClosed","Rejected"),
+  #                                                   # Name of the destination column that will identify the original
+  #                                                   # column that the measurement came from
+  #                                                   variable.name="Decision.output",
+  #                                                   value.name="Value")
+  # 
+  # asylum_decisions_long <- asylum_decisions_long[asylum_decisions_long$Value > 0, ]
+  # 
+  # sinew::makeOxygen(asylum_decisions_long, add_fields = "source")
+  # save(asylum_decisions_long, file =  here::here("data","asylum_decisions_long.RData"))
+  # 
+  # 
+  # 
+  # ## merge RSD processing ##############
+  # # asylum <- left_join( x= asylum_applications, y = asylum_decisions, by = c("Year",
+  # #                                                                                 "CountryOriginCode",
+  # #                                                                                 "CountryAsylumCode", 
+  # #                                                                                 "CountryOriginName",
+  # #                                                                                 "CountryAsylumName",
+  # #                                                                                 "ProcedureType" ,
+  # #                                                                                 "ProcedureName"  ))
+  # # 
+  # # ## Difference between applied and processed
+  # # #names(asylum)
+  # # asylum$gapapplieddecided <- asylum$TotalDecided - asylum$NumberApplications
+  # # table(asylum$gapapplieddecided, useNA = "ifany")
+  # 
+  # 
+  # ## Reference ######
+  # 
+  # reference <- readr::read_csv(here::here("data-raw","reference.csv"))
+  # save(reference, file =  here::here("data","reference.RData"))
+  # sinew::makeOxygen(reference, add_fields = "source")
+  # 
+  # 
+  # 
+  # # Note: significantly better compression could be obtained
+  # #by using R CMD build --resave-data
+  # 
+  # tools::resaveRdaFiles(here::here("data","asylum_applications.RData"),compress="bzip2")
+  # tools::resaveRdaFiles(here::here("data","asylum_decisions.RData"),compress="bzip2")
+  # tools::resaveRdaFiles(here::here("data","asylum_decisions_long.RData"),compress="xz")
+  # tools::resaveRdaFiles(here::here("data","demographics.RData"),compress="bzip2")
+  # tools::resaveRdaFiles(here::here("data","end_year_population_totals.RData"),compress="bzip2")
+  # tools::resaveRdaFiles(here::here("data","end_year_population_totals_long.RData"),compress="xz")
+  # tools::resaveRdaFiles(here::here("data","migrants.RData"),compress="xz")
+  # tools::resaveRdaFiles(here::here("data","reference.RData"),compress="xz")
+  # tools::resaveRdaFiles(here::here("data","solutions.RData"),compress="bzip2")
+  # tools::resaveRdaFiles(here::here("data","solutions_long.RData"),compress="xz")
+  #   
+}
+```
+  
+```{r example-update_dataset}
+update_dataset()
+```
+  
+```{r tests-update_dataset}
+test_that("update_dataset works", {
+  expect_true(inherits(update_dataset, "function")) 
+})
+```
+  
 
 
 ```{r development-inflate, eval=FALSE}

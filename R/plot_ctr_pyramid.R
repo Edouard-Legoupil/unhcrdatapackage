@@ -6,6 +6,21 @@
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace str_detect
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
@@ -19,19 +34,19 @@
 plot_ctr_pyramid <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   
   demographics1 <- unhcrdatapackage::demographics |>
-                   dplyr::left_join( unhcrdatapackage::reference |> 
+                   left_join( unhcrdatapackage::reference |> 
                                        select(UNHCRBureau, iso_3),  
                                      by = c("CountryAsylumCode" = "iso_3")) |> 
-                   dplyr::filter(CountryAsylumCode  == country_asylum_iso3c &
+                   filter(CountryAsylumCode  == country_asylum_iso3c &
                                Year == year-1 &
                                Population.type  %in% as.vector(pop_type) ) |>
     
-                    dplyr::mutate ( totGen = FemaleTotal +MaleTotal,
+                    mutate ( totGen = FemaleTotal +MaleTotal,
                                totbreak = Female04 + Female511 + Female1217 + 
                                           Female1859 + Female60ormore + FemaleUnknown +
                                           Male04 + Male511 + Male1217 + Male1859 +

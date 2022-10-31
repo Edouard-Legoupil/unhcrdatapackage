@@ -5,6 +5,21 @@
 #' @param start_year Numeric value of first year  
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
 #'
 #' @export
 #'
@@ -27,9 +42,9 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
                                      pop_type = Population.type
                                      ) {
   
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   cols_poptype <- c("Asylum-seekers" = "#18375F",
                     "Refugees" = "#0072BC",
                     #"Venezuelans Displaced Abroad" = "#EF4A60", 
@@ -40,19 +55,19 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
   
   
   df <- unhcrdatapackage::end_year_population_totals_long  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
+    filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year >= start_year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
                   Population.type %in% pop_type #### Parameter
     )  |>  
-    dplyr::group_by(Year, CountryAsylumName, Population.type.label)  |> 
-    dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
-    dplyr::ungroup()
+    group_by(Year, CountryAsylumName, Population.type.label)  |> 
+    summarise(Value = sum(Value, na.rm = TRUE)) |> 
+    ungroup()
   
   CountryAsylum_name_text <- df |> 
-    dplyr::distinct(CountryAsylumName) |> 
-    dplyr::pull()
+    distinct(CountryAsylumName) |> 
+    pull()
   
   year_breaks <- diff(range(df$Year)) + 1 
   
@@ -62,8 +77,8 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     geom_text(aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = scales::label_number( accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(Value)),
+                  label = label_number( accuracy = 1,
+                                   scale_cut = cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
               size = 5) +
@@ -76,14 +91,17 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     scale_fill_manual(values = cols_poptype,
                       drop = TRUE,
                       limits = force) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = year_breaks)) +
+    scale_x_continuous(breaks = pretty_breaks(n = year_breaks)) +
     scale_y_continuous(expand = expansion(c(0, 0.1))) +
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR Refugee Data Finder") +
-    unhcrthemes::theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
-    stat_summary(fun = sum, aes(x = Year, y = Value, label = scales::label_number( accuracy = 1,
-                                   scale_cut = scales::cut_short_scale())(..y..), group = Year), 
+    theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+    stat_summary(fun = sum, aes(x = Year,
+                                y = Value, 
+                                label = label_number( accuracy = 1,
+                                                       scale_cut = cut_short_scale())(..y..), 
+                                group = Year), 
                  geom = "text", size = 5,
                  vjust = -0.5) +
     theme(legend.direction = "vertical",

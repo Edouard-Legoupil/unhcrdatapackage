@@ -5,6 +5,20 @@
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line 
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
 #' 
 #' @export
 #'
@@ -19,19 +33,19 @@
 plot_ctr_treemap <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type) {
-  require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
 
   datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
-    dplyr::filter(Year == year,  #### Parameter
+    filter(Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 
-    dplyr::select(-c(Year)) |> 
-    dplyr::group_by(CountryAsylumName,  Population.type, 
+    select(-c(Year)) |> 
+    group_by(CountryAsylumName,  Population.type, 
                     Population.type.label, Population.type.label.short) |> 
-    dplyr::summarise(dplyr::across(where(is.numeric), sum)) |> 
-    dplyr::ungroup() 
+    summarise(across(where(is.numeric), sum)) |> 
+    ungroup() 
   
   treemap <- ggplot(datatree, 
        aes(area = Value, 
@@ -50,7 +64,7 @@ plot_ctr_treemap <- function(year = 2021,
                                           "OOC" ="#8395b9",
                                           "STA"="#E1CC0D")) +
          
-      unhcrthemes::theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
+      theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ", country_asylum_iso3c),

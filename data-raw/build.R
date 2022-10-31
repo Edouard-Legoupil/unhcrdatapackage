@@ -37,7 +37,7 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Refugees"="REF", 
                                        "Internally Displaced Persons"="IDP", 
                                        "Asylum-seekers"="ASY",
-                                       "Others of Concern to UNHCR"="OOC",
+                                       "Others of concern"="OOC",
                                        "Stateless Persons"="STA",    
                                       #  "Venezuelans Displaced Abroad"="VDA"
                                        "Other people in need of international protection"="OIP"))
@@ -67,7 +67,7 @@ end_year_population_totals_long$Population.type.label <- ""
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally Displaced Persons"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
-end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of concern"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
 #end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OIP"] <- "Other people in need of international protection"
@@ -163,7 +163,7 @@ demographics$Population.type.label <- ""
 demographics$Population.type.label[demographics$Population.type=="REF"] <- "Refugees"
 demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Internally Displaced Persons"
 demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum-seekers"
-demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of Concern to UNHCR"
+demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of concern"
 demographics$Population.type.label[demographics$Population.type=="STA"] <- "Stateless Persons"
 #demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
 demographics$Population.type.label[demographics$Population.type=="OIP"] <- "Other people in need of international protection"

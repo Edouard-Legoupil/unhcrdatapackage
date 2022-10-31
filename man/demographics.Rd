@@ -15,8 +15,8 @@ A data frame with 182359 rows and 24 variables:
   \item{\code{Population.type}}{character Population Type: Population types are expressed in the data as follows:
   *    `REF` – Refugee  
   *    `ROC` – People in refugee-like situation  
-  *    `ASY` – Asylum seekers  
-  *    `VDA` – Venezuelans displaced abroad  
+  *    `ASY` – Asylum seekers   
+  *    `OIP` – Other people in need of international protection  
   *    `IDP` – Internally displaced persons  
   *    `IOC` – People in IDP-like situation  
   *    `STA` – Stateless persons  

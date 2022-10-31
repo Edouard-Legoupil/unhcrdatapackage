@@ -269,3 +269,19 @@ plot_ctr_pyramid(year = 2021,
 
 # Template
 
+# Update Dataset
+
+    
+
+  
+
+```{r example-update_dataset}
+update_dataset()
+```
+
+  
+
+  
+
+
+

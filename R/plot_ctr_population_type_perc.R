@@ -7,6 +7,21 @@
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
 #' @export
 #'
 
@@ -21,9 +36,9 @@ plot_ctr_population_type_perc <- function(year = 2021,
                                 top_n_countries = 9,
                                 pop_type = "REF"
                               ) {
-    require(ggplot2)
-  require(tidyverse)
-  require(scales)
+
+
+
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                       # VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -36,17 +51,17 @@ plot_ctr_population_type_perc <- function(year = 2021,
   
   df <-  
     unhcrdatapackage::end_year_population_totals  |> 
-    dplyr::filter(CountryAsylumCode != "UKN",
+    filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
     )  |>  
-    dplyr::select(CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
-    dplyr::group_by(CountryAsylumName, CountryOriginName) |>
-    dplyr::filter(!!sym(pop_type) != 0) |>
-    dplyr::mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
-    dplyr::ungroup() |>
-    dplyr::mutate(
+    select(CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
+    group_by(CountryAsylumName, CountryOriginName) |>
+    filter(!!sym(pop_type) != 0) |>
+    mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
+    ungroup() |>
+    mutate(
       origin_data_prot = forcats::fct_lump_n(
         f = CountryOriginName,
         n = top_n_countries,  #### Parameter
@@ -55,24 +70,24 @@ plot_ctr_population_type_perc <- function(year = 2021,
         ties.method = "last"
       )
     ) |>
-    dplyr::mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
+    mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
                                                               'Other nationalities')) |>
-    dplyr::group_by(CountryAsylumName,origin_data_prot) |>
-    dplyr::summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
-    dplyr::ungroup() |> 
-    dplyr::arrange(desc(pop_type_value)) |>
-    dplyr::filter(pop_type_value != 0L) |>
-    dplyr::mutate(
+    group_by(CountryAsylumName,origin_data_prot) |>
+    summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
+    ungroup() |> 
+    arrange(desc(pop_type_value)) |>
+    filter(pop_type_value != 0L) |>
+    mutate(
       origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
       origin_data_prot =  suppressWarnings(
-        dplyr::case_when(
+        case_when(
           origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(origin_data_prot,
                                                                            "Other nationalities",
                                                                            after = 0),
           TRUE ~ origin_data_prot
         )
       ),
-      perc = scales::percent(
+      perc = percent(
         pop_type_value / sum(pop_type_value),
         accuracy = 1,
         trim = FALSE
@@ -80,8 +95,8 @@ plot_ctr_population_type_perc <- function(year = 2021,
     )
   
   CountryAsylum_name_text <- df |> 
-    dplyr::distinct(CountryAsylumName) |> 
-    dplyr::pull()
+    distinct(CountryAsylumName) |> 
+    pull()
 
 
 
@@ -117,9 +132,9 @@ p <-
   ) +
   labs(title = paste0(CountryAsylum_name_text, ": Main Countries of origin (", cols_poptype[[pop_type]][1], ")", " | ",  year),
        subtitle = "Percentage",
-       caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
+       caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
- unhcrthemes::theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+ theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),
