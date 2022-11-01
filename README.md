@@ -10,10 +10,10 @@ This package promotes [reproducible approaches](https://unhcr-americas.github.io
 First install UNHCR branding packages for R as showcased here: https://dataviz.unhcr.org/tools/r/
 
 ```{r}
-devtools::install_github("vidonne/unhcrdesign")
-devtools::install_github("vidonne/unhcrthemes")
-devtools::install_github("vidonne/unhcrdown")
-devtools::install_github("edouard-legoupil/unhcrdatapackage")
+remotes::install_github("vidonne/unhcrdesign")
+remotes::install_github("vidonne/unhcrthemes")
+remotes::install_github("vidonne/unhcrdown")
+remotes::install_github("edouard-legoupil/unhcrdatapackage")
 ```
 
 ## Chart Library
