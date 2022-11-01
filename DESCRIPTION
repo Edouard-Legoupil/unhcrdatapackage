@@ -1,31 +1,41 @@
 Type: Package
 Package: unhcrdatapackage
 Title: UNHCR Population statistics Database
-Version: 0.1.3
+Version: 0.1.5
 Authors@R: c(
     person("Edouard", "Legoupil", , "legoupil@unhcr.org", role = c("aut", "cre")),
     person("Matheus", "Soldi Hardt", , "matheus@unhcr.org", role = "aut"),
-    person("Hisham", "Galal", , "galalh@unhcr.org", role = "aut")
+    person("Hisham", "Galal", , "galalh@unhcr.org", role = "ctb")
   )
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
 Description: This is a data package with all frame organised and reshapped
     for easy consumptions in R. For more information, please see consult
     [https://www.unhcr.org/refugee-statistics/](https://www.unhcr.org/refugee-statistics).
 License: Creative Commons Attribution 4.0 International Public License
-URL: https://unhcr.github.io/unhcrdatapackage/docs/
-BugReports: https://github.com/unhcr/unhcrdatapackage/issues
+URL: https://edouard-legoupil.github.io/unhcrdatapackage/docs/
+BugReports: https://github.com/edouard-legoupil/unhcrdatapackage/issues
 Imports: 
+    ckanr,
     dplyr,
     forcats,
+    fs,
     ggplot2,
+    here,
+    magrittr,
+    plyr,
+    purrr,
+    readr,
+    reshape2,
     scales,
     showtext,
+    sinew,
     stats,
     stringr,
     sysfonts,
     systemfonts,
     tidyr,
     tidyselect,
+    tools,
     treemapify,
     unhcrthemes,
     utils

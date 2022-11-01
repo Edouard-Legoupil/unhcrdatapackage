@@ -46,6 +46,9 @@
     <loc>/reference/migrants.html</loc>
   </url>
   <url>
+    <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ctr_destination.html</loc>
   </url>
   <url>
@@ -77,5 +80,11 @@
   </url>
   <url>
     <loc>/reference/template_CtryFactsheet.html</loc>
+  </url>
+  <url>
+    <loc>/reference/template_RegFactsheet.html</loc>
+  </url>
+  <url>
+    <loc>/reference/update_dataset.html</loc>
   </url>
 </urlset>

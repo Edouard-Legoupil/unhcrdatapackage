@@ -47,4 +47,8 @@ reference:
 - title: Report Template
   desc: Prebuild Report template to explore, interpret & Disseminate
   contents:
-  - starts_with("template_")    
+  - starts_with("template_")  
+- title: Update Data 
+  desc: Refresh the data every 6 months.. 
+  contents:
+  - starts_with("update_")    

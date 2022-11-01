@@ -10,8 +10,8 @@ update_dataset()
 nothing just refresh the data .rda
 }
 \description{
-Description
+The function pull the data from https://data.humdata.org/dataset/unhcr-population-data-for-world and do a few adjustement before inserting them in the package
 }
 \examples{
-update_dataset()
+#update_dataset()
 }

@@ -26,7 +26,7 @@ read_sans_hxl <- function(file, ...) {
 
 ## Displaced ##########
 
-end_year_population_totals <- read_sans_hxl("data-raw/end_year_population_totals_residing_world.csv")
+end_year_population_totals <- read_sans_hxl(file =  here::here("data-raw","end_year_population_totals_residing_world.csv"))
 
 
 # Rename column to have proper Variable names
@@ -35,17 +35,23 @@ end_year_population_totals <- plyr::rename(end_year_population_totals, c("Countr
                                        "Country of Origin Name"="CountryOriginName",
                                        "Country of Asylum Name"="CountryAsylumName", 
                                        "Refugees"="REF", 
-                                       "Internally Displaced Persons"="IDP", 
-                                       "Asylum-seekers"="ASY",
-                                       "Others of concern"="OOC",
+                                       "Internally displaced persons"="IDP", 
+                                       "Asylum seekers"="ASY",
+                                       "Others of concern to UNHCR"="OOC",
                                        "Stateless Persons"="STA",    
                                       #  "Venezuelans Displaced Abroad"="VDA"
+                                       "Host community" = "HCO",
                                        "Other people in need of international protection"="OIP"))
+cat(names(end_year_population_totals))
 
 sinew::makeOxygen(end_year_population_totals, add_fields = "source")
 
-save(end_year_population_totals, file =  "data/end_year_population_totals.RData")
+save(end_year_population_totals, file =  here::here("data","end_year_population_totals.RData"))
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+tools::resaveRdaFiles(here::here("data","end_year_population_totals.RData"),compress="bzip2")
 
+ 
 
 
 
@@ -55,7 +61,7 @@ end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
                                            # ID variables - all the variables to keep but not split apart on
                                            id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
                                            # The source columns
-                                           measure.vars=c("REF","IDP", "ASY","OOC","STA","VDA"),
+                                           measure.vars=c("REF","IDP", "ASY","OOC","STA","VDA","HC"),
                                            # Name of the destination column that will identify the original
                                            # column that the measurement came from
                                            variable.name="Population.type",
@@ -65,31 +71,36 @@ end_year_population_totals_long <- end_year_population_totals_long[end_year_popu
 
 end_year_population_totals_long$Population.type.label <- ""
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
-end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally Displaced Persons"
-end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
-end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of concern"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally displaced persons"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum seekers"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of concern to UNHCR"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
 #end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
 end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OIP"] <- "Other people in need of international protection"
+end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="HCO"] <- "Host community"
 
 end_year_population_totals_long$Population.type.label.short <- ""
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="IDP"] <- "IDPs"
-end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum-seekers"
-end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OOC"] <- "Others of Concern"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum seekers"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OOC"] <- "Others of concern"
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
 #end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
 end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OIP"] <- "In need of int. protect."
+#end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
+end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="HCO"] <- "Host community"
 
   
-save(end_year_population_totals_long, file =  "data/end_year_population_totals_long.RData")
-
+save(end_year_population_totals_long, file =  here::here("data","end_year_population_totals_long.RData"))
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data 
+tools::resaveRdaFiles(here::here("data","end_year_population_totals_long.RData"),compress="xz") 
 
 
 
 ## Solutions ##########
 
-solutions_residing <- read_sans_hxl("data-raw/solutions_residing_world.csv")
+solutions_residing <- read_sans_hxl(file =  here::here("data-raw","solutions_residing_world.csv"))
 
 sinew::makeOxygen(solutions_residing, add_fields = "source")
 # Rename column to have proper Variable names
@@ -102,8 +113,11 @@ solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="Countr
                                                                          "Naturalisation"="NAT",
                                                                          "IDP returns"="RDP" ))
 
-save(solutions, file =  "data/solutions.RData")
+save(solutions, file =  here::here("data","solutions.RData"))
 sinew::makeOxygen(solutions, add_fields = "source")
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+tools::resaveRdaFiles(here::here("data","solutions.RData"),compress="bzip2")
 
 solutions_long <- reshape2::melt(solutions,
                                                   # ID variables - all the variables to keep but not split apart on
@@ -124,12 +138,15 @@ solutions_long$Solution.type.label[solutions_long$Solution.type=="NAT"] <- "Natu
 solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
 solutions_long$Solution.type.label[solutions_long$Solution.type=="RDP"] <- "IDP returns"
 
-save(solutions_long , file =  "data/solutions_long.RData")
+save(solutions_long , file =  here::here("data","solutions_long.RData"))
 sinew::makeOxygen(solutions_long , add_fields = "source")
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+tools::resaveRdaFiles(here::here("data","solutions_long.RData"),compress="xz")
 
 ## Demographics ##########
 
-demographics_residing <- read_sans_hxl("data-raw/demographics_residing_world.csv")
+demographics_residing <- read_sans_hxl(file =  here::here("data-raw","demographics_residing_world.csv"))
 
 names(demographics_residing)
 
@@ -161,23 +178,25 @@ demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="
 
 demographics$Population.type.label <- ""
 demographics$Population.type.label[demographics$Population.type=="REF"] <- "Refugees"
-demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Internally Displaced Persons"
-demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum-seekers"
-demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of concern"
+demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Internally displaced persons"
+demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum seekers"
+demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of concern to UNHCR"
 demographics$Population.type.label[demographics$Population.type=="STA"] <- "Stateless Persons"
 #demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
 demographics$Population.type.label[demographics$Population.type=="OIP"] <- "Other people in need of international protection"
+demographics$Population.type.label[demographics$Population.type=="HCO"] <- "Host community" 
 demographics$Population.type.label[demographics$Population.type=="RET"] <- "Refugee returns"
 demographics$Population.type.label[demographics$Population.type=="RDP"] <- "IDP returns"
 
 demographics$Population.type.label.short <- ""
 demographics$Population.type.label.short[demographics$Population.type=="REF"] <- "Refugees"
 demographics$Population.type.label.short[demographics$Population.type=="IDP"] <- "IDPs"
-demographics$Population.type.label.short[demographics$Population.type=="ASY"] <- "Asylum-seekers"
+demographics$Population.type.label.short[demographics$Population.type=="ASY"] <- "Asylum seekers"
 demographics$Population.type.label.short[demographics$Population.type=="OOC"] <- "Others of Concern"
 demographics$Population.type.label.short[demographics$Population.type=="STA"] <- "Stateless Persons"
 #demographics$Population.type.label.short[demographics$Population.type=="VDA"] <- "Venezuelans Abroad"
 demographics$Population.type.label.short[demographics$Population.type=="OIP"] <- "In need of int. protect."
+demographics$Population.type.label.short[demographics$Population.type=="HCO"] <- "Host community" 
 demographics$Population.type.label.short[demographics$Population.type=="RET"] <- "Refugee returns"
 demographics$Population.type.label.short[demographics$Population.type=="RDP"] <- "IDP returns"
 
@@ -187,10 +206,13 @@ demographics$Population.type.label.short[demographics$Population.type=="RDP"] <-
 # table(demographics$accommodationType, useNA = "ifany")
 # table(demographics$Population.type.label.short, useNA = "ifany")
 
-save(demographics, file =  "data/demographics.RData")
+save(demographics, file =  here::here("data","demographics.RData"))
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data 
+tools::resaveRdaFiles(here::here("data","demographics.RData"),compress="bzip2")
 
 ## RSD Application ########## 
-asylum_applications_residing <- read_sans_hxl("data-raw/asylum_applications_residing_world.csv")
+asylum_applications_residing <- read_sans_hxl(file =  here::here("data-raw","asylum_applications_residing_world.csv"))
 
 sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
 
@@ -215,14 +237,17 @@ asylum_applications$ApplicationTypeCode[asylum_applications$ApplicationType == "
 
 #View(unique(asylum_applications[ ,c("ApplicationTypeCode","ApplicationType")]))
 
-save(asylum_applications, file =  "data/asylum_applications.RData")
-
 # View(unique(asylum_applications[ ,c("ProcedureType",  "ProcedureName")]))
 # 
 # View(unique(asylum_applications[ ,c("ApplicationDataType","ApplicationData")]))
 
+save(asylum_applications, file =  here::here("data","asylum_applications.RData"))
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+tools::resaveRdaFiles(here::here("data","asylum_applications.RData"),compress="bzip2")
+
 ## RSD Decision ##########
-asylum_decisions_residing <- read_sans_hxl("data-raw/asylum_decisions_residing_world.csv")
+asylum_decisions_residing <- read_sans_hxl(file =  here::here("data-raw","asylum_decisions_residing_world.csv"))
 
 sinew::makeOxygen(asylum_decisions_residing, add_fields = "source")
 # Rename column to have proper Variable names
@@ -265,7 +290,10 @@ asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TP"] <- 
 
 #View(unique(asylum_decisions[ ,c("DecisionTypeCode","DecisionTypeName")])) 
 sinew::makeOxygen(asylum_decisions, add_fields = "source")
-save(asylum_decisions, file =  "data/asylum_decisions.RData")
+save(asylum_decisions, file =  here::here("data","asylum_decisions.RData"))
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+tools::resaveRdaFiles(here::here("data","asylum_decisions.RData"),compress="bzip2")
 
 
 ## RDS Decision Long format ########
@@ -289,8 +317,10 @@ asylum_decisions_long <- reshape2::melt(asylum_decisions,
 asylum_decisions_long <- asylum_decisions_long[asylum_decisions_long$Value > 0, ]
 
 sinew::makeOxygen(asylum_decisions_long, add_fields = "source")
-save(asylum_decisions_long, file =  "data/asylum_decisions_long.RData")
-
+save(asylum_decisions_long, file =  here::here("data","asylum_decisions_long.RData"))
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+tools::resaveRdaFiles(here::here("data","asylum_decisions_long.RData"),compress="xz")
 
 
 ## merge RSD processing ##############
@@ -310,25 +340,14 @@ save(asylum_decisions_long, file =  "data/asylum_decisions_long.RData")
 
 ## Reference ######
 
-reference <- readr::read_csv("data-raw/reference.csv")
-save(reference, file =  "data/reference.RData")
+reference <- readr::read_csv(here::here("data-raw","reference.csv"))
+save(reference, file =  here::here("data","reference.RData"))
 sinew::makeOxygen(reference, add_fields = "source")
+tools::resaveRdaFiles(here::here("data","reference.RData"),compress="xz")
 
 
 
-# Note: significantly better compression could be obtained
-#by using R CMD build --resave-data
 
-tools::resaveRdaFiles("data/asylum_applications.RData",compress="bzip2")
-tools::resaveRdaFiles("data/asylum_decisions.RData",compress="bzip2")
-tools::resaveRdaFiles("data/asylum_decisions_long.RData",compress="xz")
-tools::resaveRdaFiles("data/demographics.RData",compress="bzip2")
-tools::resaveRdaFiles("data/end_year_population_totals.RData",compress="bzip2")
-tools::resaveRdaFiles("data/end_year_population_totals_long.RData",compress="xz")
-tools::resaveRdaFiles("data/migrants.RData",compress="xz")
-tools::resaveRdaFiles("data/reference.RData",compress="xz")
-tools::resaveRdaFiles("data/solutions.RData",compress="bzip2")
-tools::resaveRdaFiles("data/solutions_long.RData",compress="xz")
 
 
 #### Check IDMC Colombia
@@ -343,4 +362,8 @@ tools::resaveRdaFiles("data/solutions_long.RData",compress="xz")
 #   
 #   readr::read_csv(file, col_names = hdrs, skip = 2, ...)
 # }
-# displacement_data_colombia <- read_sans_hxl("data-raw/displacement_data_colombia.csv")
+# displacement_data_colombia <- read_sans_hxl(file =  here::here("data-raw","displacement_data_colombia.csv"))
+
+# Note: significantly better compression could be obtained
+#by using R CMD build --resave-data
+#tools::resaveRdaFiles(here::here("data","migrants.RData"),compress="xz") 

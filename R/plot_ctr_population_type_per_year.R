@@ -45,12 +45,12 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
 
 
 
-  cols_poptype <- c("Asylum-seekers" = "#18375F",
+  cols_poptype <- c("Asylum seekers" = "#18375F",
                     "Refugees" = "#0072BC",
                     #"Venezuelans Displaced Abroad" = "#EF4A60", 
                     "Other people in need of international protection" = "#EF4A60", 
                     "Others of Concern to UNHCR" = "#999999",
-                    "Internally Displaced Persons" = "#00B398",
+                    "Internally displaced persons" = "#00B398",
                     "Stateless Persons" = "#E1CC0D")
   
   

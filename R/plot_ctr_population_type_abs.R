@@ -47,12 +47,12 @@ plot_ctr_population_type_abs <- function(year = 2021,
 
 
 
-  cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
+  cols_poptype <- list(ASY = c("Asylum seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
                        OIP = c("Other people in need of international protection", "#EF4A60"), 
                        OOC = c("Others of Concern to UNHCR", "#999999"),
-                       IDP = c("Internally Displaced Persons", "#00B398"),
+                       IDP = c("Internally displaced persons", "#00B398"),
                        STA = c("Stateless Persons", "#E1CC0D")
   )
   

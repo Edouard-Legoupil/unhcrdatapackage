@@ -11,5 +11,7 @@ usethis::use_data_raw()
 ^docs$
 ^data-raw$
 ^_pkgdown\.yml$
+^pkgdown$
 ^unhcrdatapackage\.Rproj$
 ^unhcrdatapackagedev\.Rproj$
+^archive

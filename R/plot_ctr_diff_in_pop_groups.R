@@ -95,7 +95,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       limits = force,
       guide="none"
     ) +
-    scale_x_discrete(labels= c("ASY" = "Asylum-seekers",
+    scale_x_discrete(labels= c("ASY" = "Asylum seekers",
                                "REF" = "Refugees",
                                #"VDA" = "Venezuelans Displaced\nAbroad", ,
                                "OIP" = "Other people in need\n of international protection", 
