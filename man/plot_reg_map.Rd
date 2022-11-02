@@ -4,14 +4,21 @@
 \alias{plot_reg_map}
 \title{Plot a regional map}
 \usage{
-plot_reg_map()
+plot_reg_map(
+  year = 2022,
+  region = "Americas",
+  topn = 5,
+  pop_type = c("REF", "ASY", "OIP"),
+  projection = "Mercator",
+  maxSymbolsize = 0.25
+)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{topn}{how many top countries to show..}
-
 \item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
+
+\item{topn}{how many top countries to show..}
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 
@@ -24,5 +31,18 @@ plot a ggplot2 object
 Plot a regional map
 }
 \examples{
-plot_reg_map()
+plot_reg_map(  year = 2022, 
+                            region = "Americas",
+                            topn = 5,
+                            pop_type =  c("REF", "ASY", "OIP"),
+                            projection = "Mercator",
+                            maxSymbolsize = .25)
+
+plot_reg_map(  year = 2022, 
+                            region = "WestAfrica",
+                            topn = 5,
+                            pop_type =  c("REF", "ASY", "OIP"),
+                            projection = "Mercator",
+                            maxSymbolsize = .25)
+
 }

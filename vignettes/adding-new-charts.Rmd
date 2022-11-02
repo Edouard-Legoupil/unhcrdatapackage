@@ -37,7 +37,7 @@ Use the unhcrthemes
 
 ## Add the new chart in the parameterised notebooktemplate 
 
-Adding new Charts in the Librabry
+Adding new Charts in the Library
 
 
 ## Test everything

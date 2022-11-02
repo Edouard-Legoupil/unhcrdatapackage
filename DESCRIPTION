@@ -23,7 +23,9 @@ Imports:
     ggplot2,
     ggrepel,
     here,
+    Hmisc,
     magrittr,
+    mapsf,
     plyr,
     purrr,
     readr,
@@ -51,7 +53,7 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
-Remotes:
+Remotes:    
     vidonne/unhcrdown,
     vidonne/unhcrdesign,
     vidonne/unhcrthemes
