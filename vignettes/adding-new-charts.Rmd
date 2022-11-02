@@ -1,0 +1,53 @@
+---
+title: "Adding new Charts in the Librabry"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adding new Charts in the Librabry}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Start from an Highlevel question
+
+## Check that the plo is not there already
+
+##  Fork the package
+
+## Check the dev folder for the dedeciated Fusen notebook
+
+
+## Insert a new series of chunk with Fusen Addin
+
+
+## First write your chart as a script
+
+Use the unhcrthemes
+
+## Convert it as function with predefined nput parameters
+
+
+## Set up an example
+
+## Add the new chart in the parameterised notebooktemplate 
+
+Adding new Charts in the Librabry
+
+
+## Test everything
+
+```{r development-inflate, eval=FALSE}
+# Keep eval=FALSE to avoid infinite loop in case you hit the knit button
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_full.Rmd", vignette_name = "Chart Library")
+pkgdown::build_site()
+```
+
+
+## Submit a pull equest

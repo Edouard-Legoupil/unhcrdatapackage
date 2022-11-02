@@ -13,7 +13,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -47,7 +47,7 @@ plot_ctr_treemap <- function(year = 2021,
     summarise(across(where(is.numeric), sum)) |> 
     ungroup() 
   
-  treemap <- ggplot(datatree, 
+  p <- ggplot(datatree, 
        aes(area = Value, 
            fill = Population.type,
            label = paste0(round(100*Value/sum(Value),1), 
@@ -73,6 +73,6 @@ plot_ctr_treemap <- function(year = 2021,
               y = "",
               caption = "Source: UNHCR.org/refugee-statistics  ")  
 
-print(treemap)
+   return(p)
 }
 

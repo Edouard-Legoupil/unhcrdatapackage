@@ -14,11 +14,11 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
-#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr pivot_longer  gather separate spread
 #' @importFrom unhcrthemes theme_unhcr
 #' 
 #' @export

@@ -13,7 +13,7 @@ plot_ctr_destination(
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
+\item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Origin}
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }

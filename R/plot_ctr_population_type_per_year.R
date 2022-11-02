@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -31,7 +31,6 @@
 #'                          country_asylum_iso3c = "PAN",
 #'                           pop_type = c("REF", 
 #'                                        "ASY", 
-#'                                        #"VDA", 
 #'                                        "OIP", 
 #'                                        "OOC",
 #'                                        "STA",
@@ -91,7 +90,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     scale_fill_manual(values = cols_poptype,
                       drop = TRUE,
                       limits = force) +
-    scale_x_continuous(breaks = pretty_breaks(n = year_breaks)) +
+    scale_x_continuous(breaks = scales::breaks_pretty(n = year_breaks)) +
     scale_y_continuous(expand = expansion(c(0, 0.1))) +
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
@@ -99,7 +98,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
     stat_summary(fun = sum, aes(x = Year,
                                 y = Value, 
-                                label = label_number( accuracy = 1,
+                                label = scales::label_number( accuracy = 1,
                                                        scale_cut = cut_short_scale())(..y..), 
                                 group = Year), 
                  geom = "text", size = 5,

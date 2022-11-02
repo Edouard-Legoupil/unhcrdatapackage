@@ -15,7 +15,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -31,6 +31,11 @@
 #'                     country_asylum_iso3c = "BRA",
 #'                     top_n_countries = 9,
 #'                     pop_type = "REF"  ) 
+#' 
+#' plot_ctr_population_type_perc(year = 2021,
+#'                     country_asylum_iso3c = "BRA",
+#'                     top_n_countries = 9,
+#'                     pop_type = "ASY"  ) 
 plot_ctr_population_type_perc <- function(year = 2021,
                                 country_asylum_iso3c = country_asylum_iso3c,
                                 top_n_countries = 9,

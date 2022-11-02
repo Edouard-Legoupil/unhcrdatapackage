@@ -12,6 +12,8 @@ navbar:
        href: articles/library.html
      - text: Chart library directory
        href: articles/chart-library.html
+     - text: Adding new Charts in the Librabry
+       href: articles/adding-new-charts.html
   - text: Country Focus
     href: CountryFocus.html
   - text: News

@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace str_detect
-#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -57,7 +57,7 @@ plot_ctr_pyramid <- function(year = 2021,
 
 
 if( nrow(demographics1) ==  0 ){
-  cat(paste0("There's no recorded Gender disaggregation for Forcibly Displaced People across Borders in ",country_asylum_iso3c  ))
+  p <-  paste0("There's no recorded Gender disaggregation for Forcibly Displaced People across Borders in ",country_asylum_iso3c  )
   
 } else {
 
@@ -66,7 +66,7 @@ if( nrow(demographics1) ==  0 ){
       sum(demographics1$Total )  *100,1),  big.mark=",")  
   
   if (totprop == 0 ) {
-    cat(paste0("There's no recorded Gender disaggregation for all of the ",tot, " persons in", country_asylum_iso3c  ))
+    p <- paste0("There's no recorded Gender disaggregation for all of the ",tot, " persons in", country_asylum_iso3c  )
     
   } else {
     #names(demographics)
@@ -116,7 +116,7 @@ if( nrow(demographics1) ==  0 ){
     pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
     pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
     
-    pyramidplot <- ggplot(pyramid3, aes(x = age, 
+    p <- ggplot(pyramid3, aes(x = age, 
                          fill = gender,
                           y = ifelse(test = gender == "Female",
                                 yes = -pc, no = pc)) ) + 
@@ -141,15 +141,17 @@ if( nrow(demographics1) ==  0 ){
                              " individuals in", country_asylum_iso3c),
            x = "", 
            y = "Percent of population",
-           caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Venezuelan Displaced Abroad Population Groups.") +
+           caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Other in Need of International Protection.") +
       scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                           aesthetics = c("colour", "fill")) +
       coord_flip()+
-     #  unhcRstyle::unhcr_theme(base_size = 12) +
-       theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
+      theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+      theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank())
     
-    print(pyramidplot)
+   
  }
- }
+}
+  
+   return(p)
 }

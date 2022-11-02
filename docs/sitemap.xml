@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/adding-new-charts.html</loc>
+  </url>
+  <url>
     <loc>/articles/chart-library.html</loc>
   </url>
   <url>
@@ -55,6 +58,9 @@
     <loc>/reference/plot_ctr_diff_in_pop_groups.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ctr_disp_migrant.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ctr_population_type_abs.html</loc>
   </url>
   <url>
@@ -67,7 +73,19 @@
     <loc>/reference/plot_ctr_pyramid.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ctr_solution.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ctr_treemap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_decrease.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_increase.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_map.html</loc>
   </url>
   <url>
     <loc>/reference/reference.html</loc>

@@ -29,4 +29,9 @@ plot_ctr_population_type_perc(year = 2021,
                     country_asylum_iso3c = "BRA",
                     top_n_countries = 9,
                     pop_type = "REF"  ) 
+
+plot_ctr_population_type_perc(year = 2021,
+                    country_asylum_iso3c = "BRA",
+                    top_n_countries = 9,
+                    pop_type = "ASY"  ) 
 }

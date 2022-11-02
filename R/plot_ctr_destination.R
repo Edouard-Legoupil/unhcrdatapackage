@@ -3,7 +3,7 @@
 #' Tree map of Population Groups within a country
 #'
 #' @param year Numeric value of the year (for instance 2020)
-#' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Origin
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number pretty_breaks
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -33,7 +33,7 @@
 #' 
 plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
-                                  pop_type = pop_type) {
+                                 pop_type = pop_type) {
 
 
 
@@ -61,7 +61,7 @@ Destination <- left_join( x= unhcrdatapackage::end_year_population_totals_long,
    filter(DisplacedAcrossBorders >0)
 
 if( nrow(Destination) ==  0 ){
-  cat(paste0("There's no recorded countries of destination for ",country_origin_iso3c ))
+  p <- paste0("There's no recorded countries of destination for ",country_origin_iso3c )
   
 } else {
 
@@ -108,16 +108,16 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
        subtitle = paste0("Top Destination Countries - Data as of ",year, " for population from ",country_origin_iso3c ), 
        x = "",
        y = "",
-       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Venezuelan Displaced Abroad Population Group.") +
+       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Other in Need of International Protection.") +
     
   # Style  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
- #  unhcRstyle::unhcr_theme(base_size = 12)  + ## Insert UNHCR Style
+  theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
   
-  return(p) # print(p)
   
   }
+  return(p) # print(p)
 }
 

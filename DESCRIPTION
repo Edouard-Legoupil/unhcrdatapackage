@@ -19,14 +19,18 @@ Imports:
     dplyr,
     forcats,
     fs,
+    ggalt,
     ggplot2,
+    ggrepel,
     here,
     magrittr,
     plyr,
     purrr,
     readr,
     reshape2,
+    rnaturalearth,
     scales,
+    sf,
     showtext,
     sinew,
     stats,
@@ -38,7 +42,9 @@ Imports:
     tools,
     treemapify,
     unhcrthemes,
-    utils
+    utils,
+    viridis,
+    wbstats
 Suggests: 
     knitr,
     rmarkdown,
@@ -46,8 +52,8 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    vidonne/unhcrdesign,
     vidonne/unhcrdown,
+    vidonne/unhcrdesign,
     vidonne/unhcrthemes
 Encoding: UTF-8
 LazyData: TRUE
