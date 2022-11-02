@@ -10,32 +10,39 @@
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' @importFrom unhcrdown paged_simple
 #' 
 #' @export
 #'
 
-template_CtryFactsheet <- function(year = 2021,
-                      UNHCRBureau) {
- 
+#' @examples
+#' # template_CtryFactsheet(year = 2022, region = "Americas")
+template_CtryFactsheet <- function(year = 2022,
+                                   region = "Americas") {
+  
+   ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                y= unhcrdatapackage::reference, 
+                                by = c("CountryAsylumCode" = "iso_3")) %>%
+        filter(Year == year & 
+                 UNHCRBureau == region ) %>%
+        group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+        summarise(Value = sum(Value) ) %>%
+        ungroup() %>%
+        filter( Value  > 1000 )
+  
+  for ( i in (1:nrow(ctr))) {
+    ctrname = ctr[i ,1 ]
+    ctrcode = ctr[i ,2 ]
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    params = list(countryname= ctrname,
+                  country =ctrcode, 
+                  year = year)  )
+  
+  }
+   
 }
-
-
-# usethis::use_rmarkdown_template(
-#   template_name = "Regional_Factsheet",
-#   template_dir = NULL,
-#   template_description = "Key Statistical Facts for each Country",
-#   template_create_dir = TRUE
-# )
-#' Generate all country factsheet 
-#' 
-#' @param year Numeric value of the year (for instance 2020)
-#' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
-#' 
-#' @export
-#'
-
-template_RegFactsheet <- function(year = 2021,
-                      UNHCRBureau) {
- 
-}
+  
 

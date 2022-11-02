@@ -1,18 +1,54 @@
 ---
-title: "Template Title"
-author: "Your Name"
-date: "The Date"
-output: output_format
+title: "Regional Statistical Factsheet | as of End 2021"
+subtitle:  " "  
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+author:
+  - name: Contact Name
+    affiliation: Job title
+    email: email@unhcr.org
+params:
+  year: 2022
+  region: "America"
+output:
+  unhcrdown::paged_simple:
+    back_html: true
+paged-footnotes: true
+links-to-footnotes: true
+classoption: twocolumn
+# uncomment this line to produce HTML and PDF in RStudio:
+#knit: pagedown::chrome_print
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{css, echo=FALSE}
+.col-ruler {
+  column-rule: 2px solid #0072bc;
+  column-gap: 30px;
+}
+
+.center {
+  text-align: center;
+}
+
+
 ```
 
-## Adding an RMarkdown Template
+```{r echo = FALSE}
+# `r paste0(params$country, " - ",params$year) `
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = "#>",
+                      message=FALSE, 
+                      warning=FALSE,
+                      fig.width = 6.3,
+                      fig.height = 4.4,
+                      fig.retina = 2,
+                      fig.align = "center",
+                      fig.showtext = TRUE,
+                      dev = "ragg_png",
+                      dpi = 300)
+library(testthat)
+library(ggplot2)
+library(unhcrthemes)
+library(unhcrdatapackage)
+theme_set( unhcrthemes::theme_unhcr())
 
-This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
-
-This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
-
-Finally, be sure to remove this message!
+```

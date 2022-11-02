@@ -100,7 +100,13 @@
     <loc>/reference/template_CtryFactsheet.html</loc>
   </url>
   <url>
+    <loc>/reference/template_CtryPrez.html</loc>
+  </url>
+  <url>
     <loc>/reference/template_RegFactsheet.html</loc>
+  </url>
+  <url>
+    <loc>/reference/template_RegPrez.html</loc>
   </url>
   <url>
     <loc>/reference/update_dataset.html</loc>

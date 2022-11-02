@@ -4,7 +4,7 @@
 \alias{template_CtryFactsheet}
 \title{Generate all country factsheet}
 \usage{
-template_CtryFactsheet(year = 2021, UNHCRBureau)
+template_CtryFactsheet(year = 2022, region = "Americas")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -13,4 +13,7 @@ template_CtryFactsheet(year = 2021, UNHCRBureau)
 }
 \description{
 Generate all country factsheet
+}
+\examples{
+# template_CtryFactsheet(year = 2022, region = "Americas")
 }

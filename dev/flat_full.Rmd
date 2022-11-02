@@ -1854,21 +1854,21 @@ plot_reg_map <- function(    year = 2022,
                       #font = "Lato",
                       font = 1 ) #font of the title
       
-      
-      
+      ##Initialise the map with a background
       mapsf::mf_init(world) 
+      
       # Plot a shadow
-      mapsf::mf_shadow(world,col = "grey50", cex = 0.2 , add = TRUE)
+      mapsf::mf_shadow(world, col = "grey50", cex = 0.2 , add = TRUE)
       mapsf::mf_map(world, 
                     add = TRUE, 
                     lwd = 0.5, 
                     border = "#93A3AB", 
                     col = "#FFFFFF")
       
-      
       # Set a layout
-      mapsf::mf_title(txt = paste0("Forcible Displacement in ", year), fg = "#FFFFFF")
+      mapsf::mf_title(txt = paste0("Forced Displacement in ", year), fg = "#FFFFFF")
       mapsf::mf_credits(txt = "Source: UNHCR.org/refugee-statistics - A Country is name if it features among the five largest population.\n The boundaries and names shown and the designations used on this map do not imply official endorsment or acceptance by the inited nations", bg = "#ffffff80") 
+      
       
       ## Proportional Symbol with color based on other
       mapsf::mf_prop_typo( 
@@ -1892,16 +1892,16 @@ plot_reg_map <- function(    year = 2022,
         add = TRUE
       )
       # labels for a few  countries - https://riatelab.github.io/mapsf/reference/mf_label.html
-     return(  mapsf::mf_label(x = data2[data2$Value >= minPopMap,], 
+     mapsf::mf_label(x = data2[data2$Value >= minPopMap,], 
                       var = "CountryAsylumName",  # name(s) of the variable(s) to plot
                       cex = 0.9, #  labels cex
                       col = "black", 
                       font = 3.5,
                       halo = TRUE, # add halo
                       bg = "white",  # halo color
-                      r = 0.05,  # width of the halo
+                      r = 0.2,  # width of the halo
                       overlap = FALSE,  # if FALSE, labels are moved so they do not overlap.
-                      lines = TRUE) )
+                      lines = TRUE) 
 
 
 
@@ -1909,14 +1909,15 @@ plot_reg_map <- function(    year = 2022,
 ```
   
 ```{r example-plot_reg_map}
-plot_reg_map(  year = 2022, 
-                            region = "Americas",
-                            topn = 5,
-                            pop_type =  c("REF", "ASY", "OIP"),
-                            projection = "Mercator",
-                            maxSymbolsize = .25)
+# plot_reg_map(  year = 2022, 
+#                             region = "Americas",
+#                             topn = 5,
+#                             pop_type =  c("REF", "ASY", "OIP"),
+#                             projection = "Mercator",
+#                             maxSymbolsize = .25)
 
-plot_reg_map(  year = 2022, 
+
+plot_reg_map(  year = 2022,
                             region = "WestAfrica",
                             topn = 5,
                             pop_type =  c("REF", "ASY", "OIP"),
@@ -1941,6 +1942,8 @@ test_that("plot_reg_map works", {
 
 # Template
 
+## Country Factsheet
+
 ```{r function-template_CtryFactsheet}
 # usethis::use_rmarkdown_template(
 #   template_name = "Country_Factsheet",
@@ -1952,21 +1955,52 @@ test_that("plot_reg_map works", {
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' @importFrom unhcrdown paged_simple
 #' 
 #' @export
 #'
 
-template_CtryFactsheet <- function(year = 2021,
-                      UNHCRBureau) {
- 
+template_CtryFactsheet <- function(year = 2022,
+                                   region = "Americas") {
+  
+   ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                y= unhcrdatapackage::reference, 
+                                by = c("CountryAsylumCode" = "iso_3")) %>%
+        filter(Year == year & 
+                 UNHCRBureau == region ) %>%
+        group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+        summarise(Value = sum(Value) ) %>%
+        ungroup() %>%
+        filter( Value  > 1000 )
+  
+  for ( i in (1:nrow(ctr))) {
+    ctrname = ctr[i ,1 ]
+    ctrcode = ctr[i ,2 ]
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    params = list(countryname= ctrname,
+                  country =ctrcode, 
+                  year = year)  )
+  
+  }
+   
 }
+  
 
 ```
 
+```{r example-template_CtryFactsheet}
+# template_CtryFactsheet(year = 2022, region = "Americas")
+```
 
-```{r function-template_RegFactsheet}
+
+## Country Presentation
+
+```{r function-template_CtryPrez}
 # usethis::use_rmarkdown_template(
-#   template_name = "Regional_Factsheet",
+#   template_name = "country_prez",
 #   template_dir = NULL,
 #   template_description = "Key Statistical Facts for each Country",
 #   template_create_dir = TRUE
@@ -1975,18 +2009,112 @@ template_CtryFactsheet <- function(year = 2021,
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' @importFrom unhcrdown pptx_slides
 #' 
 #' @export
 #'
 
-template_RegFactsheet <- function(year = 2021,
-                      UNHCRBureau) {
+template_CtryPrez <- function(year = 2022,
+                                   region = "Americas") {
+  
+   ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                y= unhcrdatapackage::reference, 
+                                by = c("CountryAsylumCode" = "iso_3")) %>%
+        filter(Year == year & 
+                 UNHCRBureau == region ) %>%
+        group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+        summarise(Value = sum(Value) ) %>%
+        ungroup() %>%
+        filter( Value  > 1000 )
+  
+  for ( i in (1:nrow(ctr))) {
+    ctrname = ctr[i ,1 ]
+    ctrcode = ctr[i ,2 ]
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    params = list(countryname= ctrname,
+                  country =ctrcode, 
+                  year = year)  )
+  
+  }
  
 }
 
 ```
 
+```{r example-template_CtryPrez}
+#template_CtryPrez(year = 2022, region = "Americas")
+```
 
+## Regional Factsheet
+
+```{r function-template_RegFactsheet}
+# usethis::use_rmarkdown_template(
+#   template_name = "regional_factsheet",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Country",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' @importFrom unhcrdown paged_simple
+#' 
+#' @export
+#'
+
+template_RegFactsheet <- function(year = 2022,
+                                   region = "Americas") {
+  rmarkdown::render(
+    system.file("rmarkdown/templates/regional_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    params = list(region=region, 
+                  year = year)  )
+}
+
+```
+
+```{r example-template_RegFactsheet}
+# template_RegFactsheet(year = 2022, region = "Americas")
+```
+
+## Regional Presentation
+
+```{r function-template_RegPrez}
+# usethis::use_rmarkdown_template(
+#   template_name = "regional_prez",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Region",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' 
+#' @importFrom unhcrdown pptx_slides
+#' 
+#' @export
+#'
+
+template_RegPrez <- function(year = 2022,
+                                   region = "Americas") {
+  rmarkdown::render(
+    system.file("rmarkdown/templates/regional_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    params = list(region=region, 
+                  year = year)  )
+ 
+}
+
+```
+
+```{r example-template_RegPrez}
+# template_RegPrez(year = 2022, region = "Americas")
+```
 
 # Update Dataset
     

@@ -30,6 +30,7 @@ Imports:
     purrr,
     readr,
     reshape2,
+    rmarkdown,
     rnaturalearth,
     scales,
     sf,
@@ -43,17 +44,17 @@ Imports:
     tidyselect,
     tools,
     treemapify,
+    unhcrdown,
     unhcrthemes,
     utils,
     viridis,
     wbstats
 Suggests: 
     knitr,
-    rmarkdown,
     testthat
 VignetteBuilder: 
     knitr
-Remotes:    
+Remotes:  
     vidonne/unhcrdown,
     vidonne/unhcrdesign,
     vidonne/unhcrthemes

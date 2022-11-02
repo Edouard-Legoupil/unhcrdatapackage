@@ -32,14 +32,15 @@
 #' @export
 #' 
 #' @examples
-#' plot_reg_map(  year = 2022, 
-#'                             region = "Americas",
-#'                             topn = 5,
-#'                             pop_type =  c("REF", "ASY", "OIP"),
-#'                             projection = "Mercator",
-#'                             maxSymbolsize = .25)
+#' # plot_reg_map(  year = 2022, 
+#' #                             region = "Americas",
+#' #                             topn = 5,
+#' #                             pop_type =  c("REF", "ASY", "OIP"),
+#' #                             projection = "Mercator",
+#' #                             maxSymbolsize = .25)
 #' 
-#' plot_reg_map(  year = 2022, 
+#' 
+#' plot_reg_map(  year = 2022,
 #'                             region = "WestAfrica",
 #'                             topn = 5,
 #'                             pop_type =  c("REF", "ASY", "OIP"),
@@ -158,21 +159,21 @@ plot_reg_map <- function(    year = 2022,
                       #font = "Lato",
                       font = 1 ) #font of the title
       
-      
-      
+      ##Initialise the map with a background
       mapsf::mf_init(world) 
+      
       # Plot a shadow
-      mapsf::mf_shadow(world,col = "grey50", cex = 0.2 , add = TRUE)
+      mapsf::mf_shadow(world, col = "grey50", cex = 0.2 , add = TRUE)
       mapsf::mf_map(world, 
                     add = TRUE, 
                     lwd = 0.5, 
                     border = "#93A3AB", 
                     col = "#FFFFFF")
       
-      
       # Set a layout
-      mapsf::mf_title(txt = paste0("Forcible Displacement in ", year), fg = "#FFFFFF")
+      mapsf::mf_title(txt = paste0("Forced Displacement in ", year), fg = "#FFFFFF")
       mapsf::mf_credits(txt = "Source: UNHCR.org/refugee-statistics - A Country is name if it features among the five largest population.\n The boundaries and names shown and the designations used on this map do not imply official endorsment or acceptance by the inited nations", bg = "#ffffff80") 
+      
       
       ## Proportional Symbol with color based on other
       mapsf::mf_prop_typo( 
@@ -196,16 +197,16 @@ plot_reg_map <- function(    year = 2022,
         add = TRUE
       )
       # labels for a few  countries - https://riatelab.github.io/mapsf/reference/mf_label.html
-     return(  mapsf::mf_label(x = data2[data2$Value >= minPopMap,], 
+     mapsf::mf_label(x = data2[data2$Value >= minPopMap,], 
                       var = "CountryAsylumName",  # name(s) of the variable(s) to plot
                       cex = 0.9, #  labels cex
                       col = "black", 
                       font = 3.5,
                       halo = TRUE, # add halo
                       bg = "white",  # halo color
-                      r = 0.05,  # width of the halo
+                      r = 0.2,  # width of the halo
                       overlap = FALSE,  # if FALSE, labels are moved so they do not overlap.
-                      lines = TRUE) )
+                      lines = TRUE) 
 
 
 

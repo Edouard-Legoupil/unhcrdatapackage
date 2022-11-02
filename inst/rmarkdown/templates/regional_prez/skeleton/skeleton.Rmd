@@ -1,0 +1,24 @@
+---
+title: "United States | Statistical Factsheet"
+subtitle:  "as of End 2021"  
+output:
+  unhcrdown::pptx_slides
+params:
+  year: 2022
+  region: "America"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
+library(officedown)
+library(unhcrthemes)
+library(ggplot2)
+library(rvg)
+library(tidyverse)
+library(scales)
+library(lubridate)
+library(unhcrdatapackage) 
+
+# turn off the automatic use of showtext functionality, so that the dml function can works properly
+showtext::showtext_auto(FALSE) 
+```

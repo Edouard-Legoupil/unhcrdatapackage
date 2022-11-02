@@ -1,6 +1,6 @@
 ---
-title: "United States | as of End 2021"
-subtitle:  "Statistical Factsheet"  
+title: "Statistical Factsheet | as of End 2021"
+subtitle:  " "  
 date: "`r format(Sys.Date(),  '%d %B %Y')`"
 author:
   - name: Contact Name
@@ -9,7 +9,7 @@ author:
 params:
   year: 2021
   country: "USA"
-  short: "no"
+  countryname: "United States"
 output:
   unhcrdown::paged_simple:
     back_html: true

@@ -6,7 +6,7 @@ output:
 params:
   year: 2021
   country: "USA"
-  short: "no"
+  countryname: "United States"
 ---
 
 ```{r setup, include=FALSE}
