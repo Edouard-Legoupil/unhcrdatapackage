@@ -1,7 +1,7 @@
 Type: Package
 Package: unhcrdatapackage
 Title: UNHCR Population statistics Database
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: c(
     person("Edouard", "Legoupil", , "legoupil@unhcr.org", role = c("aut", "cre")),
     person("Matheus", "Soldi Hardt", , "matheus@unhcr.org", role = "aut"),
@@ -15,9 +15,11 @@ License: Creative Commons Attribution 4.0 International Public License
 URL: https://edouard-legoupil.github.io/unhcrdatapackage/docs/
 BugReports: https://github.com/edouard-legoupil/unhcrdatapackage/issues
 Imports: 
+    circlize,
     ckanr,
     dplyr,
     forcats,
+    formattable,
     fs,
     ggalt,
     ggplot2,
@@ -28,6 +30,7 @@ Imports:
     mapsf,
     plyr,
     purrr,
+    RColorBrewer,
     readr,
     reshape2,
     rmarkdown,
@@ -54,9 +57,8 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
-Remotes:  
+Remotes: 
     vidonne/unhcrdown,
-    vidonne/unhcrdesign,
     vidonne/unhcrthemes
 Encoding: UTF-8
 LazyData: TRUE

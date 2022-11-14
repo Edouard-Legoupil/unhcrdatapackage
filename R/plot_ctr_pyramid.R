@@ -144,7 +144,7 @@ if( nrow(demographics1) ==  0 ){
            caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Other in Need of International Protection.") +
       scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                           aesthetics = c("colour", "fill")) +
-      coord_flip()+
+      coord_flip() +
       theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
       theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank())

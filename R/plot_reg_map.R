@@ -4,8 +4,8 @@
 #' 
 #' 
 #' @param year Numeric value of the year (for instance 2020)
-#' @param topn how many top countries to show..
 #' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param topn how many top countries to show..
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' @param useBertin -Tells if the map should use Bertin 1953 projection - https://visionscarto.net/bertin-projection-1953)
 #' 
@@ -32,20 +32,20 @@
 #' @export
 #' 
 #' @examples
-#' # plot_reg_map(  year = 2022, 
-#' #                             region = "Americas",
-#' #                             topn = 5,
-#' #                             pop_type =  c("REF", "ASY", "OIP"),
-#' #                             projection = "Mercator",
-#' #                             maxSymbolsize = .25)
-#' 
-#' 
 #' plot_reg_map(  year = 2022,
-#'                             region = "WestAfrica",
+#'                             region = "Americas",
 #'                             topn = 5,
 #'                             pop_type =  c("REF", "ASY", "OIP"),
 #'                             projection = "Mercator",
 #'                             maxSymbolsize = .25)
+#' 
+#' 
+#' # plot_reg_map(  year = 2022,
+#' #                             region = "WestAfrica",
+#' #                             topn = 5,
+#' #                             pop_type =  c("REF", "ASY", "OIP"),
+#' #                             projection = "Mercator",
+#' #                             maxSymbolsize = .25)
 #' 
 plot_reg_map <- function(    year = 2022, 
                             region = "Americas",

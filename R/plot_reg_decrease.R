@@ -3,7 +3,6 @@
 #' Plot Biggest decrease in Refugee Population
 #' 
 #' 
-
 #' @param year Numeric value of the year (for instance 2020)
 #' @param lag Number of year to used as comparison base
 #' @param topn how many top countries to show..
@@ -85,7 +84,7 @@ plot_reg_decrease <- function(year = 2021,
        subtitle = paste0( topn, " Biggest change in Refugee Population, ",region, " " ,  baseline," - ",thisyear), 
        x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
   theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear

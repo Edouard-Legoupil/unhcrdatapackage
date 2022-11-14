@@ -31,19 +31,19 @@ plot a ggplot2 object
 Plot a regional map
 }
 \examples{
-# plot_reg_map(  year = 2022, 
-#                             region = "Americas",
-#                             topn = 5,
-#                             pop_type =  c("REF", "ASY", "OIP"),
-#                             projection = "Mercator",
-#                             maxSymbolsize = .25)
-
-
 plot_reg_map(  year = 2022,
-                            region = "WestAfrica",
+                            region = "Americas",
                             topn = 5,
                             pop_type =  c("REF", "ASY", "OIP"),
                             projection = "Mercator",
                             maxSymbolsize = .25)
+
+
+# plot_reg_map(  year = 2022,
+#                             region = "WestAfrica",
+#                             topn = 5,
+#                             pop_type =  c("REF", "ASY", "OIP"),
+#                             projection = "Mercator",
+#                             maxSymbolsize = .25)
 
 }

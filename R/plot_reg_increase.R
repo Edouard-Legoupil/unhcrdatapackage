@@ -83,7 +83,7 @@ plot_reg_increase <- function(  year = 2021,
        subtitle = paste0("Biggest increase in Refugee Population, ", baseline," - ",thisyear),
        x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_x_continuous( label = scales::label_number_si()) + ## Format axis number
+  scale_x_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
   theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear

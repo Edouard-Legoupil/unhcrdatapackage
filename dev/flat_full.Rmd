@@ -1172,7 +1172,7 @@ if( nrow(demographics1) ==  0 ){
            caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Other in Need of International Protection.") +
       scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                           aesthetics = c("colour", "fill")) +
-      coord_flip()+
+      coord_flip() +
       theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
       theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank())
@@ -1206,9 +1206,143 @@ plot_ctr_pyramid(year = 2021,
     
 ## Refugee Status Determination Application
 
+
+## Average processing time
+
+
     
 ## Refugees accessing durable solutions
 
+## Average Asylum Processing Time
+    
+```{r function-plot_ctr_processing_time}
+#' Plot Average processing time (in days) from registration to first instance asylum decision
+#' 
+#' This indicator measures the average number of days from the date of completion of registration of the asylum application to the date of notification of first instance asylum decision for all persons who were notified of a first instance RSD/asylum decision during the reporting period. 
+#' Status determination procedures are a core protection function and the principle mechanism through which international protection needs of Persons of Concern may be determined in accordance with the key provisions of the 1951 Convention and 1967 Protocol relating to the Status of Refugees, the 1954 Convention relating to the Status of Stateless Persons, or relevant regional refugee protection instruments. Status determination procedures are therefore central to the full and effective enjoyment of the universal right to seek and enjoy asylum and the specific rights guaranteed by the above instruments.
+#' A prolonged waiting period during the status determination procedure is an important indicator of the state of efficiency, fairness, adaptability integrity and hence, overall quality of the national asylum or, depending on the context, UNHCR Mandate RSD procedure, including the timeliness and effectiveness of the overall protection response in the country 
+#'  (RBM Outcome Indicator 2.1) - see https://intranet.unhcr.org/content/dam/unhcr/intranet/protection-operations/compass/en/guidance/3/coreindicatorsmetadata/2.0%20Core%20Indicator%20Metadata%2004%2010%202021.pdf#page=67
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text guide_axis facet_wrap vars
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @return ggplotobject
+#' 
+#' @export
+plot_ctr_processing_time <- function(year = 2022,
+                              country_asylum_iso3c = country_asylum_iso3){
+    
+  
+#   library(tidyverse)
+# library(lubridate)
+# library(jsonlite)
+#   country_asylum_iso3c <- "CHL" # iso3 code
+# 
+#     apps <- unhcrdatapackage::asylum_applications|>
+#           filter(CountryAsylumCode == country_asylum_iso3c )|>
+#           group_by(Year, CountryAsylumCode, 
+#                    CountryAsylumName, ProcedureType, 
+#                    ProcedureName, ApplicationTypeCode, ApplicationType) |>
+#          summarize (NumberApplications = sum(NumberApplications , na.rm= TRUE) ) 
+#     
+#   # coa <-   "CHL"
+#     
+#   ## Equivalent to this API - call 
+# # apps1 <- fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-applications/?limit=100&dataset=asylum-applications&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=app_type&columns%5B%5D=app_pc&columns%5B%5D=app_size&columns%5B%5D=dec_level&columns%5B%5D=applied"))$items |>  as_tibble()
+# 
+#   decs <- unhcrdatapackage::asylum_decisions |>
+#           filter(CountryAsylumCode == country_asylum_iso3c ) |>
+#           group_by(Year, CountryAsylumCode, 
+#                    CountryAsylumName, ProcedureType, 
+#                    ProcedureName, DecisionTypeCode, DecisionTypeName) |>
+#          summarize (Recognized = sum(Recognized , na.rm= TRUE),
+#                   ComplementaryProtection = sum( ComplementaryProtection , na.rm= TRUE),
+#                   OtherwiseClosed = sum(OtherwiseClosed , na.rm= TRUE),
+#                   Rejected = sum(Rejected , na.rm= TRUE),
+#                   TotalDecided = sum(TotalDecided , na.rm= TRUE)) 
+  
+  ## Equivalent to this API - call 
+ # decs1 <- fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-decisions/?limit=100&dataset=asylum-decisions&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=dec_level&columns%5B%5D=dec_pc&columns%5B%5D=dec_recognized&columns%5B%5D=dec_other&columns%5B%5D=dec_rejected&columns%5B%5D=dec_closed&columns%5B%5D=dec_total"))$items |> as_tibble() 
+
+# data <- 
+#   left_join(apps |> filter(ProcedureLevel == "FI"),
+#             decs |> filter(DecisionTypeCode == "FI")) |> 
+#   arrange(year) |> 
+#   mutate(across(c(NumberApplications, 
+#                   TotalDecided), 
+#                 replace_na, 0)) |> 
+#   transmute(year = if_else(year == last(year), 
+#                            year+.5, 
+#                            year+1), # MYSR correction
+#             apps = cumsum(NumberApplications), 
+#             decs = cumsum(TotalDecided))
+# 
+# idx <- detect_index(data$apps, ~.<last(data$decs), .dir = "backward")
+# 
+# t <- date_decimal(data$year[idx] + (last(data$decs) - data$apps[idx]) / (data$apps[idx+1] - data$apps[idx]))
+# 
+# stat <- interval(t, make_date(2022, 6, 30)) / days()
+# 
+# data <- data |> 
+#   pivot_longer(-Year, names_to = "flow", values_to = "n") 
+# 
+# p <- data |> 
+#   ggplot(aes(year, n, fill = flow)) + 
+#   geom_area(position = "identity") +
+#   annotate("segment", 
+#            x = decimal_date(t), 
+#            y = last(data$decs), 
+#            xend = last(data$year), 
+#            yend = last(data$decs)) +
+#   annotate("text", 
+#            x = 2020,
+#            y = last(data$decs), 
+#            vjust = -.5,
+#            label = glue::glue("{round(stat)} days")) +
+#   scale_y_continuous(labels = scales::label_comma()) +
+#   scale_fill_manual(labels = c(decs = "Decisions",
+#                                apps = "Applications"),
+#                     values = c(decs = "#0072BC",
+#                                apps = "#FAEB00"),
+#                     name = NULL) +
+#   labs(title = "Average processing time (in days) from registration to first instance asylum decision",
+#        subtitle = glue::glue("{first(apps$coa_name)}, {year}"),
+#        x = NULL, 
+#        y = "Cumulative total") +
+#   guides(fill = guide_legend(reverse = TRUE)) +
+#   theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+#   theme(legend.position = "right")
+#   
+# return(p)
+  
+}
+```
+  
+```{r example-plot_ctr_processing_time}
+# plot_ctr_processing_time(year = 2022,
+#                               country_asylum_iso3c = "CHL")
+```
+  
+```{r tests-plot_ctr_processing_time}
+test_that("plot_ctr_processing_time works", {
+  expect_true(inherits(plot_ctr_processing_time, "function")) 
+})
+```
+  
 
 ## Solution 
     
@@ -1279,7 +1413,10 @@ p <- ggplot(Solution, aes(x = Year, y = Value2  )) +
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc" ) + # here we configure that it will be bar chart
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+ # scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  
+  scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+
+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   #xlim(c(year-lag, year +1)) +
   facet_wrap( vars(Solution.type.label ), ncol = ncat) +
@@ -1319,7 +1456,6 @@ test_that("plot_ctr_solution works", {
 ## Resettlement Trend
 
 
-## Population origin-destination
 
     
 ## Proportion of the population who are refugees, by country of origin
@@ -1480,6 +1616,351 @@ test_that("plot_ctr_disp_migrant works", {
 # Regional Questions
 
 
+
+
+## Population group in the region  
+    
+```{r function-plot_reg_treemap}
+#' Population group in the region  
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom formattable percent
+#' @importFrom treemapify geom_treemap geom_treemap_text
+#' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @return plot a ggplot2 object 
+#' 
+#' @export
+
+plot_reg_treemap <- function(year = 2022,  region = "Americas"){
+  
+  ## Comparison of Refugees
+## Filter popdata for the country report
+
+datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
+  dplyr::filter( Year == year  ) %>%
+ # dplyr::filter( Year == year | Year == (year -1) ) %>%
+  dplyr::select(Year, UNHCRBureau ,Population.type, Population.type.label, Value) %>%
+  dplyr::group_by( Year, UNHCRBureau, Population.type.label , Population.type ) %>%
+  dplyr::summarise(Value = sum( Value, na.rm = TRUE))  %>%
+  dplyr::ungroup(Year, UNHCRBureau ,Population.type, Population.type.label)  %>%
+  dplyr::mutate(  freq = formattable::percent(Value / sum(Value)) ) %>%
+  dplyr::filter(UNHCRBureau  == region   )   %>%
+  dplyr::mutate(  freqinReg = formattable::percent(Value / sum(Value), digits = 1) )  
+ 
+## Treemapify
+p <- ggplot(datatree, 
+       aes(area = Value, 
+           fill = Population.type, 
+           label = paste0(freqinReg, "\n", Population.type.label)  )) +
+  treemapify::geom_treemap() +
+  treemapify::geom_treemap_text(colour = "white",
+                    place = "centre", size = 15) +
+ # scale_fill_viridis_c() +
+  scale_fill_manual( values = c(   "IDP" = "#00B398",
+                                     "OIP"="#EF4A60",
+                                     "ASY" = "#18375F",
+                                     "REF" = "#0072BC",
+                                     "OOC" ="#8395b9",
+                                     "STA"="#E1CC0D",
+                                     "HCO"="#1b9e77")) +
+  unhcrthemes::theme_unhcr(font_size = 22)  + ## Insert UNHCR Style
+  theme(legend.position = "none") +
+  ## and the chart labels
+  labs(title = paste0("Population of Concern & Affected Host Communities in ", region),
+        subtitle = paste0("As of   ",  year, ", a total of ", format(round(sum(datatree$Value), -3),  big.mark=","), " Individuals"),
+       x = "",
+       y = "",
+       caption = "Source: UNHCR.org/refugee-statistics  ")
+ 
+ return(p)
+    
+}
+```
+  
+```{r example-plot_reg_treemap}
+plot_reg_treemap(year = 2022,  region = "Americas")
+```
+  
+```{r tests-plot_reg_treemap}
+test_that("plot_reg_treemap works", {
+  expect_true(inherits(plot_reg_treemap, "function")) 
+})
+```
+  
+
+
+## Plot Population Origin-Destination within the region 
+    
+```{r function-plot_reg_origin_dest}
+#' Plot Population Origin-Destination within the region 
+#' 
+#' Chord diagram showing Origin destination see - https://jokergoo.github.io/circlize_book/book/
+#' 
+
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#'               
+#' @importFrom tidyr replace_na
+#' @importFrom circlize chordDiagram circos.track circos.text CELL_META
+#' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @return plot a ggplot2 object 
+#' 
+#' @export
+plot_reg_origin_dest <- function(year = 2022,  region = "Americas"){
+   
+
+
+chords <- end_year_population_totals |>
+  dplyr::left_join( unhcrdatapackage::reference |> 
+                      dplyr::select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) |> 
+  dplyr::filter(coa_region == region &
+           Year == year) |> 
+  dplyr::mutate(across(REF:OIP, ~ tidyr::replace_na(as.numeric(.), 0)),
+         total = REF + ASY + OIP, #+ IDP  + STA + OOC,
+         # Lump together factor levels into "other"
+         CountryAsylumName = forcats::fct_lump_prop(CountryAsylumName, prop = .02, w = total),
+         CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = .02, w = total)) |> 
+   dplyr::group_by(CountryOriginName, CountryAsylumName) |>
+   dplyr::summarize(total = sum(total), .groups = "drop")  |>
+# CountryOriginName = fct_recode(CountryOriginName, "Other" = "China")
+  dplyr::mutate(CountryOriginName = stringr::str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""),
+        CountryAsylumName = stringr::str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+        CountryOriginName = stringr::str_replace(CountryOriginName, " \\(Plurinational State of\\)", ""),
+        CountryAsylumName = stringr::str_replace(CountryAsylumName, " \\(Plurinational State of\\)", ""),
+        CountryOriginName = stringr::str_replace(CountryOriginName, "United States of America", "USA"),
+        CountryAsylumName = stringr::str_replace(CountryAsylumName, "United States of America", "USA"))
+
+circlize::chordDiagram(chords,
+                       self.link = 1,
+                       grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(15),
+                       annotationTrack = "grid" ,
+                     # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))),
+                      preAllocateTracks = 1.6
+)
+
+circlize::circos.track(track.index = 1,
+                        panel.fun = function(x, y) {
+                             circlize::circos.text(circlize::CELL_META$xcenter,
+                                                   circlize::CELL_META$ylim[1],
+                                                   circlize::CELL_META$sector.index,
+                                                   facing = "clockwise",
+                                                   niceFacing = TRUE,
+                                                   adj = c(0, 0.5))
+                           },
+                           bg.border = NA) # here set bg.border to NA is important
+
+
+title(main = "Movement of Forcibly Displaced Population", 
+      sub = paste0("In ", region, " as of ", year),
+      cex.main = 1.5)
+
+  
+  
+    
+}
+```
+  
+```{r example-plot_reg_origin_dest}
+plot_reg_origin_dest(year = 2022,  region = "Americas")
+```
+  
+```{r tests-plot_reg_origin_dest}
+test_that("plot_reg_origin_dest works", {
+  expect_true(inherits(plot_reg_origin_dest, "function")) 
+})
+```
+  
+
+
+## Plot Main country of Asylum in the Region
+
+
+```{r function-plot_reg_population_type_abs}
+#' Main country of origin - Absolute value
+#'
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param top_n_countries Numeric value of number of main countries that the graph should display
+#' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @export
+#'
+
+plot_reg_population_type_abs <- function(year = 2022,
+                                          region = "Americas",
+                                          top_n_countries = 9,
+                                          pop_type = "REF" ) {
+
+
+
+  cols_poptype <- list(ASY = c("Asylum seekers", "#18375F"),
+                       REF = c("Refugees", "#0072BC"),
+                       #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
+                       OIP = c("Other people in need of international protection", "#EF4A60"), 
+                       OOC = c("Others of Concern to UNHCR", "#999999"),
+                       IDP = c("Internally displaced persons", "#00B398"),
+                       STA = c("Stateless Persons", "#E1CC0D")
+  )
+  
+  labelcat <- dplyr::case_when( pop_type == "ASY"  ~ "Asylum seekers", 
+                       pop_type == "REF"  ~ "Refugees",
+                       pop_type == "OIP"  ~ "Other people in need of international protection", 
+                       pop_type == "OOC"  ~ "Others of Concern to UNHCR", 
+                       pop_type == "IDP"  ~ "Internally displaced persons", 
+                       pop_type == "STA"  ~ "Stateless Persons")
+  colorlab <- dplyr::case_when( pop_type == "ASY"  ~ "#18375F", 
+                       pop_type == "REF"  ~ "#0072BC",
+                       pop_type == "OIP"  ~ "#EF4A60", 
+                       pop_type == "OOC"  ~ "#999999", 
+                       pop_type == "IDP"  ~ "#00B398", 
+                       pop_type == "STA"  ~ "#E1CC0D")
+  
+  
+  df <- end_year_population_totals_long |>
+       dplyr::left_join( unhcrdatapackage::reference |> 
+       dplyr::select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) |> 
+       dplyr::filter(coa_region == region &
+                       (Year == year | Year == year -1) &
+                       Population.type %in% pop_type ) |> 
+      dplyr::select(Year, CountryAsylumName,Value) |>
+      dplyr::group_by(Year, CountryAsylumName) |>
+      dplyr::summarise(Value = sum(Value, na.rm=TRUE)) |> 
+      dplyr::ungroup() |>
+      dplyr::group_by(CountryAsylumName) |> 
+      dplyr::arrange(Year) |>
+      dplyr::mutate(diff_pop_type_value = scales::percent(((Value - lag(Value))/lag(Value)),
+                                                          accuracy = 1.1,
+                                                          trim = FALSE  )) |> 
+      dplyr::ungroup() |>
+      dplyr::filter(Year == year) |> 
+      dplyr::arrange(desc(Value))  |> 
+      head(top_n_countries)
+
+
+p <-  ggplot(df) +
+  geom_col(aes(x = reorder(CountryAsylumName, Value), 
+               y = Value),
+           fill = colorlab ,
+           width = 0.8) +
+  coord_flip() + 
+  ## Position label differently in the bar in white - outside bar in black
+  geom_text(
+    data = subset(df, Value < max(Value) / 1.5),
+    aes(
+      y = Value,
+      x = reorder(CountryAsylumName, Value),
+      label = label_number(accuracy = 1,
+                           scale_cut = cut_short_scale())(Value)
+    ),
+    hjust = -0.1 ,
+    vjust = 0.5,
+    colour = "black",
+    size = 5   ) +
+  geom_text(
+    data = subset(df, Value >= max(Value) / 1.5),
+    aes(
+      y = Value,
+      x = reorder(CountryAsylumName, Value),
+      label = label_number(accuracy = 1,
+                            scale_cut = cut_short_scale())(Value)),
+    hjust = 1.1 ,
+    vjust = 0.5,
+    colour = "white",
+    size = 5
+  ) +
+  geom_text( # positive diff percentage label
+    data = subset(df, with(df, !grepl('-', diff_pop_type_value))),
+    aes(
+      y = Value,
+      x = reorder(CountryAsylumName, Value),
+      label = diff_pop_type_value
+    ),
+    hjust = -2.8,
+    vjust = 0.5,
+    colour = "grey",
+    size = 4
+  ) +
+  geom_text( # negative diff percentage label
+    data = subset(df, with(df, grepl('-', diff_pop_type_value))),
+    aes(
+      y = Value,
+      x = reorder(CountryAsylumName, Value),
+      label = diff_pop_type_value
+    ),
+    hjust = -2.5,
+    vjust = 0.5,
+    colour = "#0472bc",
+    size = 4
+  ) +
+  labs(title = paste0("Main Host Countries for ", labelcat ," | ",  year, " in ", region),
+       subtitle = paste0("Number of people for top ", top_n_countries, " countries in the region"),
+       caption = "Source: UNHCR Refugee Data Finder\n @UNHCR, The UN Refugee Agency") +
+  scale_y_continuous(expand = expansion(c(0, 0.1))) +
+  theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+  theme(legend.direction = "vertical",
+        legend.key.size = unit(0.8, 'cm'),
+        text = element_text(size = 20),
+        plot.subtitle=element_text(size=19),
+        plot.title = element_text(size=23),
+        plot.caption = element_text(size=13))
+
+  return(p) # print(p)
+  }
+```
+
+```{r examples-plot_reg_population_type_abs, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_reg_population_type_abs(year = 2022,
+                              region = "Americas",
+                              top_n_countries = 5,
+                              pop_type = "REF"
+                              ) 
+
+plot_reg_population_type_abs(year = 2022,
+                              region = "Americas",
+                              top_n_countries = 5,
+                              pop_type = "ASY"
+                              ) 
+
+```
+
+
+
 ## Plot Biggest decrease in Refugee Population
  
     
@@ -1487,7 +1968,6 @@ test_that("plot_ctr_disp_migrant works", {
 #' Plot Biggest decrease in Refugee Population
 #' 
 #' 
-
 #' @param year Numeric value of the year (for instance 2020)
 #' @param lag Number of year to used as comparison base
 #' @param topn how many top countries to show..
@@ -1563,7 +2043,7 @@ plot_reg_decrease <- function(year = 2021,
        subtitle = paste0( topn, " Biggest change in Refugee Population, ",region, " " ,  baseline," - ",thisyear), 
        x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
   theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
@@ -1662,7 +2142,7 @@ plot_reg_increase <- function(  year = 2021,
        subtitle = paste0("Biggest increase in Refugee Population, ", baseline," - ",thisyear),
        x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
-  scale_x_continuous( label = scales::label_number_si()) + ## Format axis number
+  scale_x_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
   theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
@@ -1692,6 +2172,115 @@ test_that("plot_reg_increase works", {
 })
 ```
   
+
+## Proportion of the population who are refugees, by country of origin  
+
+    
+```{r function-plot_reg_prop_origin}
+#' Proportion of the population who are refugees, by country of origin 
+#' 
+#' The proportion of a country???s population who become refugees is SDG indicator 10.7.4 
+#' it consistutes is a useful way to identify the countries of origin producing the most refugees relative to their number of inhabitants.
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom stringr str_replace               
+#' @importFrom wbstats wb           
+#' @importFrom forcats fct_reorder    
+#' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @return plot a ggplot2 object 
+#' 
+#' @export
+ 
+plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
+  
+  
+  country_asylum_iso3c  <- unhcrdatapackage::reference |>
+     dplyr::filter( UNHCRBureau  == region) |>
+     dplyr::select( iso_3) |>
+     dplyr::pull()
+   
+  wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),     
+               startdate = 1990, 
+               enddate = 2022, 
+               return_wide = TRUE)
+      # Renaming variables for further matching
+      names(wb_data)[1] <- "iso3c"
+      names(wb_data)[2] <- "Year"
+      wb_data$Year <- as.numeric(wb_data$Year)
+  
+  
+  departed <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3")) %>% 
+    dplyr::filter(Population.type  %in% c("REF","ASY","OIP") & 
+           Year ==  year &
+           UNHCRBureau  == region #&
+           #!(is.na(UNHCRBureau))
+           ) |>
+    dplyr::group_by(CountryOriginName, CountryOriginCode) |>
+    dplyr::summarise(Value2 = sum(Value) )  |>
+    #mutate( value3 =  format_si(Value2))|>
+    dplyr::mutate(CountryOriginName = stringr::str_replace(CountryOriginName, 
+                                                           " \\(Bolivarian Republic of\\)", "")) |>
+    
+    ## Now merge with WB Data 
+    dplyr::left_join(wb_data |> 
+                       dplyr::select("SP.POP.TOTL","iso3c", "Year")|>
+                       dplyr::filter(Year ==  year-1), 
+                     by = c(  "CountryOriginCode" = "iso3c"    ))|>  
+    dplyr::mutate(ref.part = round(Value2/(SP.POP.TOTL+Value2),4)  ) |>
+    dplyr::arrange(desc(ref.part))|>
+    head(10)  
+  
+p <- ggplot(departed,
+                 aes( x= ref.part, forcats::fct_reorder(CountryOriginName, ref.part))) +
+  
+   geom_col(fill = "#0072BC") +
+  
+  # geom_col( fill = ifelse(departed$CountryOriginCode %in% c("VEN"), "#0072BC", "#CCCCCC")) +
+  
+  geom_label(aes(label = scales::percent(ref.part, accuracy = .1)),
+             color = "black", hjust = "inward") +
+  scale_x_continuous(labels = scales::label_percent(accuracy = .1)) +
+  labs(x = NULL, 
+       y = NULL,
+       title = stringr::str_wrap(paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"), 60),
+       subtitle =    stringr::str_wrap( "Top 10 Countries, as a proportion of the national population of that country of origin (SDG indicator 10.7.4)", 80),
+         caption = stringr::str_wrap("Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
+situation.  Population refers to total resident population in a given country in a given year."), 100) +
+  
+     
+  unhcrthemes::theme_unhcr(grid = "X", 
+              axis = "y", 
+              axis_title = "x",
+              font_size = 14)  
+
+return(p)
+    
+}
+```
+  
+```{r example-plot_reg_prop_origin}
+plot_reg_prop_origin(year = 2022,  region = "Americas")
+```
+  
+```{r tests-plot_reg_prop_origin}
+test_that("plot_reg_prop_origin works", {
+  expect_true(inherits(plot_reg_prop_origin, "function")) 
+})
+```
+  
+
     
 ## Comparison over time by Region
 
@@ -1705,7 +2294,100 @@ test_that("plot_reg_increase works", {
 ## Refugee Over time
 
     
-## Smootheed Evolution over time
+## Solution over time
+
+    
+```{r function-plot_reg_solution}
+#' Plot Solution over time in the region
+#' 
+#' Description
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param lag Number of year to used as comparison base
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text geom_smooth
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  if_else desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join 
+#' @importFrom tidyr pivot_longer
+#' @importFrom unhcrthemes theme_unhcr
+#' @importFrom ggrepel geom_label_repel
+#' @return plot a ggplot2 object 
+#' 
+#' @export
+#'  
+
+plot_reg_solution <- function( year = 2022, 
+                            region = "Americas",
+                            lag = 10){
+  
+    solution <-  dplyr::left_join( x= unhcrdatapackage::solutions_long, 
+                                                     y= unhcrdatapackage::reference, 
+                                                     by = c("CountryOriginCode" = "iso_3")) %>% 
+                dplyr::filter(Solution.type %in% c("NAT","RST","RET" ) & 
+                       UNHCRBureau  == region &
+                       Year >= (year - lag) ) |>
+                 dplyr::group_by(Year, Solution.type, Solution.type.label )|>
+                 dplyr::summarise(Value = sum(Value) ) |>
+                 dplyr::ungroup() |>
+                 dplyr::group_by( Solution.type  )|>
+                 dplyr::mutate(label = dplyr::if_else(Year == max(Year), 
+                                               as.character(Solution.type.label),
+                                               NA_character_))|>
+                 dplyr::ungroup() 
+
+#Make plot
+p <- ggplot(solution, aes(x = Year, 
+                          y = Value, 
+                          colour = Solution.type)) + # Adding reference to color
+    geom_smooth(se = FALSE, method = "loess", span = .2) +
+    scale_x_continuous( breaks = seq(year - lag, year, by = 5) )+ 
+    scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+
+    #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+    scale_colour_manual( values = c( "NAT" = "#a6cee3",
+                                     "RST"  = "#1f78b4",
+                                     "RET" = "#b2df8a" )) +
+    ## and the chart labels
+    labs(title = paste0("Solution for Displacement in ", region) ,
+         subtitle = paste0("Evolution in the past ", lag," years"),
+         x = "",
+         y = "",
+         caption = "Source: UNHCR.org/refugee-statistics ") +   
+    ggrepel::geom_label_repel(aes(label = label),
+                              nudge_x = 1,
+                              na.rm = TRUE) +
+    unhcrthemes::theme_unhcr(grid = "Y", 
+              axis = "x", 
+              axis_title = "y",
+              font_size = 14,
+              legend = FALSE)  
+  
+
+ return(p)  
+
+}
+
+```
+  
+```{r example-plot_reg_solution}
+plot_reg_solution(year = 2022, 
+                            region = "Americas",
+                            lag = 10)
+```
+  
+```{r tests-plot_reg_solution}
+test_that("plot_reg_solution works", {
+  expect_true(inherits(plot_reg_solution, "function")) 
+})
+```
+  
 
 ## Mapping Population  
 
@@ -1715,8 +2397,8 @@ test_that("plot_reg_increase works", {
 #' 
 #' 
 #' @param year Numeric value of the year (for instance 2020)
-#' @param topn how many top countries to show..
 #' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param topn how many top countries to show..
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' @param useBertin -Tells if the map should use Bertin 1953 projection - https://visionscarto.net/bertin-projection-1953)
 #' 
@@ -1909,20 +2591,20 @@ plot_reg_map <- function(    year = 2022,
 ```
   
 ```{r example-plot_reg_map}
-# plot_reg_map(  year = 2022, 
-#                             region = "Americas",
-#                             topn = 5,
-#                             pop_type =  c("REF", "ASY", "OIP"),
-#                             projection = "Mercator",
-#                             maxSymbolsize = .25)
-
-
 plot_reg_map(  year = 2022,
-                            region = "WestAfrica",
+                            region = "Americas",
                             topn = 5,
                             pop_type =  c("REF", "ASY", "OIP"),
                             projection = "Mercator",
                             maxSymbolsize = .25)
+
+
+# plot_reg_map(  year = 2022,
+#                             region = "WestAfrica",
+#                             topn = 5,
+#                             pop_type =  c("REF", "ASY", "OIP"),
+#                             projection = "Mercator",
+#                             maxSymbolsize = .25)
 
 ```
   
@@ -2484,6 +3166,7 @@ test_that("update_dataset works", {
 ```
   
 
+## Refresh package
 
 ```{r development-inflate, eval=FALSE}
 # Keep eval=FALSE to avoid infinite loop in case you hit the knit button

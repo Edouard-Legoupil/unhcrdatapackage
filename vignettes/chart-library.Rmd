@@ -189,9 +189,27 @@ plot_ctr_pyramid(year = 2021,
 
 ## Refugee Status Determination Application
 
+## Average processing time
+
     
 
 ## Refugees accessing durable solutions
+
+## Average Asylum Processing Time
+
+    
+
+  
+
+```{r example-plot_ctr_processing_time}
+# plot_ctr_processing_time(year = 2022,
+#                               country_asylum_iso3c = "CHL")
+```
+
+  
+
+  
+
 
 ## Solution 
 
@@ -213,8 +231,6 @@ plot_ctr_solution(year = 2021,
 
 
 ## Resettlement Trend
-
-## Population origin-destination
 
     
 
@@ -247,6 +263,55 @@ plot_ctr_disp_migrant(year = 2021,
 
 
 # Regional Questions
+
+## Population group in the region  
+
+    
+
+  
+
+```{r example-plot_reg_treemap}
+plot_reg_treemap(year = 2022,  region = "Americas")
+```
+
+  
+
+  
+
+
+
+## Plot Population Origin-Destination within the region 
+
+    
+
+  
+
+```{r example-plot_reg_origin_dest}
+plot_reg_origin_dest(year = 2022,  region = "Americas")
+```
+
+  
+
+  
+
+
+
+## Plot Main country of Asylum in the Region
+
+```{r examples-plot_reg_population_type_abs, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_reg_population_type_abs(year = 2022,
+                              region = "Americas",
+                              top_n_countries = 5,
+                              pop_type = "REF"
+                              ) 
+
+plot_reg_population_type_abs(year = 2022,
+                              region = "Americas",
+                              top_n_countries = 5,
+                              pop_type = "ASY"
+                              ) 
+
+```
 
 ## Plot Biggest decrease in Refugee Population
 
@@ -291,6 +356,22 @@ plot_reg_increase(year = 2021,
   
 
   
+
+
+## Proportion of the population who are refugees, by country of origin  
+
+    
+
+  
+
+```{r example-plot_reg_prop_origin}
+plot_reg_prop_origin(year = 2022,  region = "Americas")
+```
+
+  
+
+  
+
     
 
 ## Comparison over time by Region
@@ -309,7 +390,22 @@ plot_reg_increase(year = 2021,
 
     
 
-## Smootheed Evolution over time
+## Solution over time
+
+    
+
+  
+
+```{r example-plot_reg_solution}
+plot_reg_solution(year = 2022, 
+                            region = "Americas",
+                            lag = 10)
+```
+
+  
+
+  
+
 
 ## Mapping Population  
 
@@ -318,20 +414,20 @@ plot_reg_increase(year = 2021,
   
 
 ```{r example-plot_reg_map}
-# plot_reg_map(  year = 2022, 
-#                             region = "Americas",
-#                             topn = 5,
-#                             pop_type =  c("REF", "ASY", "OIP"),
-#                             projection = "Mercator",
-#                             maxSymbolsize = .25)
-
-
 plot_reg_map(  year = 2022,
-                            region = "WestAfrica",
+                            region = "Americas",
                             topn = 5,
                             pop_type =  c("REF", "ASY", "OIP"),
                             projection = "Mercator",
                             maxSymbolsize = .25)
+
+
+# plot_reg_map(  year = 2022,
+#                             region = "WestAfrica",
+#                             topn = 5,
+#                             pop_type =  c("REF", "ASY", "OIP"),
+#                             projection = "Mercator",
+#                             maxSymbolsize = .25)
 
 ```
 
@@ -390,4 +486,5 @@ plot_reg_map(  year = 2022,
   
 
 
+## Refresh package
 

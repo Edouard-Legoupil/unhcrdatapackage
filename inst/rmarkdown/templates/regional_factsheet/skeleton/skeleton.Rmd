@@ -1,14 +1,15 @@
 ---
-title: "Regional Statistical Factsheet | as of End 2021"
+title: "Regional Statistical Factsheet "
 subtitle:  " "  
 date: "`r format(Sys.Date(),  '%d %B %Y')`"
 author:
-  - name: Contact Name
-    affiliation: Job title
+  - name: "Contact Name: XXXX"
+    affiliation: "Job title: i.e DIMA Coordinator"
     email: email@unhcr.org
 params:
   year: 2022
-  region: "America"
+  region: "Americas"
+  lag: 10
 output:
   unhcrdown::paged_simple:
     back_html: true
@@ -19,27 +20,14 @@ classoption: twocolumn
 #knit: pagedown::chrome_print
 ---
 
-```{css, echo=FALSE}
-.col-ruler {
-  column-rule: 2px solid #0072bc;
-  column-gap: 30px;
-}
-
-.center {
-  text-align: center;
-}
-
-
-```
-
-```{r echo = FALSE}
+```{r echo = FALSE, message=FALSE, warning = FALSE}
 # `r paste0(params$country, " - ",params$year) `
 knitr::opts_chunk$set(echo = FALSE,
                       comment = "#>",
                       message=FALSE, 
                       warning=FALSE,
                       fig.width = 6.3,
-                      fig.height = 4.4,
+                      fig.asp = 0.618,
                       fig.retina = 2,
                       fig.align = "center",
                       fig.showtext = TRUE,
@@ -52,3 +40,102 @@ library(unhcrdatapackage)
 theme_set( unhcrthemes::theme_unhcr())
 
 ```
+
+
+```{css, echo=FALSE}
+.col-ruler {
+  column-rule: 2px solid #0072bc;
+  column-gap: 30px;
+}
+
+.center {
+  text-align: center;
+}
+```
+
+## Population group in the region  
+
+```{r example-plot_reg_treemap, fig.width = 8, fig.asp = 1}
+plot_reg_treemap(year = params$year,  
+                 region = params$region)
+```
+
+
+
+
+## Plot Main country of Asylum in the Region
+
+```{r examples-plot_reg_population_type_abs, fig.width = 8, fig.asp = 0.618}
+plot_reg_population_type_abs(year = params$year,  
+                             region = params$region,
+                              top_n_countries = 5,
+                              pop_type = "REF"
+                              ) 
+
+```
+
+```{r examples-plot_reg_population_type_abs2, fig.width = 8, fig.asp = 0.618}
+plot_reg_population_type_abs(year = params$year,  
+                             region = params$region,
+                              top_n_countries = 5,
+                              pop_type = "ASY"
+                              ) 
+
+```
+
+
+
+## Plot Biggest decrease in Refugee Population
+
+```{r example-plot_reg_decrease}
+plot_reg_decrease(year = params$year,
+                  region = params$region,
+                  lag = 5,
+                  topn = 5,
+                  pop_type = c("REF", "ASY", "OIP"))
+```
+
+## Plot Biggest increase in Refugee Population 
+
+```{r example-plot_reg_increase}
+plot_reg_increase(year = params$year,
+                  region = params$region,
+                  lag = params$lag,
+                  topn = 5,
+                  pop_type = c("REF", "ASY", "OIP"))
+```
+
+## Mapping Population  
+
+```{r example-plot_reg_map,  fig.width = 8, fig.asp = 1.2}
+plot_reg_map(  year = params$year,
+                  region = params$region,
+                            topn = 5,
+                            pop_type =  c("REF", "ASY", "OIP"),
+                            projection = "Mercator",
+                            maxSymbolsize = .25)
+```
+
+## Plot Population Origin-Destination within the region 
+
+```{r example-plot_reg_origin_dest,  fig.width = 8, fig.asp = 1}
+plot_reg_origin_dest(year = params$year,
+                  region = params$region)
+```
+
+## Proportion of the population who are refugees, by country of origin  
+
+```{r example-plot_reg_prop_origin, fig.width = 8, fig.asp = 0.8}
+plot_reg_prop_origin(year = params$year,
+                  region = params$region)
+```
+
+## Solution over time
+
+```{r example-plot_reg_solution, fig.width = 8, fig.asp = 0.8}
+plot_reg_solution(year = params$year,
+                  region = params$region,
+                            lag = params$lag)
+```
+
+  

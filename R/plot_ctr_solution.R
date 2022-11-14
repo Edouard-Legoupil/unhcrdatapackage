@@ -70,7 +70,10 @@ p <- ggplot(Solution, aes(x = Year, y = Value2  )) +
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc" ) + # here we configure that it will be bar chart
-  scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+ # scale_y_continuous( label = scales::label_number_si()) + ## Format axis number
+  
+  scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+
+
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   #xlim(c(year-lag, year +1)) +
   facet_wrap( vars(Solution.type.label ), ncol = ncat) +
