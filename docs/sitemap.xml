@@ -70,6 +70,9 @@
     <loc>/reference/plot_ctr_population_type_perc.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ctr_processing_time.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ctr_pyramid.html</loc>
   </url>
   <url>
@@ -86,6 +89,21 @@
   </url>
   <url>
     <loc>/reference/plot_reg_map.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_origin_dest.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_population_type_abs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_prop_origin.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_solution.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_reg_treemap.html</loc>
   </url>
   <url>
     <loc>/reference/reference.html</loc>
