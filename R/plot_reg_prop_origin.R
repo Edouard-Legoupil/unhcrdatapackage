@@ -29,11 +29,7 @@
 plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
   
   
-  country_asylum_iso3c  <- unhcrdatapackage::reference |>
-     dplyr::filter( UNHCRBureau  == region) |>
-     dplyr::select( iso_3) |>
-     dplyr::pull()
-   
+
   wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),     
                startdate = 1990, 
                enddate = 2022, 

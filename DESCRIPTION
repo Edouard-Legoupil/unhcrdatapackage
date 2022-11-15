@@ -1,6 +1,7 @@
 Type: Package
 Package: unhcrdatapackage
-Title: UNHCR Population statistics Database
+Title: UNHCR Population Statistics Database with Chart Library and
+    Factsheet Template
 Version: 0.1.6
 Authors@R: c(
     person("Edouard", "Legoupil", , "legoupil@unhcr.org", role = c("aut", "cre")),
@@ -8,9 +9,12 @@ Authors@R: c(
     person("Hisham", "Galal", , "galalh@unhcr.org", role = "ctb")
   )
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
-Description: This is a data package with all frame organised and reshapped
-    for easy consumptions in R. For more information, please see consult
+Description: This is a data package with all frames organised and
+    reshapped for easy consumptions in R. For more information, please see
+    consult
     [https://www.unhcr.org/refugee-statistics/](https://www.unhcr.org/refugee-statistics).
+    The packages also includes a series of plotting functions both at
+    country and regional level together with Rmd Templates.
 License: Creative Commons Attribution 4.0 International Public License
 URL: https://edouard-legoupil.github.io/unhcrdatapackage/docs/
 BugReports: https://github.com/edouard-legoupil/unhcrdatapackage/issues

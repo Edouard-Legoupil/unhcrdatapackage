@@ -55,11 +55,19 @@ theme_set( unhcrthemes::theme_unhcr())
 
 ## Population group in the region  
 
-```{r example-plot_reg_treemap, fig.width = 8, fig.asp = 1}
+```{r example-plot_reg_treemap, fig.width = 8, fig.asp = 0.8}
 plot_reg_treemap(year = params$year,  
                  region = params$region)
 ```
 
+## Evolution over time  
+
+```{r example-plot_reg_evolution, fig.width = 8, fig.asp = 0.618}
+plot_reg_evolution(year = 2021,
+                   lag = 5,
+                   region = "Americas",
+                   pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
+```
 
 
 

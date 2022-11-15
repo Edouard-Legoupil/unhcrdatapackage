@@ -4,6 +4,7 @@
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -22,7 +23,9 @@
 
 #' @examples
 #' plot_reg_treemap(year = 2022,  region = "Americas")
-plot_reg_treemap <- function(year = 2022,  region = "Americas"){
+plot_reg_treemap <- function(year = 2022,  
+                             region = "Americas",
+                             pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")){
   
   ## Comparison of Refugees
 ## Filter popdata for the country report
@@ -31,6 +34,7 @@ datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) %>%
   dplyr::filter( Year == year  ) %>%
+  dplyr::filter( Population.type %in% pop_type  ) %>%
  # dplyr::filter( Year == year | Year == (year -1) ) %>%
   dplyr::select(Year, UNHCRBureau ,Population.type, Population.type.label, Value) %>%
   dplyr::group_by( Year, UNHCRBureau, Population.type.label , Population.type ) %>%

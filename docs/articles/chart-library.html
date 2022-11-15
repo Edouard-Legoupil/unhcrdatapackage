@@ -406,12 +406,14 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <p><img src="chart-library_files/figure-html/example-plot_reg_prop_origin-1.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="comparison-over-time-by-region">Comparison over time by Region<a class="anchor" aria-label="anchor" href="#comparison-over-time-by-region"></a>
+<h3 id="evolution-over-time">Evolution over time<a class="anchor" aria-label="anchor" href="#evolution-over-time"></a>
 </h3>
-</div>
-<div class="section level3">
-<h3 id="evolution-over-time-of-the-different-population-of-concern">Evolution over time of the different Population of Concern<a class="anchor" aria-label="anchor" href="#evolution-over-time-of-the-different-population-of-concern"></a>
-</h3>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_evolution.html">plot_reg_evolution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
+<span>                   lag <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                   region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                   pop_type <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"REF"</span>, <span class="st">"IDP"</span>, <span class="st">"ASY"</span>, <span class="st">"OOC"</span>, <span class="st">"STA"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_evolution-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="evolution-by-country-of-origin">Evolution by Country of Origin<a class="anchor" aria-label="anchor" href="#evolution-by-country-of-origin"></a>
@@ -422,9 +424,9 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 </h3>
 </div>
 <div class="section level3">
-<h3 id="solution-over-time">Solution over time<a class="anchor" aria-label="anchor" href="#solution-over-time"></a>
+<h3 id="persons-of-concern-over-time">Persons of concern over time<a class="anchor" aria-label="anchor" href="#persons-of-concern-over-time"></a>
 </h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_solution.html">plot_reg_solution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>, </span>
 <span>                            region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
 <span>                            lag <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -464,7 +466,7 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <div class="section level3">
 <h3 id="mapping-population">Mapping Population<a class="anchor" aria-label="anchor" href="#mapping-population"></a>
 </h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_map.html">plot_reg_map</a></span><span class="op">(</span>  year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                            region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
 <span>                            topn <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -474,7 +476,7 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <span><span class="co">#&gt; Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is</span></span>
 <span><span class="co">#&gt; deprecated. It might return a CRS with a non-EPSG compliant axis order.</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_map-1.png" width="700"></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co"># plot_reg_map(  year = 2022,</span></span>
@@ -496,37 +498,37 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <div class="section level3">
 <h3 id="country-factsheet">Country Factsheet<a class="anchor" aria-label="anchor" href="#country-factsheet"></a>
 </h3>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># template_CtryFactsheet(year = 2022, region = "Americas")</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="country-presentation">Country Presentation<a class="anchor" aria-label="anchor" href="#country-presentation"></a>
 </h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#template_CtryPrez(year = 2022, region = "Americas")</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="regional-factsheet">Regional Factsheet<a class="anchor" aria-label="anchor" href="#regional-factsheet"></a>
 </h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># template_RegFactsheet(year = 2022, region = "Americas")</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="regional-presentation">Regional Presentation<a class="anchor" aria-label="anchor" href="#regional-presentation"></a>
 </h3>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># template_RegPrez(year = 2022, region = "Americas")</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="update-dataset">Update Dataset<a class="anchor" aria-label="anchor" href="#update-dataset"></a>
 </h2>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#update_dataset()</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="refresh-package">Refresh package<a class="anchor" aria-label="anchor" href="#refresh-package"></a>
-</h3>
 </div>
+<div class="section level2">
+<h2 id="refresh-package">Refresh package<a class="anchor" aria-label="anchor" href="#refresh-package"></a>
+</h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

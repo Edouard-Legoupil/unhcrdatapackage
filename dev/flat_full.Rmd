@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 unlink(".RData")
 library(testthat)
 library(ggplot2)
+library(tidyverse)
+library(scales)
 library(unhcrthemes)
 # library(extrafont) 
 # font_import()
@@ -1338,9 +1340,7 @@ plot_ctr_processing_time <- function(year = 2022,
 ```
   
 ```{r tests-plot_ctr_processing_time}
-test_that("plot_ctr_processing_time works", {
-  expect_true(inherits(plot_ctr_processing_time, "function")) 
-})
+#test_that("plot_ctr_processing_time works", { expect_true(inherits(plot_ctr_processing_time, "function")) })
 ```
   
 
@@ -1445,9 +1445,7 @@ plot_ctr_solution(year = 2021,
 ```
   
 ```{r tests-plot_ctr_solution}
-test_that("plot_ctr_solution works", {
-  expect_true(inherits(plot_ctr_solution, "function")) 
-})
+#test_that("plot_ctr_solution works", {expect_true(inherits(plot_ctr_solution, "function")) })
 ```
   
 
@@ -1604,9 +1602,7 @@ plot_ctr_disp_migrant(year = 2021,
 ```
   
 ```{r tests-plot_ctr_disp_migrant}
-test_that("plot_ctr_disp_migrant works", {
-  expect_true(inherits(plot_ctr_disp_migrant, "function")) 
-})
+#test_that("plot_ctr_disp_migrant works", {   expect_true(inherits(plot_ctr_disp_migrant, "function")) })
 ```
   
     
@@ -1625,6 +1621,7 @@ test_that("plot_ctr_disp_migrant works", {
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -1641,7 +1638,9 @@ test_that("plot_ctr_disp_migrant works", {
 #' 
 #' @export
 
-plot_reg_treemap <- function(year = 2022,  region = "Americas"){
+plot_reg_treemap <- function(year = 2022,  
+                             region = "Americas",
+                             pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")){
   
   ## Comparison of Refugees
 ## Filter popdata for the country report
@@ -1650,6 +1649,7 @@ datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_
                                                      y= unhcrdatapackage::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) %>%
   dplyr::filter( Year == year  ) %>%
+  dplyr::filter( Population.type %in% pop_type  ) %>%
  # dplyr::filter( Year == year | Year == (year -1) ) %>%
   dplyr::select(Year, UNHCRBureau ,Population.type, Population.type.label, Value) %>%
   dplyr::group_by( Year, UNHCRBureau, Population.type.label , Population.type ) %>%
@@ -1694,9 +1694,7 @@ plot_reg_treemap(year = 2022,  region = "Americas")
 ```
   
 ```{r tests-plot_reg_treemap}
-test_that("plot_reg_treemap works", {
-  expect_true(inherits(plot_reg_treemap, "function")) 
-})
+#test_that("plot_reg_treemap works", {   expect_true(inherits(plot_reg_treemap, "function")) })
 ```
   
 
@@ -1786,9 +1784,7 @@ plot_reg_origin_dest(year = 2022,  region = "Americas")
 ```
   
 ```{r tests-plot_reg_origin_dest}
-test_that("plot_reg_origin_dest works", {
-  expect_true(inherits(plot_reg_origin_dest, "function")) 
-})
+#test_that("plot_reg_origin_dest works", {   expect_true(inherits(plot_reg_origin_dest, "function")) })
 ```
   
 
@@ -1969,9 +1965,9 @@ plot_reg_population_type_abs(year = 2022,
 #' 
 #' 
 #' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
 #' @param lag Number of year to used as comparison base
 #' @param topn how many top countries to show..
-#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
@@ -2062,9 +2058,7 @@ plot_reg_decrease(year = 2021,
 ```
   
 ```{r tests-plot_reg_decrease}
-test_that("plot_reg_decrease works", {
-  expect_true(inherits(plot_reg_decrease, "function")) 
-})
+#test_that("plot_reg_decrease works", {   expect_true(inherits(plot_reg_decrease, "function")) })
 ```
   
     
@@ -2167,9 +2161,7 @@ plot_reg_increase(year = 2021,
 ```
   
 ```{r tests-plot_reg_increase}
-test_that("plot_reg_increase works", {
-  expect_true(inherits(plot_reg_increase, "function")) 
-})
+#test_that("plot_reg_increase works", {   expect_true(inherits(plot_reg_increase, "function")) })
 ```
   
 
@@ -2204,11 +2196,7 @@ test_that("plot_reg_increase works", {
 plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
   
   
-  country_asylum_iso3c  <- unhcrdatapackage::reference |>
-     dplyr::filter( UNHCRBureau  == region) |>
-     dplyr::select( iso_3) |>
-     dplyr::pull()
-   
+
   wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),     
                startdate = 1990, 
                enddate = 2022, 
@@ -2275,17 +2263,95 @@ plot_reg_prop_origin(year = 2022,  region = "Americas")
 ```
   
 ```{r tests-plot_reg_prop_origin}
-test_that("plot_reg_prop_origin works", {
-  expect_true(inherits(plot_reg_prop_origin, "function")) 
-})
+# test_that("plot_reg_prop_origin works", {   expect_true(inherits(plot_reg_prop_origin, "function")) })
 ```
   
+ 
 
+## Evolution over time  
     
-## Comparison over time by Region
-
+```{r function-plot_reg_evolution}
+#' Title
+#' 
+#' Description
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' @param lag Number of year to used as comparison base 
+#' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual
+#'              scale_colour_manual 
+#'             geom_text geom_line
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom stringr str_replace  
+#' @importFrom scales cut_short_scale percent label_number breaks_pretty pretty_breaks
+#' @importFrom unhcrthemes theme_unhcr unhcr_pal
+#' 
+#' @return plot a ggplot2 object 
+#' 
+#' @export
+plot_reg_evolution <- function(year = 2022,
+                              lag = 5,
+                              region = "Americas",
+                              pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"
+                                             #"HCO"
+                                             ) ){
+  
+  allpop <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+                              y= unhcrdatapackage::reference, 
+                              by = c("CountryAsylumCode" = "iso_3")) %>% 
+              dplyr::filter(Population.type   %in%  pop_type & 
+                              Year >=  (year - lag) &
+                              UNHCRBureau  == region )|> 
+              dplyr::group_by(Year) |> 
+              dplyr::summarise(Value = sum(Value, na.rm = TRUE))
+  
+  p <-  ggplot(allpop) + 
+    geom_line(aes(  x = Year, 
+                    y = Value  ),
+              size = 1,
+              color = unhcr_pal(n = 1, "pal_blue")) +
+  geom_text( aes(x = Year,
+                 y = Value, 
+                 label = label_number(scale_cut = cut_short_scale(), accuracy=1)(Value)),
+             vjust = -1, 
+             size = 4 ) +
+  labs(
+    title = paste0( region, ": People of Concern | ", (year - lag), "-", year),
+    y = "Number of people",
+    caption = "Source: UNHCR, The UN Refugee Agency" ) +
+  scale_x_continuous(breaks = pretty_breaks(n =7)) +
+  scale_y_continuous(
+    expand = expansion(c(0, 0.1)),
+    breaks = pretty_breaks(n = 4),
+    labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()),
+    limits = c(0, 20 * 1e6)
+  ) +
+  theme_unhcr( grid = "Y",
+               axis = "x",  axis_title = ""  )
+  
+  return(p)
     
-## Evolution over time of the different Population of Concern
+}
+```
+  
+```{r example-plot_reg_evolution}
+plot_reg_evolution(year = 2021,
+                   lag = 5,
+                   region = "Americas",
+                   pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
+```
+  
+```{r tests-plot_reg_evolution}
+t# est_that("plot_reg_evolution works", {  expect_true(inherits(plot_reg_evolution, "function")) })
+```
+  
+    
 
     
 ## Evolution by Country of Origin
@@ -2294,7 +2360,7 @@ test_that("plot_reg_prop_origin works", {
 ## Refugee Over time
 
     
-## Solution over time
+## Persons of concern over time
 
     
 ```{r function-plot_reg_solution}
@@ -2383,9 +2449,7 @@ plot_reg_solution(year = 2022,
 ```
   
 ```{r tests-plot_reg_solution}
-test_that("plot_reg_solution works", {
-  expect_true(inherits(plot_reg_solution, "function")) 
-})
+# test_that("plot_reg_solution works", {   expect_true(inherits(plot_reg_solution, "function")) })
 ```
   
 
@@ -2609,9 +2673,7 @@ plot_reg_map(  year = 2022,
 ```
   
 ```{r tests-plot_reg_map}
-test_that("plot_reg_map works", {
-  expect_true(inherits(plot_reg_map, "function")) 
-})
+# test_that("plot_reg_map works", {   expect_true(inherits(plot_reg_map, "function")) })
 ```
   
  
@@ -3166,7 +3228,7 @@ test_that("update_dataset works", {
 ```
   
 
-## Refresh package
+# Refresh package
 
 ```{r development-inflate, eval=FALSE}
 # Keep eval=FALSE to avoid infinite loop in case you hit the knit button

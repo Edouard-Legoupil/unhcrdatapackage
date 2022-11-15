@@ -371,14 +371,26 @@ plot_reg_prop_origin(year = 2022,  region = "Americas")
   
 
   
+ 
+
+
+## Evolution over time  
 
     
 
-## Comparison over time by Region
+  
 
+```{r example-plot_reg_evolution}
+plot_reg_evolution(year = 2021,
+                   lag = 5,
+                   region = "Americas",
+                   pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
+```
+
+  
+
+  
     
-
-## Evolution over time of the different Population of Concern
 
     
 
@@ -390,7 +402,7 @@ plot_reg_prop_origin(year = 2022,  region = "Americas")
 
     
 
-## Solution over time
+## Persons of concern over time
 
     
 
@@ -486,5 +498,5 @@ plot_reg_map(  year = 2022,
   
 
 
-## Refresh package
+# Refresh package
 
