@@ -8,40 +8,61 @@
 # )
 #' Generate all country factsheet 
 #' 
-#' @param year Numeric value of the year (for instance 2020)
-#' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
-#' @importFrom unhcrdown pptx_slides
+#' @param year Numeric value of the year (for instance 2022)
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country 
+#' @param folder folder within your project where to put the generated report. 
+#' Folder will be created if it does not exist
 #' 
-#' @export
+#' @importFrom unhcrdown pptx_slides
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
 #'
 
 #' @examples
-#' #template_CtryPrez(year = 2022, region = "Americas")
+#' ## generate for one country
+#' # template_CtryPrez(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+#' 
+#' ## Generate for a specific region
+#' # region <- "Americas"
+#' # 
+#' # ## get all countries with more than 1000 Reported individuals
+#' # ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+#' #                                 y= unhcrdatapackage::reference, 
+#' #                                 by = c("CountryAsylumCode" = "iso_3")) %>%
+#' #         filter(Year == year & 
+#' #                 UNHCRBureau == region ) %>%
+#' #         group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+#' #         summarise(Value = sum(Value) ) %>%
+#' #         ungroup() %>%
+#' #         filter( Value  > 1000 )
+#' #   
+#' #   for ( i in (1:nrow(ctr))) {
+#' #     country_asylum_iso3c = ctr[i ,2 ]
+#' #     template_CtryPrez(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report") 
+#' #   }
 template_CtryPrez <- function(year = 2022,
-                                   region = "Americas") {
+                                   country_asylum_iso3c,   
+                              folder = "Report") {
   
-   ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                y= unhcrdatapackage::reference, 
-                                by = c("CountryAsylumCode" = "iso_3")) %>%
-        filter(Year == year & 
-                 UNHCRBureau == region ) %>%
-        group_by( CountryAsylumName, CountryAsylumCode   ) %>%
-        summarise(Value = sum(Value) ) %>%
-        ungroup() %>%
-        filter( Value  > 1000 )
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
-  for ( i in (1:nrow(ctr))) {
-    ctrname = ctr[i ,1 ]
-    ctrcode = ctr[i ,2 ]
+  ctrname <- unhcrdatapackage::reference |>
+             dplyr::filter( iso_3 == country_asylum_iso3c) |>
+             dplyr::select(ctryname) |>
+             dplyr::pull()
   
   rmarkdown::render(
     system.file("rmarkdown/templates/country_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.html') ),
     params = list(countryname= ctrname,
-                  country =ctrcode, 
+                  country = country_asylum_iso3c, 
                   year = year)  )
-  
-  }
- 
 }
 

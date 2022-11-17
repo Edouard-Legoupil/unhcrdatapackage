@@ -13,7 +13,7 @@
 #'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
-#' @importFrom formattable percent
+#' @importFrom scales label_percent
 #' @importFrom treemapify geom_treemap geom_treemap_text
 #' @importFrom unhcrthemes theme_unhcr
 #' 
@@ -40,9 +40,9 @@ datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_
   dplyr::group_by( Year, UNHCRBureau, Population.type.label , Population.type ) %>%
   dplyr::summarise(Value = sum( Value, na.rm = TRUE))  %>%
   dplyr::ungroup(Year, UNHCRBureau ,Population.type, Population.type.label)  %>%
-  dplyr::mutate(  freq = formattable::percent(Value / sum(Value)) ) %>%
+  dplyr::mutate(  freq = scales::label_percent( accuracy= .1, suffix = "%")(Value / sum(Value)) ) %>%
   dplyr::filter(UNHCRBureau  == region   )   %>%
-  dplyr::mutate(  freqinReg = formattable::percent(Value / sum(Value), digits = 1) )  
+  dplyr::mutate(  freqinReg = scales::label_percent( accuracy= .1, suffix = "%") (Value / sum(Value)) )  
  
 ## Treemapify
 p <- ggplot(datatree, 

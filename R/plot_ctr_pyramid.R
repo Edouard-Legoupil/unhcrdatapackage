@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace str_detect
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -145,7 +145,7 @@ if( nrow(demographics1) ==  0 ){
       scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                           aesthetics = c("colour", "fill")) +
       coord_flip() +
-      theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+      theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
       theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank())
     

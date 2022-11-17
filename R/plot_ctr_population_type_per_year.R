@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -95,7 +95,9 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR Refugee Data Finder") +
-    theme_unhcr(grid = FALSE, axis = "x", axis_title = FALSE, axis_text = "x") +
+    theme_unhcr(grid = FALSE, axis = "x", 
+                axis_title = FALSE, axis_text = "x",
+              font_size = 14) +
     stat_summary(fun = sum, aes(x = Year,
                                 y = Value, 
                                 label = scales::label_number( accuracy = 1,

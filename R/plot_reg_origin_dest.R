@@ -24,7 +24,7 @@
 #' 
 #' @export
 #' @examples
-#' plot_reg_origin_dest(year = 2022,  region = "Americas")
+#' plot_reg_origin_dest(year = 2022,  region = "Asia")
 plot_reg_origin_dest <- function(year = 2022,  region = "Americas"){
    
 
@@ -51,7 +51,7 @@ chords <- end_year_population_totals |>
 
 circlize::chordDiagram(chords,
                        self.link = 1,
-                       grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(15),
+                      # grid.col = colorRampPalette(RColorBrewer::brewer.pal(11, "Paired"))(15),
                        annotationTrack = "grid" ,
                      # preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(chords))))),
                       preAllocateTracks = 1.6

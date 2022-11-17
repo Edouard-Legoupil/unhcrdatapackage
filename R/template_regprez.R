@@ -9,22 +9,40 @@
 #' Generate all country factsheet 
 #' 
 #' @param year Numeric value of the year (for instance 2020)
-#' @param UNHCRBureau Bureau that covers all the countrie factsheet to generate
+#' @param region Bureau that covers all the countrie factsheet to generate
+#' @param lag Number of year to used as comparison base
+#' 
+#' @param folder folder within your project where to put the generated report. 
+#' Folder will be created if it does not exist
 #' 
 #' @importFrom unhcrdown pptx_slides
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
 #' 
-#' @export
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
 #'
 
 #' @examples
-#' # template_RegPrez(year = 2022, region = "Americas")
+#' # template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")
 template_RegPrez <- function(year = 2022,
-                                   region = "Americas") {
+                             region = "Americas",
+                             lag = 10,
+                             folder = "Report") {
+  
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
+  
   rmarkdown::render(
     system.file("rmarkdown/templates/regional_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
+    output_file = here::here(folder, paste0('StatFactsheet-', ctrcode, '-', year, '.html') ),
     params = list(region=region, 
-                  year = year)  )
+                  year = year,
+                  lag = lag)  )
  
 }
 

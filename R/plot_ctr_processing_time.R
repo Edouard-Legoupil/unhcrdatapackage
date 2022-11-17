@@ -17,7 +17,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -111,7 +111,7 @@ plot_ctr_processing_time <- function(year = 2022,
 #        x = NULL, 
 #        y = "Cumulative total") +
 #   guides(fill = guide_legend(reverse = TRUE)) +
-#   theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+#   theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
 #   theme(legend.position = "right")
 #   
 # return(p)

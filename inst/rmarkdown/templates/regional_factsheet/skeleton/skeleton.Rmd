@@ -8,7 +8,7 @@ author:
     email: email@unhcr.org
 params:
   year: 2022
-  region: "Americas"
+  region: "Asia"
   lag: 10
 output:
   unhcrdown::paged_simple:
@@ -63,9 +63,9 @@ plot_reg_treemap(year = params$year,
 ## Evolution over time  
 
 ```{r example-plot_reg_evolution, fig.width = 8, fig.asp = 0.618}
-plot_reg_evolution(year = 2021,
-                   lag = 5,
-                   region = "Americas",
+plot_reg_evolution(year = params$year,  
+                   region = params$region,
+                   lag = 5, 
                    pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
 ```
 

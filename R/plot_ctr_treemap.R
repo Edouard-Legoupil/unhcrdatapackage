@@ -13,7 +13,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -64,7 +64,11 @@ plot_ctr_treemap <- function(year = 2021,
                                           "OOC" ="#8395b9",
                                           "STA"="#E1CC0D")) +
          
-      theme_unhcr(font_size = 12, grid = "Y", axis = "x", axis_title = "y", legend = FALSE) +
+      theme_unhcr(font_size = 14,
+                  grid = "Y", 
+                  axis = "x", 
+                  axis_title = "y", 
+                  legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ", country_asylum_iso3c),

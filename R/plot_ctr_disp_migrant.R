@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom wbstats  wb 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
@@ -121,7 +121,7 @@ p <- ggplot(thismigProfile,
        x = "Ratio Asylum / Immigrant",
        y ="Ratio Country / Total Immigrant",
        caption = "UNDESA Migrant Stock & UNHCR (includes REF +ASY+OIP in calculation) as of 2020.\n Only countries with more than 50K Forcibly Displaced Accorss borders are presented.") +
-  theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+  theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
   theme(legend.position="bottom", 
         panel.grid.major.y  = element_line(color = "#cbcbcb"), 
         panel.grid.major.x  = element_line(color = "#cbcbcb"), 

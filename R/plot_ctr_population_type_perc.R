@@ -92,11 +92,9 @@ plot_ctr_population_type_perc <- function(year = 2021,
           TRUE ~ origin_data_prot
         )
       ),
-      perc = percent(
-        pop_type_value / sum(pop_type_value),
+      perc = label_percent(
         accuracy = 1,
-        trim = FALSE
-      )
+        trim = FALSE )( pop_type_value / sum(pop_type_value))
     )
   
   CountryAsylum_name_text <- df |> 
@@ -139,7 +137,9 @@ p <-
        subtitle = "Percentage",
        caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
- theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+ theme_unhcr(grid = FALSE, axis = "y", 
+             axis_title = FALSE, axis_text = "y",
+              font_size = 14) +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),

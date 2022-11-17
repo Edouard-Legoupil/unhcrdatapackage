@@ -15,7 +15,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -80,9 +80,8 @@ plot_reg_population_type_abs <- function(year = 2022,
       dplyr::ungroup() |>
       dplyr::group_by(CountryAsylumName) |> 
       dplyr::arrange(Year) |>
-      dplyr::mutate(diff_pop_type_value = scales::percent(((Value - lag(Value))/lag(Value)),
-                                                          accuracy = 1.1,
-                                                          trim = FALSE  )) |> 
+      dplyr::mutate(diff_pop_type_value = scales::label_percent(accuracy = 1.1,
+                                                          trim = FALSE  ) (((Value - lag(Value))/lag(Value) ) )) |> 
       dplyr::ungroup() |>
       dplyr::filter(Year == year) |> 
       dplyr::arrange(desc(Value))  |> 
@@ -148,7 +147,11 @@ p <-  ggplot(df) +
        subtitle = paste0("Number of people for top ", top_n_countries, " countries in the region"),
        caption = "Source: UNHCR Refugee Data Finder\n @UNHCR, The UN Refugee Agency") +
   scale_y_continuous(expand = expansion(c(0, 0.1))) +
-  theme_unhcr(grid = FALSE, axis = "y", axis_title = FALSE, axis_text = "y") +
+  theme_unhcr(font_size = 14,
+              grid = FALSE, 
+              axis = "y", 
+              axis_title = FALSE, 
+              axis_text = "y") +
   theme(legend.direction = "vertical",
         legend.key.size = unit(0.8, 'cm'),
         text = element_text(size = 20),

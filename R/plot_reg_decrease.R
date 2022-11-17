@@ -17,7 +17,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom wbstats  wb 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
@@ -85,7 +85,7 @@ plot_reg_decrease <- function(year = 2021,
        x="", y ="",
        caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
   scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
-  theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+  theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
   

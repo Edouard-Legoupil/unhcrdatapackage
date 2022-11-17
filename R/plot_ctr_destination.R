@@ -14,7 +14,7 @@
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
-#' @importFrom scales cut_short_scale percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -112,7 +112,7 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
     
   # Style  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  theme_unhcr(font_size = 12)  + ## Insert UNHCR Style
+  theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear
   
