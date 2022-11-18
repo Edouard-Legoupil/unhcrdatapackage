@@ -129,8 +129,8 @@ plot_ctr_population_type_perc(year = 2021,
 
 ```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
-plot_ctr_diff_in_pop_groups(year = 2021,
-                            country_asylum_iso3c = "USA",
+plot_ctr_diff_in_pop_groups(year = 2022,
+                            country_asylum_iso3c = "ARG",
                             pop_type = c("REF", "ASY")
          )
 
@@ -287,7 +287,7 @@ plot_reg_treemap(year = 2022,  region = "Americas")
   
 
 ```{r example-plot_reg_origin_dest}
-plot_reg_origin_dest(year = 2022,  region = "Americas")
+plot_reg_origin_dest(year = 2022,  region = "Asia")
 ```
 
   
@@ -383,7 +383,7 @@ plot_reg_prop_origin(year = 2022,  region = "Americas")
 ```{r example-plot_reg_evolution}
 plot_reg_evolution(year = 2021,
                    lag = 5,
-                   region = "Americas",
+                   region = "Asia",
                    pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
 ```
 
@@ -395,10 +395,6 @@ plot_reg_evolution(year = 2021,
     
 
 ## Evolution by Country of Origin
-
-    
-
-## Refugee Over time
 
     
 
@@ -457,30 +453,92 @@ plot_reg_map(  year = 2022,
 --- 
 
 
-# Template
+# Report Templates
+
+Templates are re-built notebook that includes all the plotting functions above and are integrated with report parameters. Templates are available both as html report (that can be converted to PDF) and as PowerPoint presentations, all defined from UNHCR standard brand (cf [unhcrdown](https://github.com/vidonne/unhcrdown). The templates are available either for countries or regions.
+
 
 ## Country Factsheet
 
 ```{r example-template_CtryFactsheet}
-# template_CtryFactsheet(year = 2022, region = "Americas")
+## generate for one country
+# template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+
+## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
+#                                 y= unhcrdatapackage::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) %>%
+#         filter(Year == year &
+#                 UNHCRBureau == region ) %>%
+#         group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+#         summarise(Value = sum(Value) ) %>%
+#         ungroup() %>%
+#         filter( Value  > 1000 )
+# 
+#   for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3c = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3c, "\n"))
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")
+#   }
 ```
 
 ## Country Presentation
 
 ```{r example-template_CtryPrez}
-#template_CtryPrez(year = 2022, region = "Americas")
+## generate for one country
+# template_CtryPrez(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+
+## Generate for a specific region
+# region <- "Americas"
+# 
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
+#                                 y= unhcrdatapackage::reference, 
+#                                 by = c("CountryAsylumCode" = "iso_3")) %>%
+#         filter(Year == year & 
+#                 UNHCRBureau == region ) %>%
+#         group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+#         summarise(Value = sum(Value) ) %>%
+#         ungroup() %>%
+#         filter( Value  > 1000 )
+#   
+#   for ( i in (1:nrow(ctr))) {
+#     country_asylum_iso3c = ctr[i ,2 ]
+#     template_CtryPrez(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report") 
+#   }
 ```
 
 ## Regional Factsheet
 
 ```{r example-template_RegFactsheet}
-# template_RegFactsheet(year = 2022, region = "Americas")
+
+# template_RegFactsheet(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+
+## We can also generate all factsheets in a loop for 2022
+
+# region <-  unhcrdatapackage::reference |>
+#   dplyr::distinct(UNHCRBureau) |>
+#   dplyr::filter(!(is.na(UNHCRBureau))) |>
+#   dplyr::pull()
+# 
+# for( reg in region) {
+#   unhcrdatapackage::template_RegFactsheet(year = 2022, 
+#                         region = reg, lag = 10,   folder = "Report")
+# }
+
+
+
 ```
 
 ## Regional Presentation
 
 ```{r example-template_RegPrez}
-# template_RegPrez(year = 2022, region = "Americas")
+# template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")
 ```
 
 # Update Dataset

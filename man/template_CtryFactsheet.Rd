@@ -4,16 +4,45 @@
 \alias{template_CtryFactsheet}
 \title{Generate all country factsheet}
 \usage{
-template_CtryFactsheet(year = 2022, region = "Americas")
+template_CtryFactsheet(year = 2022, country_asylum_iso3c, folder = "Report")
 }
 \arguments{
-\item{year}{Numeric value of the year (for instance 2020)}
+\item{year}{Numeric value of the year (for instance 2022)}
 
-\item{UNHCRBureau}{Bureau that covers all the countrie factsheet to generate}
+\item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
+
+\item{folder}{folder within your project where to put the generated report. 
+Folder will be created if it does not exist}
+}
+\value{
+nothing the file for the report is generated
 }
 \description{
 Generate all country factsheet
 }
 \examples{
-# template_CtryFactsheet(year = 2022, region = "Americas")
+## generate for one country
+# template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+
+## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
+#                                 y= unhcrdatapackage::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) \%>\%
+#         filter(Year == year &
+#                 UNHCRBureau == region ) \%>\%
+#         group_by( CountryAsylumName, CountryAsylumCode   ) \%>\%
+#         summarise(Value = sum(Value) ) \%>\%
+#         ungroup() \%>\%
+#         filter( Value  > 1000 )
+# 
+#   for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3c = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3c, "\n"))
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")
+#   }
 }

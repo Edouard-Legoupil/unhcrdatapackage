@@ -2,12 +2,12 @@
 % Please edit documentation in R/plot_reg_evolution.R
 \name{plot_reg_evolution}
 \alias{plot_reg_evolution}
-\title{Title}
+\title{Evolution over time}
 \usage{
 plot_reg_evolution(
   year = 2022,
   lag = 5,
-  region = "Americas",
+  region,
   pop_type = c("REF", "IDP", "ASY", "OOC", "STA", "OIP")
 )
 }
@@ -24,11 +24,12 @@ plot_reg_evolution(
 plot a ggplot2 object
 }
 \description{
-Description
+Display evoluation over time for specific population group (one or many) and 
+defined number of years (lag)
 }
 \examples{
 plot_reg_evolution(year = 2021,
                    lag = 5,
-                   region = "Americas",
+                   region = "Asia",
                    pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
 }

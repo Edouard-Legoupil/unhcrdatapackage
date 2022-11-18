@@ -4,16 +4,43 @@
 \alias{template_RegFactsheet}
 \title{Generate all country factsheet}
 \usage{
-template_RegFactsheet(year = 2022, region = "Americas")
+template_RegFactsheet(
+  year = 2022,
+  region = "Americas",
+  lag = 10,
+  folder = "Report"
+)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{UNHCRBureau}{Bureau that covers all the countrie factsheet to generate}
+\item{region}{Bureau that covers all the countrie factsheet to generate}
+
+\item{lag}{Number of year to used as comparison base#' @param folder folder within your project where to put the generated report. 
+Folder will be created if it does not exist}
+}
+\value{
+nothing the file for the report is generated
 }
 \description{
 Generate all country factsheet
 }
 \examples{
-# template_RegFactsheet(year = 2022, region = "Americas")
+
+# template_RegFactsheet(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+
+## We can also generate all factsheets in a loop for 2022
+
+# region <-  unhcrdatapackage::reference |>
+#   dplyr::distinct(UNHCRBureau) |>
+#   dplyr::filter(!(is.na(UNHCRBureau))) |>
+#   dplyr::pull()
+# 
+# for( reg in region) {
+#   unhcrdatapackage::template_RegFactsheet(year = 2022, 
+#                         region = reg, lag = 10,   folder = "Report")
+# }
+
+
+
 }

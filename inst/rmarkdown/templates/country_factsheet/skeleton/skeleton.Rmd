@@ -296,13 +296,33 @@ plot_ctr_destination(year = params$year,
 
 ## What are the Demographics profiles of Forcibly Displaced People in relation with the host population?
 
+```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+# 
+plot_ctr_pyramid(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                            pop_type = c("REF", "ASY")
+         )
+
+```
+
 ## Is the asylum Processing capacity in relation with the demand?
 
 ## What are the trends in terms of Solutions?
 
+```{r example-plot_ctr_solution, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_solution(year = params$year,
+                  country_asylum_iso3c  = params$country,
+                  pop_type = c("REF", "ASY"))
+```
+
 ## What is the share of Forcibly Displaced People among total Migrants?
 
 
+```{r example-plot_ctr_disp_migrant, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_disp_migrant(year = params$year,
+                     country_asylum_iso3c  = params$country,
+                  pop_type = c("REF", "ASY", "OIP") )
+```
 
 
 

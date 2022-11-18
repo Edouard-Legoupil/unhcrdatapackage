@@ -4,16 +4,24 @@
 \alias{template_RegPrez}
 \title{Generate all country factsheet}
 \usage{
-template_RegPrez(year = 2022, region = "Americas")
+template_RegPrez(year = 2022, region = "Americas", lag = 10, folder = "Report")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{UNHCRBureau}{Bureau that covers all the countrie factsheet to generate}
+\item{region}{Bureau that covers all the countrie factsheet to generate}
+
+\item{lag}{Number of year to used as comparison base}
+
+\item{folder}{folder within your project where to put the generated report. 
+Folder will be created if it does not exist}
+}
+\value{
+nothing the file for the report is generated
 }
 \description{
 Generate all country factsheet
 }
 \examples{
-# template_RegPrez(year = 2022, region = "Americas")
+# template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")
 }

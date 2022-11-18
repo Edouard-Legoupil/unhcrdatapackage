@@ -22,8 +22,8 @@ Increases and Decreases in Population Groups
 }
 \examples{
 # 
-plot_ctr_diff_in_pop_groups(year = 2021,
-                            country_asylum_iso3c = "USA",
+plot_ctr_diff_in_pop_groups(year = 2022,
+                            country_asylum_iso3c = "ARG",
                             pop_type = c("REF", "ASY")
          )
 
