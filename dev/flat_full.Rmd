@@ -1750,7 +1750,7 @@ plot_ctr_disp_migrant <- function(year = 2021,
              
                country = c( country_asylum_iso3c )  ,         
                startdate = 1990, 
-               enddate = 2020, 
+               enddate = 2022, 
                return_wide = TRUE)
       # Renaming variables for further matching
       names(wb_data)[1] <- "iso_3"

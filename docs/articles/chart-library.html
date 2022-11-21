@@ -145,7 +145,8 @@ After inflating the template
 -->
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/plot_ctr_population_type_per_year.html">plot_ctr_population_type_per_year</a></span><span class="op">(</span>start_year <span class="op">=</span> <span class="fl">2016</span>,</span>
+<span><span class="fu"><a href="../reference/plot_ctr_population_type_per_year.html">plot_ctr_population_type_per_year</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>                                              lag <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"PAN"</span>,</span>
 <span>                          pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, </span>
 <span>                                       <span class="st">"ASY"</span>, </span>
@@ -247,48 +248,48 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <p><img src="chart-library_files/figure-html/examples-plot_ctr_treemap-1.png" width="90%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="plot-refugees-age-pyramid">Plot Refugees Age Pyramid<a class="anchor" aria-label="anchor" href="#plot-refugees-age-pyramid"></a>
+<h3 id="plot-age-pyramid">Plot Age Pyramid<a class="anchor" aria-label="anchor" href="#plot-age-pyramid"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># </span></span>
 <span><span class="fu"><a href="../reference/plot_ctr_pyramid.html">plot_ctr_pyramid</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
-<span>                            country_asylum_iso3c <span class="op">=</span> <span class="st">"VEN"</span>,</span>
-<span>                            pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span><span class="op">)</span></span>
-<span>         <span class="op">)</span></span>
+<span>                country_asylum_iso3c <span class="op">=</span> <span class="st">"VEN"</span>,</span>
+<span>                pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_label()`).</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/examples-plot_ctr_pyramid-1.png" width="90%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="asylum-processing">Asylum Processing<a class="anchor" aria-label="anchor" href="#asylum-processing"></a>
+<h3 id="plot-refugee-recognition-rate">Plot Refugee Recognition rate<a class="anchor" aria-label="anchor" href="#plot-refugee-recognition-rate"></a>
 </h3>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_recognition.html">plot_ctr_recognition</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>                     country_asylum_iso3c <span class="op">=</span> <span class="st">"USA"</span>,</span>
+<span>                        top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                        measure <span class="op">=</span> <span class="st">"RefugeeRecognitionRate"</span>,</span>
+<span>                                 order_by <span class="op">=</span> <span class="st">"TotalDecided"</span> <span class="op">)</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_ctr_recognition-1.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="refugee-recognition-rate">Refugee Recognition rate<a class="anchor" aria-label="anchor" href="#refugee-recognition-rate"></a>
+<h3 id="asylum-applications-decision-over-time">Asylum Applications &amp; Decision over time<a class="anchor" aria-label="anchor" href="#asylum-applications-decision-over-time"></a>
 </h3>
-</div>
-<div class="section level3">
-<h3 id="refugee-status-determination-application">Refugee Status Determination Application<a class="anchor" aria-label="anchor" href="#refugee-status-determination-application"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="average-processing-time">Average processing time<a class="anchor" aria-label="anchor" href="#average-processing-time"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="refugees-accessing-durable-solutions">Refugees accessing durable solutions<a class="anchor" aria-label="anchor" href="#refugees-accessing-durable-solutions"></a>
-</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_asylum.html">plot_ctr_asylum</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>                country_asylum_iso3c <span class="op">=</span> <span class="st">"ECU"</span>, </span>
+<span>                            lag <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining, by = c("Year", "CountryAsylumCode")</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_ctr_asylum-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="average-asylum-processing-time">Average Asylum Processing Time<a class="anchor" aria-label="anchor" href="#average-asylum-processing-time"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot_ctr_processing_time(year = 2022,</span></span>
 <span><span class="co">#                               country_asylum_iso3c = "CHL")</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="solution">Solution<a class="anchor" aria-label="anchor" href="#solution"></a>
+<h3 id="plot-solution-over-time">Plot Solution Over time<a class="anchor" aria-label="anchor" href="#plot-solution-over-time"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_solution.html">plot_ctr_solution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>                  country_asylum_iso3c<span class="op">=</span> <span class="st">"UGA"</span>,</span>
 <span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span><span class="op">)</span><span class="op">)</span></span>
@@ -300,25 +301,12 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <p><img src="chart-library_files/figure-html/example-plot_ctr_solution-1.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="resettlement-trend">Resettlement Trend<a class="anchor" aria-label="anchor" href="#resettlement-trend"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="proportion-of-the-population-who-are-refugees-by-country-of-origin">Proportion of the population who are refugees, by country of
-origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-who-are-refugees-by-country-of-origin"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="ratio-refugee-vs-host-population">Ratio Refugee Vs Host population<a class="anchor" aria-label="anchor" href="#ratio-refugee-vs-host-population"></a>
-</h3>
-</div>
-<div class="section level3">
 <h3 id="plot-ratio-refugee-migrant">Plot Ratio Refugee Migrant<a class="anchor" aria-label="anchor" href="#plot-ratio-refugee-migrant"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_disp_migrant.html">plot_ctr_disp_migrant</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>                    country_asylum_iso3c <span class="op">=</span> <span class="st">"BRA"</span>,</span>
-<span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"OIP"</span><span class="op">)</span> <span class="op">)</span></span>
+<span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"DIP"</span>,<span class="st">"OOC"</span>, <span class="st">"STA"</span>, <span class="st">"OIP"</span><span class="op">)</span> <span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: `spread_()` was deprecated in tidyr 1.2.0.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `spread()` instead.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">wbstats</span> package.</span></span>
@@ -335,28 +323,97 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <div class="section level3">
 <h3 id="population-group-in-the-region">Population group in the region<a class="anchor" aria-label="anchor" href="#population-group-in-the-region"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_treemap.html">plot_reg_treemap</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  region <span class="op">=</span> <span class="st">"Americas"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_treemap-1.png" width="700"></p>
 </div>
 <div class="section level3">
+<h3 id="plot-world-comparison">Plot World Comparison<a class="anchor" aria-label="anchor" href="#plot-world-comparison"></a>
+</h3>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_share.html">plot_reg_share</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  </span>
+<span>                             region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                             pop_type <span class="op">=</span> <span class="st">"REF"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span>
+<span><span class="co">#&gt; Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_share-1.png" width="700"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_share.html">plot_reg_share</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  </span>
+<span>                             region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                             pop_type <span class="op">=</span> <span class="st">"ASY"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span>
+<span><span class="co">#&gt; Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_share-2.png" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_share.html">plot_reg_share</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  </span>
+<span>                             region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                             pop_type <span class="op">=</span> <span class="st">"OIP"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span>
+<span><span class="co">#&gt; Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_share-3.png" width="700"></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_share.html">plot_reg_share</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  </span>
+<span>                             region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                             pop_type <span class="op">=</span> <span class="st">"IDP"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span>
+<span><span class="co">#&gt; Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_share-4.png" width="700"></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_share.html">plot_reg_share</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  </span>
+<span>                             region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                             pop_type <span class="op">=</span> <span class="st">"STA"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span>
+<span><span class="co">#&gt; Use of `datatree$Value` is discouraged.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `Value` instead.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_share-5.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="evolution-over-time">Evolution Over Time<a class="anchor" aria-label="anchor" href="#evolution-over-time"></a>
+</h3>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_evolution.html">plot_reg_evolution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
+<span>                   lag <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                   region <span class="op">=</span> <span class="st">"Asia"</span>,</span>
+<span>                   pop_type <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"REF"</span>, <span class="st">"IDP"</span>, <span class="st">"ASY"</span>, <span class="st">"OOC"</span>, <span class="st">"STA"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_evolution-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="plot-evolution-of-population-type-per-year">Plot Evolution of Population type per year<a class="anchor" aria-label="anchor" href="#plot-evolution-of-population-type-per-year"></a>
+</h3>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_population_type_per_year.html">plot_reg_population_type_per_year</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>                                              lag <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                                     region  <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                                     pop_type <span class="op">=</span>   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"IDP"</span>, <span class="st">"OIP"</span>, <span class="st">"STA"</span>, <span class="st">"OOC"</span><span class="op">)</span> <span class="op">)</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_population_type_per_year-1.png" width="700"></p>
+</div>
+<div class="section level3">
 <h3 id="plot-population-origin-destination-within-the-region">Plot Population Origin-Destination within the region<a class="anchor" aria-label="anchor" href="#plot-population-origin-destination-within-the-region"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_origin_dest.html">plot_reg_origin_dest</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  region <span class="op">=</span> <span class="st">"Asia"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_origin_dest-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="plot-main-country-of-asylum-in-the-region">Plot Main country of Asylum in the Region<a class="anchor" aria-label="anchor" href="#plot-main-country-of-asylum-in-the-region"></a>
 </h3>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_population_type_abs.html">plot_reg_population_type_abs</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                              region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
 <span>                              top_n_countries <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                              pop_type <span class="op">=</span> <span class="st">"REF"</span></span>
 <span>                              <span class="op">)</span> </span></code></pre></div>
 <p><img src="chart-library_files/figure-html/examples-plot_reg_population_type_abs-1.png" width="90%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/plot_reg_population_type_abs.html">plot_reg_population_type_abs</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                              region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
@@ -368,7 +425,7 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <div class="section level3">
 <h3 id="plot-biggest-decrease-in-refugee-population">Plot Biggest decrease in Refugee Population<a class="anchor" aria-label="anchor" href="#plot-biggest-decrease-in-refugee-population"></a>
 </h3>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_decrease.html">plot_reg_decrease</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>                  lag <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                  topn <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -379,14 +436,14 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <div class="section level3">
 <h3 id="plot-biggest-increase-in-refugee-population">Plot Biggest increase in Refugee Population<a class="anchor" aria-label="anchor" href="#plot-biggest-increase-in-refugee-population"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_increase.html">plot_reg_increase</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>                  lag <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                  topn <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                  region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
 <span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_increase-1.png" width="700"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/plot_reg_increase.html">plot_reg_increase</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>                  lag <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -396,31 +453,76 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <p><img src="chart-library_files/figure-html/example-plot_reg_increase-2.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="proportion-of-the-population-who-are-refugees-by-country-of-origin-1">Proportion of the population who are refugees, by country of
-origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-who-are-refugees-by-country-of-origin-1"></a>
+<h3 id="proportion-of-the-population-who-are-refugees-by-country-of-origin-sdg-indicator-10-7-4">Proportion of the population who are refugees, by country of origin
+(SDG indicator 10.7.4 )<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-who-are-refugees-by-country-of-origin-sdg-indicator-10-7-4"></a>
 </h3>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_prop_origin.html">plot_reg_prop_origin</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,  region <span class="op">=</span> <span class="st">"Americas"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_prop_origin-1.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="evolution-over-time">Evolution over time<a class="anchor" aria-label="anchor" href="#evolution-over-time"></a>
+<h3 id="decision-on-refugee-status-determination">Decision on Refugee Status Determination<a class="anchor" aria-label="anchor" href="#decision-on-refugee-status-determination"></a>
 </h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_evolution.html">plot_reg_evolution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
-<span>                   lag <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>                   region <span class="op">=</span> <span class="st">"Asia"</span>,</span>
-<span>                   pop_type <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"REF"</span>, <span class="st">"IDP"</span>, <span class="st">"ASY"</span>, <span class="st">"OOC"</span>, <span class="st">"STA"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="chart-library_files/figure-html/example-plot_reg_evolution-1.png" width="700"></p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_rsd.html">plot_reg_rsd</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>             region <span class="op">=</span> <span class="st">"Americas"</span> ,</span>
+<span>                        top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                        measure <span class="op">=</span> <span class="st">"Recognized"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">y</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">y</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_rsd-1.png" width="700"></p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_reg_rsd.html">plot_reg_rsd</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>             region <span class="op">=</span> <span class="st">"Americas"</span> ,</span>
+<span>                        top_n_countries <span class="op">=</span> <span class="fl">5</span>, </span>
+<span>                        measure <span class="op">=</span> <span class="st">"ComplementaryProtection"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">y</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">y</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_rsd-2.png" width="700"></p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_reg_rsd.html">plot_reg_rsd</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>             region <span class="op">=</span> <span class="st">"Americas"</span> ,</span>
+<span>                        top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                        measure <span class="op">=</span> <span class="st">"TotalDecided"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">y</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">y</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_rsd-3.png" width="700"></p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_reg_rsd.html">plot_reg_rsd</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>             region <span class="op">=</span> <span class="st">"Americas"</span> ,</span>
+<span>                        top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                        measure <span class="op">=</span> <span class="st">"RefugeeRecognitionRate"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">y</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">y</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_rsd-4.png" width="700"></p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_reg_rsd.html">plot_reg_rsd</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>             region <span class="op">=</span> <span class="st">"Americas"</span> ,</span>
+<span>                        top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                        measure <span class="op">=</span> <span class="st">"TotalRecognitionRate"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">y</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">y</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="chart-library_files/figure-html/example-plot_reg_rsd-5.png" width="700"></p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="co"># plot_reg_rsd(year = 2022,</span></span>
+<span><span class="co">#              region = "Europe", </span></span>
+<span><span class="co">#                         top_n_countries = 10, </span></span>
+<span><span class="co">#                         measure = "Recognized")</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="evolution-by-country-of-origin">Evolution by Country of Origin<a class="anchor" aria-label="anchor" href="#evolution-by-country-of-origin"></a>
+<h3 id="plot-evolution-of-solutions-in-the-region">Plot Evolution of Solutions in the Region<a class="anchor" aria-label="anchor" href="#plot-evolution-of-solutions-in-the-region"></a>
 </h3>
-</div>
-<div class="section level3">
-<h3 id="persons-of-concern-over-time">Persons of concern over time<a class="anchor" aria-label="anchor" href="#persons-of-concern-over-time"></a>
-</h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_solution.html">plot_reg_solution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>, </span>
 <span>                            region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
 <span>                            lag <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -460,9 +562,9 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <div class="section level3">
 <h3 id="mapping-population">Mapping Population<a class="anchor" aria-label="anchor" href="#mapping-population"></a>
 </h3>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_reg_map.html">plot_reg_map</a></span><span class="op">(</span>  year <span class="op">=</span> <span class="fl">2022</span>,</span>
-<span>                            region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
+<span>                            region <span class="op">=</span> <span class="st">"Asia"</span>,</span>
 <span>                            topn <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                            pop_type <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"OIP"</span><span class="op">)</span>,</span>
 <span>                            projection <span class="op">=</span> <span class="st">"Mercator"</span>,</span>
@@ -470,7 +572,7 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <span><span class="co">#&gt; Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is</span></span>
 <span><span class="co">#&gt; deprecated. It might return a CRS with a non-EPSG compliant axis order.</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_map-1.png" width="700"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co"># plot_reg_map(  year = 2022,</span></span>
@@ -479,10 +581,6 @@ origin<a class="anchor" aria-label="anchor" href="#proportion-of-the-population-
 <span><span class="co">#                             pop_type =  c("REF", "ASY", "OIP"),</span></span>
 <span><span class="co">#                             projection = "Mercator",</span></span>
 <span><span class="co">#                             maxSymbolsize = .25)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="refugee-chart-race">Refugee Chart Race<a class="anchor" aria-label="anchor" href="#refugee-chart-race"></a>
-</h3>
 <hr>
 </div>
 </div>
@@ -497,7 +595,7 @@ are available either for countries or regions.</p>
 <div class="section level3">
 <h3 id="country-factsheet">Country Factsheet<a class="anchor" aria-label="anchor" href="#country-factsheet"></a>
 </h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## generate for one country</span></span>
 <span><span class="co"># template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")</span></span>
 <span></span>
@@ -526,7 +624,7 @@ are available either for countries or regions.</p>
 <div class="section level3">
 <h3 id="country-presentation">Country Presentation<a class="anchor" aria-label="anchor" href="#country-presentation"></a>
 </h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## generate for one country</span></span>
 <span><span class="co"># template_CtryPrez(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")</span></span>
 <span></span>
@@ -552,7 +650,7 @@ are available either for countries or regions.</p>
 <div class="section level3">
 <h3 id="regional-factsheet">Regional Factsheet<a class="anchor" aria-label="anchor" href="#regional-factsheet"></a>
 </h3>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># template_RegFactsheet(year = 2022, region = "Americas", lag = 10,   folder = "Report")</span></span>
 <span></span>
@@ -571,14 +669,36 @@ are available either for countries or regions.</p>
 <div class="section level3">
 <h3 id="regional-presentation">Regional Presentation<a class="anchor" aria-label="anchor" href="#regional-presentation"></a>
 </h3>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")</span></span>
+<span></span>
+<span><span class="co"># # Generate for a specific region</span></span>
+<span><span class="co"># region &lt;- "Americas"</span></span>
+<span><span class="co"># year &lt;- 2022</span></span>
+<span><span class="co"># library(tidyverse)</span></span>
+<span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
+<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
+<span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
+<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) %&gt;%</span></span>
+<span><span class="co">#         filter(Year == year &amp;</span></span>
+<span><span class="co">#                 UNHCRBureau == region ) %&gt;%</span></span>
+<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) %&gt;%</span></span>
+<span><span class="co">#         summarise(Value = sum(Value) ) %&gt;%</span></span>
+<span><span class="co">#         ungroup() %&gt;%</span></span>
+<span><span class="co">#         filter( Value  &gt; 1000 )</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co">#   for ( i in (1:nrow(ctr))) {</span></span>
+<span><span class="co">#     # i &lt;- 1</span></span>
+<span><span class="co">#     country_asylum_iso3c = as.character(ctr[i ,2 ])</span></span>
+<span><span class="co">#     cat(paste0(country_asylum_iso3c, "\n"))</span></span>
+<span><span class="co">#     unhcrdatapackage::template_CtryPrez(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")</span></span>
+<span><span class="co">#   }</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="update-dataset">Update Dataset<a class="anchor" aria-label="anchor" href="#update-dataset"></a>
 </h2>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#update_dataset()</span></span></code></pre></div>
 </div>
 <div class="section level2">
