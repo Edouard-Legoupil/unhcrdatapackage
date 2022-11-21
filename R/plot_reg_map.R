@@ -27,13 +27,14 @@
 #' @importFrom unhcrthemes theme_unhcr
 #' @importFrom wbstats  wb 
 #' @importFrom Hmisc cut2
-#' @return plot a ggplot2 object 
+#' 
+#' @return a base plot
 #' 
 #' @export
 #' 
 #' @examples
 #' plot_reg_map(  year = 2022,
-#'                             region = "Americas",
+#'                             region = "Asia",
 #'                             topn = 5,
 #'                             pop_type =  c("REF", "ASY", "OIP"),
 #'                             projection = "Mercator",
@@ -115,6 +116,9 @@ plot_reg_map <- function(    year = 2022,
         filter(continent != "Antarctica")  %>%  
         filter(adm0_a3 %in%  listctr) 
       
+      ### Need to fix specific case for Asisa... where the proj disperse the country...
+      ##  filter(adm0_a3 != "VUT") 
+      
       ## Manage Projection... 
       data2 <- data2 %>%  
         # this is the crs from d, which has no EPSG code:
@@ -140,14 +144,21 @@ plot_reg_map <- function(    year = 2022,
       minPopMap <- PopMap |>   min()
       maxPopMap <- PopMap |>  max()             
       
-                
+      
+     regionname <- dplyr::case_when( region == "Americas"  ~  "Americas",
+                                  region == "Asia"  ~  "Asia & the Pacific",
+                                  region == "EastAfrica"  ~  "Eastern Africa",
+                                  region =="Europe"  ~  "Europe",
+                                  region == "MENA"  ~  "Middle East & North Africa",
+                                  region == "SouthAfrica"  ~  "Southern Africa",
+                                  region == "WestAfrica"  ~  "Western Africa")          
       
       ## Generate Map   ##################
       #Maps is created here with [MapSF package](https://riatelab.github.io/mapsf/index.html)
       # Select a font already installed on your system !!
       par(family="Lato")
       # set a theme
-      mapsf::mf_theme(bg ="#d4dff2", #  "#E2E7EB",  ## background color --> Used country 
+      mapsfunhcr <- mapsf::mf_theme(bg ="#d4dff2", #  "#E2E7EB",  ## background color --> Used country 
                       # bg = "#cdd2d4", "#faebd7ff",  "#cdd2d4",
                       mar = c(0, 0, 2, 0), ## margins
                       tab = FALSE,  # if TRUE the title is displayed as a 'tab'
@@ -159,20 +170,37 @@ plot_reg_map <- function(    year = 2022,
                       #font = "Lato",
                       font = 1 ) #font of the title
       
+      
+           # map_fun <- function(data, init, theme){
+     #      # Initiate a base map
+     #      mf_init(x = init, theme = theme)
+     #      # always use add = TRUE after mf_init()
+     #      mf_shadow(data, col = "grey50", cex = 0.2 , add = TRUE)
+     #      mf_map(data, add = TRUE)
+     #      mf_title(txt = "Martinique ", fg = "#FFFFFF")
+     #      mf_credits(txt = "Credit", bg = "#ffffff80") 
+     #      return(invisible(NULL)) 
+     #      }
+      
+      
       ##Initialise the map with a background
-      mapsf::mf_init(world) 
+      mapsf::mf_init( x = world, theme = mapsfunhcr) 
+      # always use add = TRUE after mf_init()
       
       # Plot a shadow
-      mapsf::mf_shadow(world, col = "grey50", cex = 0.2 , add = TRUE)
+      mapsf::mf_shadow(world, col = "grey50", cex = 0.2 , 
+                       add = TRUE)
+      
       mapsf::mf_map(world, 
-                    add = TRUE, 
                     lwd = 0.5, 
                     border = "#93A3AB", 
-                    col = "#FFFFFF")
+                    col = "#FFFFFF", 
+                    add = TRUE)
       
       # Set a layout
-      mapsf::mf_title(txt = paste0("Forced Displacement in ", year), fg = "#FFFFFF")
-      mapsf::mf_credits(txt = "Source: UNHCR.org/refugee-statistics - A Country is name if it features among the five largest population.\n The boundaries and names shown and the designations used on this map do not imply official endorsment or acceptance by the inited nations", bg = "#ffffff80") 
+      mapsf::mf_title(txt = paste0("Forced Displacement in ",
+                                   regionname, " | ", year), fg = "#FFFFFF")
+      mapsf::mf_credits(txt = "Source: UNHCR.org/refugee-statistics - A Country is name if it features among the five largest population.\n The boundaries and names shown and the designations used on this map do not imply official endorsment or acceptance by the inited nations", bg = "#ffffff80" ) 
       
       
       ## Proportional Symbol with color based on other
@@ -196,7 +224,7 @@ plot_reg_map <- function(    year = 2022,
         leg_frame = c(FALSE, FALSE), # add frame around the legend
         add = TRUE
       )
-      # labels for a few  countries - https://riatelab.github.io/mapsf/reference/mf_label.html
+    # labels for a few  countries - https://riatelab.github.io/mapsf/reference/mf_label.html
      mapsf::mf_label(x = data2[data2$Value >= minPopMap,], 
                       var = "CountryAsylumName",  # name(s) of the variable(s) to plot
                       cex = 0.9, #  labels cex
@@ -207,7 +235,6 @@ plot_reg_map <- function(    year = 2022,
                       r = 0.2,  # width of the halo
                       overlap = FALSE,  # if FALSE, labels are moved so they do not overlap.
                       lines = TRUE) 
-
-
-
+     
+     return(invisible(NULL))
 }

@@ -12,7 +12,7 @@ plot_reg_prop_origin(year = 2022, region = "Americas")
 \item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
 }
 \value{
-plot a ggplot2 object
+a ggplot2 object
 }
 \description{
 The proportion of a country???s population who become refugees is SDG indicator 10.7.4 

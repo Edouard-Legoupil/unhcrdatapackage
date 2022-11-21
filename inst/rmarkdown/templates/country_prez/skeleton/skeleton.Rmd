@@ -1,16 +1,16 @@
 ---
-title: "United States | Statistical Factsheet"
-subtitle:  "as of End 2021"  
+params:
+  year: 2022
+  country: "ARG"
+  countryname: "Argentina"
+title: "Statistical Factsheet \ `r params$countryname` "
+subtitle:  " as of `r params$year`"
 output:
   unhcrdown::pptx_slides
-params:
-  year: 2021
-  country: "USA"
-  countryname: "United States"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
+```{r setup, include=FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE, warning = FALSE, message = FALSE)
 library(officedown)
 library(unhcrthemes)
 library(ggplot2)
@@ -159,17 +159,33 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 <i class="fa-solid fa-solid fa-arrows-down-to-people blue" style="font-size: 2em;"></i><br>**[`r format(round(total_sta, 0),  big.mark=",")`]{.blue .lead}** Stateless People
 
 
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+
+plot_ctr_treemap(year = params$year,
+                 country_asylum_iso3c = params$country,
+                 pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP")
+         )  -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+
 ---
 
 ```{r ph=officer::ph_location_fullsize()}
 
 ## How the different Categories of Population of concern to UNHCR are evolving over time?
 # According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
-plot_ctr_population_type_per_year(start_year = "2016",
+plot_ctr_population_type_per_year(year = 2022,
+                                  lag = 5,
                          country_asylum_iso3c = params$country,
                           pop_type = c("REF",
                                        "ASY",
-                                       "VDA",
+                                       "OIP",
                                        "OOC",
                                        "STA",
                                        "IDP" )) -> p
@@ -225,14 +241,71 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 plot_ctr_diff_in_pop_groups(year = params$year,
                             country_asylum_iso3c = params$country,
                             pop_type = c("REF", "ASY")   ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato')) 
+```
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_ctr_pyramid(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                            pop_type = c(  "ASY")
+         )-> p
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 
 ---
 
 ```{r ph=officer::ph_location_fullsize()}
+plot_ctr_recognition(year = params$year,
+                    country_asylum_iso3c  = params$country,
+                    top_n_countries = 10, 
+                    measure = "RefugeeRecognitionRate",
+                                 order_by = "TotalDecided" )-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
 
+---
 
+```{r ph=officer::ph_location_fullsize()}
+plot_ctr_recognition(year = params$year,
+                    country_asylum_iso3c  = params$country,
+                    top_n_countries = 10, 
+                    measure = "TotalRecognitionRate",
+                                 order_by = "Recognized" )-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_ctr_asylum(year = params$year,
+                country_asylum_iso3c  = params$country, 
+                lag = 10)-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_ctr_solution(year = params$year,
+                  country_asylum_iso3c  = params$country,
+                  pop_type = c("REF", "ASY"))-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_ctr_disp_migrant(year = params$year,
+                     country_asylum_iso3c  = params$country,
+                  pop_type = c("REF", "ASY", "OIP") ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
 ## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
  
 plot_ctr_destination(year = params$year,
@@ -241,25 +314,3 @@ plot_ctr_destination(year = params$year,
          ) -> p
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
-
-
----
-
-## What are the Demographics profiles of Forcibly Displaced People in relation with the host population?
-
----
-
-## Is the asylum Processing capacity in relation with the demand?
-
----
-
-## What are the trends in terms of Solutions?
-
----
-
-## What is the share of Forcibly Displaced People among total Migrants?
-
----
-
-
-

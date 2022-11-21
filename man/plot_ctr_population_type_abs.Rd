@@ -20,6 +20,9 @@ plot_ctr_population_type_abs(
 
 \item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)}
 }
+\value{
+a ggplot2 object
+}
 \description{
 Main country of origin - Absolute value
 }

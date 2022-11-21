@@ -25,14 +25,14 @@ plot_reg_map(
 \item{useBertin}{-Tells if the map should use Bertin 1953 projection - https://visionscarto.net/bertin-projection-1953)}
 }
 \value{
-plot a ggplot2 object
+a base plot
 }
 \description{
 Plot a regional map
 }
 \examples{
 plot_reg_map(  year = 2022,
-                            region = "Americas",
+                            region = "Asia",
                             topn = 5,
                             pop_type =  c("REF", "ASY", "OIP"),
                             projection = "Mercator",

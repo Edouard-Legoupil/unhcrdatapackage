@@ -22,7 +22,7 @@
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty pretty_breaks
 #' @importFrom unhcrthemes theme_unhcr unhcr_pal
 #' 
-#' @return plot a ggplot2 object 
+#' @return a ggplot2 object
 #' 
 #' @export
 #' @examples
@@ -59,7 +59,7 @@ plot_reg_evolution <- function(year = 2022,
   labs(
     title = paste0( region, ": People of Concern | ", (year - lag), "-", year),
     y = "Number of people",
-    caption = "Source: UNHCR, The UN Refugee Agency" ) +
+    caption = "Source: UNHCR.org/refugee-statistics" ) +
   scale_x_continuous(breaks = pretty_breaks(n =7)) +
   scale_y_continuous(
     expand = expansion(c(0, 0.1)),

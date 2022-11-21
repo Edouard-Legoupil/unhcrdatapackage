@@ -67,7 +67,8 @@ After inflating the template
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 
-plot_ctr_population_type_per_year(start_year = 2016,
+plot_ctr_population_type_per_year(year = 2022,
+                                              lag = 5,
                          country_asylum_iso3c = "PAN",
                           pop_type = c("REF", 
                                        "ASY", 
@@ -166,34 +167,53 @@ plot_ctr_treemap(year = 2021,
 
 
 
-## Plot Refugees Age Pyramid
+## Plot Age Pyramid
 
     
 
 ```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_pyramid(year = 2021,
-                            country_asylum_iso3c = "VEN",
-                            pop_type = c("REF", "ASY")
-         )
+                country_asylum_iso3c = "VEN",
+                pop_type = c("REF", "ASY"))
 
 ```
 
-## Asylum Processing
+    
+
+## Plot Refugee Recognition rate
 
     
 
-## Refugee Recognition rate
+  
 
+```{r example-plot_ctr_recognition}
+plot_ctr_recognition(year = 2022,
+                     country_asylum_iso3c = "USA",
+                        top_n_countries = 10, 
+                        measure = "RefugeeRecognitionRate",
+                                 order_by = "TotalDecided" )
+```
+
+  
+
+  
     
 
-## Refugee Status Determination Application
+## Asylum Applications & Decision over time
 
-## Average processing time
+  
 
-    
+```{r example-plot_ctr_asylum}
+plot_ctr_asylum(year = 2022,
+                country_asylum_iso3c = "ECU", 
+                            lag = 10)
+```
 
-## Refugees accessing durable solutions
+  
+
+  
+
 
 ## Average Asylum Processing Time
 
@@ -211,7 +231,7 @@ plot_ctr_pyramid(year = 2021,
   
 
 
-## Solution 
+## Plot Solution Over time 
 
     
 
@@ -230,16 +250,6 @@ plot_ctr_solution(year = 2021,
 
 
 
-## Resettlement Trend
-
-    
-
-## Proportion of the population who are refugees, by country of origin
-
-    
-
-## Ratio Refugee Vs Host population
-
     
 
 ## Plot Ratio Refugee Migrant
@@ -251,7 +261,7 @@ plot_ctr_solution(year = 2021,
 ```{r example-plot_ctr_disp_migrant}
 plot_ctr_disp_migrant(year = 2021,
                     country_asylum_iso3c = "BRA",
-                  pop_type = c("REF", "ASY", "OIP") )
+                  pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP") )
 ```
 
   
@@ -278,6 +288,70 @@ plot_reg_treemap(year = 2022,  region = "Americas")
 
   
 
+
+## Plot World Comparison
+
+    
+
+  
+
+```{r example-plot_reg_share}
+plot_reg_share(year = 2022,  
+                             region = "Americas",
+                             pop_type = "REF")
+plot_reg_share(year = 2022,  
+                             region = "Americas",
+                             pop_type = "ASY")
+plot_reg_share(year = 2022,  
+                             region = "Americas",
+                             pop_type = "OIP")
+plot_reg_share(year = 2022,  
+                             region = "Americas",
+                             pop_type = "IDP")
+plot_reg_share(year = 2022,  
+                             region = "Americas",
+                             pop_type = "STA")
+```
+
+  
+
+  
+
+
+## Evolution Over Time  
+
+    
+
+  
+
+```{r example-plot_reg_evolution}
+plot_reg_evolution(year = 2021,
+                   lag = 5,
+                   region = "Asia",
+                   pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
+```
+
+  
+
+  
+ 
+
+## Plot Evolution of Population type per year
+
+    
+
+  
+
+```{r example-plot_reg_population_type_per_year}
+plot_reg_population_type_per_year(year = 2022,
+                                              lag = 5,
+                                     region  = "Americas",
+                                     pop_type =   c("REF", "ASY", "IDP", "OIP", "STA", "OOC") )
+```
+
+  
+
+  
 
 
 ## Plot Population Origin-Destination within the region 
@@ -358,7 +432,7 @@ plot_reg_increase(year = 2021,
   
 
 
-## Proportion of the population who are refugees, by country of origin  
+## Proportion of the population who are refugees, by country of origin  (SDG indicator 10.7.4 ) 
 
     
 
@@ -374,31 +448,55 @@ plot_reg_prop_origin(year = 2022,  region = "Americas")
  
 
 
-## Evolution over time  
-
-    
+## Decision on Refugee Status Determination
 
   
 
-```{r example-plot_reg_evolution}
-plot_reg_evolution(year = 2021,
-                   lag = 5,
-                   region = "Asia",
-                   pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
+```{r example-plot_reg_rsd}
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "Recognized")
+
+
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 5, 
+                        measure = "ComplementaryProtection")
+
+
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "TotalDecided")
+
+
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "RefugeeRecognitionRate")
+
+
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "TotalRecognitionRate")
+
+
+# plot_reg_rsd(year = 2022,
+#              region = "Europe", 
+#                         top_n_countries = 10, 
+#                         measure = "Recognized")
 ```
 
   
 
   
-    
+
 
     
 
-## Evolution by Country of Origin
-
-    
-
-## Persons of concern over time
+## Plot Evolution of Solutions in the Region
 
     
 
@@ -423,7 +521,7 @@ plot_reg_solution(year = 2022,
 
 ```{r example-plot_reg_map}
 plot_reg_map(  year = 2022,
-                            region = "Americas",
+                            region = "Asia",
                             topn = 5,
                             pop_type =  c("REF", "ASY", "OIP"),
                             projection = "Mercator",
@@ -444,9 +542,6 @@ plot_reg_map(  year = 2022,
   
  
     
-
-## Refugee Chart Race
-
      
 
 
@@ -539,6 +634,28 @@ Templates are re-built notebook that includes all the plotting functions above a
 
 ```{r example-template_RegPrez}
 # template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+
+# # Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
+#                                 y= unhcrdatapackage::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) %>%
+#         filter(Year == year &
+#                 UNHCRBureau == region ) %>%
+#         group_by( CountryAsylumName, CountryAsylumCode   ) %>%
+#         summarise(Value = sum(Value) ) %>%
+#         ungroup() %>%
+#         filter( Value  > 1000 )
+# 
+#   for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3c = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3c, "\n"))
+#     unhcrdatapackage::template_CtryPrez(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")
+#   }
 ```
 
 # Update Dataset

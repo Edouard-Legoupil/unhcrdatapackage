@@ -17,6 +17,9 @@ plot_ctr_diff_in_pop_groups(
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
+\value{
+a ggplot2 object
+}
 \description{
 Increases and Decreases in Population Groups
 }

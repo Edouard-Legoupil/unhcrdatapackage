@@ -5,24 +5,31 @@
 \title{Graph of population type per year}
 \usage{
 plot_ctr_population_type_per_year(
-  start_year = 2015,
+  year = 2022,
+  lag = 5,
   country_asylum_iso3c = country_asylum_iso3c,
   pop_type = Population.type
 )
 }
 \arguments{
-\item{start_year}{Numeric value of first year}
+\item{year}{Numeric value of the year (for instance 2020)}
+
+\item{lag}{Number of year to used as comparison base}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)}
+}
+\value{
+a ggplot2 object
 }
 \description{
 Graph of population type per year
 }
 \examples{
 
-plot_ctr_population_type_per_year(start_year = 2016,
+plot_ctr_population_type_per_year(year = 2022,
+                                              lag = 5,
                          country_asylum_iso3c = "PAN",
                           pop_type = c("REF", 
                                        "ASY", 

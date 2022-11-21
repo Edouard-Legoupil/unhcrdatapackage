@@ -24,7 +24,7 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' 
-#' @return ggplotobject
+#' @return a ggplot2 object
 #' 
 #' @export
 #' @examples

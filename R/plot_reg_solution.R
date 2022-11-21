@@ -21,7 +21,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' @importFrom ggrepel geom_label_repel
-#' @return plot a ggplot2 object 
+#' 
+#' @return a ggplot2 object
 #' 
 #' @export
 #'  

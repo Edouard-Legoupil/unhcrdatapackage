@@ -20,6 +20,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 
@@ -35,7 +37,10 @@ plot_ctr_treemap <- function(year = 2021,
                      pop_type = pop_type) {
 
 
-
+   ctrylabel <- unhcrdatapackage::reference |> 
+                 filter(iso_3 == country_asylum_iso3c ) |> 
+               select(ctryname) |> 
+                pull()
 
   datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
     filter(Year == year,  #### Parameter
@@ -71,11 +76,11 @@ plot_ctr_treemap <- function(year = 2021,
                   legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
-         labs(title = paste0("Population of Concern in ", country_asylum_iso3c),
+         labs(title = paste0("Population of Concern in ",  ctrylabel),
               subtitle = paste0("As of ", year, ", a total of ", format(round(sum(datatree$Value), -3),  big.mark=","), " Individuals"),
               x = "",
               y = "",
-              caption = "Source: UNHCR.org/refugee-statistics  ")  
+              caption = "Source: UNHCR.org/refugee-statistics")  
 
    return(p)
 }

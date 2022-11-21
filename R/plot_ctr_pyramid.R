@@ -21,21 +21,25 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 
 #' @examples
 #' # 
 #' plot_ctr_pyramid(year = 2021,
-#'                             country_asylum_iso3c = "VEN",
-#'                             pop_type = c("REF", "ASY")
-#'          )
+#'                 country_asylum_iso3c = "VEN",
+#'                 pop_type = c("REF", "ASY"))
 #' 
 plot_ctr_pyramid <- function(year = 2021,
                      country_asylum_iso3c = country_asylum_iso3c,
                      pop_type = pop_type) {
 
-
+   ctrylabel <- unhcrdatapackage::reference |> 
+                 filter(iso_3 == country_asylum_iso3c ) |> 
+               select(ctryname) |> 
+                pull()
 
   
   demographics1 <- unhcrdatapackage::demographics |>
@@ -57,7 +61,7 @@ plot_ctr_pyramid <- function(year = 2021,
 
 
 if( nrow(demographics1) ==  0 ){
-  p <-  paste0("There's no recorded Gender disaggregation for Forcibly Displaced People across Borders in ",country_asylum_iso3c  )
+  p <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ",country_asylum_iso3c  )
   
 } else {
 
@@ -66,7 +70,7 @@ if( nrow(demographics1) ==  0 ){
       sum(demographics1$Total )  *100,1),  big.mark=",")  
   
   if (totprop == 0 ) {
-    p <- paste0("There's no recorded Gender disaggregation for all of the ",tot, " persons in", country_asylum_iso3c  )
+    p <- paste0("There\'s no recorded Gender disaggregation for all of the ",tot, " persons in", country_asylum_iso3c  )
     
   } else {
     #names(demographics)
@@ -138,10 +142,10 @@ if( nrow(demographics1) ==  0 ){
            
            subtitle = paste0("As of ", year, 
                              ", gender disaggregation is available for ", totprop, " % of the ",tot,
-                             " individuals in", country_asylum_iso3c),
+                             " individuals in", ctrylabel),
            x = "", 
            y = "Percent of population",
-           caption =  "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Other in Need of International Protection.") +
+           caption =  "Source: UNHCR.org/refugee-statistics.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection.") +
       scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
                           aesthetics = c("colour", "fill")) +
       coord_flip() +

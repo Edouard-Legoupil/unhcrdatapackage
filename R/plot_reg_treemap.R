@@ -67,7 +67,7 @@ p <- ggplot(datatree,
         subtitle = paste0("As of   ",  year, ", a total of ", format(round(sum(datatree$Value), -3),  big.mark=","), " Individuals"),
        x = "",
        y = "",
-       caption = "Source: UNHCR.org/refugee-statistics  ")
+       caption = "Source: UNHCR.org/refugee-statistics")
  
  return(p)
     

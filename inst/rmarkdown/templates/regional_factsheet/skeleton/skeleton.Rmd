@@ -1,15 +1,16 @@
 ---
-title: "Regional Statistical Factsheet "
-subtitle:  " "  
-date: "`r format(Sys.Date(),  '%d %B %Y')`"
+params:
+  year: 2022
+  region: "Asia"
+  regionname: "Asia"
+  lag: 10
+title: "Regional Statistical Factsheet | `r params$regionname` "
+subtitle:  " "
+date: "as of `r params$year`"
 author:
   - name: "Contact Name: XXXX"
     affiliation: "Job title: i.e DIMA Coordinator"
     email: email@unhcr.org
-params:
-  year: 2022
-  region: "Asia"
-  lag: 10
 output:
   unhcrdown::paged_simple:
     back_html: true
@@ -60,6 +61,50 @@ plot_reg_treemap(year = params$year,
                  region = params$region)
 ```
 
+  
+
+```{r fig.width = 8, fig.asp = 0.4}
+plot_reg_share(year = params$year,
+               region = params$region,
+                             pop_type = "REF")  
+```
+
+
+ 
+
+```{r fig.width = 8, fig.asp = 0.4}
+plot_reg_share(year = params$year,
+               region = params$region,
+                             pop_type = "ASY")  
+```
+
+ 
+
+```{r fig.width = 8, fig.asp = 0.4}
+plot_reg_share(year = params$year,
+               region = params$region,
+                             pop_type = "OIP")  
+```
+
+
+ 
+
+```{r fig.width = 8, fig.asp = 0.4}
+plot_reg_share(year = params$year,
+               region = params$region,
+                             pop_type = "IDP")  
+```
+
+ 
+
+```{r fig.width = 8, fig.asp = 0.4}
+plot_reg_share(year = 2022,  
+               region = params$region,
+                             pop_type = "STA")  
+```
+
+
+
 ## Evolution over time  
 
 ```{r example-plot_reg_evolution, fig.width = 8, fig.asp = 0.618}
@@ -68,8 +113,23 @@ plot_reg_evolution(year = params$year,
                    lag = 5, 
                    pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))
 ```
+ 
 
+```{r ph=officer::ph_location_fullsize()}
 
+## How the different Categories of Population of concern to UNHCR are evolving over time?
+# According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
+plot_reg_population_type_per_year(year = params$year,  
+                                  region = params$region,
+                                  lag = 5,
+                                  pop_type = c("REF",
+                                       "ASY",
+                                       "OIP",
+                                       "OOC",
+                                       "STA",
+                                       "IDP" )) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
 
 ## Plot Main country of Asylum in the Region
 

@@ -25,7 +25,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggalt geom_dumbbell
 #' @importFrom unhcrthemes theme_unhcr
-#' @return plot a ggplot2 object 
+#' 
+#' @return a ggplot2 object
 #' 
 #' @export
 #' @examples
@@ -82,7 +83,7 @@ plot_reg_increase <- function(  year = 2021,
   labs(title = paste0("Where did Refugee Population increased in ", region , "?"),
        subtitle = paste0("Biggest increase in Refugee Population, ", baseline," - ",thisyear),
        x="", y ="",
-       caption = "UNHCR https://www.unhcr.org/refugee-statistics/") +
+       caption = "Source: UNHCR.org/refugee-statistics") +
   scale_x_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
   theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 

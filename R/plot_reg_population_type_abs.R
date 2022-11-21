@@ -22,6 +22,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 
@@ -145,7 +147,7 @@ p <-  ggplot(df) +
   ) +
   labs(title = paste0("Main Host Countries for ", labelcat ," | ",  year, " in ", region),
        subtitle = paste0("Number of people for top ", top_n_countries, " countries in the region"),
-       caption = "Source: UNHCR Refugee Data Finder\n @UNHCR, The UN Refugee Agency") +
+       caption = "Source: UNHCR.org/refugee-statistics") +
   scale_y_continuous(expand = expansion(c(0, 0.1))) +
   theme_unhcr(font_size = 14,
               grid = FALSE, 

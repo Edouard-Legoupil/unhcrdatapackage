@@ -83,19 +83,46 @@
 <dd><p>Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>a ggplot2 object</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">plot_ctr_disp_migrant</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span></span>
 <span class="r-in"><span>                    country_asylum_iso3c <span class="op">=</span> <span class="st">"BRA"</span>,</span></span>
-<span class="r-in"><span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"OIP"</span><span class="op">)</span> <span class="op">)</span></span></span>
+<span class="r-in"><span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span>, <span class="st">"DIP"</span>,<span class="st">"OOC"</span>, <span class="st">"STA"</span>, <span class="st">"OIP"</span><span class="op">)</span> <span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : World Bank API request failed for indicator SP.POP.TOTL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> message: Client error: (406) Not Acceptable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> category: Client error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> reason: Not Acceptable </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> url: http://api.worldbank.org/v2/en/countries/BRA/indicators/SP.POP.TOTL?date=1990:2020&amp;per_page=20000&amp;format=json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : World Bank API request failed for indicator NY.GDP.MKTP.CD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> message: Client error: (406) Not Acceptable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> category: Client error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> reason: Not Acceptable </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> url: http://api.worldbank.org/v2/en/countries/BRA/indicators/NY.GDP.MKTP.CD?date=1990:2020&amp;per_page=20000&amp;format=json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : World Bank API request failed for indicator NY.GDP.PCAP.CD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> message: Client error: (406) Not Acceptable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> category: Client error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> reason: Not Acceptable </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> url: http://api.worldbank.org/v2/en/countries/BRA/indicators/NY.GDP.PCAP.CD?date=1990:2020&amp;per_page=20000&amp;format=json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : World Bank API request failed for indicator NY.GNP.PCAP.CD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> message: Client error: (406) Not Acceptable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> category: Client error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> reason: Not Acceptable </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> url: http://api.worldbank.org/v2/en/countries/BRA/indicators/NY.GNP.PCAP.CD?date=1990:2020&amp;per_page=20000&amp;format=json</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No data was returned for any requested country and indicator. Returning empty data frame</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`spread_()` was deprecated in tidyr 1.2.0.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use `spread()` instead.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">wbstats</span> package.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;</span><a href="https://github.com/nset-ornl/wbstats/issues" class="external-link"><span style="color: #0000BB; font-style: italic;">https://github.com/nset-ornl/wbstats/issues</span></a><span style="color: #0000BB; font-style: italic;">&gt;</span>.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 6 rows containing missing values (`geom_point()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 6 rows containing missing values (`geom_label_repel()`).</span>
-<span class="r-plt img"><img src="plot_ctr_disp_migrant-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dplyr::left_join(., wb_data, by = c("Year", "iso_3")):</span> Can't join on `x$iso_3` x `y$iso_3` because of incompatible types.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `x$iso_3` is of type &lt;character&gt;&gt;.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `y$iso_3` is of type &lt;logical&gt;&gt;.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -23,15 +23,23 @@
 #' @importFrom unhcrthemes theme_unhcr
 #' @importFrom viridis scale_fill_viridis
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 #' @examples
 #' plot_ctr_disp_migrant(year = 2021,
 #'                     country_asylum_iso3c = "BRA",
-#'                   pop_type = c("REF", "ASY", "OIP") )
+#'                   pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP") )
 plot_ctr_disp_migrant <- function(year = 2021,
                               country_asylum_iso3c = country_asylum_iso3c,
                               pop_type = pop_type){
+  
+  ctrylabel <- unhcrdatapackage::reference |> 
+                 filter(iso_3 == country_asylum_iso3c ) |> 
+               select(ctryname) |> 
+                pull()
+  
   
   wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
              
@@ -91,7 +99,7 @@ thismigProfile <-  migrant  %>%
 
 
 if( nrow(displaced) ==  0 ){
-  p <- paste0("There's no recorded Forcibly Displaced Poeple across Borders in ",thiscountry )
+  p <- paste0("There\'s no recorded Forcibly Displaced Poeple across Borders in ",ctrylabel )
   
 } else {
 
@@ -116,11 +124,11 @@ p <- ggplot(thismigProfile,
                             fill = "white", 
                             xlim = c(-Inf, Inf), 
                             ylim = c(-Inf, Inf)) + 
-  labs(title = "Share of Forcibly Displaced People within Migrants",
+  labs(title = paste0("Share of Forcibly Displaced People within Migrants in ", ctrylabel  ) ,
        subtitle = "Per Country of Origin as of 2020. \n The size of the circle represents the number of Refugees & Asylum Seekers ", 
        x = "Ratio Asylum / Immigrant",
        y ="Ratio Country / Total Immigrant",
-       caption = "UNDESA Migrant Stock & UNHCR (includes REF +ASY+OIP in calculation) as of 2020.\n Only countries with more than 50K Forcibly Displaced Accorss borders are presented.") +
+       caption = "Source: UNHCR.org/refugee-statistics (includes REF +ASY+OIP in calculation) & UNDESA Migrant Stock as of 2020.\n Only countries with more than 50K Forcibly Displaced Accorss borders are presented.") +
   theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
   theme(legend.position="bottom", 
         panel.grid.major.y  = element_line(color = "#cbcbcb"), 

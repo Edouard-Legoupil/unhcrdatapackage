@@ -60,7 +60,7 @@ template_CtryPrez <- function(year = 2022,
   
   rmarkdown::render(
     system.file("rmarkdown/templates/country_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.html') ),
+    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.pptx') ),
     params = list(countryname= ctrname,
                   country = country_asylum_iso3c, 
                   year = year)  )

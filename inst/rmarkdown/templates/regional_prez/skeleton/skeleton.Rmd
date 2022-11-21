@@ -1,15 +1,17 @@
 ---
-title: "United States | Statistical Factsheet"
-subtitle:  "as of End 2021"  
-output:
-  unhcrdown::pptx_slides
 params:
   year: 2022
-  region: "America"
+  region: "Americas"
+  regionname: "Americas"
+  lag: 10
+title: "Regional Statistical Facts"
+subtitle:   "`r params$regionname` | As of `r params$year`"
+output:
+  unhcrdown::pptx_slides
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
+```{r setup, include=FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE, warning = FALSE, message = FALSE)
 library(officedown)
 library(unhcrthemes)
 library(ggplot2)
@@ -22,3 +24,253 @@ library(unhcrdatapackage)
 # turn off the automatic use of showtext functionality, so that the dml function can works properly
 showtext::showtext_auto(FALSE) 
 ```
+
+
+--- 
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_treemap(year = params$year,  
+                 region = params$region) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_share(year = params$year,
+                region = params$region,
+                             pop_type = "REF") -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_share(year = params$year,
+                region = params$region,
+                             pop_type = "ASY") -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_share(year = params$year,
+                region = params$region,
+                             pop_type = "OIP") -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_share(year = params$year,
+                region = params$region,
+                             pop_type = "IDP") -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_share(year = 2022,  
+                region = params$region,
+                             pop_type = "STA") -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_evolution(year = params$year,  
+                   region = params$region,
+                   lag = 5, 
+                   pop_type =  c( "REF", "IDP", "ASY", "OOC", "STA", "OIP"))-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_population_type_per_year(year = params$year,  
+                                  region = params$region,
+                                  lag = 5,
+                                  pop_type = c("REF",
+                                       "ASY",
+                                       "OIP",
+                                       "OOC",
+                                       "STA",
+                                       "IDP" ))  -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_population_type_abs(year = params$year,  
+                             region = params$region,
+                              top_n_countries = 5,
+                              pop_type = "REF"
+                              ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_population_type_abs(year = params$year,  
+                             region = params$region,
+                              top_n_countries = 5,
+                              pop_type = "ASY"
+                              ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_decrease(year = params$year,
+                  region = params$region,
+                  lag = 5,
+                  topn = 5,
+                  pop_type = c("REF", "ASY", "OIP")) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_increase(year = params$year,
+                  region = params$region,
+                  lag = params$lag,
+                  topn = 5,
+                  pop_type = c("REF", "ASY", "OIP")) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "Recognized")-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 5, 
+                        measure = "ComplementaryProtection")-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "TotalDecided")-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "RefugeeRecognitionRate")-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_rsd(year = 2022,
+             region = "Americas" ,
+                        top_n_countries = 10, 
+                        measure = "TotalRecognitionRate")-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+ 
+
+---
+
+```{r map, , fig.retina = 1, fig.width = 10, fig.asp = 0.618, fig.align = "left", dev = "ragg_png", out.width = "110%", message=FALSE, warning=FALSE}
+plot_reg_map(  year = params$year,
+                  region = params$region,
+                            topn = 5,
+                            pop_type =  c("REF", "ASY", "OIP"),
+                            projection = "Mercator",
+                            maxSymbolsize = .25)  
+```
+
+
+
+---
+
+```{r  }
+plot_reg_origin_dest(year = params$year,
+                  region = params$region)  
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_prop_origin(year = params$year,
+                  region = params$region) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_reg_solution(year = params$year,
+                  region = params$region,
+                            lag = params$lag)-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+ 

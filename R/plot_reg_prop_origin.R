@@ -20,7 +20,7 @@
 #' @importFrom forcats fct_reorder    
 #' @importFrom unhcrthemes theme_unhcr
 #' 
-#' @return plot a ggplot2 object 
+#' @return a ggplot2 object
 #' 
 #' @export
  
@@ -75,10 +75,9 @@ p <- ggplot(departed,
   scale_x_continuous(labels = scales::label_percent(accuracy = .1)) +
   labs(x = NULL, 
        y = NULL,
-       title = stringr::str_wrap(paste0("Number of refugees, asylum seekers & displaced across borders by country of origin"), 60),
+       title = stringr::str_wrap(paste0("Number of refugees, asylum seekers & displaced across borders by country of origin in", region), 60),
        subtitle =    stringr::str_wrap( "Top 10 Countries, as a proportion of the national population of that country of origin (SDG indicator 10.7.4)", 80),
-         caption = stringr::str_wrap("Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population.  Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like
-situation.  Population refers to total resident population in a given country in a given year."), 100) +
+         caption = stringr::str_wrap("Source: UNHCR.org/refugee-statistics. \n Total count of population who have been recognized as refugees as a proportion of the total population of their country of origin, expressed per 100,000 population. Refugees refers to persons recognized by the Government and/or UNHCR, or those in a refugee-like situation.  Population refers to total resident population in a given country in a given year."), 100) +
   
      
   unhcrthemes::theme_unhcr(grid = "X", 

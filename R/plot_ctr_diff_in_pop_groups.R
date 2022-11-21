@@ -21,6 +21,8 @@
 #' @importFrom tidyr pivot_longer  gather separate spread
 #' @importFrom unhcrthemes theme_unhcr
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 
@@ -153,7 +155,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
                       "-",
                       year),
          subtitle = "Number of people and percentage",
-         caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency")  + 
+         caption = "Source: UNHCR.org/refugee-statistics")  + 
    theme_unhcr(grid = FALSE, axis = "x",
                 axis_title = FALSE, axis_text = "x",
                 font_size = 14) +

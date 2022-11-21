@@ -24,7 +24,7 @@ plot_reg_decrease(
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \value{
-plot a ggplot2 object
+a ggplot2 object
 }
 \description{
 Plot Biggest decrease in Refugee Population

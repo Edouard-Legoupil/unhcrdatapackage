@@ -49,10 +49,19 @@ template_RegFactsheet <- function(year = 2022,
   output_dir <- paste0(getwd(),"/",folder)
   if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
+  regionname <- dplyr::case_when( region == "Americas"  ~  "Americas",
+                                  region == "Asia"  ~  "Asia & the Pacific",
+                                  region == "EastAfrica"  ~  "Eastern Africa",
+                                  region =="Europe"  ~  "Europe",
+                                  region == "MENA"  ~  "Middle East & North Africa",
+                                  region == "SouthAfrica"  ~  "Southern Africa",
+                                  region == "WestAfrica"  ~  "Western Africa")
+  
   rmarkdown::render(
     system.file("rmarkdown/templates/regional_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
     output_file = here::here(folder, paste0('StatFactsheet-',  region, '-', year, '.html') ),
-    params = list(region=region, 
+    params = list(region=region,
+                  regionname = regionname,
                   year = year,
                   lag = lag)  )
 }

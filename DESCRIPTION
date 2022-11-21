@@ -31,6 +31,7 @@ Imports:
     Hmisc,
     magrittr,
     mapsf,
+    patchwork,
     plyr,
     purrr,
     readr,

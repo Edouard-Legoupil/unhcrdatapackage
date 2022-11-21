@@ -1,15 +1,15 @@
 ---
-title: "Statistical Factsheet | as of End 2021"
-subtitle:  " "  
-date: "`r format(Sys.Date(),  '%d %B %Y')`"
-author:
-  - name: Contact Name
-    affiliation: Job title
-    email: email@unhcr.org
 params:
   year: 2022
   country: "ARG"
   countryname: "Argentina"
+title: "Statistical Factsheet "
+subtitle:  "`r params$countryname`"  
+date: " as of `r params$year`"
+author:
+  - name: Name of Focal Point on Statistic
+    affiliation: Job title of Focal Point on Statistic
+    email: email@unhcr.org
 output:
   unhcrdown::paged_simple:
     back_html: true
@@ -17,7 +17,7 @@ paged-footnotes: true
 links-to-footnotes: true
 classoption: twocolumn
 # uncomment this line to produce HTML and PDF in RStudio:
-#knit: pagedown::chrome_print
+knit: pagedown::chrome_print
 ---
 
 ```{css, echo=FALSE}
@@ -209,9 +209,26 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 
 ::::
 
+
+
+
+
+
+```{r examples-plot_ctr_treemap, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+# 
+plot_ctr_treemap(year = params$year,
+                 country_asylum_iso3c = params$country,
+                 pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP")
+         )
+
+```  
+
+<!--
+You may add here a short paragraph providing some context on the situation in the country
+--> 
+
+
 \newpage
-
-
 
 ## How the different Categories of Population of concern to UNHCR are evolving over time?
 
@@ -222,7 +239,8 @@ According to official information provided by government authorities, as of Dece
 :::
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 1, fig.width = 12, fig.asp = 0.618, fig.align = "left", dev = "ragg_png", out.width = "110%"}
-plot_ctr_population_type_per_year(start_year = "2016",
+plot_ctr_population_type_per_year(year = 2022,
+                                  lag = 5,
                          country_asylum_iso3c = params$country,
                           pop_type = c("REF",
                                        "ASY",
@@ -243,8 +261,8 @@ The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_re
 
 ### Refugees
 
-```{r examples-plot_ctr_ref_abs, message=FALSE, warning=FALSE, include=FALSE}
-plot_title <- plot_ctr_population_type_abs(year = params$year,
+```{r examples-plot_ctr_ref_abs, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
                     pop_type = "REF"
@@ -252,15 +270,13 @@ plot_title <- plot_ctr_population_type_abs(year = params$year,
   labs(title = paste0("Refugees: Main Countries of origin | ", params$year))
 ```
 
-```{r examples-plot_ctr_ref_abs_title, fig.retina = 1, fig.height= 15, fig.asp = 0.8, fig.align = "center", dev = "ragg_png", out.width = "100%"}
-plot_title
-```
+ 
 
 
 ### Asylum Seekers
 
-```{r examples-plot_ctr_asy_abs, message=FALSE, warning=FALSE, include=FALSE}
-plot_title <- plot_ctr_population_type_abs(year = params$year,
+```{r examples-plot_ctr_asy_abs, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_population_type_abs(year = params$year,
                     country_asylum_iso3c = params$country,
                     top_n_countries = 9,
                     pop_type = "ASY"
@@ -269,13 +285,10 @@ plot_title <- plot_ctr_population_type_abs(year = params$year,
 ```
 
 
-```{r examples-plot_ctr_asy_abs_title, fig.retina = 1, fig.height= 15, fig.asp = 0.8, fig.align = "center", dev = "ragg_png", out.width = "100%"}
-plot_title
-```
 
 
 
-```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 1, fig.height= 14, fig.asp = 0.7, fig.align = "center", dev = "ragg_png", out.width = "100%"}
+```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 plot_ctr_diff_in_pop_groups(year = params$year,
                             country_asylum_iso3c = params$country,
                             pop_type = c("REF", "ASY")
@@ -283,29 +296,60 @@ plot_ctr_diff_in_pop_groups(year = params$year,
 ```
 
 
-## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
 
+## What are the Demographics profiles of the population?
 
-
-```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 7, fig.asp = 0.7, fig.align = "center", dev = "ragg_png", out.width = "100%"}
-plot_ctr_destination(year = params$year,
-                     country_origin_iso3c = params$country,
-                     pop_type = c("REF", "ASY")
-         )
-```
-
-## What are the Demographics profiles of Forcibly Displaced People in relation with the host population?
+### Refugees
 
 ```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_pyramid(year = params$year,
                  country_asylum_iso3c  = params$country,
-                            pop_type = c("REF", "ASY")
+                            pop_type = c("REF" )
          )
 
 ```
 
-## Is the asylum Processing capacity in relation with the demand?
+### Asylum seekers
+
+```{r examples-plot_ctr_pyramid2, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+# 
+plot_ctr_pyramid(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                            pop_type = c(  "ASY")
+         )
+
+```
+
+
+
+## Plot Refugee Recognition rate
+
+```{r example-plot_ctr_recognition, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_recognition(year = params$year,
+                    country_asylum_iso3c  = params$country,
+                    top_n_countries = 10, 
+                    measure = "RefugeeRecognitionRate",
+                                 order_by = "TotalDecided" )
+```
+
+```{r example-plot_ctr_recognition2, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_recognition(year = params$year,
+                    country_asylum_iso3c  = params$country,
+                    top_n_countries = 10, 
+                    measure = "TotalRecognitionRate",
+                                 order_by = "Recognized" )
+```
+
+## Asylum Applications & Decision over time
+
+```{r example-plot_ctr_asylum, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_asylum(year = params$year,
+                country_asylum_iso3c  = params$country, 
+                lag = 10)
+```
+
+
 
 ## What are the trends in terms of Solutions?
 
@@ -315,7 +359,7 @@ plot_ctr_solution(year = params$year,
                   pop_type = c("REF", "ASY"))
 ```
 
-## What is the share of Forcibly Displaced People among total Migrants?
+## What is the share of Forcibly Displaced People in comparison with Migrants in `r params$countryname`?
 
 
 ```{r example-plot_ctr_disp_migrant, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
@@ -325,6 +369,14 @@ plot_ctr_disp_migrant(year = params$year,
 ```
 
 
+## What are the main destination of asylu for nationals from `r params$countryname`?
+
+```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+plot_ctr_destination(year = params$year,
+                     country_origin_iso3c = params$country,
+                     pop_type = c("REF", "ASY")
+         )
+```
 
 
 

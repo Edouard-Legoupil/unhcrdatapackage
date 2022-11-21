@@ -21,7 +21,7 @@ plot_reg_evolution(
 \item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)}
 }
 \value{
-plot a ggplot2 object
+a ggplot2 object
 }
 \description{
 Display evoluation over time for specific population group (one or many) and 

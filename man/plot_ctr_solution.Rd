@@ -20,8 +20,14 @@ plot_ctr_solution(
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
+\value{
+a ggplot2 object
+}
 \description{
-Plotting solutions within a country
+As part of UNHCR standard approach, there are mostly 3 types of durable solutions for Refugees:
+ - Voluntary Repatriation in origin country 
+ - Naturalization in the host country
+ - Resettlement in a third country
 }
 \examples{
 plot_ctr_solution(year = 2021,

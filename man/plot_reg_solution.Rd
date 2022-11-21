@@ -14,7 +14,7 @@ plot_reg_solution(year = 2022, region = "Americas", lag = 10)
 \item{lag}{Number of year to used as comparison base}
 }
 \value{
-plot a ggplot2 object
+a ggplot2 object
 }
 \description{
 Description

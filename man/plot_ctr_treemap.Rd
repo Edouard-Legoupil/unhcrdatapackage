@@ -17,6 +17,9 @@ plot_ctr_treemap(
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
+\value{
+a ggplot2 object
+}
 \description{
 Tree map of Population Groups within a country
 }

@@ -17,11 +17,14 @@ plot_ctr_disp_migrant(
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
+\value{
+a ggplot2 object
+}
 \description{
 Plotting ration Refugee/Asylum seekers vs Migrant within a country
 }
 \examples{
 plot_ctr_disp_migrant(year = 2021,
                     country_asylum_iso3c = "BRA",
-                  pop_type = c("REF", "ASY", "OIP") )
+                  pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP") )
 }

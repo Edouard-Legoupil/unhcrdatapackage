@@ -2,7 +2,8 @@
 
 #' Graph of population type per year
 #'
-#' @param start_year Numeric value of first year  
+#' @param year Numeric value of the year (for instance 2020)
+#' @param lag Number of year to used as comparison base
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
 #' 
@@ -20,6 +21,8 @@
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @return a ggplot2 object
 #'
 #' @export
 #'
@@ -27,7 +30,8 @@
 
 #' @examples
 #' 
-#' plot_ctr_population_type_per_year(start_year = 2016,
+#' plot_ctr_population_type_per_year(year = 2022,
+#'                                               lag = 5,
 #'                          country_asylum_iso3c = "PAN",
 #'                           pop_type = c("REF", 
 #'                                        "ASY", 
@@ -36,7 +40,8 @@
 #'                                        "STA",
 #'                                        "IDP" )
 #'                   )
-plot_ctr_population_type_per_year <- function(start_year = 2015,
+plot_ctr_population_type_per_year <- function(year = 2022,
+                                              lag = 5, 
                                      country_asylum_iso3c = country_asylum_iso3c,
                                      pop_type = Population.type
                                      ) {
@@ -56,7 +61,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
   df <- unhcrdatapackage::end_year_population_totals_long  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
-                  Year >= start_year,  #### Parameter
+                  Year >= ( year - lag),  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
                   Population.type %in% pop_type #### Parameter
     )  |>  
@@ -94,7 +99,7 @@ plot_ctr_population_type_per_year <- function(start_year = 2015,
     scale_y_continuous(expand = expansion(c(0, 0.1))) +
     labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
          subtitle = "Number of people (thousand)",
-         caption = "Source: UNHCR Refugee Data Finder") +
+         caption = "Source: UNHCR.org/refugee-statistics") +
     theme_unhcr(grid = FALSE, axis = "x", 
                 axis_title = FALSE, axis_text = "x",
               font_size = 14) +

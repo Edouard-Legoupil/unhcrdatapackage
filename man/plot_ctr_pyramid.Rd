@@ -17,14 +17,16 @@ plot_ctr_pyramid(
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
+\value{
+a ggplot2 object
+}
 \description{
 Population Pyramid
 }
 \examples{
 # 
 plot_ctr_pyramid(year = 2021,
-                            country_asylum_iso3c = "VEN",
-                            pop_type = c("REF", "ASY")
-         )
+                country_asylum_iso3c = "VEN",
+                pop_type = c("REF", "ASY"))
 
 }

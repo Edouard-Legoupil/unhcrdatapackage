@@ -22,6 +22,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 
@@ -135,7 +137,7 @@ p <-
   ) +
   labs(title = paste0(CountryAsylum_name_text, ": Main Countries of origin (", cols_poptype[[pop_type]][1], ")", " | ",  year),
        subtitle = "Percentage",
-       caption = "Source: UNHCR Refugee Data Finder\n?? UNHCR, The UN Refugee Agency") +
+       caption = "Source: UNHCR.org/refugee-statistics") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
  theme_unhcr(grid = FALSE, axis = "y", 
              axis_title = FALSE, axis_text = "y",

@@ -21,6 +21,8 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
 #' 
+#' @return a ggplot2 object
+#' 
 #' @export
 #'
 
@@ -37,7 +39,10 @@ plot_ctr_destination <- function(year = 2021,
 
 
 
-  
+     ctrylabel <- unhcrdatapackage::reference |> 
+                 filter(iso_3 == country_origin_iso3c ) |> 
+               select(ctryname) |> 
+                pull()
   
 Destination <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
@@ -61,7 +66,7 @@ Destination <- left_join( x= unhcrdatapackage::end_year_population_totals_long,
    filter(DisplacedAcrossBorders >0)
 
 if( nrow(Destination) ==  0 ){
-  p <- paste0("There's no recorded countries of destination for ",country_origin_iso3c )
+  p <- paste0("There\'s no recorded countries of destination for ",country_origin_iso3c )
   
 } else {
 
@@ -105,10 +110,10 @@ p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorde
   ## and the chart labels
   labs(title = paste0("What are the main destinations for Forcibly Displaced People?" ),
        
-       subtitle = paste0("Top Destination Countries - Data as of ",year, " for population from ",country_origin_iso3c ), 
+       subtitle = paste0("Top Destination Countries | as of ",year, " for population from ", ctrylabel ), 
        x = "",
        y = "",
-       caption = "Data: UNHCR Refugee Population Statistics Database; Visualisation: UnhcrDataPackage.\n Forced Displacement includes Refugees, Asylym Seekers and Other in Need of International Protection.") +
+       caption = "Source: UNHCR Population Statistics Database.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection.") +
     
   # Style  
   geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +

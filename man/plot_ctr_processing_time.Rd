@@ -15,7 +15,7 @@ plot_ctr_processing_time(
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 }
 \value{
-ggplotobject
+a ggplot2 object
 }
 \description{
 This indicator measures the average number of days from the date of completion of registration of the asylum application to the date of notification of first instance asylum decision for all persons who were notified of a first instance RSD/asylum decision during the reporting period. 
