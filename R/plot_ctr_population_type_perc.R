@@ -135,8 +135,9 @@ p <-
     colour = "white",
     size = 5
   ) +
-  labs(title = paste0(CountryAsylum_name_text, ": Main Countries of origin (", cols_poptype[[pop_type]][1], ")", " | ",  year),
-       subtitle = "Percentage",
+  labs(title = paste0(CountryAsylum_name_text, ": (", cols_poptype[[pop_type]][1], ")", " | ",  year),
+       subtitle = paste0("Top",  top_n_countries, " Countries of Origin"),
+       x = "Percentage",
        caption = "Source: UNHCR.org/refugee-statistics") +
   scale_x_continuous(expand = expansion(c(0, 0.1))) +
  theme_unhcr(grid = FALSE, axis = "y", 

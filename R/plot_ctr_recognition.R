@@ -109,7 +109,7 @@ rsdorigin <- ggplot(topOrigin1, aes(y = measured,
 #  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +
   labs( title = paste0(measurelabel, " | ", year, " in ", ctrylabel),
         caption = 'Source: UNHCR.org/refugee-statistics ',
-       subtitle = paste0( "For top ", top_n_countries, " Countries of Origin ordered by", order_bylabel ),
+       subtitle = paste0( "For top ", top_n_countries, " Countries of Origin ordered by ", order_bylabel ),
        x = " ", 
        y = " " ) +
   theme_unhcr( grid = "Y",

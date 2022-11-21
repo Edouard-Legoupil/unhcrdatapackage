@@ -1,8 +1,8 @@
 ---
 params:
   year: 2022
-  country: "ARG"
-  countryname: "Argentina"
+  country: "FRA"
+  countryname: "France"
 title: "Statistical Factsheet \ `r params$countryname` "
 subtitle:  " as of `r params$year`"
 output:
@@ -249,8 +249,18 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```{r ph=officer::ph_location_fullsize()}
 plot_ctr_pyramid(year = params$year,
                  country_asylum_iso3c  = params$country,
-                            pop_type = c(  "ASY")
-         )-> p
+                            pop_type = c(  "REF") )-> p
+ 
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+plot_ctr_pyramid(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                            pop_type = c(  "ASY") )-> p
+ 
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 

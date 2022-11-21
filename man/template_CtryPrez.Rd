@@ -22,7 +22,7 @@ Generate all country factsheet
 }
 \examples{
 ## generate for one country
-# template_CtryPrez(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+# template_CtryPrez(year = 2022, country_asylum_iso3c = "FRA",   folder = "Report")
 
 ## Generate for a specific region
 # region <- "Americas"
