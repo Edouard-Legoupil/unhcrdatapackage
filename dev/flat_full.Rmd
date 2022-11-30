@@ -114,7 +114,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
   df <- unhcrdatapackage::end_year_population_totals_long  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
-                  Year >= ( year - lag),  #### Parameter
+                  Year >= (year - lag),  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
                   Population.type %in% pop_type #### Parameter
     )  |>  
@@ -134,7 +134,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
     geom_text(aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = label_number( accuracy = 1,
+                  label = label_number(accuracy = 1,
                                    scale_cut = cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
@@ -158,7 +158,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
               font_size = 14) +
     stat_summary(fun = sum, aes(x = Year,
                                 y = Value, 
-                                label = scales::label_number( accuracy = 1,
+                                label = scales::label_number(accuracy = 1,
                                                        scale_cut = cut_short_scale())(..y..), 
                                 group = Year), 
                  geom = "text", size = 5,
@@ -285,7 +285,7 @@ plot_ctr_population_type_abs <- function(year = 2021,
   ungroup() |>
   group_by(CountryAsylumName, CountryOriginName) |> 
   arrange(Year) |>
-  mutate(diff_pop_type_value = label_percent( accuracy = 1.1,
+  mutate(diff_pop_type_value = label_percent(accuracy = 0.1,
                                              trim = FALSE) (((pop_type_value-lag(pop_type_value))/lag(pop_type_value)))  ) |> 
   ungroup() |>
   filter(Year == year) |> 
@@ -677,7 +677,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
 
 
   df <- df |>         
-    mutate(diffper = label_percent(  accuracy = 1,  trim = FALSE) (diffperc))
+    mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (diffperc))
   
   
   p <- df |> 
@@ -1309,7 +1309,7 @@ topOrigin1 <-  topOrigin  %>%
 rsdorigin <- ggplot(topOrigin1, aes(y = measured, 
              x = reorder(CountryOriginName, measured))) +
   #scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
-  scale_y_continuous( label =  scales::label_percent( accuray = 0, suffix = "%") ) +
+  scale_y_continuous( label =  scales::label_percent(accuracy = 0, suffix = "%") ) +
 
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = "#0072bc") +
@@ -2010,7 +2010,7 @@ datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_
   dplyr::group_by( Year, Compare, Population.type.label , Population.type ) %>%
   dplyr::summarise(Value = sum( Value, na.rm = TRUE))  %>%
   dplyr::ungroup(Year, Compare ,Population.type, Population.type.label)  %>%
-  dplyr::mutate(  freq = scales::label_percent( accuracy= .1, suffix = "%")(Value / sum(Value)) ) 
+  dplyr::mutate(  freq = scales::label_percent(accuracy= .1, suffix = "%")(Value / sum(Value)) ) 
  
 ## Treemapify
 p <- ggplot(datatree, 
@@ -2210,7 +2210,7 @@ plot_reg_population_type_per_year <- function(year = 2022,
     # geom_text(aes(x = Year, 
     #               y = Value, 
     #               color = Population.type.label, 
-    #               label = label_number( accuracy = 1,
+    #               label = label_number(accuracy = 1,
     #                                scale_cut = cut_short_scale())(Value)),
     #           position = position_stack(vjust = 0.5),
     #           show.legend = FALSE,
@@ -2233,7 +2233,7 @@ plot_reg_population_type_per_year <- function(year = 2022,
               font_size = 14) +
     stat_summary(fun = sum, aes(x = Year,
                                 y = Value,
-                                label = scales::label_number( accuracy = 1,
+                                label = scales::label_number(accuracy = 1,
                                                        scale_cut = cut_short_scale())(..y..),
                                 group = Year),
                  geom = "text", size = 5,
@@ -2425,7 +2425,7 @@ plot_reg_population_type_abs <- function(year = 2022,
       dplyr::ungroup() |>
       dplyr::group_by(CountryAsylumName) |> 
       dplyr::arrange(Year) |>
-      dplyr::mutate(diff_pop_type_value = scales::label_percent(accuracy = 1.1,
+      dplyr::mutate(diff_pop_type_value = scales::label_percent(accuracy = 0.1,
                                                           trim = FALSE  ) (((Value - lag(Value))/lag(Value) ) )) |> 
       dplyr::ungroup() |>
       dplyr::filter(Year == year) |> 
@@ -2807,7 +2807,7 @@ p <- ggplot(departed,
   
   # geom_col( fill = ifelse(departed$CountryOriginCode %in% c("VEN"), "#0072BC", "#CCCCCC")) +
   
-  geom_label(aes(label = scales::label_percent( accuracy = .1)(ref.part) ),
+  geom_label(aes(label = scales::label_percent(accuracy = .1)(ref.part) ),
              color = "black", hjust = "inward") +
   scale_x_continuous(labels = scales::label_percent(accuracy = .1)) +
   labs(x = NULL, 
@@ -2937,11 +2937,11 @@ rsdasyl <-  ggplot(topasyl1, aes(y = measured,
   
   
   
-  scale_y_continuous( label =  scales::label_percent( accuray = 0, suffix = "%") ) + 
+  scale_y_continuous(label =  scales::label_percent(accuracy = 0, suffix = "%") ) + 
   
   
-  scale_y_continuous( label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
-                        scales::label_percent( accuray = 0, suffix = "%"),
+  scale_y_continuous(label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
+                        scales::label_percent(accuracy = 0, suffix = "%"),
                         scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()) )
                       ) + ## Format axis number
   #facet_grid(.~ ctry_asy) +  
@@ -2967,7 +2967,7 @@ rsdorigin <- ggplot(topOrigin1, aes(y = measured,
   
   
   scale_y_continuous( label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
-                        scales::label_percent( accuray = 0, suffix = "%"),
+                        scales::label_percent(accuracy = 0, suffix = "%"),
                         scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()) )
                       ) + ## Format axis number
   
