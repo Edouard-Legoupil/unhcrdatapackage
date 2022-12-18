@@ -28,7 +28,7 @@ Graph of population type per year
 }
 \examples{
 
-plot_ctr_population_type_per_year(year = 2022,
+p <- plot_ctr_population_type_per_year(year = 2022,
                                               lag = 5,
                          country_asylum_iso3c = "PAN",
                           pop_type = c("REF", 
@@ -38,4 +38,7 @@ plot_ctr_population_type_per_year(year = 2022,
                                        "STA",
                                        "IDP" )
                   )
+p
+## Raw data can always be accessed with 
+knitr::kable(ggplot2::ggplot_build(p)$plot$data )
 }

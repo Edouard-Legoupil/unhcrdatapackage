@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ctr_disp_migrant.R
 \name{plot_ctr_disp_migrant}
 \alias{plot_ctr_disp_migrant}
-\title{Plotting ration Refugee/Asylum seekers vs Migrant within a country}
+\title{Plotting ratio Refugee/Asylum seekers vs Migrant within a country}
 \usage{
 plot_ctr_disp_migrant(
   year = 2021,
@@ -14,17 +14,15 @@ plot_ctr_disp_migrant(
 \item{year}{Numeric value of the year (for instance 2020)}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
-
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \value{
 a ggplot2 object
 }
 \description{
-Plotting ration Refugee/Asylum seekers vs Migrant within a country
+This plot is created to provide an overview of the magnitude of immigration in relation to forced displacement in a country in relation with regular migration. 
+The vertical axis display the proportion of the migrants from Country where we have records
 }
 \examples{
-plot_ctr_disp_migrant(year = 2021,
-                    country_asylum_iso3c = "BRA",
-                  pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP") )
+plot_ctr_disp_migrant(year = 2022,
+                    country_asylum_iso3c = "BRA" )
 }

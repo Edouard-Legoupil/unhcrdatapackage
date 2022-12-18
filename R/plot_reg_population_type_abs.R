@@ -31,22 +31,25 @@
 #' plot_reg_population_type_abs(year = 2022,
 #'                               region = "Americas",
 #'                               top_n_countries = 5,
-#'                               pop_type = "REF"
-#'                               ) 
+#'                               pop_type = "REF",
+#'                               show_diff_label = TRUE
+#'                               )
 #' 
 #' plot_reg_population_type_abs(year = 2022,
 #'                               region = "Americas",
 #'                               top_n_countries = 5,
-#'                               pop_type = "ASY"
-#'                               ) 
+#'                               pop_type = "ASY",
+#'                               show_diff_label = FALSE
+#'                               )
 #' 
 plot_reg_population_type_abs <- function(year = 2022,
-                                          region = "Americas",
-                                          top_n_countries = 9,
-                                          pop_type = "REF" ) {
-
-
-
+                                         region = "Americas",
+                                         top_n_countries = 9,
+                                         pop_type = "REF",
+                                         show_diff_label = TRUE) {
+  
+  
+  
   cols_poptype <- list(ASY = c("Asylum seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
@@ -57,109 +60,162 @@ plot_reg_population_type_abs <- function(year = 2022,
   )
   
   labelcat <- dplyr::case_when( pop_type == "ASY"  ~ "Asylum seekers", 
-                       pop_type == "REF"  ~ "Refugees",
-                       pop_type == "OIP"  ~ "Other people in need of international protection", 
-                       pop_type == "OOC"  ~ "Others of Concern to UNHCR", 
-                       pop_type == "IDP"  ~ "Internally displaced persons", 
-                       pop_type == "STA"  ~ "Stateless Persons")
+                                pop_type == "REF"  ~ "Refugees",
+                                pop_type == "OIP"  ~ "Other people in need of international protection", 
+                                pop_type == "OOC"  ~ "Others of Concern to UNHCR", 
+                                pop_type == "IDP"  ~ "Internally displaced persons", 
+                                pop_type == "STA"  ~ "Stateless Persons")
+  
+  
   colorlab <- dplyr::case_when( pop_type == "ASY"  ~ "#18375F", 
-                       pop_type == "REF"  ~ "#0072BC",
-                       pop_type == "OIP"  ~ "#EF4A60", 
-                       pop_type == "OOC"  ~ "#999999", 
-                       pop_type == "IDP"  ~ "#00B398", 
-                       pop_type == "STA"  ~ "#E1CC0D")
+                                pop_type == "REF"  ~ "#0072BC",
+                                pop_type == "OIP"  ~ "#EF4A60", 
+                                pop_type == "OOC"  ~ "#999999", 
+                                pop_type == "IDP"  ~ "#00B398", 
+                                pop_type == "STA"  ~ "#E1CC0D")
   
   
-  df <- end_year_population_totals_long |>
-       dplyr::left_join( unhcrdatapackage::reference |> 
-       dplyr::select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) |> 
-       dplyr::filter(coa_region == region &
-                       (Year == year | Year == year -1) &
-                       Population.type %in% pop_type ) |> 
-      dplyr::select(Year, CountryAsylumName,Value) |>
-      dplyr::group_by(Year, CountryAsylumName) |>
-      dplyr::summarise(Value = sum(Value, na.rm=TRUE)) |> 
-      dplyr::ungroup() |>
-      dplyr::group_by(CountryAsylumName) |> 
-      dplyr::arrange(Year) |>
-      dplyr::mutate(diff_pop_type_value = scales::label_percent(accuracy = 1.1,
-                                                          trim = FALSE  ) (((Value - lag(Value))/lag(Value) ) )) |> 
-      dplyr::ungroup() |>
-      dplyr::filter(Year == year) |> 
-      dplyr::arrange(desc(Value))  |> 
-      head(top_n_countries)
-
-
-p <-  ggplot(df) +
-  geom_col(aes(x = reorder(CountryAsylumName, Value), 
-               y = Value),
-           fill = colorlab ,
-           width = 0.8) +
-  coord_flip() + 
-  ## Position label differently in the bar in white - outside bar in black
-  geom_text(
-    data = subset(df, Value < max(Value) / 1.5),
-    aes(
-      y = Value,
-      x = reorder(CountryAsylumName, Value),
-      label = label_number(accuracy = 1,
-                           scale_cut = cut_short_scale())(Value)
-    ),
-    hjust = -0.1 ,
-    vjust = 0.5,
-    colour = "black",
-    size = 5   ) +
-  geom_text(
-    data = subset(df, Value >= max(Value) / 1.5),
-    aes(
-      y = Value,
-      x = reorder(CountryAsylumName, Value),
-      label = label_number(accuracy = 1,
-                            scale_cut = cut_short_scale())(Value)),
-    hjust = 1.1 ,
-    vjust = 0.5,
-    colour = "white",
-    size = 5
-  ) +
-  geom_text( # positive diff percentage label
-    data = subset(df, with(df, !grepl('-', diff_pop_type_value))),
-    aes(
-      y = Value,
-      x = reorder(CountryAsylumName, Value),
-      label = diff_pop_type_value
-    ),
-    hjust = -2.8,
-    vjust = 0.5,
-    colour = "grey",
-    size = 4
-  ) +
-  geom_text( # negative diff percentage label
-    data = subset(df, with(df, grepl('-', diff_pop_type_value))),
-    aes(
-      y = Value,
-      x = reorder(CountryAsylumName, Value),
-      label = diff_pop_type_value
-    ),
-    hjust = -2.5,
-    vjust = 0.5,
-    colour = "#0472bc",
-    size = 4
-  ) +
-  labs(title = paste0("Main Host Countries for ", labelcat ," | ",  year, " in ", region),
-       subtitle = paste0("Number of people for top ", top_n_countries, " countries in the region"),
-       caption = "Source: UNHCR.org/refugee-statistics") +
-  scale_y_continuous(expand = expansion(c(0, 0.1))) +
-  theme_unhcr(font_size = 14,
-              grid = FALSE, 
-              axis = "y", 
-              axis_title = FALSE, 
-              axis_text = "y") +
-  theme(legend.direction = "vertical",
-        legend.key.size = unit(0.8, 'cm'),
-        text = element_text(size = 20),
-        plot.subtitle=element_text(size=19),
-        plot.title = element_text(size=23),
-        plot.caption = element_text(size=13))
-
-  return(p) # print(p)
-  }
+  df <- unhcrdatapackage::end_year_population_totals_long |>
+    dplyr::left_join(
+      unhcrdatapackage::reference |>
+        dplyr::select(coa_region = `UNHCRBureau`, iso_3),
+      by = c("CountryAsylumCode" = "iso_3")
+    ) |>
+    dplyr::filter(coa_region == region &
+                    (Year == year | Year == year - 1) &
+                    Population.type %in% pop_type) |>
+    dplyr::select(Year, CountryAsylumName, Value) |>
+    dplyr::group_by(Year, CountryAsylumName) |>
+    dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |>
+    dplyr::ungroup() |>
+    dplyr::group_by(CountryAsylumName) |>
+    dplyr::arrange(Year) |>
+    dplyr::mutate(diff_pop_type_value = scales::label_percent(accuracy = 0.1,
+                                                              trim = FALSE) (((Value - lag(
+                                                                Value
+                                                              )) / lag(Value)))) |>
+    dplyr::ungroup() |>
+    dplyr::filter(Year == year) |>
+    dplyr::arrange(desc(Value))  |>
+    head(top_n_countries)
+  
+  
+  p <-  ggplot(df) +
+    geom_col(aes(x = reorder(CountryAsylumName, Value),
+                 y = Value),
+             fill = colorlab ,
+             width = 0.8) +
+    coord_flip() +
+    ## Position label differently in the bar in white - outside bar in black
+    geom_text(
+      data = subset(df, Value < max(Value) / 1.5),
+      aes(
+        y = Value,
+        x = reorder(CountryAsylumName, Value),
+        label = label_number(accuracy = 1,
+                             scale_cut = cut_short_scale())(Value)
+      ),
+      hjust = -0.1 ,
+      vjust = 0.5,
+      colour = "black",
+      size = 6
+    ) +
+    geom_text(
+      data = subset(df, Value >= max(Value) / 1.5),
+      aes(
+        y = Value,
+        x = reorder(CountryAsylumName, Value),
+        label = label_number(accuracy = 1,
+                             scale_cut = cut_short_scale())(Value)
+      ),
+      hjust = 1.1 ,
+      vjust = 0.5,
+      colour = "white",
+      size = 6
+    )
+  
+  
+  # Add diff labels
+  if(show_diff_label == TRUE) {
+    # diff label positive general
+    p <- p + geom_text( 
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (Value < max(Value) / 1.5)),
+      aes(
+        y = Value,
+        x = reorder(CountryAsylumName, Value),
+        label = paste(intToUtf8(9650), diff_pop_type_value)
+      ),
+      hjust = -1.2,
+      vjust = 0.5,
+      colour = "grey",
+      size = 5
+    ) +
+      # diff label negative general
+      geom_text(
+        data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (Value < max(Value) / 1.5)),
+        aes(
+          y = Value,
+          x = reorder(CountryAsylumName, Value),
+          label = paste(intToUtf8(9660), diff_pop_type_value)
+        ),
+        hjust = -1.2,
+        vjust = 0.5,
+        colour = "#0472bc",
+        size = 5
+      ) +
+      # diff label positive max
+      geom_text(
+        data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (Value >= max(Value) / 1.5)),
+        aes(
+          y = Value,
+          x = reorder(CountryAsylumName, Value),
+          label = paste(intToUtf8(9650), diff_pop_type_value)
+        ),
+        hjust = -0.4,
+        vjust = 0.5,
+        colour = "grey",
+        size = 5
+      ) +
+      # diff label negative max
+      geom_text(
+        data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (Value >= max(Value) / 1.5)),
+        aes(
+          y = Value,
+          x = reorder(CountryAsylumName, Value),
+          label = paste(intToUtf8(9660), diff_pop_type_value)
+        ),
+        hjust = -0.4,
+        vjust = 0.5,
+        colour = "#0472bc",
+        size = 5
+      )}
+  
+  p <- p +
+    labs(
+      title = paste0("Main Host Countries for ", labelcat , " | ",  year, " in ", region),
+      subtitle = paste0(
+        "Number of people for top ",
+        top_n_countries,
+        " countries in the region"
+      ),
+      caption = "Source: UNHCR.org/refugee-statistics"
+    ) +
+    scale_y_continuous(expand = expansion(c(0, 0.1))) +
+    theme_unhcr(
+      font_size = 14,
+      grid = FALSE,
+      axis = "y",
+      axis_title = FALSE,
+      axis_text = "y"
+    ) +
+    theme(
+      legend.direction = "vertical",
+      legend.key.size = unit(0.8, 'cm'),
+      text = element_text(size = 20),
+      plot.subtitle = element_text(size = 19),
+      plot.title = element_text(size = 23),
+      plot.caption = element_text(size = 13)
+    )
+  
+  return(p)
+}

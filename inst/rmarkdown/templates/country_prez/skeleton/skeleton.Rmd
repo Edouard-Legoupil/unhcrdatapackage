@@ -1,8 +1,8 @@
 ---
 params:
   year: 2022
-  country: "FRA"
-  countryname: "France"
+  country: "ARG"
+  countryname: "Argentina"
 title: "Statistical Factsheet \ `r params$countryname` "
 subtitle:  " as of `r params$year`"
 output:
@@ -294,6 +294,33 @@ plot_ctr_asylum(year = params$year,
                 lag = 10)-> p
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
+
+
+
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+
+plot_ctr_processing_time(year = params$year,
+                              country_asylum_iso3c = params$country)-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+
+```
+
+ 
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+
+plot_ctr_process(year = params$year,
+                country_asylum_iso3c  = params$country)-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
 
 ---
 

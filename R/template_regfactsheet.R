@@ -24,7 +24,7 @@
 
 #' @examples
 #' 
-#' # template_RegFactsheet(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+#' # template_RegFactsheet(year = 2022, region = "Europe", lag = 10,   folder = "Report")
 #' 
 #' ## We can also generate all factsheets in a loop for 2022
 #' 

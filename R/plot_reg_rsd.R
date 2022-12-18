@@ -132,11 +132,11 @@ rsdasyl <-  ggplot(topasyl1, aes(y = measured,
   
   
   
-  scale_y_continuous( label =  scales::label_percent( accuray = 0, suffix = "%") ) + 
+  scale_y_continuous(label =  scales::label_percent(accuracy = 0, suffix = "%") ) + 
   
   
-  scale_y_continuous( label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
-                        scales::label_percent( accuray = 0, suffix = "%"),
+  scale_y_continuous(label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
+                        scales::label_percent(accuracy = 0, suffix = "%"),
                         scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()) )
                       ) + ## Format axis number
   #facet_grid(.~ ctry_asy) +  
@@ -162,7 +162,7 @@ rsdorigin <- ggplot(topOrigin1, aes(y = measured,
   
   
   scale_y_continuous( label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
-                        scales::label_percent( accuray = 0, suffix = "%"),
+                        scales::label_percent(accuracy = 0, suffix = "%"),
                         scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()) )
                       ) + ## Format axis number
   

@@ -9,7 +9,7 @@
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
-#'             geom_text
+#'             geom_text .pt
 #'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
 #' @importFrom utils  head
 #' @importFrom tidyselect where
@@ -18,7 +18,7 @@
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
-#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom unhcrthemes theme_unhcr
 #' 
 #' @return a ggplot2 object
@@ -29,137 +29,164 @@
 #' @examples
 #' # 
 #' plot_ctr_pyramid(year = 2021,
-#'                 country_asylum_iso3c = "FRA",
-#'                 pop_type =   "ASY")
+#'                  country_asylum_iso3c = "COL",
+#'                  pop_type = c("ASY", "REF")
+#'                  )
 #' 
 plot_ctr_pyramid <- function(year = 2021,
-                     country_asylum_iso3c = country_asylum_iso3c,
-                     pop_type = pop_type) {
-
-   ctrylabel <- unhcrdatapackage::reference |> 
-                 filter(iso_3 == country_asylum_iso3c ) |> 
-               select(ctryname) |> 
-                pull()
-
+                             country_asylum_iso3c = country_asylum_iso3c,
+                             pop_type = pop_type) {
   
-    demographics1 <- unhcrdatapackage::demographics |>
-                     left_join( unhcrdatapackage::reference |> 
-                                         select(UNHCRBureau, iso_3),  
-                                       by = c("CountryAsylumCode" = "iso_3")) |> 
-                     filter(CountryAsylumCode  == country_asylum_iso3c &
-                                 Year == year-1 &
-                                 Population.type  %in% as.vector(pop_type) ) |>
+  ctrylabel <- unhcrdatapackage::reference |> 
+    filter(iso_3 == country_asylum_iso3c ) |> 
+    distinct(ctryname) |> 
+    pull()
+  
+  poptype_label <- unhcrdatapackage::end_year_population_totals_long |> 
+    filter(Population.type  %in% as.vector(pop_type)) |> 
+    distinct(Population.type.label.short) |> 
+    pull()
+  
+  demographics1 <- unhcrdatapackage::demographics |>
+    left_join( unhcrdatapackage::reference |> 
+                 select(UNHCRBureau, iso_3),  
+               by = c("CountryAsylumCode" = "iso_3")) |> 
+    filter(CountryAsylumCode  == country_asylum_iso3c &
+             Year == year-1 &
+             Population.type  %in% as.vector(pop_type)) |>
+    
+    mutate ( totGen = FemaleTotal +MaleTotal,
+             totbreak = Female04 + Female511 + Female1217 + 
+               Female1859 + Female60ormore + FemaleUnknown +
+               Male04 + Male511 + Male1217 + Male1859 +
+               Male60ormore + MaleUnknown,
+             
+             hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
+  
+  
+  if ( nrow(demographics1) ==  0 ){
+    info <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ", ctrylabel )
+    p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
+                              label = info ) +  theme_void() 
+    
+  } else {
+    
+    tot <- format( sum(demographics1$Total) ,  big.mark=",")
+    totprop <-   format( round( sum(demographics1$totGen) / 
+                                  sum(demographics1$Total )  *100,1),  big.mark=",")  
+    
+    if (totprop == 0 ) {
+      info <- paste0("There\'s no recorded Gender disaggregation for \n all of the ",tot, " persons in ", ctrylabel  )
+      p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
+                                label = info ) +  theme_void() 
       
-                      mutate ( totGen = FemaleTotal +MaleTotal,
-                                 totbreak = Female04 + Female511 + Female1217 + 
-                                            Female1859 + Female60ormore + FemaleUnknown +
-                                            Male04 + Male511 + Male1217 + Male1859 +
-                                            Male60ormore + MaleUnknown,
-                                 
-                                 hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
-
-
-    if ( nrow(demographics1) ==  0 ){
-     info <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ", ctrylabel )
-     p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
-                                        label = info ) +  theme_void() 
       
     } else {
-    
-      tot <- format( sum(demographics1$Total) ,  big.mark=",")
-      totprop <-   format( round( sum(demographics1$totGen) / 
-          sum(demographics1$Total )  *100,1),  big.mark=",")  
+      #names(demographics)
+      pyramid <-  demographics1[ demographics1$Year == max(demographics1$Year),
+                                 c(
+                                   "Female04",
+                                   "Female511",
+                                   "Female1217",
+                                   "Female1859",
+                                   "Female60ormore",
+                                   "FemaleUnknown",
+                                   # "FemaleTotal",
+                                   "Male04",
+                                   "Male511",
+                                   "Male1217",
+                                   "Male1859",
+                                   "Male60ormore",
+                                   "MaleUnknown"#,
+                                   # "MaleTotal"       
+                                 )]  
       
-            if (totprop == 0 ) {
-              info <- paste0("There\'s no recorded Gender disaggregation for \n all of the ",tot, " persons in ", ctrylabel  )
-              p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
-                                        label = info ) +  theme_void() 
-              
-              
-            } else {
-              #names(demographics)
-              pyramid <-  demographics1[ demographics1$Year == max(demographics1$Year),
-                                        c(
-                                            "Female04",
-                                            "Female511",
-                                            "Female1217",
-                                            "Female1859",
-                                            "Female60ormore",
-                                            "FemaleUnknown",
-                                           # "FemaleTotal",
-                                            "Male04",
-                                            "Male511",
-                                            "Male1217",
-                                            "Male1859",
-                                            "Male60ormore",
-                                            "MaleUnknown"#,
-                                           # "MaleTotal"       
-                                           )]  
-              
-              pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) |>
-                pivot_longer(
-                  cols = Female04:MaleUnknown,
-                  names_to = "Class",
-                  values_to = "Sum",
-                  values_drop_na = TRUE
-                ) 
-              
-              pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
-                                                        by = list(pyramid2$Class#, pyramid2$REGION_UN
-                                                                  ),
-                                                        sum))
-              names(pyramid3)[1] <- "Class"
-              names(pyramid3)[2] <- "Count"
-              
-              pyramid3 <- pyramid3 |> 
-                mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
-                                          str_detect(Class, "Female") ~ "Female")) |> 
-                mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
-                                       str_detect(Class, "511") ~ "5-11",
-                                       str_detect(Class, "1217") ~ "12-17",
-                                       str_detect(Class, "1859") ~ "18-59",
-                                       str_detect(Class, "60") ~ "60+",
-                                       str_detect(Class, "Unknown") ~ "Unknown")) 
-              
-              pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count) * 100
-              pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
-              
-              p <- ggplot(pyramid3, aes(x = age, 
-                                   fill = gender,
-                                    y = ifelse(test = gender == "Female",
-                                          yes = -pc, no = pc)) ) + 
-                geom_bar(stat = "identity") +
-                geom_label(aes(x = age,
-                               y = ifelse(test = gender == "Female",
-                                          yes = -pc -5 , no = pc),
-                              label =  paste0(format(round(pc, 1),  big.mark=","),"%") 
-                              ),
-                           hjust = 0,
-                           vjust = 0.5,
-                           colour = "black",
-                           fill = NA,
-                           label.size = NA,
-                          # family = "Lato",
-                           size = 4) +
-                scale_y_continuous(labels = abs, limits = max(pyramid3$pc) * c(-1,1)) +
-                labs(title = paste0("Population Pyramid for Forcibly Displaced People" ),
-                     
-                     subtitle = paste0("As of ", year, 
-                                       ", gender disaggregation is available for ", totprop, " % of the ",tot,
-                                       " individuals in", ctrylabel),
-                     x = "", 
-                     y = "Percent of population",
-                     caption =  "Source: UNHCR.org/refugee-statistics.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection.") +
-                scale_colour_manual(values = c("#126db4","#01ab91"), # based on Asia Report
-                                    aesthetics = c("colour", "fill")) +
-                coord_flip() +
-                theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
-                theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-                          panel.grid.major.y = element_blank())
-              
-             
-           }
+      pyramid2 <- data.frame(lapply(pyramid, function(x) { as.numeric( gsub("NA", "0", x)) })) |>
+        pivot_longer(
+          cols = Female04:MaleUnknown,
+          names_to = "Class",
+          values_to = "Sum",
+          values_drop_na = TRUE
+        ) 
+      
+      pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
+                                          by = list(pyramid2$Class#, pyramid2$REGION_UN
+                                          ),
+                                          sum))
+      names(pyramid3)[1] <- "Class"
+      names(pyramid3)[2] <- "Count"
+      
+      pyramid3 <- pyramid3 |> 
+        mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
+                                  str_detect(Class, "Female") ~ "Female")) |> 
+        mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
+                               str_detect(Class, "511") ~ "5-11",
+                               str_detect(Class, "1217") ~ "12-17",
+                               str_detect(Class, "1859") ~ "18-59",
+                               str_detect(Class, "60") ~ "60+",
+                               str_detect(Class, "Unknown") ~ "Unknown")) 
+      
+      pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count)
+      pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
+      
+      p <- pyramid3 |> 
+        select(gender,age, pc) |> 
+        mutate(gender = tolower(gender)) |> 
+        pivot_wider(names_from = gender,
+                    names_sort = TRUE,
+                    values_from = pc
+        ) |> 
+        ggplot() +
+        geom_col(aes(-male,
+                     age,
+                     fill = "Male"
+        ),
+        width = 0.7
+        ) +
+        geom_col(aes(female,
+                     age,
+                     fill = "Female"
+        ),
+        width = 0.7
+        ) +
+        geom_text(aes(-male,
+                      age,
+                      label = percent(abs(male), accuracy = 1)
+        ),
+        hjust = 1.25,
+        size = 11.5 / ggplot2::.pt
+        ) +
+        geom_text(aes(female,
+                      age,
+                      label = percent(abs(female), accuracy = 1)
+        ),
+        hjust = -0.25,
+        size = 11.5 / ggplot2::.pt
+        ) +
+        labs(
+          title = paste0("Population Pyramid for ", sub(",\\s+([^,]+)$", " and \\1", toString(poptype_label)), " | ", ctrylabel),
+          
+          subtitle = paste0("As of ", year, 
+                            ", gender disaggregation is available for ", totprop, "% of the ",tot,
+                            " individuals in ", ctrylabel),
+          caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: UNHCR.org/refugee-statistics."
+        ) +
+        scale_x_continuous(expand = expansion(c(0.2, 0.2))) +
+        scale_fill_manual(breaks=c('Male', 'Female'),
+                          values = setNames(
+                            unhcr_pal(n = 3, "pal_unhcr")[c(2, 1)],
+                            c("Male" , "Female")
+                          )) +
+        theme_unhcr(
+          grid = FALSE,
+          axis = FALSE,
+          axis_title = FALSE,
+          axis_text = "y"
+        )
+      
+      
     }
+  }
   
-   return(p)
+  return(p)
 }

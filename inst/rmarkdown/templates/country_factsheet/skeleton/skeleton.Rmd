@@ -349,6 +349,25 @@ plot_ctr_asylum(year = params$year,
                 lag = 10)
 ```
 
+## Average Asylum Processing Time
+
+```{r example-plot_ctr_processing_time, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+
+
+plot_ctr_processing_time(year = params$year,
+                              country_asylum_iso3c = params$country)
+
+```
+
+
+## Asylum Processing
+
+```{r example-plot_ctr_process, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+
+plot_ctr_process(year = params$year,
+                country_asylum_iso3c  = params$country)
+```
+
 
 
 ## What are the trends in terms of Solutions?

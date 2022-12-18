@@ -8,7 +8,8 @@ plot_reg_population_type_abs(
   year = 2022,
   region = "Americas",
   top_n_countries = 9,
-  pop_type = "REF"
+  pop_type = "REF",
+  show_diff_label = TRUE
 )
 }
 \arguments{
@@ -30,13 +31,15 @@ Main country of origin - Absolute value
 plot_reg_population_type_abs(year = 2022,
                               region = "Americas",
                               top_n_countries = 5,
-                              pop_type = "REF"
-                              ) 
+                              pop_type = "REF",
+                              show_diff_label = TRUE
+                              )
 
 plot_reg_population_type_abs(year = 2022,
                               region = "Americas",
                               top_n_countries = 5,
-                              pop_type = "ASY"
-                              ) 
+                              pop_type = "ASY",
+                              show_diff_label = FALSE
+                              )
 
 }

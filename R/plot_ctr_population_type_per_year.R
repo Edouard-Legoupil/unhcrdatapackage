@@ -30,7 +30,7 @@
 
 #' @examples
 #' 
-#' plot_ctr_population_type_per_year(year = 2022,
+#' p <- plot_ctr_population_type_per_year(year = 2022,
 #'                                               lag = 5,
 #'                          country_asylum_iso3c = "PAN",
 #'                           pop_type = c("REF", 
@@ -40,6 +40,9 @@
 #'                                        "STA",
 #'                                        "IDP" )
 #'                   )
+#' p
+#' ## Raw data can always be accessed with 
+#' knitr::kable(ggplot2::ggplot_build(p)$plot$data )
 plot_ctr_population_type_per_year <- function(year = 2022,
                                               lag = 5, 
                                      country_asylum_iso3c = country_asylum_iso3c,
@@ -61,7 +64,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
   df <- unhcrdatapackage::end_year_population_totals_long  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
-                  Year >= ( year - lag),  #### Parameter
+                  Year >= (year - lag),  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c, #### Parameter
                   Population.type %in% pop_type #### Parameter
     )  |>  
@@ -81,7 +84,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
     geom_text(aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = label_number( accuracy = 1,
+                  label = label_number(accuracy = 1,
                                    scale_cut = cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
@@ -105,7 +108,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
               font_size = 14) +
     stat_summary(fun = sum, aes(x = Year,
                                 y = Value, 
-                                label = scales::label_number( accuracy = 1,
+                                label = scales::label_number(accuracy = 1,
                                                        scale_cut = cut_short_scale())(..y..), 
                                 group = Year), 
                  geom = "text", size = 5,

@@ -6,7 +6,10 @@
 #   template_description = "Key Statistical Facts for each Country",
 #   template_create_dir = TRUE
 # )
-#' Generate all country factsheet 
+#' Generate an html / pdf country factsheet 
+#' 
+#' This functions provides a quick access to a basic Statistical Fact sheet 
+#' template that can be customised according to the needs
 #' 
 #' @param year Numeric value of the year (for instance 2022)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum

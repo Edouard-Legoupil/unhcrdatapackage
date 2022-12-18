@@ -37,91 +37,126 @@ plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
                                  pop_type = pop_type) {
 
-
-
-     ctrylabel <- unhcrdatapackage::reference |> 
-                 filter(iso_3 == country_origin_iso3c ) |> 
-               select(ctryname) |> 
-                pull()
+  ctrylabel <- unhcrdatapackage::reference |>
+    filter(iso_3 == country_origin_iso3c) |>
+    select(ctryname) |>
+    pull()
   
-Destination <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3"))  |>
-  filter(CountryOriginCode  == country_origin_iso3c  & 
-                 Year == year &
-                Population.type  %in% as.vector(pop_type)  )  |>  
-   mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
-         CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
-         CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
-         CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) |> 
-   
-   group_by( CountryAsylumName) |>
-   summarise(DisplacedAcrossBorders = sum(Value) )  |>
-   mutate( DisplacedAcrossBordersRound =  ifelse(DisplacedAcrossBorders > 1000, 
-                            paste(label_number( accuracy = .1,
-                                   scale_cut = cut_short_scale())(DisplacedAcrossBorders)),
-                            as.character(DisplacedAcrossBorders) ) ) |>
-   arrange(desc(DisplacedAcrossBorders)) |>
-   head(10) |>
-   filter(DisplacedAcrossBorders >0)
+  Destination <-
+    left_join(
+      x = unhcrdatapackage::end_year_population_totals_long,
+      y = unhcrdatapackage::reference,
+      by = c("CountryAsylumCode" = "iso_3")
+    )  |>
+    filter(
+      CountryOriginCode  == country_origin_iso3c  &
+        Year == year &
+        Population.type  %in% as.vector(pop_type)
+    )  |>
+    mutate(
+      CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+      CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
+      CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
+      CountryAsylumName = str_replace(
+        CountryAsylumName,
+        "United Kingdom of Great Britain and Northern Ireland",
+        "UK"
+      )
+    ) |>
+    group_by(CountryAsylumName) |>
+    summarise(DisplacedAcrossBorders = sum(Value))  |>
+    mutate(DisplacedAcrossBordersRound =  ifelse(
+      DisplacedAcrossBorders > 1000,
+      paste(
+        label_number(accuracy = .1,
+                     scale_cut = cut_short_scale())(DisplacedAcrossBorders)
+      ),
+      as.character(DisplacedAcrossBorders)
+    )) |>
+    arrange(desc(DisplacedAcrossBorders)) |>
+    head(10) |>
+    filter(DisplacedAcrossBorders > 0)
 
-if( nrow(Destination) ==  0 ){
-  p <- paste0("There\'s no recorded countries of destination for ",country_origin_iso3c )
-  
-} else {
-
-
-#Make plot
-p <- ggplot(Destination, aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), ## Reordering country by Value
-                           y = DisplacedAcrossBorders)) +
-  geom_bar(stat = "identity", 
-           position = "identity", 
-           fill = "#0072bc") + # here we configure that it will be bar chart+
-## Format axis number
-  scale_y_continuous( labels = label_number(scale_cut = cut_short_scale())) + 
-  
-  ## Position label differently in the bar in white - outside bar in black
-  geom_label( data = subset(Destination, DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5),
-              aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), 
-                  y = DisplacedAcrossBorders,
-                  label= DisplacedAcrossBordersRound),
-              hjust = -0.1 ,
-              vjust = 0.5, 
-              colour = "black", 
-              fill = NA, 
-              label.size = NA, 
-              #family = "Lato", 
-              size = 4   ) +  
-
-  geom_label( data = subset(Destination, DisplacedAcrossBorders >= max(DisplacedAcrossBorders) / 1.5),
-              aes(x = reorder(CountryAsylumName, DisplacedAcrossBorders), 
-                  y = DisplacedAcrossBorders,
-                  label= DisplacedAcrossBordersRound),
-              hjust = 1.1 ,
-              vjust = 0.5, 
-              colour = "white", 
-              fill = NA, 
-              label.size = NA, 
-              # family = "Lato", 
-              size = 4   ) +   
-  # Add `coord_flip()` to make your vertical bars horizontal:
-  coord_flip() + 
-  
-  ## and the chart labels
-  labs(title = paste0("What are the main destinations for Forcibly Displaced People?" ),
-       
-       subtitle = paste0("Top Destination Countries | as of ",year, " for population from ", ctrylabel ), 
-       x = "",
-       y = "",
-       caption = "Source: UNHCR Population Statistics Database.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection.") +
+  if(nrow(Destination) ==  0) {
+    p <-
+      paste0("There\'s no recorded countries of destination for ",
+             country_origin_iso3c)
     
-  # Style  
-  geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
-  theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
-  theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
-        panel.grid.major.y = element_blank()) ### changing grid line that should appear
-  
-  
+  } else {
+    #Make plot
+    p <-
+      ggplot(Destination) +
+  geom_col(aes(
+    x = reorder(CountryAsylumName, DisplacedAcrossBorders),
+    ## Reordering country by Value
+    y = DisplacedAcrossBorders),
+               fill = unhcr_pal(n = 1, "pal_blue")) + # here we configure that it will be bar chart+
+      ## Format axis number
+  scale_y_continuous(expand = expansion(c(0, 0.1)),
+                     labels = label_number(scale_cut = cut_short_scale())) +
+      ## Position label differently in the bar in white - outside bar in black
+      geom_label(
+        data = subset(
+          Destination,
+          DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5
+        ),
+        aes(
+          x = reorder(CountryAsylumName, DisplacedAcrossBorders),
+          y = DisplacedAcrossBorders,
+          label = DisplacedAcrossBordersRound
+        ),
+        hjust = -0.1 ,
+        vjust = 0.5,
+        colour = "black",
+        fill = NA,
+        label.size = NA,
+        #family = "Lato",
+        size = 4
+      ) +
+      
+      geom_label(
+        data = subset(
+          Destination,
+          DisplacedAcrossBorders >= max(DisplacedAcrossBorders) / 1.5
+        ),
+        aes(
+          x = reorder(CountryAsylumName, DisplacedAcrossBorders),
+          y = DisplacedAcrossBorders,
+          label = DisplacedAcrossBordersRound
+        ),
+        hjust = 1.1 ,
+        vjust = 0.5,
+        colour = "white",
+        fill = NA,
+        label.size = NA,
+        # family = "Lato",
+        size = 4
+      ) +
+      # Add `coord_flip()` to make your vertical bars horizontal:
+      coord_flip() +
+      
+      ## and the chart labels
+      labs(
+        title = paste0("What are the main destinations for Forcibly Displaced People?"),
+        
+        subtitle = paste0(
+          "Top Destination Countries | as of ",
+          year,
+          " for population from ",
+          ctrylabel
+        ),
+        x = "",
+        y = "",
+        caption = "Source: UNHCR Population Statistics Database.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection."
+      ) +
+    theme_unhcr(font_size = 14,
+                  grid = FALSE,
+                  axis = "y",
+                  axis_title = FALSE,
+                  axis_text = "y"
+                )
+    
+    
   }
   return(p) # print(p)
 }

@@ -2,28 +2,45 @@
 % Please edit documentation in R/plot_ctr_processing_time.R
 \name{plot_ctr_processing_time}
 \alias{plot_ctr_processing_time}
-\title{Plot Average processing time (in days) from registration to first instance asylum decision}
+\title{Plot Average processing time from registration to first instance asylum decision}
 \usage{
 plot_ctr_processing_time(
   year = 2022,
-  country_asylum_iso3c = country_asylum_iso3
+  country_asylum_iso3c = country_asylum_iso3,
+  country_origin_iso3c = NULL,
+  procedureType = NULL
 )
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
+
+\item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Asylum - if NUL then all countries are included}
+
+\item{procedureType}{indicates whether "G" (Government) "J" (Joint) "U" (UNHCR)}
 }
 \value{
 a ggplot2 object
 }
 \description{
-This indicator measures the average number of days from the date of completion of registration of the asylum application to the date of notification of first instance asylum decision for all persons who were notified of a first instance RSD/asylum decision during the reporting period. 
+This indicator measures the average number of days from the date of completion of registration of the asylum application to the date of notification of first instance asylum decision for all persons who were notified of a first instance RSD/asylum decision during the reporting period.
+}
+\details{
 Status determination procedures are a core protection function and the principle mechanism through which international protection needs of Persons of Concern may be determined in accordance with the key provisions of the 1951 Convention and 1967 Protocol relating to the Status of Refugees, the 1954 Convention relating to the Status of Stateless Persons, or relevant regional refugee protection instruments. Status determination procedures are therefore central to the full and effective enjoyment of the universal right to seek and enjoy asylum and the specific rights guaranteed by the above instruments.
-A prolonged waiting period during the status determination procedure is an important indicator of the state of efficiency, fairness, adaptability integrity and hence, overall quality of the national asylum or, depending on the context, UNHCR Mandate RSD procedure, including the timeliness and effectiveness of the overall protection response in the country 
- (RBM Outcome Indicator 2.1) - see https://intranet.unhcr.org/content/dam/unhcr/intranet/protection-operations/compass/en/guidance/3/coreindicatorsmetadata/2.0%20Core%20Indicator%20Metadata%2004%2010%202021.pdf#page=67
+
+A prolonged waiting period during the status determination procedure is an important indicator of the state of efficiency, fairness, adaptability integrity and hence, overall quality of the national asylum or, depending on the context, UNHCR Mandate RSD procedure, including the timeliness and effectiveness of the overall protection response in the country.
+ 
+ (RBM Outcome Indicator 2.1) - see [UNHCR Intranet](https://intranet.unhcr.org/content/dam/unhcr/intranet/protection-operations/compass/en/guidance/3/coreindicatorsmetadata/2.0%20Core%20Indicator%20Metadata%2004%2010%202021.pdf#page=67) - Credit to Hisham Galal for the chart initial idea and script
 }
 \examples{
-# plot_ctr_processing_time(year = 2022,
-#                               country_asylum_iso3c = "CHL")
+plot_ctr_processing_time(year = 2022,
+                         country_asylum_iso3c = "ARG")
+
+## Display a filtered version of the chart for a specific country and procedure
+plot_ctr_processing_time(year = 2022,
+                         country_asylum_iso3c = "EGY",
+                         country_origin_iso3c = "ERI",
+                         procedureType = "U")
+
 }

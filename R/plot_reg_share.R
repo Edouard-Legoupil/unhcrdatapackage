@@ -66,7 +66,7 @@ datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_
   dplyr::group_by( Year, Compare, Population.type.label , Population.type ) %>%
   dplyr::summarise(Value = sum( Value, na.rm = TRUE))  %>%
   dplyr::ungroup(Year, Compare ,Population.type, Population.type.label)  %>%
-  dplyr::mutate(  freq = scales::label_percent( accuracy= .1, suffix = "%")(Value / sum(Value)) ) 
+  dplyr::mutate(  freq = scales::label_percent(accuracy= .1, suffix = "%")(Value / sum(Value)) ) 
  
 ## Treemapify
 p <- ggplot(datatree, 

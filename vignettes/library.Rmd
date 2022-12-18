@@ -14,6 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
+
+
+
 # Divisible Content Strategy Gives You More Content With Less Work
 
 As explained in this [blog post](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/), a divisible content strategy is an approach to content creation where you use a single asset to create multiple pieces. For example, you might break an e-book into a few articles, an infographic, social microcontent, or even a brand video. 

@@ -34,12 +34,12 @@
 #'          )
 #' 
 plot_ctr_diff_in_pop_groups <- function(year = 2021,
-                     country_asylum_iso3c = country_asylum_iso3c,
-                     pop_type = pop_type
+                                        country_asylum_iso3c = country_asylum_iso3c,
+                                        pop_type = pop_type
 ) {
-
-
-
+  
+  
+  
   diff_perc <- function(x){
     x = as.numeric((x - lag(x))/lag(x)) + 0
     
@@ -48,9 +48,9 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   
   df <- unhcrdatapackage::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
-                  !is.na(CountryAsylumCode),
-                  (Year == year-1 | Year == year),  #### Parameter
-                  CountryAsylumCode == country_asylum_iso3c #### Parameter
+           !is.na(CountryAsylumCode),
+           (Year == year-1 | Year == year),  #### Parameter
+           CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 
     group_by(Year, CountryAsylumName) |> 
     summarise(across(where(is.numeric), sum)) |> 
@@ -59,9 +59,9 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     select(-c(Year)) |> 
     group_by(CountryAsylumName) |> 
     summarise(across(where(is.numeric), 
-                                   list(diffabs = diff,
-                                        diffperc = diff_perc),
-                                   .names = "{.col}_{.fn}")) |> 
+                     list(diffabs = diff,
+                          diffperc = diff_perc),
+                     .names = "{.col}_{.fn}")) |> 
     ungroup() |> 
     slice(2) 
   
@@ -69,20 +69,21 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   
   df <- df |> 
     tidyr::gather(v, value, REF_diffabs:OIP_diffperc) |> 
-    tidyr::separate(v, c("pop_type", "value_type"), sep = "\\_") |> 
+    tidyr::separate(v, c("population_type", "value_type"), sep = "\\_") |> 
     tidyr::spread(key = value_type, value = value) 
-
-
+  
+  
   df <- df |>         
-    mutate(diffper = label_percent(  accuracy = 1,  trim = FALSE) (diffperc))
+    mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (diffperc))
   
+  df <- df |> 
+    filter(population_type %in% pop_type)
   
-  p <- df |> 
-    filter(pop_type %in% pop_type) |>
+  p <- df |>
     ggplot() +
-    geom_col(aes(x = pop_type, 
+    geom_col(aes(x = population_type, 
                  y = diffabs,
-                 fill = pop_type),
+                 fill = population_type),
              width = 0.8) +
     scale_fill_manual(
       values = c("ASY" = "#18375F",
@@ -106,66 +107,65 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     ## Adding labels with conditionned positions...
     
     geom_text(  data = subset(df, diffabs >= 0 & diffabs < max(diffabs) / 1.5),
-      aes(x = pop_type,
-          y = diffabs,
-          label = label_number(accuracy = 1,
-                              scale_cut = cut_short_scale())(diffabs) ),
-      vjust = -0.5 , colour = "black", size = 5   ) +
+                aes(x = population_type,
+                    y = diffabs,
+                    label = label_number(accuracy = 1,
+                                         scale_cut = cut_short_scale())(diffabs)),
+                vjust = -0.5 , colour = "black", size = 5   ) +
     
     geom_text( data = subset(df, diffabs >= 0 & diffabs < max(diffabs) / 1.5),
-      aes(  x = pop_type,
-            y = diffabs,
-            label = diffper   ),
-      vjust = -2.0 ,      colour = "black",      size = 5  ) +
+               aes(  x = population_type,
+                     y = diffabs,
+                     label = paste(intToUtf8(9650), diffper)),
+               vjust = -2.0 , colour = "black", size = 5  ) +
     
     geom_text( data = subset(df, diffabs >= 0 & diffabs >= max(diffabs) / 1.5),
-      aes(  x = pop_type,
-            y = diffabs,
-            label = label_number(accuracy = 1,
-                             scale_cut = cut_short_scale())(diffabs) ),
-      vjust = 2.7 ,   colour = "white",   size = 5  ) + 
+               aes(  x = population_type,
+                     y = diffabs,
+                     label = label_number(accuracy = 1,
+                                          scale_cut = cut_short_scale())(diffabs) ),
+               vjust = 2.7 ,   colour = "white",   size = 5  ) + 
     
     geom_text(  data = subset(df, diffabs >= 0 & diffabs >= max(diffabs) / 1.5),
-      aes(x = pop_type,
-          y = diffabs,
-          label = diffper   ),
-      vjust = 1.2 ,   colour = "white",   size = 5    ) + 
+                aes(x = population_type,
+                    y = diffabs,
+                    label = paste(intToUtf8(9650), diffper)),
+                vjust = 1.2 ,   colour = "white",   size = 5    ) + 
     
+    geom_text( data = subset(df, diffabs < 0/ 1.5),
+               aes(  x = population_type,
+                     y = diffabs,
+                     label = label_number(accuracy = 1,
+                                          scale_cut = cut_short_scale())(diffabs)),
+               vjust =  1.2, colour = "black", size = 5  ) +
     
-  geom_text( data = subset(df, diffabs < 0/ 1.5),
-    aes(  x = pop_type,
-         y = diffabs,
-         label = label_number(accuracy = 1,
-                            scale_cut = cut_short_scale())(diffabs)),
-    vjust =  1.2, colour = "black", size = 5  ) +
+    geom_text( data = subset(df, diffabs < 0  / 1.5),
+               aes( x = population_type,
+                    y = diffabs,
+                    label = paste(intToUtf8(9660), diffper)),
+               vjust = 2.7,  colour = "black",  size = 5  ) +
     
-  geom_text( data = subset(df, diffabs < 0  / 1.5),
-      aes( x = pop_type,
-           y = diffabs,
-          label = diffper),
-      vjust = 2.7,  colour = "black",  size = 5  ) +
+    geom_hline(yintercept = 0, color = "black") +
     
-  geom_hline(yintercept = 0, color = "black") +
-  
-  labs(title = paste0(df |> 
-                      distinct(CountryAsylumName) |> 
-                      pull(), 
-                      ": Increases and Decreases in Population Groups | ",
-                      year-1,
-                      "-",
-                      year),
+    labs(title = paste0(df |> 
+                          distinct(CountryAsylumName) |> 
+                          pull(), 
+                        ": Increases and Decreases in Population Groups | ",
+                        year-1,
+                        "-",
+                        year),
          subtitle = "Number of people and percentage",
          caption = "Source: UNHCR.org/refugee-statistics")  + 
-   theme_unhcr(grid = FALSE, axis = "x",
+    theme_unhcr(grid = FALSE, axis = "x",
                 axis_title = FALSE, axis_text = "x",
                 font_size = 14) +
-   theme(axis.line.x = element_line(color="white"),
+    theme(axis.line.x = element_line(color="white"),
           axis.text.x = element_text(size=10))
-    
+  
   # geom_text(
   #   data = subset(df, diffabs < 0 & diffabs <= min(diffabs) / 1.5),
   #   aes(
-  #     x = pop_type,
+  #     x = population_type,
   #     y = diffabs,
   #     label = label_number(accuracy = 1,
   #                                  scale_cut = cut_short_scale())(diffabs)
@@ -177,7 +177,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   #   geom_text(
   #     data = subset(df, diffabs < 0 & diffabs <= min(diffabs) / 1.5),
   #     aes(
-  #       x = pop_type,
+  #       x = population_type,
   #       y = diffabs,
   #       label = diffper
   #     ),
@@ -185,7 +185,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   #     colour = "white",
   #     size = 5
   #   ) +
-
+  
   
   return(p) # print(p)
 }

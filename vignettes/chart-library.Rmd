@@ -67,7 +67,7 @@ After inflating the template
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 
-plot_ctr_population_type_per_year(year = 2022,
+p <- plot_ctr_population_type_per_year(year = 2022,
                                               lag = 5,
                          country_asylum_iso3c = "PAN",
                           pop_type = c("REF", 
@@ -77,6 +77,9 @@ plot_ctr_population_type_per_year(year = 2022,
                                        "STA",
                                        "IDP" )
                   )
+p
+## Raw data can always be accessed with 
+knitr::kable(ggplot2::ggplot_build(p)$plot$data )
 ```
 
 <!--
@@ -99,14 +102,16 @@ After inflating the template
 plot_ctr_population_type_abs(year = 2020,
                     country_asylum_iso3c = "USA",
                     top_n_countries = 4,
-                    pop_type = "REF"
+                    pop_type = "REF",
+                    show_diff_label = FALSE
                     ) 
 
 ## Same with 9 top countries and asylum seekers included
 plot_ctr_population_type_abs(year = 2020,
                     country_asylum_iso3c = "USA",
                     top_n_countries = 9,
-                    pop_type = "REF"
+                    pop_type = "ASY",
+                    show_diff_label = TRUE
                     ) 
 
 ```
@@ -174,8 +179,9 @@ plot_ctr_treemap(year = 2021,
 ```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_pyramid(year = 2021,
-                country_asylum_iso3c = "FRA",
-                pop_type =   "ASY")
+                 country_asylum_iso3c = "COL",
+                 pop_type = c("ASY", "REF")
+                 )
 
 ```
 
@@ -222,13 +228,35 @@ plot_ctr_asylum(year = 2022,
   
 
 ```{r example-plot_ctr_processing_time}
-# plot_ctr_processing_time(year = 2022,
-#                               country_asylum_iso3c = "CHL")
+plot_ctr_processing_time(year = 2022,
+                         country_asylum_iso3c = "ARG")
+
+## Display a filtered version of the chart for a specific country and procedure
+plot_ctr_processing_time(year = 2022,
+                         country_asylum_iso3c = "EGY",
+                         country_origin_iso3c = "ERI",
+                         procedureType = "U")
+
 ```
 
   
 
+ 
+ 
+
+## Asylum Processing
+
+    
+
   
+
+```{r example-plot_ctr_process}
+plot_ctr_process(year = 2022,   country_asylum_iso3c = "CHL")
+```
+
+  
+
+    
 
 
 ## Plot Solution Over time 
@@ -259,9 +287,8 @@ plot_ctr_solution(year = 2021,
   
 
 ```{r example-plot_ctr_disp_migrant}
-plot_ctr_disp_migrant(year = 2021,
-                    country_asylum_iso3c = "BRA",
-                  pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP") )
+plot_ctr_disp_migrant(year = 2022,
+                    country_asylum_iso3c = "BRA" )
 ```
 
   
@@ -376,14 +403,16 @@ plot_reg_origin_dest(year = 2022,  region = "Asia")
 plot_reg_population_type_abs(year = 2022,
                               region = "Americas",
                               top_n_countries = 5,
-                              pop_type = "REF"
-                              ) 
+                              pop_type = "REF",
+                              show_diff_label = TRUE
+                              )
 
 plot_reg_population_type_abs(year = 2022,
                               region = "Americas",
                               top_n_countries = 5,
-                              pop_type = "ASY"
-                              ) 
+                              pop_type = "ASY",
+                              show_diff_label = FALSE
+                              )
 
 ```
 
@@ -586,7 +615,7 @@ Templates are re-built notebook that includes all the plotting functions above a
 
 ```{r example-template_CtryPrez}
 ## generate for one country
-# template_CtryPrez(year = 2022, country_asylum_iso3c = "FRA",   folder = "Report")
+# unhcrdatapackage::template_CtryPrez(year = 2022, country_asylum_iso3c = "CHL",   folder = "Report")
 
 ## Generate for a specific region
 # region <- "Americas"
@@ -612,7 +641,7 @@ Templates are re-built notebook that includes all the plotting functions above a
 
 ```{r example-template_RegFactsheet}
 
-# template_RegFactsheet(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+# template_RegFactsheet(year = 2022, region = "Europe", lag = 10,   folder = "Report")
 
 ## We can also generate all factsheets in a loop for 2022
 

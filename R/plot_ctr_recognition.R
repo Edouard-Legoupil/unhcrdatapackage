@@ -101,7 +101,7 @@ topOrigin1 <-  topOrigin  %>%
 rsdorigin <- ggplot(topOrigin1, aes(y = measured, 
              x = reorder(CountryOriginName, measured))) +
   #scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
-  scale_y_continuous( label =  scales::label_percent( accuray = 0, suffix = "%") ) +
+  scale_y_continuous( label =  scales::label_percent(accuracy = 0, suffix = "%") ) +
 
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = "#0072bc") +

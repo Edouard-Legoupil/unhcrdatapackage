@@ -2,7 +2,7 @@
 % Please edit documentation in R/template_ctryfactsheet.R
 \name{template_CtryFactsheet}
 \alias{template_CtryFactsheet}
-\title{Generate all country factsheet}
+\title{Generate an html / pdf country factsheet}
 \usage{
 template_CtryFactsheet(year = 2022, country_asylum_iso3c, folder = "Report")
 }
@@ -18,7 +18,8 @@ Folder will be created if it does not exist}
 nothing the file for the report is generated
 }
 \description{
-Generate all country factsheet
+This functions provides a quick access to a basic Statistical Fact sheet 
+template that can be customised according to the needs
 }
 \examples{
 ## generate for one country

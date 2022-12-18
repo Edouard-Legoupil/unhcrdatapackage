@@ -26,7 +26,8 @@ Population Pyramid
 \examples{
 # 
 plot_ctr_pyramid(year = 2021,
-                country_asylum_iso3c = "FRA",
-                pop_type =   "ASY")
+                 country_asylum_iso3c = "COL",
+                 pop_type = c("ASY", "REF")
+                 )
 
 }

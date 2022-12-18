@@ -1,4 +1,4 @@
-# [`UnhcrDataPackage`](https://unhcr.github.io/unhcrdatapackage/docs/): A data package with UNHCR statistics Database <img src="man/figures/logo.png" width="200" align="right" />
+# [`{UnhcrDataPackage}`](https://unhcr.github.io/unhcrdatapackage/docs/): A data package with UNHCR statistics Database <img src="man/figures/logo.png" width="200" align="right" />
 
 
 The package is inspired from tutorial @ https://r-pkgs.org/data.html (the code used to build the package is in `data-raw/build.R`). Data are pulled from HDX @ [unhcr-population-data-for-world](https://data.humdata.org/dataset/unhcr-population-data-for-world) and are then conveniently packaged for R users intending to build __data stories__. Note, that you can also explore data through  [Refugee Data Finder](https://www.unhcr.org/refugee-statistics/).

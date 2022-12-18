@@ -70,7 +70,7 @@ p <- ggplot(departed,
   
   # geom_col( fill = ifelse(departed$CountryOriginCode %in% c("VEN"), "#0072BC", "#CCCCCC")) +
   
-  geom_label(aes(label = scales::label_percent( accuracy = .1)(ref.part) ),
+  geom_label(aes(label = scales::label_percent(accuracy = .1)(ref.part) ),
              color = "black", hjust = "inward") +
   scale_x_continuous(labels = scales::label_percent(accuracy = .1)) +
   labs(x = NULL, 
