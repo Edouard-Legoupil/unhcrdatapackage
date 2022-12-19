@@ -57,7 +57,7 @@ If you just want to explore the package, you can for instance create an account 
 
 First install the package
 
-```{r}
+```{r echo=FALSE}
 remotes::install_github("vidonne/unhcrdesign")
 remotes::install_github("vidonne/unhcrthemes")
 remotes::install_github("vidonne/unhcrdown")
@@ -69,5 +69,11 @@ Then just create a new markdown file using on of the package template
 
 
 
-![alt text](../inst/template.png)
+![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/template.png)
 
+
+In an RMD report, the top part of the file, the header is called [YAML](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html).
+
+A YAML header contains YAML arguments, such as “title”, “author”, and “output”, demarcated by three dashes (—) on either end.
+
+From here you can adjust the notebook parameters for your country for instance and then knit your report.
