@@ -24,6 +24,7 @@ Imports:
     dplyr,
     forcats,
     fs,
+    ggalluvial,
     ggalt,
     ggforce,
     ggplot2,

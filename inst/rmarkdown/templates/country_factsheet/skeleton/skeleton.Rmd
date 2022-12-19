@@ -296,6 +296,24 @@ plot_ctr_diff_in_pop_groups(year = params$year,
 ```
 
 
+### Evolution
+
+
+```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+# 
+plot_ctr_origin_history(year = params$year,
+                         country_asylum_iso3c  = params$country,
+                        lag = 5,
+                          pop_type = c("REF", 
+                                       "ASY", 
+                                       "OIP", 
+                                       "IDP" ),
+                        otherprop = .02)
+
+```
+
+
+
 
 ## What are the Demographics profiles of the population?
 

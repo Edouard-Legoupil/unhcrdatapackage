@@ -142,6 +142,28 @@ plot_ctr_diff_in_pop_groups(year = 2022,
 
 ```
 
+## Plot Origin History
+
+    
+
+  
+
+```{r example-plot_ctr_origin_history}
+plot_ctr_origin_history(year = 2022,
+                        lag = 5,
+                        country_asylum_iso3c = "MEX",
+                          pop_type = c("REF", 
+                                       "ASY", 
+                                       "OIP", 
+                                       "IDP" ),
+                        otherprop = .02)
+```
+
+  
+
+  
+
+
 ## Plot Main Destination from  one specific country 
 
 ```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}

@@ -829,7 +829,109 @@ plot_ctr_diff_in_pop_groups(year = 2022,
 ```
 
 
+## Plot Origin History
+    
+```{r function-plot_ctr_origin_history}
+#' Plot Origin History
+#' 
+#' The functions gives a quick overview of the main source of displacement in terms of origin in the country
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param lag Number of year to used as comparison base
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
+#' @param otherprop value set by default to .02 - used to merge origin as "Other"
+#' 
+#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
+#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             geom_text scale_fill_brewer scale_colour_brewer
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @importFrom utils  head
+#' @importFrom tidyselect where
+#' @importFrom stringr  str_replace 
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
+#' @importFrom stats  reorder aggregate 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom ggalluvial geom_alluvium
+#' @importFrom unhcrthemes theme_unhcr
+#' 
+#' @return a ggplot2 object
+#'
+#' @export
+#'
+#'
 
+plot_ctr_origin_history <- function(year = 2022,
+                                     lag = 5, 
+                                     country_asylum_iso3c = country_asylum_iso3c,
+                                     pop_type = Population.type,
+                                     otherprop = .02
+                                     ) {
+  
+
+
+  df <- unhcrdatapackage::end_year_population_totals_long  |> 
+          filter(       Year >= (year - lag),  #### Parameter
+                        CountryAsylumCode == country_asylum_iso3c, #### Parameter
+                        Population.type %in% pop_type #### Parameter
+          )  |>    
+          dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = otherprop, w = Value)) |> 
+          group_by(Year, CountryAsylumName, CountryOriginName)  |> 
+          summarise(Value = sum(Value, na.rm = TRUE)) |> 
+          ungroup()
+  
+  CountryAsylum_name_text <- df |> 
+    distinct(CountryAsylumName) |> 
+    pull()
+  
+  year_breaks <- diff(range(df$Year)) + 1 
+  
+  p <- ggplot(data = df,
+       aes(x = Year, 
+           y = Value, 
+           alluvium = CountryOriginName)) +
+  ggalluvial::geom_alluvium(aes(fill = CountryOriginName, 
+                                colour = CountryOriginName),
+                            alpha = .75, 
+                            decreasing = FALSE) +
+  scale_x_continuous(breaks = seq(year-lag, year, 2)) +  
+  scale_y_continuous(expand = expansion(c(0, 0.1)),
+                     labels = label_number(scale_cut = cut_short_scale())) +
+  theme_unhcr(grid = TRUE, axis = "x", 
+              axis_title = TRUE, #axis_text = "x",
+              font_size = 14) +
+  theme(axis.text.x = element_text(angle = -30, hjust = 0)) +
+  scale_fill_brewer(type = "qual", palette = "Set3") +
+  scale_colour_brewer(type = "qual", palette = "Set3") +
+  # facet_wrap(~ region, scales = "fixed") ++
+  labs(title = paste0(CountryAsylum_name_text, ":  Evolution of Forcibly Displaced Population Origin"), 
+       subtitle = "Number of people (thousand)",
+       x = "", y = "",
+       caption = "Source: UNHCR.org/refugee-statistics")
+  
+  return(p) # print(p)
+  }
+
+
+```
+  
+```{r example-plot_ctr_origin_history}
+plot_ctr_origin_history(year = 2022,
+                        lag = 5,
+                        country_asylum_iso3c = "MEX",
+                          pop_type = c("REF", 
+                                       "ASY", 
+                                       "OIP", 
+                                       "IDP" ),
+                        otherprop = .02)
+```
+  
+```{r tests-plot_ctr_origin_history}
+#test_that("plot_ctr_origin_history works", {   expect_true(inherits(plot_ctr_origin_history, "function")) })
+```
+  
 
 ## Plot Main Destination from  one specific country 
 
