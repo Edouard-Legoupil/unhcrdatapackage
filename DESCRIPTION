@@ -30,6 +30,7 @@ Imports:
     ggplot2,
     ggrepel,
     glue,
+    graphics,
     here,
     Hmisc,
     lubridate,
@@ -60,7 +61,6 @@ Imports:
     wbstats
 Suggests: 
     knitr,
-    remotes,
     testthat
 VignetteBuilder: 
     knitr

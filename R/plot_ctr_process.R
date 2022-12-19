@@ -6,14 +6,17 @@
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @param otherprop value set by default to .02 - used to merge origin as "Other"
+#' 
+#' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
-#'             geom_text guide_axis facet_wrap vars
+#'             geom_text guide_axis facet_wrap vars theme_void
 #'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
 #' @importFrom utils  head
 #' @importFrom tidyselect where
-#' @importFrom stringr  str_replace 
+#' @importFrom stringr  str_replace str_wrap
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
@@ -28,18 +31,46 @@
 #' 
 #' @export 
 #' @examples
+#' plot_ctr_process(year = 2022,   country_asylum_iso3c = "BOL")
+#' 
 #' plot_ctr_process(year = 2022,   country_asylum_iso3c = "CHL")
+#' 
+#' 
+#' plot_ctr_process(year = 2022,   country_asylum_iso3c = "USA",
+#'                               otherprop = .02)
+#' 
+#' plot_ctr_process(year = 2022,   country_asylum_iso3c = "USA",
+#'                               otherprop = .04)
+#' 
+#' 
 plot_ctr_process <- function(year = 2022,
-                              country_asylum_iso3c ){
+                             country_asylum_iso3c,
+                             otherprop = .02){
   
 
+  #table(as.factor(unhcrdatapackage::asylum_decisions_long$CountryAsylumCode))
+  
   links <- unhcrdatapackage::asylum_decisions_long %>%
     filter(Year == year   & CountryAsylumCode  == country_asylum_iso3c ) %>% 
+    dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName,
+                                                             prop = otherprop, 
+                                                             w = Value)) %>%
     ## Group small records under other
     ## Calculate grouped value for Origin to procedure..
     group_by(CountryOriginName, ProcedureName, DecisionTypeName,Decision.output ) %>%
     summarise(n = sum(Value, na.rm = TRUE) )  
   # levels(links$Decision.output)
+  
+  ## Case no record outut a ggplot2 object with anotation
+  if( nrow(links) == 0) {
+    info <-  paste0("There\'s no recorded Asylum Decisions in ", unhcrdatapackage::reference |>
+             dplyr::filter( iso_3 == country_asylum_iso3c) |>
+             dplyr::pull(ctryname) , " for ", year)
+    p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
+                              x = 1, y = 1, size = 11,  
+                              label = info ) +  theme_void() 
+    
+  } else {
 
   ## summarize data
  flow_table <- links  %>%
@@ -76,25 +107,24 @@ p <- ggplot(flow_table,
   ## adjusted y and x axes (probably needs more vertical space)
   scale_x_discrete(name = NULL, 
                    expand = c(0, 0.2)) + 
-   theme_unhcr(font_size = 14, grid = FALSE ) +
+   theme_unhcr(font_size = 14, 
+               grid = FALSE ) +
   ## remove axis labels
-  theme(
-    title = element_text(size = 26),
-    text = element_text(size = 26),
-    axis.line = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text.y = element_blank(),
-    panel.background = element_blank(),
-    legend.position = "none",                    # move legend to bottom
-    legend.title = element_blank(),                # remove title
+  theme(  axis.line = element_blank(),
+          axis.ticks = element_blank(),
+         axis.text.y = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "none",                    # move legend to bottom
+      legend.title = element_blank(),                # remove title
   ) +
   labs(title = "Refugee Status Determination Decisions",
        subtitle = glue::glue("{unhcrdatapackage::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
-             dplyr::pull(ctryname) }, {sum(links$n)} decisions recorded in {year}"),
+             dplyr::pull(ctryname) }, {format(sum(links$n),  big.mark=\",\")} decisions recorded in {year}"),
        x = NULL,
        y = NULL,
        caption = "Source: UNHCR.org/refugee-statistics")
+}
   return(p)
   
 }

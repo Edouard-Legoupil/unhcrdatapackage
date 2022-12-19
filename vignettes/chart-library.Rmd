@@ -243,6 +243,32 @@ plot_ctr_asylum(year = 2022,
   
 
 
+## Asylum Processing
+
+    
+
+  
+
+```{r example-plot_ctr_process}
+plot_ctr_process(year = 2022,   country_asylum_iso3c = "BOL")
+
+plot_ctr_process(year = 2022,   country_asylum_iso3c = "CHL")
+
+
+plot_ctr_process(year = 2022,   country_asylum_iso3c = "USA",
+                              otherprop = .02)
+
+plot_ctr_process(year = 2022,   country_asylum_iso3c = "USA",
+                              otherprop = .04)
+
+
+```
+
+  
+
+    
+    
+
 ## Average Asylum Processing Time
 
     
@@ -252,6 +278,10 @@ plot_ctr_asylum(year = 2022,
 ```{r example-plot_ctr_processing_time}
 plot_ctr_processing_time(year = 2022,
                          country_asylum_iso3c = "ARG")
+
+
+plot_ctr_processing_time(year = 2022,
+                         country_asylum_iso3c = "USA")
 
 ## Display a filtered version of the chart for a specific country and procedure
 plot_ctr_processing_time(year = 2022,
@@ -265,20 +295,6 @@ plot_ctr_processing_time(year = 2022,
 
  
  
-
-## Asylum Processing
-
-    
-
-  
-
-```{r example-plot_ctr_process}
-plot_ctr_process(year = 2022,   country_asylum_iso3c = "CHL")
-```
-
-  
-
-    
 
 
 ## Plot Solution Over time 
@@ -310,7 +326,9 @@ plot_ctr_solution(year = 2021,
 
 ```{r example-plot_ctr_disp_migrant}
 plot_ctr_disp_migrant(year = 2022,
-                    country_asylum_iso3c = "BRA" )
+                    country_asylum_iso3c = "MEX" )
+# plot_ctr_disp_migrant(year = 2022,
+#                     country_asylum_iso3c = "FRA" )
 ```
 
   

@@ -9,13 +9,13 @@
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
-#'             geom_text .pt
+#'             geom_text .pt theme_void
 #'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace str_detect
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
-#' @importFrom stats  reorder aggregate 
+#' @importFrom stats  reorder aggregate  setNames
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer pivot_wider
@@ -68,6 +68,7 @@ plot_ctr_pyramid <- function(year = 2021,
     info <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ", ctrylabel )
     p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                               label = info ) +  theme_void() 
+    
     
   } else {
     
@@ -177,7 +178,7 @@ plot_ctr_pyramid <- function(year = 2021,
                             unhcr_pal(n = 3, "pal_unhcr")[c(2, 1)],
                             c("Male" , "Female")
                           )) +
-        theme_unhcr(
+        theme_unhcr(font_size = 14,
           grid = FALSE,
           axis = FALSE,
           axis_title = FALSE,

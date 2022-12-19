@@ -136,7 +136,7 @@ plot_ctr_recognition <- function(year = 2022,
        grid = "Y",
        axis = "x",
        axis_title = "" ,
-       font_size = 10
+       font_size = 14
      ) +
      theme(#axis.text.x = element_blank(),
        # legend.position = "none",

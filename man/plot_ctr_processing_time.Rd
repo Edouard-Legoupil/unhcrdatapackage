@@ -37,6 +37,10 @@ A prolonged waiting period during the status determination procedure is an impor
 plot_ctr_processing_time(year = 2022,
                          country_asylum_iso3c = "ARG")
 
+
+plot_ctr_processing_time(year = 2022,
+                         country_asylum_iso3c = "USA")
+
 ## Display a filtered version of the chart for a specific country and procedure
 plot_ctr_processing_time(year = 2022,
                          country_asylum_iso3c = "EGY",

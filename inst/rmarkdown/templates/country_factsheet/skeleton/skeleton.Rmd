@@ -341,7 +341,7 @@ plot_ctr_pyramid(year = params$year,
 
 
 
-## Plot Refugee Recognition rate
+## Refugee Recognition rate
 
 ```{r example-plot_ctr_recognition, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 plot_ctr_recognition(year = params$year,
@@ -401,8 +401,7 @@ plot_ctr_solution(year = params$year,
 
 ```{r example-plot_ctr_disp_migrant, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 plot_ctr_disp_migrant(year = params$year,
-                     country_asylum_iso3c  = params$country,
-                  pop_type = c("REF", "ASY", "OIP") )
+                     country_asylum_iso3c  = params$country )
 ```
 
 

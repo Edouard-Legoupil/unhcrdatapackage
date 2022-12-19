@@ -73,7 +73,13 @@ plot_ctr_solution <- function(year = 2021,
 
 
 if( nrow(Solution) ==  0 ){
-   p <- paste0("There\'s no recorded solutions in ", country_asylum_iso3c )
+  
+    info <-  paste0("There\'s no recorded solutions in ", unhcrdatapackage::reference |>
+             dplyr::filter( iso_3 == country_asylum_iso3c) |>
+             dplyr::pull(ctryname) , " for ", year)
+    p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
+                              x = 1, y = 1, size = 11,  
+                              label = info ) +  theme_void()  
   
 } else {
   

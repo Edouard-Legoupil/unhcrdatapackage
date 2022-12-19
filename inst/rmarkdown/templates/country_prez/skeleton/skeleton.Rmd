@@ -1,8 +1,8 @@
 ---
 params:
   year: 2022
-  country: "ARG"
-  countryname: "Argentina"
+  country: "ABW"
+  countryname: "Aruba"
 title: "Statistical Factsheet \ `r params$countryname` "
 subtitle:  " as of `r params$year`"
 output:
@@ -352,8 +352,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ```{r ph=officer::ph_location_fullsize()}
 plot_ctr_disp_migrant(year = params$year,
-                     country_asylum_iso3c  = params$country,
-                  pop_type = c("REF", "ASY", "OIP") ) -> p
+                     country_asylum_iso3c  = params$country ) -> p
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 

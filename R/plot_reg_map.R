@@ -24,6 +24,7 @@
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer
+#' @importFrom graphics par
 #' @importFrom unhcrthemes theme_unhcr
 #' @importFrom wbstats  wb 
 #' @importFrom Hmisc cut2

@@ -17,6 +17,7 @@
 #'               pull distinct n arrange across slice left_join summarize
 #'               
 #' @importFrom tidyr replace_na
+#' @importFrom graphics title 
 #' @importFrom circlize chordDiagram circos.track circos.text CELL_META
 #' @importFrom unhcrthemes theme_unhcr
 #' 

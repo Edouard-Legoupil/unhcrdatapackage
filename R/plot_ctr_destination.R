@@ -9,7 +9,7 @@
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
-#'             geom_text
+#'             geom_text theme_void
 #'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
 #' @importFrom utils  head
 #' @importFrom tidyselect where
@@ -78,9 +78,13 @@ plot_ctr_destination <- function(year = 2021,
     filter(DisplacedAcrossBorders > 0)
 
   if(nrow(Destination) ==  0) {
-    p <-
-      paste0("There\'s no recorded countries of destination for ",
-             country_origin_iso3c)
+    
+    info <-  paste0("There\'s no recorded Countries of destination in ", unhcrdatapackage::reference |>
+             dplyr::filter( iso_3 == country_origin_iso3c) |>
+             dplyr::pull(ctryname) , " for ", year)
+    p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
+                              x = 1, y = 1, size = 11,  
+                              label = info ) +  theme_void() 
     
   } else {
     #Make plot

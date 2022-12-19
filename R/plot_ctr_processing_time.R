@@ -39,6 +39,10 @@
 #' plot_ctr_processing_time(year = 2022,
 #'                          country_asylum_iso3c = "ARG")
 #' 
+#' 
+#' plot_ctr_processing_time(year = 2022,
+#'                          country_asylum_iso3c = "USA")
+#' 
 #' ## Display a filtered version of the chart for a specific country and procedure
 #' plot_ctr_processing_time(year = 2022,
 #'                          country_asylum_iso3c = "EGY",
@@ -107,8 +111,9 @@ plot_ctr_processing_time <- function(year = 2022,
              #    DecisionType %in% c("FI", "FA", "NA", "TR", "CA")) ) ~ "FI",
             TRUE ~ "Other"   )) |>
           group_by(Year, CountryAsylumCode,
-                   CountryAsylumName, ProcedureType,
-                   ProcedureName, ApplicationTypeCode, ApplicationType, DecisionTypeCode ) |>
+                   CountryAsylumName, 
+                   #ProcedureType,  ProcedureName,  ApplicationTypeCode, ApplicationType
+                   DecisionTypeCode ) |>
          summarize (NumberApplications = sum(NumberApplications , na.rm= TRUE) )  |>
           dplyr::ungroup()
 #     
@@ -137,8 +142,9 @@ plot_ctr_processing_time <- function(year = 2022,
           filter(ProcedureType %in% c(procedurefilter)  ) |>
     
           group_by(Year, CountryAsylumCode,
-                   CountryAsylumName, ProcedureType,
-                   ProcedureName, DecisionTypeCode, DecisionTypeName) |>
+                   CountryAsylumName, 
+                   #ProcedureType,  ProcedureName,, DecisionTypeName
+                   DecisionTypeCode) |>
          summarize (Recognized = sum(Recognized , na.rm= TRUE),
                   ComplementaryProtection = sum( ComplementaryProtection , na.rm= TRUE),
                   OtherwiseClosed = sum(OtherwiseClosed , na.rm= TRUE),
@@ -200,10 +206,10 @@ data <-
                       values = c(decs = "#0072BC",
                                  apps = "#FAEB00"),
                       name = NULL) +
-    labs(title = stringr::str_wrap("Average processing time from asylum registration to first instance asylum decision", 100),
+    labs(title = stringr::str_wrap("Average Processing Time from Asylum Registration to First Instance Decision", 100),
          subtitle = glue::glue("In {unhcrdatapackage::reference |>
                                    dplyr::filter( iso_3 == country_asylum_iso3c) |>
-                                   dplyr::pull(ctryname)}, measured in days as of {year} {filterlab}"),
+                                   dplyr::pull(ctryname)}, comparative cumulative applications and decisions with gap measured in days as of {year} {filterlab}"),
          x = NULL,
          y = "Cumulative total",
          caption = "Source: UNHCR.org/refugee-statistics") +
