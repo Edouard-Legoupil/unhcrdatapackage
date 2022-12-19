@@ -64,4 +64,4 @@ Data between tables remains additive therefore the totals should be considered a
 
 You can submit __request for new charts__ [here](https://github.com/Edouard-Legoupil/unhcrdatapackage/issues/new)
 
-__Contributions__, specifically creation of new functions for the chart library are welcome! Please [fork](https://github.com/Edouard-Legoupil/unhcrdatapackage), develop within the [fusen](https://thinkr-open.github.io/fusen/index.html) dev markdown here [dev/flat_full.Rmd](https://github.com/Edouard-Legoupil/unhcrdatapackage/blob/master/dev/flat_full.Rmd) and submit pull request.
+__Contributions__, specifically creation of new functions for the chart library are welcome! Please [consult instructions here](https://edouard-legoupil.github.io/unhcrdatapackage/articles/adding-new-charts.html) 

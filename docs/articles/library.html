@@ -102,29 +102,106 @@ Work<a class="anchor" aria-label="anchor" href="#divisible-content-strategy-give
 post</a>, a divisible content strategy is an approach to content
 creation where you use a single asset to create multiple pieces. For
 example, you might break an e-book into a few articles, an infographic,
-social microcontent, or even a brand video.</p>
+social <strong>microcontent</strong>, or even a brand video.</p>
 <p><img src="https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png"></p>
 <p>The chart library is therefore designed to speed up the creation of
 <strong>microcontent</strong> that can be then re-embedded wherever
-needed.</p>
+needed:</p>
+<ul>
+<li><p>Social Media</p></li>
+<li><p>Donor Presentation</p></li>
+<li><p>Talking points</p></li>
+<li><p>Situation Analysis or Protection Monitoring Reports</p></li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="do-not-waste-time-with-charts-creation-focus-on-the-message-and-on-the-story">Do not waste time with charts creation, focus on the message and on
 the story<a class="anchor" aria-label="anchor" href="#do-not-waste-time-with-charts-creation-focus-on-the-message-and-on-the-story"></a>
 </h2>
-<p>Charts with impact should be focused on stry telling: <a href="https://medium.economist.com/charting-new-territory-7f5afb293270" class="external-link uri">https://medium.economist.com/charting-new-territory-7f5afb293270</a></p>
-<p>This can be done by:</p>
-<ul>
-<li><p>changing charts titles and subtitle</p></li>
-<li><p>annotating the chart: See tutorial here -&gt; <a href="https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate" class="external-link uri">https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate</a></p></li>
-<li><p>highlighting specific part in the chart: See tutorial here -&gt;
-<a href="https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom_" class="external-link uri">https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom_</a></p></li>
-</ul>
+<p>Impactful charts with are characterized by their <a href="https://medium.economist.com/charting-new-territory-7f5afb293270" class="external-link">story
+telling</a> ability. Using the default plots from the package, the chart
+effectiveness can be improved done by:</p>
+<ol style="list-style-type: decimal">
+<li><p>changing charts existing default <strong>title and
+subtitle</strong> to replace it with a key message or call to
+Action</p></li>
+<li><p><strong>Annotating</strong> the chart to provide interpretration
+hint around the context: See <a href="https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate" class="external-link">tutorial
+here</a></p></li>
+<li><p><strong>Highlighting</strong> specific parts in the chart to
+re-inforce the main message and ease legibility: See <a href="https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom" class="external-link">tutorial
+here</a>_</p></li>
+</ol>
 </div>
 <div class="section level2">
-<h2 id="start-building-your-country-or-regionalsituational-factsheet-now">Start building your country or regional/situational factsheet
-now<a class="anchor" aria-label="anchor" href="#start-building-your-country-or-regionalsituational-factsheet-now"></a>
+<h2 id="how-to-get-started-start-building-your-country-or-regionalsituational-factsheet-now">How to get started: Start building your country or
+regional/situational factsheet now<a class="anchor" aria-label="anchor" href="#how-to-get-started-start-building-your-country-or-regionalsituational-factsheet-now"></a>
 </h2>
+<p>If you just want to explore the package, you can for instance create
+an account on <a href="https://posit.cloud" class="external-link">Rstudio Cloud</a></p>
+<p>First install the package</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdesign"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
+<span><span class="co">#&gt; Skipping install of 'unhcrdesign' from a github remote, the SHA1 (95ff95c1) has not changed since last install.</span></span>
+<span><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vidonne/unhcrthemes"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
+<span><span class="co">#&gt; Skipping install of 'unhcrthemes' from a github remote, the SHA1 (b4f8cc39) has not changed since last install.</span></span>
+<span><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdown"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
+<span><span class="co">#&gt; Skipping install of 'unhcrdown' from a github remote, the SHA1 (55d4f56a) has not changed since last install.</span></span>
+<span><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"edouard-legoupil/unhcrdatapackage"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
+<span><span class="co">#&gt; Downloading GitHub repo edouard-legoupil/unhcrdatapackage@HEAD</span></span>
+<span><span class="co">#&gt; wk          (0.7.0  -&gt; 0.7.1 ) [CRAN]</span></span>
+<span><span class="co">#&gt; evaluate    (0.18   -&gt; 0.19  ) [CRAN]</span></span>
+<span><span class="co">#&gt; digest      (0.6.30 -&gt; 0.6.31) [CRAN]</span></span>
+<span><span class="co">#&gt; htmltools   (0.5.3  -&gt; 0.5.4 ) [CRAN]</span></span>
+<span><span class="co">#&gt; units       (0.8-0  -&gt; 0.8-1 ) [CRAN]</span></span>
+<span><span class="co">#&gt; tinytex     (0.42   -&gt; 0.43  ) [CRAN]</span></span>
+<span><span class="co">#&gt; bslib       (0.4.1  -&gt; 0.4.2 ) [CRAN]</span></span>
+<span><span class="co">#&gt; rmarkdown   (2.18   -&gt; 2.19  ) [CRAN]</span></span>
+<span><span class="co">#&gt; htmlwidgets (1.5.4  -&gt; 1.6.0 ) [CRAN]</span></span>
+<span><span class="co">#&gt; jpeg        (0.1-9  -&gt; 0.1-10) [CRAN]</span></span>
+<span><span class="co">#&gt; png         (0.1-7  -&gt; 0.1-8 ) [CRAN]</span></span>
+<span><span class="co">#&gt; mapsf       (0.5.0  -&gt; 0.6.1 ) [CRAN]</span></span>
+<span><span class="co">#&gt; Installing 12 packages: wk, evaluate, digest, htmltools, units, tinytex, bslib, rmarkdown, htmlwidgets, jpeg, png, mapsf</span></span>
+<span><span class="co">#&gt; Installing packages into '/tmp/Rtmpr9tvYo/temp_libpath20675aab4cac'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="color: #00BBBB;">R CMD build</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/RtmptDIYfc/remotes8e103bf626dd/Edouard-Legoupil-unhcrdatapackage-0930cf6/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * preparing ‘unhcrdatapackage’:</span></span>
+<span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
+<span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
+<span><span class="co">#&gt; * checking for empty or unneeded directories</span></span>
+<span><span class="co">#&gt;   NB: this package now depends on R (&gt;= 3.5.0)</span></span>
+<span><span class="co">#&gt;   WARNING: Added dependency on R &gt;= 3.5.0 because serialized objects in</span></span>
+<span><span class="co">#&gt;   serialize/load version 3 cannot be read in older versions of R.</span></span>
+<span><span class="co">#&gt;   File(s) containing such objects:</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/asylum_applications.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/asylum_decisions.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/asylum_decisions_long.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/demographics.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/end_year_population_totals.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/end_year_population_totals_long.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/migrants.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/reference.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/solutions.RData’</span></span>
+<span><span class="co">#&gt;     ‘unhcrdatapackage/data/solutions_long.RData’</span></span>
+<span><span class="co">#&gt; * building ‘unhcrdatapackage_0.1.6.tar.gz’</span></span>
+<span><span class="co">#&gt; Installing package into '/tmp/Rtmpr9tvYo/temp_libpath20675aab4cac'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
+<span><span class="co">#&gt; Warning in i.p(...): installation of package</span></span>
+<span><span class="co">#&gt; '/tmp/RtmptDIYfc/file8e1059a1077b/unhcrdatapackage_0.1.6.tar.gz' had non-zero</span></span>
+<span><span class="co">#&gt; exit status</span></span></code></pre></div>
+<p>Then just create a new markdown file using on of the package
+template</p>
+<div class="figure">
+<img src="../inst/template.png" alt=""><p class="caption">alt text</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

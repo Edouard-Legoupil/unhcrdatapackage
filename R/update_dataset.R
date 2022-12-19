@@ -9,7 +9,7 @@
 #' @importFrom readr read_csv
 #' @importFrom fs path path_file
 #' @importFrom here here
-#' @importFrom plyr rename
+#' @importFrom dplyr rename
 #' @importFrom reshape2 melt
 #' @importFrom sinew makeOxygen
 #' @importFrom tools resaveRdaFiles
@@ -43,7 +43,7 @@ update_dataset <- function(){
     
     
     # Rename column to have proper Variable names
-    end_year_population_totals <- plyr::rename(end_year_population_totals, c("Country of Origin Code"="CountryOriginCode",
+    end_year_population_totals <- dplyr::rename(end_year_population_totals, c("Country of Origin Code"="CountryOriginCode",
                                            "Country of Asylum Code"="CountryAsylumCode", 
                                            "Country of Origin Name"="CountryOriginName",
                                            "Country of Asylum Name"="CountryAsylumName", 
@@ -121,7 +121,7 @@ update_dataset <- function(){
     
     sinew::makeOxygen(solutions_residing, add_fields = "source")
     # Rename column to have proper Variable names
-    solutions <- plyr::rename(solutions_residing, c("Country of Origin Code"="CountryOriginCode",
+    solutions <- dplyr::rename(solutions_residing, c("Country of Origin Code"="CountryOriginCode",
                                                                              "Country of Asylum Code"="CountryAsylumCode", 
                                                                              "Country of Origin Name"="CountryOriginName",
                                                                              "Country of Asylum Name"="CountryAsylumName", 
@@ -174,7 +174,7 @@ update_dataset <- function(){
     
     sinew::makeOxygen(demographics_residing, add_fields = "source")
     # Rename column to have proper Variable names
-    demographics <- plyr::rename(demographics_residing, c("Country of Origin Code"="CountryOriginCode",
+    demographics <- dplyr::rename(demographics_residing, c("Country of Origin Code"="CountryOriginCode",
                                                              "Country of Asylum Code"="CountryAsylumCode", 
                                                              "Country of Origin Name"="CountryOriginName",
                                                              "Country of Asylum Name"="CountryAsylumName",  
@@ -242,7 +242,7 @@ update_dataset <- function(){
     sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
     
     # Rename column to have proper Variable names
-    asylum_applications <- plyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
+    asylum_applications <- dplyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
                                                                         "Country of Asylum Code"="CountryAsylumCode", 
                                                                         "Country of Origin Name"="CountryOriginName",
                                                                         "Country of Asylum Name"="CountryAsylumName", 
@@ -280,7 +280,7 @@ update_dataset <- function(){
     
     sinew::makeOxygen(asylum_decisions_residing, add_fields = "source")
     # Rename column to have proper Variable names
-    asylum_decisions <- plyr::rename(asylum_decisions_residing, c("Country of Origin Code"="CountryOriginCode",
+    asylum_decisions <- dplyr::rename(asylum_decisions_residing, c("Country of Origin Code"="CountryOriginCode",
                                                                    "Country of Asylum Code"="CountryAsylumCode", 
                                                                    "Country of Origin Name"="CountryOriginName",
                                                                    "Country of Asylum Name"="CountryAsylumName", 

@@ -36,7 +36,6 @@ Imports:
     magrittr,
     mapsf,
     patchwork,
-    plyr,
     purrr,
     readr,
     reshape2,

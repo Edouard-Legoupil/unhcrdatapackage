@@ -94,59 +94,34 @@
 
     
     
-<div class="section level2">
-<h2 id="start-from-an-highlevel-question">Start from an Highlevel question<a class="anchor" aria-label="anchor" href="#start-from-an-highlevel-question"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="check-that-the-plo-is-not-there-already">Check that the plo is not there already<a class="anchor" aria-label="anchor" href="#check-that-the-plo-is-not-there-already"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="fork-the-package">Fork the package<a class="anchor" aria-label="anchor" href="#fork-the-package"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="check-the-dev-folder-for-the-dedeciated-fusen-notebook">Check the dev folder for the dedeciated Fusen notebook<a class="anchor" aria-label="anchor" href="#check-the-dev-folder-for-the-dedeciated-fusen-notebook"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="insert-a-new-series-of-chunk-with-fusen-addin">Insert a new series of chunk with Fusen Addin<a class="anchor" aria-label="anchor" href="#insert-a-new-series-of-chunk-with-fusen-addin"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="first-write-your-chart-as-a-script">First write your chart as a script<a class="anchor" aria-label="anchor" href="#first-write-your-chart-as-a-script"></a>
-</h2>
-<p>Use the unhcrthemes</p>
-</div>
-<div class="section level2">
-<h2 id="convert-it-as-function-with-predefined-nput-parameters">Convert it as function with predefined nput parameters<a class="anchor" aria-label="anchor" href="#convert-it-as-function-with-predefined-nput-parameters"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="set-up-an-example">Set up an example<a class="anchor" aria-label="anchor" href="#set-up-an-example"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="add-the-new-chart-in-the-parameterised-notebooktemplate">Add the new chart in the parameterised notebooktemplate<a class="anchor" aria-label="anchor" href="#add-the-new-chart-in-the-parameterised-notebooktemplate"></a>
-</h2>
-<p>Adding new Charts in the Library</p>
-</div>
-<div class="section level2">
-<h2 id="test-everything">Test everything<a class="anchor" aria-label="anchor" href="#test-everything"></a>
-</h2>
+<p>If you want to add new Charts in the Library please follow the steps
+below:</p>
+<ol style="list-style-type: decimal">
+<li><p>Start from an High level question</p></li>
+<li><p>Check that the plot is not there already or check if it is not
+logged already within <a href="https://github.com/Edouard-Legoupil/unhcrdatapackage/issues" class="external-link">existing
+issue</a></p></li>
+<li><p>Create a <a href="https://github.com/Edouard-Legoupil/unhcrdatapackage/issues/new" class="external-link">new
+issue</a> in the package to discuss it</p></li>
+<li><p><a href="https://github.com/Edouard-Legoupil/unhcrdatapackage" class="external-link">Fork</a> the
+package</p></li>
+<li><p>Check the dev folder for the dedicated <a href="https://github.com/Edouard-Legoupil/unhcrdatapackage/blob/master/dev/flat_full.Rmd" class="external-link">devnotebook</a>.
+, develop within the <a href="https://thinkr-open.github.io/fusen/index.html" class="external-link">fusen</a></p></li>
+<li><p>Insert a new series of chunk with Fusen Addin</p></li>
+<li><p>First write your chart as a script and Use the
+unhcrthemes</p></li>
+<li><p>Convert it as function with predefined input parameters</p></li>
+<li><p>Set up an example and Test everything</p></li>
+</ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Keep eval=FALSE to avoid infinite loop in case you hit the knit button</span></span>
 <span><span class="co"># Execute in the console directly</span></span>
 <span><span class="fu">fusen</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/fusen/reference/inflate.html" class="external-link">inflate</a></span><span class="op">(</span>flat_file <span class="op">=</span> <span class="st">"dev/flat_full.Rmd"</span>, vignette_name <span class="op">=</span> <span class="st">"Chart Library"</span><span class="op">)</span></span>
 <span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">build_site</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="submit-a-pull-equest">Submit a pull equest<a class="anchor" aria-label="anchor" href="#submit-a-pull-equest"></a>
-</h2>
-</div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
-    </nav></aside>
+<ol start="10" style="list-style-type: decimal">
+<li><p>Add the new chart in the parameterised notebooktemplate</p></li>
+<li><p>Submit pull request</p></li>
+</ol></main>
 </div>
 
 
