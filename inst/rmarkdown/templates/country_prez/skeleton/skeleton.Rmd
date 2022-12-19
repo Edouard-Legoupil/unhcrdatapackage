@@ -152,7 +152,7 @@ top_asy <- unhcrdatapackage::end_year_population_totals_long |>
 <i class="fa-solid fa-person-arrow-up-from-line blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ooc, 0),  big.mark=",")`]{.blue .lead}** *Others of Concerns
 
 
-<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_vda, 0),  big.mark=",")`]{.blue .lead}** Venezuelans displaced abroad
+<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_vda, 0),  big.mark=",")`]{.blue .lead}** Other in Need in International Protection
 
 <i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_idp, 0),  big.mark=",")`]{.blue .lead}** Internally displaced people
 
@@ -228,7 +228,8 @@ plot_ctr_origin_history(year = params$year,
                                        "ASY", 
                                        "OIP", 
                                        "IDP" ),
-                        otherprop = .02)
+                        otherprop = .02) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ```
 
@@ -319,6 +320,16 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ```{r ph=officer::ph_location_fullsize()}
 
+plot_ctr_process(year = params$year,
+                country_asylum_iso3c  = params$country)-> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+---
+
+```{r ph=officer::ph_location_fullsize()}
+
 plot_ctr_processing_time(year = params$year,
                               country_asylum_iso3c = params$country)-> p
 dml(ggobj = p, fonts = list(serif = 'Lato'))
@@ -326,16 +337,6 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 
  
-
----
-
-```{r ph=officer::ph_location_fullsize()}
-
-plot_ctr_process(year = params$year,
-                country_asylum_iso3c  = params$country)-> p
-dml(ggobj = p, fonts = list(serif = 'Lato'))
-```
-
 
 
 ---

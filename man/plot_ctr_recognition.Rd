@@ -52,7 +52,7 @@ In the absence of an internationally agreed methodology for calculating recognit
 \examples{
 plot_ctr_recognition(year = 2022,
                      country_asylum_iso3c = "USA",
-                        top_n_countries = 10, 
-                        measure = "RefugeeRecognitionRate",
-                                 order_by = "TotalDecided" )
+                     top_n_countries = 10, 
+                     measure = "RefugeeRecognitionRate",
+                     order_by = "TotalDecided" )
 }

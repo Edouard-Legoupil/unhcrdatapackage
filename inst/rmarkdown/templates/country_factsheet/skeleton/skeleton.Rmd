@@ -299,7 +299,7 @@ plot_ctr_diff_in_pop_groups(year = params$year,
 ### Evolution
 
 
-```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+```{r examples-plot_ctr_origin_history, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_origin_history(year = params$year,
                          country_asylum_iso3c  = params$country,
@@ -367,6 +367,15 @@ plot_ctr_asylum(year = params$year,
                 lag = 10)
 ```
 
+
+## Asylum Processing
+
+```{r example-plot_ctr_process, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+
+plot_ctr_process(year = params$year,
+                country_asylum_iso3c  = params$country)
+```
+
 ## Average Asylum Processing Time
 
 ```{r example-plot_ctr_processing_time, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
@@ -375,15 +384,6 @@ plot_ctr_asylum(year = params$year,
 plot_ctr_processing_time(year = params$year,
                               country_asylum_iso3c = params$country)
 
-```
-
-
-## Asylum Processing
-
-```{r example-plot_ctr_process, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-
-plot_ctr_process(year = params$year,
-                country_asylum_iso3c  = params$country)
 ```
 
 
@@ -406,7 +406,7 @@ plot_ctr_disp_migrant(year = params$year,
 ```
 
 
-## What are the main destination of asylu for nationals from `r params$countryname`?
+## What are the main destination of asylum for nationals from `r params$countryname`?
 
 ```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 plot_ctr_destination(year = params$year,

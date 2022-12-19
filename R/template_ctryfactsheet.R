@@ -30,7 +30,7 @@
 #' ## generate for one country
 #' # template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
 #' 
-#' ## Generate for a specific region
+#' # ## Generate for a specific region
 #' # region <- "Americas"
 #' # year <- 2022
 #' # library(tidyverse)
@@ -45,12 +45,11 @@
 #' #         ungroup() %>%
 #' #         filter( Value  > 1000 )
 #' # 
-#' #   for ( i in (1:nrow(ctr))) {
+#' # for ( i in (1:nrow(ctr))) {
 #' #     # i <- 1
-#' #     country_asylum_iso3c = as.character(ctr[i ,2 ])
-#' #     cat(paste0(country_asylum_iso3c, "\n"))
-#' #     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")
-#' #   }
+#' #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#' #     cat(paste0(country_asylum_iso3ci, "\n"))
+#' #     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3ci,   folder = "Report")  }
 template_CtryFactsheet <- function(year = 2022,
                                    country_asylum_iso3c,
                                    folder = "Report") {

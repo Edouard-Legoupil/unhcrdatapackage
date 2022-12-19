@@ -99,10 +99,11 @@
 Work<a class="anchor" aria-label="anchor" href="#divisible-content-strategy-gives-you-more-content-with-less-work"></a>
 </h2>
 <p>As explained in this <a href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/" class="external-link">blog
-post</a>, a divisible content strategy is an approach to content
-creation where you use a single asset to create multiple pieces. For
-example, you might break an e-book into a few articles, an infographic,
-social <strong>microcontent</strong>, or even a brand video.</p>
+post from Column Five Media</a>, a divisible content strategy is an
+approach to content creation where you use a single asset to create
+multiple pieces. For example, you might break an e-book into a few
+articles, an infographic, social <strong>microcontent</strong>, or even
+a brand video.</p>
 <p><img src="https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png"></p>
 <p>The chart library is therefore designed to speed up the creation of
 <strong>microcontent</strong> that can be then re-embedded wherever
@@ -113,6 +114,12 @@ needed:</p>
 <li><p>Talking points</p></li>
 <li><p>Situation Analysis or Protection Monitoring Reports</p></li>
 </ul>
+<p>With this approach, the effort spent on polishing content can benefit
+a series of product -</p>
+<blockquote>
+<p>More Content With Less Work!</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/microcontent.png"></p>
 </div>
 <div class="section level2">
 <h2 id="do-not-waste-time-with-charts-creation-focus-on-the-message-and-on-the-story">Do not waste time with charts creation, focus on the message and on
@@ -120,9 +127,9 @@ the story<a class="anchor" aria-label="anchor" href="#do-not-waste-time-with-cha
 </h2>
 <p>Impactful charts with are characterized by their <a href="https://medium.economist.com/charting-new-territory-7f5afb293270" class="external-link">story
 telling</a> ability. Using the default plots from the package, the chart
-effectiveness can be improved done by:</p>
+effectiveness can be improved by:</p>
 <ol style="list-style-type: decimal">
-<li><p>changing charts existing default <strong>title and
+<li><p>Changing charts existing default <strong>title and
 subtitle</strong> to replace it with a key message or call to
 Action</p></li>
 <li><p><strong>Annotating</strong> the chart to provide interpretration
@@ -139,66 +146,61 @@ regional/situational factsheet now<a class="anchor" aria-label="anchor" href="#h
 </h2>
 <p>If you just want to explore the package, you can for instance create
 an account on <a href="https://posit.cloud" class="external-link">Rstudio Cloud</a></p>
-<p>First install the package</p>
-<pre><code><span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
-<span><span class="co">#&gt; Skipping install of 'unhcrdesign' from a github remote, the SHA1 (95ff95c1) has not changed since last install.</span></span>
-<span><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span>
-<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
-<span><span class="co">#&gt; Skipping install of 'unhcrthemes' from a github remote, the SHA1 (b4f8cc39) has not changed since last install.</span></span>
-<span><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span>
-<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
-<span><span class="co">#&gt; Skipping install of 'unhcrdown' from a github remote, the SHA1 (55d4f56a) has not changed since last install.</span></span>
-<span><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span>
-<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
-<span><span class="co">#&gt; Downloading GitHub repo edouard-legoupil/unhcrdatapackage@HEAD</span></span>
-<span><span class="co">#&gt; wk          (0.7.0  -&gt; 0.7.1 ) [CRAN]</span></span>
-<span><span class="co">#&gt; evaluate    (0.18   -&gt; 0.19  ) [CRAN]</span></span>
-<span><span class="co">#&gt; digest      (0.6.30 -&gt; 0.6.31) [CRAN]</span></span>
-<span><span class="co">#&gt; htmltools   (0.5.3  -&gt; 0.5.4 ) [CRAN]</span></span>
-<span><span class="co">#&gt; units       (0.8-0  -&gt; 0.8-1 ) [CRAN]</span></span>
-<span><span class="co">#&gt; tinytex     (0.42   -&gt; 0.43  ) [CRAN]</span></span>
-<span><span class="co">#&gt; bslib       (0.4.1  -&gt; 0.4.2 ) [CRAN]</span></span>
-<span><span class="co">#&gt; rmarkdown   (2.18   -&gt; 2.19  ) [CRAN]</span></span>
-<span><span class="co">#&gt; htmlwidgets (1.5.4  -&gt; 1.6.0 ) [CRAN]</span></span>
-<span><span class="co">#&gt; jpeg        (0.1-9  -&gt; 0.1-10) [CRAN]</span></span>
-<span><span class="co">#&gt; png         (0.1-7  -&gt; 0.1-8 ) [CRAN]</span></span>
-<span><span class="co">#&gt; mapsf       (0.5.0  -&gt; 0.6.1 ) [CRAN]</span></span>
-<span><span class="co">#&gt; Installing 12 packages: wk, evaluate, digest, htmltools, units, tinytex, bslib, rmarkdown, htmlwidgets, jpeg, png, mapsf</span></span>
-<span><span class="co">#&gt; Installing packages into '/tmp/Rtmpr9tvYo/temp_libpath2067be71c5b'</span></span>
-<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="color: #00BBBB;">R CMD build</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpZ6W4gH/remotesb7fc57ceb986/Edouard-Legoupil-unhcrdatapackage-2107ada/DESCRIPTION’ ... OK</span></span>
-<span><span class="co">#&gt; * preparing ‘unhcrdatapackage’:</span></span>
-<span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
-<span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
-<span><span class="co">#&gt; * checking for empty or unneeded directories</span></span>
-<span><span class="co">#&gt;   NB: this package now depends on R (&gt;= 3.5.0)</span></span>
-<span><span class="co">#&gt;   WARNING: Added dependency on R &gt;= 3.5.0 because serialized objects in</span></span>
-<span><span class="co">#&gt;   serialize/load version 3 cannot be read in older versions of R.</span></span>
-<span><span class="co">#&gt;   File(s) containing such objects:</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/asylum_applications.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/asylum_decisions.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/asylum_decisions_long.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/demographics.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/end_year_population_totals.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/end_year_population_totals_long.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/migrants.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/reference.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/solutions.RData’</span></span>
-<span><span class="co">#&gt;     ‘unhcrdatapackage/data/solutions_long.RData’</span></span>
-<span><span class="co">#&gt; * building ‘unhcrdatapackage_0.1.6.tar.gz’</span></span>
-<span><span class="co">#&gt; Installing package into '/tmp/Rtmpr9tvYo/temp_libpath2067be71c5b'</span></span>
-<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre>
-<p>Then just create a new markdown file using on of the package
-template</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/template.png" alt=""><p class="caption">alt text</p>
+<div class="section level3">
+<h3 id="first-install-the-package">First install the package<a class="anchor" aria-label="anchor" href="#first-install-the-package"></a>
+</h3>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdesign"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vidonne/unhcrthemes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdown"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"edouard-legoupil/unhcrdatapackage"</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="report-template">Report Template<a class="anchor" aria-label="anchor" href="#report-template"></a>
+</h3>
+<p>Then just create a new markdown file using one of the template
+included in the package - this can be either a powepoint or an
+html/PDF.</p>
+<p><img src="https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/template.png"></p>
 <p>In an RMD report, the top part of the file, the header is called <a href="https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html" class="external-link">YAML</a>.</p>
 <p>A YAML header contains YAML arguments, such as “title”, “author”, and
 “output”, demarcated by three dashes (—) on either end.</p>
 <p>From here you can adjust the notebook parameters for your country for
 instance and then knit your report.</p>
+</div>
+<div class="section level3">
+<h3 id="adjust-charts-within-the-template">Adjust charts within the template<a class="anchor" aria-label="anchor" href="#adjust-charts-within-the-template"></a>
+</h3>
+<p>Each of the notebook chunk includes one plotting function</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_population_type_abs.html">plot_ctr_population_type_abs</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">year</span>,</span>
+<span>                    country_asylum_iso3c <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">country</span>,</span>
+<span>                    top_n_countries <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>                    pop_type <span class="op">=</span> <span class="st">"REF"</span></span>
+<span>                    <span class="op">)</span> </span></code></pre></div>
+<p>Note that if you want to change the title to an existing chart just
+add: <code>labs</code> with a new <code>title</code></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_population_type_abs.html">plot_ctr_population_type_abs</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">year</span>,</span>
+<span>                    country_asylum_iso3c <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">country</span>,</span>
+<span>                    top_n_countries <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>                    pop_type <span class="op">=</span> <span class="st">"REF"</span></span>
+<span>                    <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Refugees: Main Countries of origin | "</span>, <span class="va">params</span><span class="op">$</span><span class="va">year</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<p>In case you use the PowerPoint template, you will need to append 2
+instructions so that the output becomes an editable obejct within the
+resuting powerpoint.</p>
+<p><code>-&gt; p</code>
+<code>dml(ggobj = p, fonts = list(serif = 'Lato'))</code></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_population_type_abs.html">plot_ctr_population_type_abs</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">year</span>,</span>
+<span>                    country_asylum_iso3c <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">country</span>,</span>
+<span>                    top_n_countries <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>                    pop_type <span class="op">=</span> <span class="st">"REF"</span></span>
+<span>                    <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Refugees: Main Countries of origin | "</span>, <span class="va">params</span><span class="op">$</span><span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">p</span></span>
+<span><span class="fu">dml</span><span class="op">(</span>ggobj <span class="op">=</span> <span class="va">p</span>, fonts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>serif <span class="op">=</span> <span class="st">'Lato'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

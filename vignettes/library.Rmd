@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 
 
 
-# Divisible Content Strategy Gives You More Content With Less Work
+## Divisible Content Strategy Gives You More Content With Less Work
 
-As explained in this [blog post](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/), a divisible content strategy is an approach to content creation where you use a single asset to create multiple pieces. For example, you might break an e-book into a few articles, an infographic, social __microcontent__, or even a brand video. 
+As explained in this [blog post from Column Five Media](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/), a divisible content strategy is an approach to content creation where you use a single asset to create multiple pieces. For example, you might break an e-book into a few articles, an infographic, social __microcontent__, or even a brand video. 
 
 ![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png)
 
@@ -38,26 +38,34 @@ The chart library is therefore designed to speed up the creation of __microconte
  
  
  
+With this approach, the effort spent on polishing content can benefit a series of product -  
 
-# Do not waste time with charts creation, focus on the message and on the story
+> More Content With Less Work!
+ 
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/microcontent.png)
 
-Impactful charts with are characterized by their [story telling](https://medium.economist.com/charting-new-territory-7f5afb293270) ability. Using the default plots from the package, the chart effectiveness can be improved done by: 
 
- 1.  changing charts existing default __title and subtitle__ to replace it with a key message or call to Action  
+ 
+
+## Do not waste time with charts creation, focus on the message and on the story
+
+Impactful charts with are characterized by their [story telling](https://medium.economist.com/charting-new-territory-7f5afb293270) ability. Using the default plots from the package, the chart effectiveness can be improved by: 
+
+ 1.  Changing charts existing default __title and subtitle__ to replace it with a key message or call to Action  
 
  2.  __Annotating__ the chart to provide interpretration hint around the context: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate)
  
  3. __Highlighting__ specific parts in the chart to re-inforce the main message and ease legibility: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)_
  
  
-# How to get started: Start building your country or regional/situational factsheet now 
+## How to get started: Start building your country or regional/situational factsheet now 
 
 
 If you just want to explore the package, you can for instance create an account on [Rstudio Cloud](https://posit.cloud)
 
-First install the package
+### First install the package
 
-```{r echo=FALSE}
+```{r eval=FALSE, include=TRUE}
 remotes::install_github("vidonne/unhcrdesign")
 remotes::install_github("vidonne/unhcrthemes")
 remotes::install_github("vidonne/unhcrdown")
@@ -65,15 +73,57 @@ remotes::install_github("edouard-legoupil/unhcrdatapackage")
 ```
 
 
-Then just create a new markdown file using on of the package template
+### Report Template
+
+Then just create a new markdown file using one of the template included in the package - this can be either a powepoint or an html/PDF.
 
 
-
-![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/template.png)
-
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/template.png)
 
 In an RMD report, the top part of the file, the header is called [YAML](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html).
 
 A YAML header contains YAML arguments, such as “title”, “author”, and “output”, demarcated by three dashes (—) on either end.
 
 From here you can adjust the notebook parameters for your country for instance and then knit your report.
+
+
+### Adjust charts within the template
+
+Each of the notebook chunk includes one plotting function 
+
+
+```{r eval=FALSE, include=TRUE}
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) 
+```
+
+
+Note that if you want to change the title to an existing chart just add: `labs` with a new `title`
+
+```{r eval=FALSE, include=TRUE}
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year)) 
+```
+
+
+In case you use the PowerPoint template, you will need to append 2 instructions so that the output becomes an editable obejct within the resuting powerpoint.
+
+ `-> p`
+`dml(ggobj = p, fonts = list(serif = 'Lato'))`
+
+```{r eval=FALSE, include=TRUE}
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year)) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```

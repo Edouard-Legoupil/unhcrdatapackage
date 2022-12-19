@@ -408,9 +408,9 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_recognition.html">plot_ctr_recognition</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                     country_asylum_iso3c <span class="op">=</span> <span class="st">"USA"</span>,</span>
-<span>                        top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
-<span>                        measure <span class="op">=</span> <span class="st">"RefugeeRecognitionRate"</span>,</span>
-<span>                                 order_by <span class="op">=</span> <span class="st">"TotalDecided"</span> <span class="op">)</span></span></code></pre></div>
+<span>                     top_n_countries <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                     measure <span class="op">=</span> <span class="st">"RefugeeRecognitionRate"</span>,</span>
+<span>                     order_by <span class="op">=</span> <span class="st">"TotalDecided"</span> <span class="op">)</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_ctr_recognition-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -762,7 +762,7 @@ are available either for countries or regions.</p>
 <code class="sourceCode R"><span><span class="co">## generate for one country</span></span>
 <span><span class="co"># template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")</span></span>
 <span></span>
-<span><span class="co">## Generate for a specific region</span></span>
+<span><span class="co"># ## Generate for a specific region</span></span>
 <span><span class="co"># region &lt;- "Americas"</span></span>
 <span><span class="co"># year &lt;- 2022</span></span>
 <span><span class="co"># library(tidyverse)</span></span>
@@ -777,12 +777,11 @@ are available either for countries or regions.</p>
 <span><span class="co">#         ungroup() %&gt;%</span></span>
 <span><span class="co">#         filter( Value  &gt; 1000 )</span></span>
 <span><span class="co"># </span></span>
-<span><span class="co">#   for ( i in (1:nrow(ctr))) {</span></span>
+<span><span class="co"># for ( i in (1:nrow(ctr))) {</span></span>
 <span><span class="co">#     # i &lt;- 1</span></span>
-<span><span class="co">#     country_asylum_iso3c = as.character(ctr[i ,2 ])</span></span>
-<span><span class="co">#     cat(paste0(country_asylum_iso3c, "\n"))</span></span>
-<span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")</span></span>
-<span><span class="co">#   }</span></span></code></pre></div>
+<span><span class="co">#     country_asylum_iso3ci = as.character(ctr[i ,2 ])</span></span>
+<span><span class="co">#     cat(paste0(country_asylum_iso3ci, "\n"))</span></span>
+<span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3ci,   folder = "Report")  }</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="country-presentation">Country Presentation<a class="anchor" aria-label="anchor" href="#country-presentation"></a>
@@ -791,24 +790,26 @@ are available either for countries or regions.</p>
 <code class="sourceCode R"><span><span class="co">## generate for one country</span></span>
 <span><span class="co"># unhcrdatapackage::template_CtryPrez(year = 2022, country_asylum_iso3c = "CHL",   folder = "Report")</span></span>
 <span></span>
-<span><span class="co">## Generate for a specific region</span></span>
+<span><span class="co"># ## Generate for a specific region</span></span>
 <span><span class="co"># region &lt;- "Americas"</span></span>
-<span><span class="co"># </span></span>
+<span><span class="co"># year &lt;- 2022</span></span>
+<span><span class="co"># library(tidyverse)</span></span>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
-<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, </span></span>
-<span><span class="co">#                                 y= unhcrdatapackage::reference, </span></span>
+<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
+<span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
 <span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) %&gt;%</span></span>
-<span><span class="co">#         filter(Year == year &amp; </span></span>
+<span><span class="co">#         filter(Year == year &amp;</span></span>
 <span><span class="co">#                 UNHCRBureau == region ) %&gt;%</span></span>
 <span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) %&gt;%</span></span>
 <span><span class="co">#         summarise(Value = sum(Value) ) %&gt;%</span></span>
 <span><span class="co">#         ungroup() %&gt;%</span></span>
 <span><span class="co">#         filter( Value  &gt; 1000 )</span></span>
-<span><span class="co">#   </span></span>
-<span><span class="co">#   for ( i in (1:nrow(ctr))) {</span></span>
-<span><span class="co">#     country_asylum_iso3c = ctr[i ,2 ]</span></span>
-<span><span class="co">#     template_CtryPrez(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report") </span></span>
-<span><span class="co">#   }</span></span></code></pre></div>
+<span><span class="co"># </span></span>
+<span><span class="co"># for ( i in (1:nrow(ctr))) {</span></span>
+<span><span class="co">#     # i &lt;- 1</span></span>
+<span><span class="co">#     country_asylum_iso3ci = as.character(ctr[i ,2 ])</span></span>
+<span><span class="co">#     cat(paste0(country_asylum_iso3ci, "\n"))</span></span>
+<span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3ci,   folder = "Report")  }</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="regional-factsheet">Regional Factsheet<a class="anchor" aria-label="anchor" href="#regional-factsheet"></a>

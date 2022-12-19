@@ -51,9 +51,9 @@
 #' @examples
 #' plot_ctr_recognition(year = 2022,
 #'                      country_asylum_iso3c = "USA",
-#'                         top_n_countries = 10, 
-#'                         measure = "RefugeeRecognitionRate",
-#'                                  order_by = "TotalDecided" )
+#'                      top_n_countries = 10, 
+#'                      measure = "RefugeeRecognitionRate",
+#'                      order_by = "TotalDecided" )
 plot_ctr_recognition <- function(year = 2022,
                                  country_asylum_iso3c  ,
                                  top_n_countries = 10, 
@@ -66,60 +66,83 @@ plot_ctr_recognition <- function(year = 2022,
                 pull()
    
   
-   measurelabel <- dplyr::case_when( measure == "RefugeeRecognitionRate"  ~ "Refugee Recognition Rate", 
-                                     measure == "TotalRecognitionRate"  ~ "Total Recognition Rate")
+   measurelabel <-
+     dplyr::case_when(
+       measure == "RefugeeRecognitionRate"  ~ "Refugee Recognition Rate",
+       measure == "TotalRecognitionRate"  ~ "Total Recognition Rate"
+     )
    
-   order_bylabel <- dplyr::case_when( order_by == "Recognized"  ~ "Recognized Refugee Status Decisions", 
-                       order_by == "ComplementaryProtection"  ~ "Complementary Protection Decisions",
-                       order_by == "TotalDecided"  ~ "Total Decision (independently of the outcome)")
+   order_bylabel <-
+     dplyr::case_when(
+       order_by == "Recognized"  ~ "Recognized Refugee Status Decisions",
+       order_by == "ComplementaryProtection"  ~ "Complementary Protection Decisions",
+       order_by == "TotalDecided"  ~ "Total Decision (independently of the outcome)"
+     )
+   
+   topOrigin <-  unhcrdatapackage::asylum_decisions %>%
+     filter(CountryAsylumCode == country_asylum_iso3c &
+              Year == year) %>%
+     ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
+     # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
+     mutate(DecisionsAveragePersonsPerCase = 1) %>%
+     group_by(CountryOriginName) %>%
+     summarize(
+       Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
+       ComplementaryProtection = sum(
+         ComplementaryProtection * DecisionsAveragePersonsPerCase,
+         na.rm = TRUE
+       ),
+       TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)
+     ) %>%
+     mutate(
+       RefugeeRecognitionRate = (Recognized) / TotalDecided,
+       TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided
+     ) %>%
+     # filter(TotalDecided  != 0) %>%
+     # filter(TotalDecided  > 1000)  %>%
+     mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))
 
-  topOrigin <-  unhcrdatapackage::asylum_decisions %>%
-  filter( CountryAsylumCode == country_asylum_iso3c &
-            Year == year) %>% 
-  ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
- # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
-  mutate(DecisionsAveragePersonsPerCase = 1 ) %>%
-  group_by(CountryOriginName) %>% 
-  summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
-            ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
-            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
-  mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
-         TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided) %>%
-  # filter(TotalDecided  != 0) %>%
-  # filter(TotalDecided  > 1000)  %>%
-  mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))
-
-topOrigin1 <-  topOrigin  %>%
-  mutate( measured = .data[[measure]])  %>%
-  mutate( order_by = .data[[order_by]])  %>%
-  arrange(desc(order_by)) %>%
-  head(top_n_countries)   
+   topOrigin1 <-  topOrigin  %>%
+     mutate(measured = .data[[measure]])  %>%
+     mutate(order_by = .data[[order_by]])  %>%
+     arrange(desc(order_by)) %>%
+     head(top_n_countries)   
  
  
   
  
-rsdorigin <- ggplot(topOrigin1, aes(y = measured, 
-             x = reorder(CountryOriginName, measured))) +
-  #scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
-  scale_y_continuous( label =  scales::label_percent(accuracy = 0, suffix = "%") ) +
-
-  #facet_grid(.~ ctry_asy) +  
-  geom_bar( stat ="identity", fill = "#0072bc") +
-  coord_flip() +
-#  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +
-  labs( title = paste0(measurelabel, " | ", year, " in ", ctrylabel),
-        caption = 'Source: UNHCR.org/refugee-statistics ',
-       subtitle = paste0( "For top ", top_n_countries, " Countries of Origin ordered by ", order_bylabel ),
-       x = " ", 
-       y = " " ) +
-  theme_unhcr( grid = "Y",
-               axis = "x",  axis_title = "" ,
-              font_size = 10 ) + 
-  theme(#axis.text.x = element_blank(),
-    # legend.position = "none",
-    
-    panel.grid.major.x = element_line(color = "#cbcbcb"), 
-    panel.grid.major.y = element_blank()) ### changing grid line that should appear) 
+   rsdorigin <- ggplot(topOrigin1, aes(y = measured ,
+                                       x = reorder(CountryOriginName, measured))) +
+     #scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
+     scale_y_continuous(label =  scales::label_percent(accuracy = 0.1, suffix = "%")) +
+     
+     #facet_grid(.~ ctry_asy) +
+     geom_bar(stat = "identity", fill = "#0072bc") +
+     coord_flip() +
+     #  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +
+     labs(
+       title = paste0(measurelabel, " | ", year, " in ", ctrylabel),
+       caption = 'Source: UNHCR.org/refugee-statistics ',
+       subtitle = paste0(
+         "For top ",
+         top_n_countries,
+         " Countries of Origin ordered by ",
+         order_bylabel
+       ),
+       x = " ",
+       y = " "
+     ) +
+     theme_unhcr(
+       grid = "Y",
+       axis = "x",
+       axis_title = "" ,
+       font_size = 10
+     ) +
+     theme(#axis.text.x = element_blank(),
+       # legend.position = "none",
+       
+       panel.grid.major.x = element_line(color = "#cbcbcb"),
+       panel.grid.major.y = element_blank()) ### changing grid line that should appear) 
 
 
   return(rsdorigin)

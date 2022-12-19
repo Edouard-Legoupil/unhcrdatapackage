@@ -95,7 +95,7 @@ Folder will be created if it does not exist</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## generate for one country</span></span></span>
 <span class="r-in"><span><span class="co"># template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Generate for a specific region</span></span></span>
+<span class="r-in"><span><span class="co"># ## Generate for a specific region</span></span></span>
 <span class="r-in"><span><span class="co"># region &lt;- "Americas"</span></span></span>
 <span class="r-in"><span><span class="co"># year &lt;- 2022</span></span></span>
 <span class="r-in"><span><span class="co"># library(tidyverse)</span></span></span>
@@ -110,12 +110,11 @@ Folder will be created if it does not exist</p></dd>
 <span class="r-in"><span><span class="co">#         ungroup() %&gt;%</span></span></span>
 <span class="r-in"><span><span class="co">#         filter( Value  &gt; 1000 )</span></span></span>
 <span class="r-in"><span><span class="co"># </span></span></span>
-<span class="r-in"><span><span class="co">#   for ( i in (1:nrow(ctr))) {</span></span></span>
+<span class="r-in"><span><span class="co"># for ( i in (1:nrow(ctr))) {</span></span></span>
 <span class="r-in"><span><span class="co">#     # i &lt;- 1</span></span></span>
-<span class="r-in"><span><span class="co">#     country_asylum_iso3c = as.character(ctr[i ,2 ])</span></span></span>
-<span class="r-in"><span><span class="co">#     cat(paste0(country_asylum_iso3c, "\n"))</span></span></span>
-<span class="r-in"><span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3c,   folder = "Report")</span></span></span>
-<span class="r-in"><span><span class="co">#   }</span></span></span>
+<span class="r-in"><span><span class="co">#     country_asylum_iso3ci = as.character(ctr[i ,2 ])</span></span></span>
+<span class="r-in"><span><span class="co">#     cat(paste0(country_asylum_iso3ci, "\n"))</span></span></span>
+<span class="r-in"><span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3ci,   folder = "Report")  }</span></span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
