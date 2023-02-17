@@ -19,7 +19,6 @@
 #' @importFrom stringr  str_replace 
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
-#' @importFrom wbstats  wb 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer

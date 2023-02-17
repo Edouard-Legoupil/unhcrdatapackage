@@ -52,14 +52,17 @@ plot_ctr_treemap <- function(year = 2021,
     summarise(across(where(is.numeric), sum)) |> 
     ungroup() 
   
-  p <- ggplot(datatree, 
-       aes(area = Value, 
-           fill = Population.type,
-           label = paste0(round(100*Value/sum(Value),1), 
+  p <- ggplot() +
+         treemapify::geom_treemap( data = datatree, 
+                 aes(area = Value, 
+                     fill = Population.type) ) +
+         treemapify::geom_treemap_text(data = datatree, 
+                     aes(area = Value, 
+                         fill = Population.type,
+                         label = paste0(round(100 * Value / sum(Value),1), 
                           "%\n", 
-                          Population.type.label))) +
-         treemapify::geom_treemap() +
-         treemapify::geom_treemap_text(colour = "white",
+                          Population.type.label) ),
+                     colour = "white",
                            place = "centre", size = 25) +
          scale_fill_manual( values = c(   "IDP" = "#00B398",
                                          # "VDA"="#EF4A60",

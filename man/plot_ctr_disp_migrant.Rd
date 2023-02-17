@@ -4,7 +4,7 @@
 \alias{plot_ctr_disp_migrant}
 \title{Plotting ratio Refugee/Asylum seekers vs Migrant within a country}
 \usage{
-plot_ctr_disp_migrant(year = 2021, country_asylum_iso3c = country_asylum_iso3c)
+plot_ctr_disp_migrant(year = 2021, country_asylum_iso3c)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}

@@ -249,3 +249,20 @@
 #'}
 #' @source \url{https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2020_international_migrant_stock_documentation.pdf}
 "migrants"
+
+
+#' @title Geo-referential
+#' @description Location used at sub-national level to record population data
+#' @format A data frame with 1653 rows and 7 variables:
+#' \describe{
+#'   \item{\code{asylum}}{character Country of Asylum - UNHCR 3 letters, aka UNHCRcode from reference}
+#'   \item{\code{location}}{character Name o fthe locatin}
+#'   \item{\code{latitude}}{character latitude - geographic coordinate}
+#'   \item{\code{longitude}}{character longttude - geographic coordinate}
+#'   \item{\code{location_pcode}}{character pcode used by https://gis.unhcr.org/arcgis/rest/services/population/ }
+#'   \item{\code{location_level}}{double Admin level hierarchy}
+#'   \item{\code{location_id}}{double location id} 
+#'   \item{\code{iso_3}}{character Country of Asylum - Iso 3 letters} 
+#'}
+#' @details DETAILS
+"locpcode"

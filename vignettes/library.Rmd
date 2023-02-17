@@ -53,9 +53,9 @@ Impactful charts with are characterized by their [story telling](https://medium.
 
  1.  Changing charts existing default __title and subtitle__ to replace it with a key message or call to Action  
 
- 2.  __Annotating__ the chart to provide interpretration hint around the context: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate)
+ 2.  __Annotating__ the chart to provide interpretation hint around the context: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate)
  
- 3. __Highlighting__ specific parts in the chart to re-inforce the main message and ease legibility: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)_
+ 3. __Highlighting__ specific parts in the chart to reinforce the main message and ease legibility: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)_
  
  
 ## How to get started: Start building your country or regional/situational factsheet now 

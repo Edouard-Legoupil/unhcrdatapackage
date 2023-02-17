@@ -22,6 +22,7 @@ Imports:
     circlize,
     ckanr,
     dplyr,
+    extrafont,
     forcats,
     fs,
     ggalluvial,
@@ -29,13 +30,17 @@ Imports:
     ggforce,
     ggplot2,
     ggrepel,
+    ggspatial,
+    ggtext,
     glue,
     graphics,
+    grDevices,
     here,
     Hmisc,
     lubridate,
     magrittr,
     mapsf,
+    OpenStreetMap,
     patchwork,
     purrr,
     readr,
@@ -58,7 +63,7 @@ Imports:
     unhcrthemes,
     utils,
     viridis,
-    wbstats
+    WDI
 Suggests: 
     knitr,
     testthat
@@ -69,4 +74,4 @@ Remotes:
     vidonne/unhcrthemes
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3

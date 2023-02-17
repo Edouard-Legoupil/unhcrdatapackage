@@ -46,6 +46,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/locpcode.html</loc>
+  </url>
+  <url>
     <loc>/reference/migrants.html</loc>
   </url>
   <url>
@@ -64,7 +67,16 @@
     <loc>/reference/plot_ctr_disp_migrant.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_ctr_keyfig.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_ctr_location.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_ctr_origin_history.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_ctr_origin_recognition.html</loc>
   </url>
   <url>
     <loc>/reference/plot_ctr_population_type_abs.html</loc>
@@ -152,5 +164,8 @@
   </url>
   <url>
     <loc>/reference/update_dataset.html</loc>
+  </url>
+  <url>
+    <loc>/tuto/tutorial.html</loc>
   </url>
 </urlset>

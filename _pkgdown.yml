@@ -12,7 +12,7 @@ navbar:
        href: articles/library.html
      - text: Chart library directory
        href: articles/chart-library.html
-     - text: Adding new Charts in the Librabry
+     - text: Adding new Charts in the Library
        href: articles/adding-new-charts.html
   - text: Country Focus
     href: CountryFocus.html
@@ -38,6 +38,7 @@ reference:
 - contents:
   - migrants 
   - reference 
+  - locpcode
 - title: Chart for Country
   desc: Charts adressing questions at country level
 - contents:

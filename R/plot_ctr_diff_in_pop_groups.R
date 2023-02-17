@@ -79,9 +79,9 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   df <- df |> 
     filter(population_type %in% pop_type)
   
-  p <- df |>
-    ggplot() +
-    geom_col(aes(x = population_type, 
+  p <- ggplot() +
+    geom_col(data = df, 
+           aes(x = population_type, 
                  y = diffabs,
                  fill = population_type),
              width = 0.8) +

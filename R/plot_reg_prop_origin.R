@@ -16,7 +16,7 @@
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom stringr str_replace               
-#' @importFrom wbstats wb           
+#' @importFrom WDI WDI          
 #' @importFrom forcats fct_reorder    
 #' @importFrom unhcrthemes theme_unhcr
 #' 
@@ -28,15 +28,27 @@
 #' plot_reg_prop_origin(year = 2022,  region = "Americas")
 plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
   
-  
 
-  wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),     
-               startdate = 1990, 
-               enddate = 2022, 
-               return_wide = TRUE)
-      # Renaming variables for further matching
-      names(wb_data)[1] <- "iso3c"
-      names(wb_data)[2] <- "Year"
+  ## World bank API to retrieve total population
+  # wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+  #              startdate = 1990, 
+  #              enddate = year, 
+  #              return_wide = TRUE)
+  # 
+  # # Renaming variables for further matching
+  # names(wb_data)[1] <- "iso_3"
+  # names(wb_data)[2] <- "Year"
+  
+  wb_data <- WDI::WDI(country='all' ,
+                      indicator=c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+                      start = 1990, 
+                      end = year,
+                      extra = TRUE)   
+  # Renaming variables for further matching
+  names(wb_data)[3] <- "iso3c"
+  names(wb_data)[4] <- "Year"  
+      
+      
       wb_data$Year <- as.numeric(wb_data$Year)
   
   

@@ -5,13 +5,15 @@
 \title{Population Pyramid}
 \usage{
 plot_ctr_pyramid(
-  year = 2021,
+  year,
   country_asylum_iso3c = country_asylum_iso3c,
   pop_type = pop_type
 )
 }
 \arguments{
-\item{year}{Numeric value of the year (for instance 2020)}
+\item{year}{Numeric value of the year (for instance 2022). 
+If the data is not yet available for that year (aka still in the mid year reporting stage),
+ it will automatically fall back on the previous year}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
@@ -25,7 +27,7 @@ Population Pyramid
 }
 \examples{
 # 
-plot_ctr_pyramid(year = 2021,
+plot_ctr_pyramid(year = 2022,
                  country_asylum_iso3c = "COL",
                  pop_type = c("ASY", "REF")
                  )

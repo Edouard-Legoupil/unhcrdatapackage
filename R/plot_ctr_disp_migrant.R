@@ -23,7 +23,7 @@
 #' @importFrom stringr  str_replace 
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
-#' @importFrom wbstats  wb 
+#' @importFrom WDI WDI
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join across 
 #' @importFrom tidyr pivot_longer
@@ -40,7 +40,7 @@
 #' # plot_ctr_disp_migrant(year = 2022,
 #' #                     country_asylum_iso3c = "FRA" )
 plot_ctr_disp_migrant <- function(year = 2021,
-                              country_asylum_iso3c = country_asylum_iso3c){
+                              country_asylum_iso3c ){
   
   ctrylabel <- unhcrdatapackage::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
@@ -52,17 +52,27 @@ plot_ctr_disp_migrant <- function(year = 2021,
                  select(M49_code) |>
                  pull()
   
-  ## World bank API to retrive total ppulation
-  wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
-             
-               country = c( country_asylum_iso3c )  ,         
-               startdate = 1990, 
-               enddate = 2022, 
-               return_wide = TRUE)
-      # Renaming variables for further matching
-      names(wb_data)[1] <- "iso_3"
-      names(wb_data)[2] <- "Year"
-      wb_data$Year <- as.numeric(wb_data$Year)
+  ## World bank API to retrieve total population
+  # wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+  #            
+  #              country = c( country_asylum_iso3c )  ,         
+  #              startdate = 1990, 
+  #              enddate = year, 
+  #              return_wide = TRUE)
+  # 
+  # # Renaming variables for further matching
+  # names(wb_data)[1] <- "iso_3"
+  # names(wb_data)[2] <- "Year"
+  
+  wb_data <- WDI::WDI(country = c(country_asylum_iso3c ) ,
+                      indicator=c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+                      start = 1990, 
+                      end = year,
+                      extra = TRUE)   
+  # Renaming variables for further matching
+  names(wb_data)[3] <- "iso_3"
+  names(wb_data)[4] <- "Year"
+  wb_data$Year <- as.numeric(wb_data$Year)
 
   ## Getting summary of forcibly displaced   ##############
   displaced <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 

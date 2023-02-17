@@ -5,13 +5,10 @@
 #' @param year Numeric value of the year (for instance 2020)
 #' @param lag Number of year to used as comparison base
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
+#' @param pop_type Vector of character values. Possible population type 
+#'                  (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
 #' 
-#' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
-#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
-#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
-#'             geom_text
-#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#' @import ggplot2              
 #' @importFrom utils  head
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace 
@@ -30,10 +27,11 @@
 
 #' @examples
 #' 
-#' p <- plot_ctr_population_type_per_year(year = 2022,
-#'                                               lag = 5,
+#' p <- plot_ctr_population_type_per_year(
+#'                          year = 2022,
+#'                          lag = 5,
 #'                          country_asylum_iso3c = "PAN",
-#'                           pop_type = c("REF", 
+#'                          pop_type = c("REF", 
 #'                                        "ASY", 
 #'                                        "OIP", 
 #'                                        "OOC",
@@ -42,7 +40,7 @@
 #'                   )
 #' p
 #' ## Raw data can always be accessed with 
-#' knitr::kable(ggplot2::ggplot_build(p)$plot$data )
+#' #knitr::kable(ggplot2::ggplot_build(p)$plot$data )
 plot_ctr_population_type_per_year <- function(year = 2022,
                                               lag = 5, 
                                      country_asylum_iso3c = country_asylum_iso3c,
@@ -72,16 +70,33 @@ plot_ctr_population_type_per_year <- function(year = 2022,
     summarise(Value = sum(Value, na.rm = TRUE)) |> 
     ungroup()
   
+  ## need to sort with so that the small value are on the top for better legibility 
+  # levels(as.factor(df$Population.type.label)) is alpha... 
+  # let's sort based on value from this year
+  df$Population.type.label <- factor(df$Population.type.label,
+          levels =  unique(df$Population.type.label[order(df$Value)])
+                                     )
+  
+  
+  
   CountryAsylum_name_text <- df |> 
     distinct(CountryAsylumName) |> 
     pull()
   
   year_breaks <- diff(range(df$Year)) + 1 
   
-  p <- ggplot(df) +
-    geom_col(aes(x = Year, y = Value, fill = Population.type.label),
+  p <- ggplot() +
+    geom_col( data = df, 
+             aes(x = Year, 
+                 y = Value, 
+                 fill = Population.type.label),
              width = 0.7) +
-    geom_text(aes(x = Year, 
+    
+    ## Need some conditions to put labels or not o the chart - to avoid cluttered
+    # chart.. 
+    
+    geom_text(data = df |> filter(Value > mean(df$Value) *0.1), 
+             aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
                   label = label_number(accuracy = 1,
@@ -89,6 +104,15 @@ plot_ctr_population_type_per_year <- function(year = 2022,
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
               size = 5) +
+    ## This add the total on the top of the chart..
+    stat_summary(data = df, 
+                  fun = sum, 
+                 aes(x = Year,
+                     y = Value, 
+                     label = scales::label_number(accuracy = 1,
+                                          scale_cut = cut_short_scale())(after_stat(y)),
+                     group = Year), 
+                 geom = "text", size = 5,    vjust = -0.5) +
     scale_color_manual(values = c("#FFFFFF",
                                   "#FFFFFF",
                                   "#FFFFFF",
@@ -100,20 +124,16 @@ plot_ctr_population_type_per_year <- function(year = 2022,
                       limits = force) +
     scale_x_continuous(breaks = scales::breaks_pretty(n = year_breaks)) +
     scale_y_continuous(expand = expansion(c(0, 0.1))) +
-    labs(title = paste0(CountryAsylum_name_text, ": Population type per year"), 
+    labs(title = paste0(CountryAsylum_name_text, ": Population Type per Year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR.org/refugee-statistics") +
     theme_unhcr(grid = FALSE, axis = "x", 
                 axis_title = FALSE, axis_text = "x",
               font_size = 14) +
-    stat_summary(fun = sum, aes(x = Year,
-                                y = Value, 
-                                label = scales::label_number(accuracy = 1,
-                                                       scale_cut = cut_short_scale())(..y..), 
-                                group = Year), 
-                 geom = "text", size = 5,
-                 vjust = -0.5) +
-    theme(legend.direction = "vertical",
+    
+    theme(legend.direction = "horizontal",
+          legend.position = "bottom",
+          legend.text=element_text(size = rel(0.5)),
           legend.key.size = unit(0.8, 'cm'),
           text = element_text(size = 20),
           plot.subtitle=element_text(size=19),
@@ -122,3 +142,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
   
   return(p) # print(p)
   }
+
+ 
+
+

@@ -119,8 +119,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     pull()
   
   
-  p <- ggplot(df) +
-    geom_col(aes(x = pop_type_value, y = origin_data_prot),
+  p <- ggplot() +
+    geom_col(data = df, 
+             aes(x = pop_type_value, y = origin_data_prot),
              fill = cols_poptype[[pop_type]][2],
              width = 0.8) +
     ## Position label differently in the bar in white - outside bar in black
@@ -203,10 +204,8 @@ plot_ctr_population_type_abs <- function(year = 2021,
       vjust = 0.5,
       colour = "#0472bc",
       size = 5
-    )}
-    
-  
-  p <- p +
+    )} 
+  p <- p + 
     labs(title = paste0(CountryAsylum_name_text, ": ", cols_poptype[[pop_type]][1], " | ",  year),
          subtitle = paste0("Top ",  top_n_countries, " Countries of Origin"),
          x = "Number of People",

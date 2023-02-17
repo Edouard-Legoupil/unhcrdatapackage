@@ -1,3 +1,21 @@
+## unhcrdatapackage 0.1.6
+
+ * Added new plots with Humanitarian font (key figures - and disp vs host)
+ 
+ * Added charts to better illustrate forced displacement and migration
+ 
+ * Fixed one remaining type in ppt template with move fro VDA to OIP
+ 
+ * Added geographic reference to map reported locations at subnational scale
+ 
+ * Added intro and conclusion slide to the country ppt to highlight data literacy challenge
+ 
+ * Added automatic fall back to previous year data for Mid-year report does not include some of the key information (demographic pyramid and location info...)
+ 
+ * changed the package to access the WB API from https://github.com/gshs-ornl/wbstats to https://github.com/vincentarelbundock/WDI 
+
+
+
 ## unhcrdatapackage 0.1.5
 
  * Update dataset with mid-year 2022 data release (28 Oct 2022)

@@ -63,12 +63,13 @@ plot_ctr_origin_history <- function(year = 2022,
   
   year_breaks <- diff(range(df$Year)) + 1 
   
-  p <- ggplot(data = df,
+  p <- ggplot() +
+  ggalluvial::geom_alluvium(data = df,
        aes(x = Year, 
            y = Value, 
-           alluvium = CountryOriginName)) +
-  ggalluvial::geom_alluvium(aes(fill = CountryOriginName, 
-                                colour = CountryOriginName),
+           alluvium = CountryOriginName,
+           fill = CountryOriginName, 
+           colour = CountryOriginName),
                             alpha = .75, 
                             decreasing = FALSE) +
   scale_x_continuous(breaks = seq(year-lag, year, 2)) +  

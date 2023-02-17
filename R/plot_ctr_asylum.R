@@ -71,9 +71,10 @@ plot_ctr_asylum <- function(year = 2022,
                                                           "Total Number of Decisions",
                                                           "Number of Refugee Status Recognition Decisions"))
  
- p <- ggplot(data,
-             aes(x= Year, y = Total, fill = AsylumStage)) +
-     geom_bar(stat = "identity", position = "dodge", width = 0.8 ) + 
+ p <- ggplot() +
+     geom_bar(data = data,
+             aes(x= Year, y = Total, fill = AsylumStage),
+             stat = "identity", position = "dodge", width = 0.8 ) + 
      scale_fill_unhcr_d(palette = "pal_unhcr") +
     # scale_fill_manual(values = c( "#FAAB18", "#0072bc", "#FEEB18")) +  
      scale_x_continuous(breaks = pretty_breaks(10)) +

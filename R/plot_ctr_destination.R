@@ -88,22 +88,22 @@ plot_ctr_destination <- function(year = 2021,
     
   } else {
     #Make plot
-    p <-
-      ggplot(Destination) +
-  geom_col(aes(
-    x = reorder(CountryAsylumName, DisplacedAcrossBorders),
-    ## Reordering country by Value
-    y = DisplacedAcrossBorders),
+    p <-  ggplot() +
+          geom_col(data = Destination, 
+                aes(
+                x = reorder(CountryAsylumName, DisplacedAcrossBorders),
+                ## Reordering country by Value
+                y = DisplacedAcrossBorders),
                fill = unhcr_pal(n = 1, "pal_blue")) + # here we configure that it will be bar chart+
-      ## Format axis number
-  scale_y_continuous(expand = expansion(c(0, 0.1)),
+        ## Format axis number
+       scale_y_continuous(expand = expansion(c(0, 0.1)),
                      labels = label_number(scale_cut = cut_short_scale())) +
-      ## Position label differently in the bar in white - outside bar in black
-      geom_label(
-        data = subset(
-          Destination,
-          DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5
-        ),
+        ## Position label differently in the bar in white - outside bar in black
+        geom_label(
+          data = subset(
+            Destination,
+            DisplacedAcrossBorders < max(DisplacedAcrossBorders) / 1.5
+          ),
         aes(
           x = reorder(CountryAsylumName, DisplacedAcrossBorders),
           y = DisplacedAcrossBorders,

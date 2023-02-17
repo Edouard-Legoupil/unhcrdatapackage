@@ -26,7 +26,7 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom graphics par
 #' @importFrom unhcrthemes theme_unhcr
-#' @importFrom wbstats  wb 
+#' @importFrom WDI WDI 
 #' @importFrom Hmisc cut2
 #' 
 #' @return a base plot
@@ -57,16 +57,33 @@ plot_reg_map <- function(    year = 2022,
                             maxSymbolsize = .25   ){
  
       
-      # Get World Bank data  #############
-      wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
+ 
+      
+   ## World bank API to retrieve total population
+  # wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+  #              startdate = 1990, 
+  #              enddate = year, 
+  #              return_wide = TRUE)
+  # 
+  # # Renaming variables for further matching
+  # names(wb_data)[1] <- "CountryAsylumCode"
+  # names(wb_data)[2] <- "Year"
+  
+  wb_data <- WDI::WDI(country='all',
+                      indicator=c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
                                             "NY.GDP.MKTP.CD", ## GDP current https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
                                             "NY.GDP.PCAP.CD", ## GDP per capita https://data.worldbank.org/indicator/NY.GDP.PCAP.CD 
                                             "NY.GNP.PCAP.CD" ## GNI per capita, Atlas method (current US$) https://data.worldbank.org/indicator/NY.GNP.PCAP.CD
-      ),
-      startdate = year-1, enddate = year, return_wide = TRUE) 
-      # # Renaming variables for further matching
-      names(wb_data)[1] <- "CountryAsylumCode"
-      names(wb_data)[2] <- "Year"
+                                  ),
+                      start = year-1,
+                      end = year,
+                      extra = TRUE)   
+  # Renaming variables for further matching
+  names(wb_data)[3] <- "CountryAsylumCode"
+  names(wb_data)[4] <- "Year"
+      
+      
+      
       wb_data <- wb_data%>%
         filter(Year == year-1) 
       

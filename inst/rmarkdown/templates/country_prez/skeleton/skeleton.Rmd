@@ -1,13 +1,23 @@
 ---
 params:
   year: 2022
-  country: "ABW"
-  countryname: "Aruba"
-title: "Statistical Factsheet \ `r params$countryname` "
-subtitle:  " as of `r params$year`"
+  country: "CAN"
+  countryname: "Canada"
+title: "Key Statistical Facts on Forced Displacement in  \ `r params$countryname` "
+subtitle:  "Based on publicly released data as of `r params$year`"
 output:
   unhcrdown::pptx_slides
 ---
+
+<!--
+Impactful charts with are characterized by their [story telling](https://medium.economist.com/charting-new-territory-7f5afb293270) ability. Using the default plots from the package, the chart effectiveness can be improved by: 
+
+ 1.  Changing charts existing default __title and subtitle__ to replace it with a key message or call to Action  
+
+ 2.  __Annotating__ the chart to provide interpretation hint around the context: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate)
+ 
+ 3. __Highlighting__ specific parts in the chart to reinforce the main message and ease legibility: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)_
+-->
 
 ```{r setup, include=FALSE, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE, warning = FALSE, message = FALSE)
@@ -19,150 +29,44 @@ library(tidyverse)
 library(scales)
 library(lubridate)
 library(unhcrdatapackage) 
+library(fontawesome)
+# fa_metadata()
 
 # turn off the automatic use of showtext functionality, so that the dml function can works properly
 showtext::showtext_auto(FALSE) 
 ```
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-
-## Key figures can be highlighterd with icons https://fontawesome.com/icons/categories/humanitarian 
-total_poc <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-total_ref <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "REF"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-total_idp <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "IDP"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-
-total_asy <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "ASY"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-
-total_ooc <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "OOC"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-
-total_vda <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "VDA"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-
-total_sta <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "STA"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-
-total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == as.numeric(params$year)-1,
-                CountryAsylumCode == params$country) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-perc_change_poc <- ((total_poc - total_poc_last_year)/total_poc_last_year)*100
-
-ref_asy__last_year <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == as.numeric(params$year)-1,
-                CountryAsylumCode == params$country,
-                Population.type == "REF" | Population.type == "ASY"
-                ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
-  dplyr::pull()
-
-
-perc_change_asy_ref <- (( (total_ref + total_asy) - ref_asy__last_year)/ref_asy__last_year)*100
+# Data literacy... 
 
 
 
-
-top_ref <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "REF") |> 
-  dplyr::group_by(CountryOriginName) |> 
-  dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
-  dplyr::arrange(desc(Value)) |> 
-  dplyr::mutate(perc = scales::percent(
-    Value / sum(Value),
-    accuracy = 1.5,
-    trim = FALSE
-  )) |> 
-  dplyr::slice(1:3)
-
-
-top_asy <- unhcrdatapackage::end_year_population_totals_long |> 
-  dplyr::filter(Year == params$year,
-                CountryAsylumCode == params$country,
-                Population.type == "ASY") |> 
-  dplyr::group_by(CountryOriginName) |> 
-  dplyr::summarise(Value = sum(Value, na.rm = TRUE)) |> 
-  dplyr::arrange(desc(Value)) |> 
-  dplyr::mutate(perc = scales::percent(
-    Value / sum(Value),
-    accuracy = 1.5,
-    trim = FALSE
-  )) |> 
-  dplyr::slice(1:3)
-
-```
+... describes the ability to read, analyze, and argue with data.
 
 
 
-## Key figures
+> ## “__Numbers have an important story to tell. They rely on YOU to give them a voice!__”
 
-
-
-<i class="fa-solid fa-hands-holding-circle blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ref, 0),  big.mark=",")`]{.blue .lead}** Refugees
-
-<i class="fa-solid fa-person-walking-dashed-line-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_asy, 0),  big.mark=",")`]{.blue .lead}** Asylum-seekers
-
-<i class="fa-solid fa-person-arrow-up-from-line blue" style="font-size: 2em;"></i><br>**[`r format(round(total_ooc, 0),  big.mark=",")`]{.blue .lead}** *Others of Concerns
-
-
-<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[`r format(round(total_vda, 0),  big.mark=",")`]{.blue .lead}** Other in Need in International Protection
-
-<i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[`r format(round(total_idp, 0),  big.mark=",")`]{.blue .lead}** Internally displaced people
-
-<i class="fa-solid fa-solid fa-arrows-down-to-people blue" style="font-size: 2em;"></i><br>**[`r format(round(total_sta, 0),  big.mark=",")`]{.blue .lead}** Stateless People
+> -- Stephen Few
 
 
 
 ---
 
 ```{r ph=officer::ph_location_fullsize()}
+plot_ctr_keyfig(year = params$year,
+                 country_asylum_iso3c = params$country)  -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+
+# Population Data
+
+
+---
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 plot_ctr_treemap(year = params$year,
                  country_asylum_iso3c = params$country,
@@ -176,7 +80,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 ## How the different Categories of Population of concern to UNHCR are evolving over time?
 # According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
@@ -196,7 +100,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 
 ## What are the main countries of Origin of Forced Displacement across Borders?
@@ -219,7 +123,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 ---
 
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 # 
 plot_ctr_origin_history(year = params$year,
                          country_asylum_iso3c  = params$country,
@@ -235,7 +139,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 
 ### Asylum Seekers
@@ -252,7 +156,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 
 plot_ctr_diff_in_pop_groups(year = params$year,
@@ -263,7 +167,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 plot_ctr_pyramid(year = params$year,
                  country_asylum_iso3c  = params$country,
                             pop_type = c(  "REF") )-> p
@@ -273,17 +177,42 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 plot_ctr_pyramid(year = params$year,
                  country_asylum_iso3c  = params$country,
-                            pop_type = c(  "ASY") )-> p
+                            pop_type = c(  "ASY") ) -> p
  
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 
 ---
 
+
+# Maps
+
+---
+
 ```{r ph=officer::ph_location_fullsize()}
+
+plot_ctr_location(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                 pop_type = c("ASY", "REF", "OIP"),
+                 mapbackground = "osm" #  could be "stamen-toner" , "stamen-terrain","stamen-watercolor"
+                 ) -> p
+ 
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+---
+
+
+# Refugee Recognition Determination
+
+
+---
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 plot_ctr_recognition(year = params$year,
                     country_asylum_iso3c  = params$country,
                     top_n_countries = 10, 
@@ -294,7 +223,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 plot_ctr_recognition(year = params$year,
                     country_asylum_iso3c  = params$country,
                     top_n_countries = 10, 
@@ -305,7 +234,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 plot_ctr_asylum(year = params$year,
                 country_asylum_iso3c  = params$country, 
                 lag = 10)-> p
@@ -318,7 +247,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 plot_ctr_process(year = params$year,
                 country_asylum_iso3c  = params$country)-> p
@@ -328,7 +257,7 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 
 plot_ctr_processing_time(year = params$year,
                               country_asylum_iso3c = params$country)-> p
@@ -337,11 +266,14 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
 
  
+---
 
+
+# Durable Solutions
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 plot_ctr_solution(year = params$year,
                   country_asylum_iso3c  = params$country,
                   pop_type = c("REF", "ASY"))-> p
@@ -350,15 +282,13 @@ dml(ggobj = p, fonts = list(serif = 'Lato'))
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
-plot_ctr_disp_migrant(year = params$year,
-                     country_asylum_iso3c  = params$country ) -> p
-dml(ggobj = p, fonts = list(serif = 'Lato'))
-```
+
+# Forced Displacement and Migration
+
 
 ---
 
-```{r ph=officer::ph_location_fullsize()}
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
 ## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
  
 plot_ctr_destination(year = params$year,
@@ -367,3 +297,49 @@ plot_ctr_destination(year = params$year,
          ) -> p
 dml(ggobj = p, fonts = list(serif = 'Lato'))
 ```
+
+
+
+---
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_origin_recognition(year = params$year,
+                     country_origin_iso3c = params$country,
+                     top_n_countries = 10,
+                     measure = "RefugeeRecognitionRate",
+                     order_by = "TotalDecided" ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_origin_recognition(year = params$year,
+                     country_origin_iso3c = params$country,
+                     top_n_countries = 10,
+                     measure = "TotalRecognitionRate",
+                     order_by = "Recognized" ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+
+
+---
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+plot_ctr_disp_migrant(year = params$year,
+                     country_asylum_iso3c  = params$country ) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```
+
+---
+
+# Next...
+
+The charts from this slide deck constitute a [chart library](https://edouard-legoupil.github.io/unhcrdatapackage/articles/chart-library.html#country-questions) can be used and re-used in reports, talking points and social medias. The charts are in vector formats and can be easily imported in specialized publication software (like Adobe, Publisher or Inkscape).
+
+You may [enhance the charts story-telling ability](https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html) by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.
+
+You can [contribute](https://edouard-legoupil.github.io/unhcrdatapackage/articles/adding-new-charts.html)  to this data literacy product by reporting potential issues you may have detected, asking questions or sharing ideas for new charts to be included.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ctr_recognition.R
 \name{plot_ctr_recognition}
 \alias{plot_ctr_recognition}
-\title{Display A Chart with Refugee Recognition Rater}
+\title{Display a Chart with Refugee Recognition Rates}
 \usage{
 plot_ctr_recognition(
   year = 2022,
@@ -13,7 +13,7 @@ plot_ctr_recognition(
 )
 }
 \arguments{
-\item{year}{Numeric value of the year (for instance 2020)}
+\item{year}{Numeric value of the year}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
@@ -37,15 +37,16 @@ In the absence of an internationally agreed methodology for calculating recognit
  
   * The Refugee Recognition Rate divides the number of asylum-seekers granted Convention refugee
   status by the total number of accepted (Convention and, where relevant, complementary 
-  protection) and rejected cases. 
+  protection) and rejected cases (aka substantive decision). 
   
   * The Total Recognition Rate divides the number of asylum-seekers granted Convention
-   refugee status and complementary form of protection by the total number
+   refugee status and / or complementary form of protection by the total number
    of accepted (Convention and, where relevant, complementary protection) and
-    rejected cases. Non-substantive decisions are, to the extent possible, 
-    excluded from both calculations. For the purpose of international comparability, 
-    UNHCR only uses these two recognition rates and does not report nationally
-     calculated rates.
+    rejected cases.
+    
+Non-substantive decisions are, to the extent possible, excluded from both 
+calculations. For the purpose of international comparability,  UNHCR only 
+uses these two recognition rates and does not report nationally calculated rates.
      
      See https://www.unhcr.org/4ce531e09.pdf
 }

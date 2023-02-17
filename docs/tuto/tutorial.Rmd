@@ -1,0 +1,267 @@
+---
+title: "Data Storytelling with {UnhcrDataPackage}"
+subtitle: "From base plot to stories: a tutorial"
+author: "Edouard Legoupil, Snr Data Analyst"
+institute: "DIMA Amerias"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+output:
+  unhcrdown::html_slides:
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.showtext = TRUE
+)
+library(tidyverse)
+library(unhcrthemes)
+library(fontawesome)
+library(unhcrdatapackage)
+```
+
+
+
+# Template
+
+**`html_slides`** is a simple online presentation template which is part of the [`unhcrdown`](https://github.com/vidonne/unhcrdown) package.
+
+Install the `unhcrdown` package from [Github](https://github.com/vidonne/unhcrdown):
+
+```{r eval=FALSE, tidy=FALSE}
+# install.packages("remotes")
+remotes::install_github("vidonne/unhcrdown")
+```
+
+**Main resources:**
+
+- [`unhcrdown::html_slides`](https://vidonne.github.io/unhcrdown/articles/create_html_slides.html) vignette
+- [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) documentation
+- [`unhcrthemes`](https://vidonne.github.io/unhcrthemes/index.html) package
+- [UNHCR Data Visualization Platform](https://dataviz.unhcr.org/)
+
+
+
+---
+class: hide-logo
+background-image: url(https://pbs.twimg.com/media/Ezqj6eRWUAcq63v?format=png&name=4096x4096)
+background-size: cover
+background-position: center 25%
+
+---
+
+
+https://github.com/favstats/usa_refugee_data/blob/5c0c042784a7c3118f71294622660492b784e760/refugee_analysis.Rmd#L930:L1025
+
+
+```{r eval=FALSE, include=FALSE}
+admissions75 <- tidytemplate::load_it("data/admissions75.Rdata")
+# year_lab <- paste0("'", stringi::stri_sub(1975:2018, -2 , -1))
+year_lab <- seq(1977, 2017, 4)
+year_dat <- tibble(fiscal_year = c(seq(1976, 2016, 4)), 
+                   label = c("Carter I", "Reagan I", "Reagan II", 
+                             "H.W. Bush I", "Clinton I", "Clinton II", "Bush I", 
+                             "Bush II", "Obama I", "Obama II", "Trump I"))
+n_refugee_2018 <- admissions75 %>% 
+  filter(fiscal_year == 2018) %>% 
+  summarize(n = sum(n)) %>% 
+  .$n
+n_refugee_2002 <- admissions75 %>% 
+  filter(fiscal_year == 2002) %>% 
+  summarize(n = sum(n)) %>% 
+  .$n
+n_refugee_1992 <- admissions75 %>% 
+  filter(fiscal_year == 1992) %>% 
+  summarize(n = sum(n)) %>% 
+  .$n
+n_refugee_1980 <- admissions75 %>% 
+  filter(fiscal_year == 1980) %>% 
+  summarize(n = sum(n)) %>% 
+  .$n
+n_refugee_1975 <- admissions75 %>% 
+  filter(fiscal_year == 1975) %>% 
+  summarize(n = sum(n)) %>% 
+  .$n
+admissions75 %>% 
+  summarize(n = sum(n)) %>% 
+  .$n
+admissions75 %>% 
+  mutate(region = case_when(
+    region == "Former\rSoviet\rUnion" ~ "(Former) Soviet Union",
+    region == "Latin America\rCaribbean" ~ "Latin America/Caribbean",
+    region == "Near East\rSouth Asia" ~ "Near East/South Asia",    
+    region == "PSI" ~ "Private Sector Initiative",   
+    T ~ region
+  )) %>% 
+  ggplot(aes(fiscal_year, n))  +
+  geom_vline(data = year_dat, aes(xintercept = fiscal_year + 1), alpha = 0.35) +
+  geom_label(data = year_dat, aes(x = fiscal_year + 1, y = 220000, label = label),
+            angle = 0, color = "black") +
+  geom_area(aes(fill = region), alpha = 0.9) +
+  geom_hline(yintercept = n_refugee_2018, 
+             linetype = "dashed", color = "black", alpha = 0.85) +
+  annotate("label", x = 1978, y = 115000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "End of\n Vietnam War") +
+  annotate("label", x = 1984, y = 185000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Refugee Act of 1980") +
+  annotate("label", x = 1997, y = 150000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Fall of Soviet Union") +
+  annotate("label", x = 2000, y = 105000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Drop after 9/11") +
+  annotate("label", x = 2015, y = 110000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Number of Refugees in 2018\n lowest since 1977") +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_manual("Region", values = qualitative) +
+  geom_curve(aes(x = 1977, y = 125000, xend = 1975, yend = n_refugee_1975),
+  arrow = arrow(length = unit(0.03, "npc")), curvature = 0.2) +
+  geom_curve(aes(x = 1982, y = 190000, xend = 1980, yend = n_refugee_1980),
+  arrow = arrow(length = unit(0.03, "npc")), curvature = 0.2) +
+  geom_curve(aes(x = 1994, y = 150000, xend = 1992, yend = n_refugee_1992),
+  arrow = arrow(length = unit(0.03, "npc")), curvature = 0.2) +
+  geom_curve(aes(x = 2000, y = 100000, xend = 2002, yend = n_refugee_2002),
+  arrow = arrow(length = unit(0.03, "npc")), curvature = -0.3) +
+  geom_curve(aes(x = 2016, y = 100000, xend = 2018, yend = n_refugee_2018),
+  arrow = arrow(length = unit(0.03, "npc")), curvature = -0.2) +
+  theme(plot.title = element_text(size = 13, face = "bold"),
+    # plot.subtitle = element_text(size = 11, face = "bold"), 
+    plot.caption = element_text(size = 10, face = "italic", hjust = 1),
+    legend.key.width = unit(3, "line"),
+    legend.position = "bottom") +
+  scale_x_continuous(breaks = year_lab, labels = year_lab,
+                     minor_breaks = seq(1975, 2018, 1)) +
+  labs(x = "", y = "Number of Refugees\n", 
+       title = "Refugees arriving in the United States of America by Year (1975 - 2018)\n", 
+       caption = "\nData: State Department, Office of Admissions - Refugee Processing Center. Total Number of Accepted Refugees since 1975: 3.340.709; Visualization: @favstats") 
+ggsave(filename = "images/refugee75.png", height = 7, width = 13) 
+```
+
+
+
+---
+
+```{r echo=FALSE, fig.width=15}
+
+
+
+plot_ctr_origin_history(year = 2022,
+                        lag = 30,
+                        country_asylum_iso3c = "USA",
+                          pop_type = c("ASY"),
+                        otherprop = .024)
+```
+
+
+
+---
+
+```{r}
+year_lab <- seq(1977, 2022, 4)
+year_dat <- tibble(fiscal_year = c(seq(1976, 2022, 4)), 
+                   label = c("Carter I", "Reagan I", "Reagan II", 
+                             "H.W. Bush I", "Clinton I", "Clinton II", "Bush I", 
+                             "Bush II", "Obama I", "Obama II", "Trump", "Biden"))
+```
+
+----
+
+```{r echo=FALSE, fig.width=15}
+
+
+
+
+
+plot_ctr_origin_history(year = 2022,
+                        lag = 30,
+                        country_asylum_iso3c = "USA",
+                          pop_type = c("ASY"),
+                        otherprop = .024) +
+  
+  geom_vline(data = year_dat, 
+             aes(xintercept = fiscal_year ), 
+             alpha = 0.35) + 
+  annotate("label", x = 1978, y = 115000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "End of\n Vietnam War") +
+  annotate("label", x = 1984, y = 185000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Refugee Act of 1980") +
+  annotate("label", x = 1997, y = 150000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Fall of Soviet Union") +
+  annotate("label", x = 2000, y = 105000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Drop after 9/11") +
+  annotate("label", x = 2015, y = 110000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Number of Refugees in 2018\n lowest since 1977")
+  # geom_label(data = year_dat, 
+  #            aes(x = fiscal_year + 1,
+  #                 y = 1000000, 
+  #                label = label),
+  #           angle = 0, color = "black") 
+```
+
+---
+
+
+```{r echo=FALSE, fig.width=15}
+plot_ctr_origin_history(year = 2022,
+                        lag = 30,
+                        country_asylum_iso3c = "USA",
+                          pop_type = c("REF"),
+                        otherprop = .024)
+```
+
+
+---
+
+
+```{r echo=FALSE, fig.width=15}
+plot_ctr_origin_history(year = 2022,
+                        lag = 46,
+                        country_asylum_iso3c = "USA",
+                          pop_type = c("REF"),
+                        otherprop = .024)+
+  
+  geom_vline(data = year_dat, 
+             aes(xintercept = fiscal_year ), 
+             alpha = 0.35) + 
+  annotate("label", x = 1978, y = 115000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "End of\n Vietnam War") +
+  annotate("label", x = 1984, y = 185000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Refugee Act of 1980") +
+  annotate("label", x = 1997, y = 150000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Fall of Soviet Union") +
+  annotate("label", x = 2000, y = 105000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Drop after 9/11") +
+  annotate("label", x = 2015, y = 110000, 
+           fill = "lightgrey", alpha = 0.85, label.size = NA,
+           label = "Number of Refugees in 2018\n lowest since 1977") +
+  geom_label(data = year_dat,
+             aes(x = fiscal_year ,
+                  y = 1000000,
+                 label = label),
+            angle = 0, color = "black")
+```
+
+---
+class: inverse, center, middle
+
+# Thank you

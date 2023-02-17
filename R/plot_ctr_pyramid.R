@@ -2,7 +2,9 @@
 
 #' Population Pyramid
 #'
-#' @param year Numeric value of the year (for instance 2020)
+#' @param year Numeric value of the year (for instance 2022). 
+#'             If the data is not yet available for that year (aka still in the mid year reporting stage),
+#'              it will automatically fall back on the previous year
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
@@ -28,14 +30,35 @@
 
 #' @examples
 #' # 
-#' plot_ctr_pyramid(year = 2021,
+#' plot_ctr_pyramid(year = 2022,
 #'                  country_asylum_iso3c = "COL",
 #'                  pop_type = c("ASY", "REF")
 #'                  )
 #' 
-plot_ctr_pyramid <- function(year = 2021,
+plot_ctr_pyramid <- function(year ,
                              country_asylum_iso3c = country_asylum_iso3c,
                              pop_type = pop_type) {
+  
+  
+    ## FontAwesome6  includes humanitarian icon... 
+    fontcheck <- extrafont::fonttable() %>% 
+              dplyr::as_tibble() %>% 
+              dplyr::filter(grepl("Awesom", FamilyName)) 
+
+    if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
+      fa_font <- here::here("",  "fa-solid-900-6.ttf")
+      download.file("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/webfonts/fa-solid-900.ttf",
+                    destfile = fa_font, method = "curl")
+      extrafont::font_import(paths = dirname(fa_font), prompt = FALSE)
+      sysfonts::font_add(family =  "Font Awesome 6 Free Solid", regular = fa_font)
+    } else {
+    
+    sysfonts::font_add(family = "Font Awesome 6 Free Solid" , 
+                       regular = as.character(fontcheck |> 
+                                                dplyr::filter( FamilyName == "Font Awesome 6 Free Solid") |>
+                                                dplyr::pull(fontfile)) )
+    }
+ 
   
   ctrylabel <- unhcrdatapackage::reference |> 
     filter(iso_3 == country_asylum_iso3c ) |> 
@@ -52,7 +75,7 @@ plot_ctr_pyramid <- function(year = 2021,
                  select(UNHCRBureau, iso_3),  
                by = c("CountryAsylumCode" = "iso_3")) |> 
     filter(CountryAsylumCode  == country_asylum_iso3c &
-             Year == year-1 &
+             Year == year &
              Population.type  %in% as.vector(pop_type)) |>
     
     mutate ( totGen = FemaleTotal +MaleTotal,
@@ -63,9 +86,32 @@ plot_ctr_pyramid <- function(year = 2021,
              
              hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
   
+  ## Check if fall back is needed.. 
+  if(nrow(demographics1) == 0) { 
+    year <- year -1 
+    demographics1 <- unhcrdatapackage::demographics |>
+      left_join( unhcrdatapackage::reference |> 
+                   select(UNHCRBureau, iso_3),  
+                 by = c("CountryAsylumCode" = "iso_3")) |> 
+      filter(CountryAsylumCode  == country_asylum_iso3c &
+               Year == year &
+               Population.type  %in% as.vector(pop_type)) |>
+      
+      mutate ( totGen = FemaleTotal +MaleTotal,
+               totbreak = Female04 + Female511 + Female1217 + 
+                 Female1859 + Female60ormore + FemaleUnknown +
+                 Male04 + Male511 + Male1217 + Male1859 +
+                 Male60ormore + MaleUnknown,
+               
+               hasbreak = ifelse(Total - totGen == 0, "yes", "no" ))
+    
+    }
+  
+  
+  
   
   if ( nrow(demographics1) ==  0 ){
-    info <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ", ctrylabel )
+    info <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ", ctrylabel, "as of", year )
     p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                               label = info ) +  theme_void() 
     
@@ -130,62 +176,58 @@ plot_ctr_pyramid <- function(year = 2021,
       pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count)
       pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
       
-      p <- pyramid3 |> 
+      pyramid4 <- pyramid3 |> 
         select(gender,age, pc) |> 
         mutate(gender = tolower(gender)) |> 
         pivot_wider(names_from = gender,
                     names_sort = TRUE,
                     values_from = pc
-        ) |> 
-        ggplot() +
-        geom_col(aes(-male,
-                     age,
-                     fill = "Male"
-        ),
-        width = 0.7
-        ) +
-        geom_col(aes(female,
-                     age,
-                     fill = "Female"
-        ),
-        width = 0.7
-        ) +
-        geom_text(aes(-male,
-                      age,
-                      label = percent(abs(male), accuracy = 1)
-        ),
-        hjust = 1.25,
-        size = 11.5 / ggplot2::.pt
-        ) +
-        geom_text(aes(female,
-                      age,
-                      label = percent(abs(female), accuracy = 1)
-        ),
-        hjust = -0.25,
-        size = 11.5 / ggplot2::.pt
-        ) +
-        labs(
-          title = paste0("Population Pyramid for ", sub(",\\s+([^,]+)$", " and \\1", toString(poptype_label)), " | ", ctrylabel),
-          
-          subtitle = paste0("As of ", year, 
-                            ", gender disaggregation is available for ", totprop, "% of the ",tot,
-                            " individuals in ", ctrylabel),
-          caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: UNHCR.org/refugee-statistics."
-        ) +
+        ) 
+      
+      p <-  ggplot() +
+        geom_col(data = pyramid4,
+                 aes(-male, age,
+                     fill = "Male"),  width = 0.7 ) +
+        geom_col(data = pyramid4,
+                 aes(female, age,
+                     fill = "Female"),width = 0.7 ) +
+        geom_text(data = pyramid4,
+                  aes(-male, age,
+                      label = percent(abs(male), accuracy = 1)),
+                   hjust = 1.25,   size = 11.5 / ggplot2::.pt ) +
+        geom_text(data = pyramid4,
+                  aes(female,  age,                     
+                      label = percent(abs(female), accuracy = 1)  ), 
+                  hjust = -0.25,  size = 11.5 / ggplot2::.pt) +
+        ## Now get the icon for male and female 
+        ggtext::geom_textbox(aes(x = 0.25, 
+                                  y = "60+",  
+                        label = "\uf182" ), 
+                       family = "Font Awesome 6 Free Solid",
+                       color = "#18375F",# "#0072BC" "#8EBEFF"
+                       box.colour = NA ,   hjust = 0,   vjust = 0,
+                      size = 11.5, width = 0.2, height = 0.2) +
+        ggtext::geom_textbox(aes(x = as.numeric(-0.25), 
+                                 y = "60+",  
+                       label = "\uf183" ), 
+                      family = "Font Awesome 6 Free Solid",
+                       color = "#0072BC",# "#0072BC" "#8EBEFF"
+                      box.colour = NA ,   hjust = 0,   vjust = 0,
+                     size = 11.5, width = 0.2, height = 0.2) +
         scale_x_continuous(expand = expansion(c(0.2, 0.2))) +
         scale_fill_manual(breaks=c('Male', 'Female'),
                           values = setNames(
                             unhcr_pal(n = 3, "pal_unhcr")[c(2, 1)],
-                            c("Male" , "Female")
-                          )) +
-        theme_unhcr(font_size = 14,
-          grid = FALSE,
-          axis = FALSE,
-          axis_title = FALSE,
-          axis_text = "y"
-        )
-      
-      
+                            c("Male" , "Female")  )) +
+        labs(  title = paste0("Population Pyramid for ", 
+                              sub(",\\s+([^,]+)$", " and \\1",  toString(poptype_label)), 
+                              " | ", ctrylabel),
+          subtitle = paste0("As of ", year, 
+                            ", gender disaggregation is available for ", totprop, "% of the ",tot,
+                            " individuals in ", ctrylabel),
+          caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: UNHCR.org/refugee-statistics."  ) +
+        theme_unhcr(font_size = 14, grid = FALSE, axis = FALSE, axis_title = FALSE,  axis_text = "y") +
+        theme(legend.position = "none")
     }
   }
   

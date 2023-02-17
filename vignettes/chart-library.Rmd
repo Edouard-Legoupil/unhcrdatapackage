@@ -33,6 +33,42 @@ If it is the first time you use {fusen}, after 'description', you can directly r
 
 # Country Questions
 
+# Population Data
+
+## Key Figures
+
+    
+
+  
+
+```{r example-plot_ctr_keyfig}
+plot_ctr_keyfig(year = 2022,
+                country_asylum_iso3c = "COL")
+```
+
+  
+
+  
+
+
+## Plot Tree Map of Categories
+
+    
+
+```{r examples-plot_ctr_treemap, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+# 
+plot_ctr_treemap(year = 2021,
+                            country_asylum_iso3c = "USA",
+                            pop_type = c("REF", "ASY")
+         )
+
+```
+
+    
+
+
+
+
 ## Plot Population type per year
 
 <!--
@@ -67,10 +103,11 @@ After inflating the template
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 
-p <- plot_ctr_population_type_per_year(year = 2022,
-                                              lag = 5,
+p <- plot_ctr_population_type_per_year(
+                         year = 2022,
+                         lag = 5,
                          country_asylum_iso3c = "PAN",
-                          pop_type = c("REF", 
+                         pop_type = c("REF", 
                                        "ASY", 
                                        "OIP", 
                                        "OOC",
@@ -79,7 +116,7 @@ p <- plot_ctr_population_type_per_year(year = 2022,
                   )
 p
 ## Raw data can always be accessed with 
-knitr::kable(ggplot2::ggplot_build(p)$plot$data )
+#knitr::kable(ggplot2::ggplot_build(p)$plot$data )
 ```
 
 <!--
@@ -164,35 +201,6 @@ plot_ctr_origin_history(year = 2022,
   
 
 
-## Plot Main Destination from  one specific country 
-
-```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-# 
-plot_ctr_destination(year = 2021,
-                     country_origin_iso3c = "COL",
-                     pop_type = c("REF", "ASY")
-         )
-
-```
-
-    
-
-## Plot Tree Map of Categories
-
-    
-
-```{r examples-plot_ctr_treemap, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
-# 
-plot_ctr_treemap(year = 2021,
-                            country_asylum_iso3c = "USA",
-                            pop_type = c("REF", "ASY")
-         )
-
-```
-
-    
-
-
 
 ## Plot Age Pyramid
 
@@ -200,16 +208,47 @@ plot_ctr_treemap(year = 2021,
 
 ```{r examples-plot_ctr_pyramid, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
-plot_ctr_pyramid(year = 2021,
+plot_ctr_pyramid(year = 2022,
                  country_asylum_iso3c = "COL",
                  pop_type = c("ASY", "REF")
                  )
 
 ```
 
+# Maps
+
+## Plot locations within countries
+
+  
+
+```{r example-plot_ctr_location}
+plot_ctr_location(year = 2022,
+                 country_asylum_iso3c = "COL",
+                 pop_type = c("ASY", "REF", "OIP"))
+
+plot_ctr_location(year = 2021,
+                 country_asylum_iso3c = "COL",
+                 pop_type = c("IDP"))
+
+plot_ctr_location(year = 2022,
+                 country_asylum_iso3c = "CAN",
+                 pop_type = c("ASY", "REF", "OIP"))
+
+plot_ctr_location(year = 2021,
+                 country_asylum_iso3c = "MEX",
+                 pop_type = c("ASY", "REF", "OIP"))
+```
+
+  
+
+  
+
+
+# Refugee Status Determination
+
     
 
-## Plot Refugee Recognition rate
+## Plot Refugee Recognition rate in Country
 
     
 
@@ -296,6 +335,7 @@ plot_ctr_processing_time(year = 2022,
  
  
 
+# Solutions 
 
 ## Plot Solution Over time 
 
@@ -314,6 +354,47 @@ plot_ctr_solution(year = 2021,
   
 
 
+# Forced Displacement and Migration 
+
+## Plot Main Destination from  one specific country 
+
+```{r examples-plot_ctr_destination, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
+# 
+plot_ctr_destination(year = 2021,
+                     country_origin_iso3c = "COL",
+                     pop_type = c("REF", "ASY")
+         )
+
+```
+
+    
+
+
+## plot recognition rate for a nationality
+
+    
+
+  
+
+```{r example-plot_ctr_origin_recognition}
+plot_ctr_origin_recognition(year = 2022,
+                     country_origin_iso3c = "VEN",
+                     top_n_countries = 10, 
+                     measure = "RefugeeRecognitionRate",
+                     order_by = "TotalDecided" )
+```
+
+  
+
+## plot share displaced / migrant for world - region - subregion
+
+bar with share
+
+
+## Plot  share displaced / migrant for top countries
+
+    
+dumbel
 
 
     
@@ -334,7 +415,8 @@ plot_ctr_disp_migrant(year = 2022,
   
 
   
-    
+
+
     
 --- 
 
@@ -502,8 +584,6 @@ plot_reg_increase(year = 2021,
 
 
 ## Proportion of the population who are refugees, by country of origin  (SDG indicator 10.7.4 ) 
-
-    
 
   
 
