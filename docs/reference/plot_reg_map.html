@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">unhcrdatapackage</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,8 @@
 
 
 <dt>region</dt>
-<dd><p>Character value with the related UNHCR bureau - when left null, it will display the whole world</p></dd>
+<dd><p>Character value with the related UNHCR bureau - when left
+null, it will display the whole world</p></dd>
 
 
 <dt>topn</dt>
@@ -87,11 +88,19 @@
 
 
 <dt>pop_type</dt>
-<dd><p>Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)</p></dd>
+<dd><p>Vector of character values. Possible population type 
+(e.g.: REF, IDP, ASY, OIP, OOC, STA)</p></dd>
 
 
-<dt>useBertin</dt>
-<dd><p>-Tells if the map should use Bertin 1953 projection - https://visionscarto.net/bertin-projection-1953)</p></dd>
+<dt>projection</dt>
+<dd><p>use a projection system - default is "Mercator"
+ for instance this can be Bertin 1953 projection - 
+https://visionscarto.net/bertin-projection-1953)</p></dd>
+
+
+<dt>maxSymbolsize</dt>
+<dd><p>size in point to adjust for the maximum value
+to display on the map</p></dd>
 
 </dl></div>
     <div class="section level2">
