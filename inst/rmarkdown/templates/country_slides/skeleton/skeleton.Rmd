@@ -1,0 +1,359 @@
+---
+params:
+  year: 2022
+  country: "CAN"
+  countryname: "Canada"
+title: "Key Statistical Facts on Forced Displacement in  \ `r params$countryname` "
+subtitle:  "Based on publicly released data as of `r params$year`"
+output:
+  unhcrdown::html_slides:
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+# uncomment this line to produce HTML and PDF in RStudio:
+# knit: pagedown::chrome_print
+---
+
+<!--
+Impactful charts with are characterized by their [story telling](https://medium.economist.com/charting-new-territory-7f5afb293270) ability. Using the default plots from the package, the chart effectiveness can be improved by: 
+
+ 1.  Changing charts existing default __title and subtitle__ to replace it with a key message or call to Action  
+
+ 2.  __Annotating__ the chart to provide interpretation hint around the context: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate)
+ 
+ 3. __Highlighting__ specific parts in the chart to reinforce the main message and ease legibility: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)_
+-->
+
+```{r setup, include=FALSE, warning = FALSE, message = FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.showtext = TRUE
+)
+library(officedown)
+library(unhcrthemes)
+library(ggplot2)
+library(rvg)
+library(tidyverse)
+library(scales)
+library(lubridate)
+library(fontawesome)
+# fa_metadata()
+
+##  make sure to get last version 
+if ( packageVersion("unhcrdatapackage") != "0.1.7"){pak::pkg_install("edouard-legoupil/unhcrdatapackage")}
+library(unhcrdatapackage)
+
+
+# turn off the automatic use of showtext functionality, so that the dml function can works properly
+showtext::showtext_auto(FALSE) 
+```
+
+# Data literacy... 
+
+
+
+... describes the ability to read, analyze, and argue with data.
+
+
+
+> ## “__Numbers have an important story to tell. They rely on YOU to give them a voice!__”
+
+> -- Stephen Few
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=7}
+plot_ctr_keyfig(year = params$year,
+                 country_asylum_iso3c = params$country)
+
+```
+
+---
+
+
+# Population Data
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+plot_ctr_treemap(year = params$year,
+                 country_asylum_iso3c = params$country,
+                 pop_type = c("REF", "ASY", "DIP","OOC", "STA", "OIP") ) 
+
+```
+
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+## How the different Categories of Population of concern to UNHCR are evolving over time?
+# According to official information provided by government authorities, as of December `r params$year`, the population of interest to UNHCR in `r params$country` reached `r format(round(total_poc, 0),  big.mark=",")` people. Compared to `r as.numeric(params$year)-1`, the total population `r ifelse(perc_change_poc>0, paste0("has increased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), ifelse(perc_change_poc<0, paste0("has decreased ", format(round(perc_change_poc, 1),  big.mark=","), "% during the year"), "has not changed"))`. Moreover, there was a `r format(round(perc_change_asy_ref, 0),  big.mark=",")`% `r ifelse(perc_change_asy_ref>0, "growth", ifelse(perc_change_asy_ref<0, "drop","change"))` of refugees and asylum seekers in the country.
+plot_ctr_population_type_per_year(year = 2022,
+                                  lag = 5,
+                         country_asylum_iso3c = params$country,
+                          pop_type = c("REF",
+                                       "ASY",
+                                       "OIP",
+                                       "OOC",
+                                       "STA",
+                                       "IDP" )) 
+
+```
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+
+## What are the main countries of Origin of Forced Displacement across Borders?
+
+#  
+# text <- The three main countries of origin for Refugees were `r top_ref[1,1]` (`r top_ref[1,3]` of the total refugee population), `r top_ref[2,1]` (`r top_ref[2,3]` of the total refugee population) and `r top_ref[3,1]` (`r top_ref[3,3]` of the total refugee population). Regarding the asylum-seeker population, the three main countries of origin for  asylum-seekers were `r top_asy[1,1]` (`r top_asy[1,3]` of the total asylum-seekers  population), `r top_asy[2,1]` (`r top_asy[2,3]` of the total asylum-seekers  population) and `r top_asy[3,1]` (`r top_asy[3,3]` of the total asylum-seekers  population).
+ 
+
+### Refugees
+  
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year)) 
+```
+
+---
+
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+# 
+plot_ctr_origin_history(year = params$year,
+                         country_asylum_iso3c  = params$country,
+                        lag = 5,
+                          pop_type = c("REF", 
+                                       "ASY", 
+                                       "OIP", 
+                                       "IDP" ),
+                        otherprop = .02) 
+
+
+```
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+
+### Asylum Seekers
+ 
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "ASY"
+                    ) +
+  labs(title = paste0("Asylum-seekers: Main Countries of origin | ", params$year)) 
+
+```
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+
+plot_ctr_diff_in_pop_groups(year = params$year,
+                            country_asylum_iso3c = params$country,
+                            pop_type = c("REF", "ASY")   ) 
+ 
+```
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_pyramid(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                            pop_type = c(  "REF") ) 
+ 
+
+```
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_pyramid(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                            pop_type = c(  "ASY") ) 
+ 
+
+```
+
+---
+
+
+# Maps
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+plot_ctr_location(year = params$year,
+                 country_asylum_iso3c  = params$country,
+                 pop_type = c("ASY", "REF", "OIP"),
+                 mapbackground = "osm" #  could be "stamen-toner" , "stamen-terrain","stamen-watercolor"
+                 ) 
+ 
+
+```
+
+
+---
+
+
+# Refugee Recognition Determination
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_recognition(year = params$year,
+                    country_asylum_iso3c  = params$country,
+                    top_n_countries = 10, 
+                    measure = "RefugeeRecognitionRate",
+                                 order_by = "TotalDecided" ) 
+
+```
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_recognition(year = params$year,
+                    country_asylum_iso3c  = params$country,
+                    top_n_countries = 10, 
+                    measure = "TotalRecognitionRate",
+                                 order_by = "Recognized" ) 
+
+```
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_asylum(year = params$year,
+                country_asylum_iso3c  = params$country, 
+                lag = 10) 
+
+```
+
+
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+plot_ctr_process(year = params$year,
+                country_asylum_iso3c  = params$country) 
+
+```
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+
+plot_ctr_processing_time(year = params$year,
+                              country_asylum_iso3c = params$country) 
+
+
+```
+
+ 
+---
+
+
+# Durable Solutions
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_solution(year = params$year,
+                  country_asylum_iso3c  = params$country,
+                  pop_type = c("REF", "ASY"))  
+
+```
+
+---
+
+
+# Forced Displacement and Migration
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+## What are the main countries of Destination of Asylum of Forced Displacement across Borders?
+ 
+plot_ctr_destination(year = params$year,
+                     country_origin_iso3c = params$country,
+                     pop_type = c("REF", "ASY")  ) 
+
+```
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_origin_recognition(year = params$year,
+                     country_origin_iso3c = params$country,
+                     top_n_countries = 10,
+                     measure = "RefugeeRecognitionRate",
+                     order_by = "TotalDecided" ) 
+
+```
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_origin_recognition(year = params$year,
+                     country_origin_iso3c = params$country,
+                     top_n_countries = 10,
+                     measure = "TotalRecognitionRate",
+                     order_by = "Recognized" ) 
+
+```
+
+
+
+---
+
+```{r, echo=FALSE, dev = "svglite", fig.retina = 4, out.width="100%", fig.height=8}
+plot_ctr_disp_migrant(year = params$year,
+                     country_asylum_iso3c  = params$country )  
+
+```
+
+---
+
+# Next...
+
+The charts from this slide deck constitute a [chart library](https://edouard-legoupil.github.io/unhcrdatapackage/articles/chart-library.html#country-questions) can be used and re-used in reports, talking points and social medias. The charts are in vector formats and can be easily imported in specialized publication software (like Adobe, Publisher or Inkscape).
+
+You may [enhance the charts story-telling ability](https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html) by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.
+
+You can [contribute](https://edouard-legoupil.github.io/unhcrdatapackage/articles/adding-new-charts.html)  to this data literacy product by reporting potential issues you may have detected, asking questions or sharing ideas for new charts to be included.

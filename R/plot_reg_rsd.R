@@ -77,53 +77,53 @@ plot_reg_rsd <- function(year = 2022,
                        measure == "RefugeeRecognitionRate"  ~ "Refugee Recognition Rate", 
                        measure == "TotalRecognitionRate"  ~ "Total Recognition Rate")
 
-topasyl <-  unhcrdatapackage::asylum_decisions %>%
+topasyl <-  unhcrdatapackage::asylum_decisions |>
   ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
+  dplyr::left_join( unhcrdatapackage::reference |> 
                       select(coa_region = `UNHCRBureau`, iso_3),
-                    by = c("CountryAsylumCode" = "iso_3")) %>% 
-  filter(coa_region == region & Year == year) %>% 
+                    by = c("CountryAsylumCode" = "iso_3")) |> 
+  filter(coa_region == region & Year == year) |> 
   
   ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
- # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
-  mutate(DecisionsAveragePersonsPerCase = 1 ) %>%
-  group_by(CountryAsylumName) %>% 
+ # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) |>
+  mutate(DecisionsAveragePersonsPerCase = 1 ) |>
+  group_by(CountryAsylumName) |> 
   summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
             ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
-            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
+            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) |>
   mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
-         TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) %>%
-  # filter(TotalDecided  != 0) %>%
-  # filter(TotalDecided  > 1000)  %>%
+         TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided ) |>
+  # filter(TotalDecided  != 0) |>
+  # filter(TotalDecided  > 1000)  |>
   mutate(CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"))
   
-topasyl1 <-  topasyl  %>%
-  mutate( measured = .data[[measure]]) %>%
-  arrange(desc(measured)) %>%
+topasyl1 <-  topasyl  |>
+  mutate( measured = .data[[measure]]) |>
+  arrange(desc(measured)) |>
   head(top_n_countries)  
   
  
-topOrigin <-  unhcrdatapackage::asylum_decisions %>%
+topOrigin <-  unhcrdatapackage::asylum_decisions |>
   ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference %>% 
-                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryOriginCode" = "iso_3")) %>% 
-  filter(coa_region == region & Year == year) %>% 
+  dplyr::left_join( unhcrdatapackage::reference |> 
+                      select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryOriginCode" = "iso_3")) |> 
+  filter(coa_region == region & Year == year) |> 
   ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
- # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
-  mutate(DecisionsAveragePersonsPerCase = 1 ) %>%
-  group_by(CountryOriginName) %>% 
+ # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) |>
+  mutate(DecisionsAveragePersonsPerCase = 1 ) |>
+  group_by(CountryOriginName) |> 
   summarize(Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
             ComplementaryProtection = sum(ComplementaryProtection * DecisionsAveragePersonsPerCase, na.rm = TRUE),
-            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) %>%
+            TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)) |>
   mutate(RefugeeRecognitionRate = (Recognized ) / TotalDecided,
-         TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided) %>%
-  # filter(TotalDecided  != 0) %>%
-  # filter(TotalDecided  > 1000)  %>%
+         TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided) |>
+  # filter(TotalDecided  != 0) |>
+  # filter(TotalDecided  > 1000)  |>
   mutate(CountryOriginName = str_replace(CountryOriginName, " \\(Bolivarian Republic of\\)", ""))
 
-topOrigin1 <-  topOrigin  %>%
-  mutate( measured = .data[[measure]])  %>%
-  arrange(desc(measured)) %>%
+topOrigin1 <-  topOrigin  |>
+  mutate( measured = .data[[measure]])  |>
+  arrange(desc(measured)) |>
   head(top_n_countries)   
  
 
@@ -132,10 +132,10 @@ rsdasyl <-  ggplot(topasyl1, aes(y = measured,
   
   
   
-  scale_y_continuous(label =  scales::label_percent(accuracy = 0, suffix = "%") ) + 
+  scale_y_continuous( labels =   scales::label_percent(accuracy = 0, suffix = "%") ) + 
   
   
-  scale_y_continuous(label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
+  scale_y_continuous( labels =    ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
                         scales::label_percent(accuracy = 0, suffix = "%"),
                         scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()) )
                       ) + ## Format axis number
@@ -161,12 +161,12 @@ rsdorigin <- ggplot(topOrigin1, aes(y = measured,
              x = reorder(CountryOriginName, measured))) +
   
   
-  scale_y_continuous( label =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
+  scale_y_continuous( labels =   ifelse( measure %in% c("RefugeeRecognitionRate", "TotalRecognitionRate"), 
                         scales::label_percent(accuracy = 0, suffix = "%"),
                         scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()) )
                       ) + ## Format axis number
   
- # scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
+ # scale_y_continuous( labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
   #facet_grid(.~ ctry_asy) +  
   geom_bar( stat ="identity", fill = "#0072bc") +
   coord_flip() +

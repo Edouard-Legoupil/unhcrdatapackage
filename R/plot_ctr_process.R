@@ -50,14 +50,14 @@ plot_ctr_process <- function(year = 2022,
 
   #table(as.factor(unhcrdatapackage::asylum_decisions_long$CountryAsylumCode))
   
-  links <- unhcrdatapackage::asylum_decisions_long %>%
-    filter(Year == year   & CountryAsylumCode  == country_asylum_iso3c ) %>% 
+  links <- unhcrdatapackage::asylum_decisions_long |>
+    filter(Year == year   & CountryAsylumCode  == country_asylum_iso3c ) |> 
     dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName,
                                                              prop = otherprop, 
-                                                             w = Value)) %>%
+                                                             w = Value)) |>
     ## Group small records under other
     ## Calculate grouped value for Origin to procedure..
-    group_by(CountryOriginName, ProcedureName, DecisionTypeName,Decision.output ) %>%
+    group_by(CountryOriginName, ProcedureName, DecisionTypeName,Decision.output ) |>
     summarise(n = sum(Value, na.rm = TRUE) )  
   # levels(links$Decision.output)
   
@@ -73,7 +73,7 @@ plot_ctr_process <- function(year = 2022,
   } else {
 
   ## summarize data
- flow_table <- links  %>%
+ flow_table <- links  |>
   ggforce::gather_set_data(x = c("CountryOriginName","ProcedureName","DecisionTypeName","Decision.output") ) 
 
 

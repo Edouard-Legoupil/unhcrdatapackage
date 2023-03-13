@@ -5,19 +5,28 @@
 \alias{reference}
 \title{reference}
 \format{
-A data frame with 267 rows and 34 variables:
+A data frame with 270 rows and 38 variables:
 \describe{
   \item{\code{iso_3}}{character COLUMN_DESCRIPTION}
   \item{\code{UNHCRcode}}{character COLUMN_DESCRIPTION}
+  \item{\code{M49_code}}{double COLUMN_DESCRIPTION}
   \item{\code{ctryname}}{character COLUMN_DESCRIPTION}
   \item{\code{namepostat}}{character COLUMN_DESCRIPTION}
   \item{\code{namepostat2}}{character COLUMN_DESCRIPTION}
   \item{\code{gis_name}}{character COLUMN_DESCRIPTION}
   \item{\code{UNHCRBureau}}{character COLUMN_DESCRIPTION}
   \item{\code{main_office}}{character COLUMN_DESCRIPTION}
+  \item{\code{code_op}}{character COLUMN_DESCRIPTION}
+  \item{\code{code_opType}}{character COLUMN_DESCRIPTION}
+  \item{\code{ABCCode}}{character COLUMN_DESCRIPTION}
+  \item{\code{ABCname}}{character COLUMN_DESCRIPTION}
+  \item{\code{OpType}}{character COLUMN_DESCRIPTION}
   \item{\code{hcr_region}}{character COLUMN_DESCRIPTION}
   \item{\code{hcr_subregion}}{character COLUMN_DESCRIPTION}
-  \item{\code{code_op}}{character COLUMN_DESCRIPTION}
+  \item{\code{CONTINENT}}{character COLUMN_DESCRIPTION}
+  \item{\code{REGION_UN}}{character COLUMN_DESCRIPTION}
+  \item{\code{SUBREGION}}{character COLUMN_DESCRIPTION}
+  \item{\code{REGION_WB}}{character COLUMN_DESCRIPTION}
   \item{\code{Latitude}}{double COLUMN_DESCRIPTION}
   \item{\code{Longitude}}{double COLUMN_DESCRIPTION}
   \item{\code{scalerank}}{double COLUMN_DESCRIPTION}
@@ -29,18 +38,13 @@ A data frame with 267 rows and 34 variables:
   \item{\code{TYPE}}{character COLUMN_DESCRIPTION}
   \item{\code{ADMIN}}{character COLUMN_DESCRIPTION}
   \item{\code{ADM0_A3}}{character COLUMN_DESCRIPTION}
-  \item{\code{CONTINENT}}{character COLUMN_DESCRIPTION}
-  \item{\code{REGION_UN}}{character COLUMN_DESCRIPTION}
-  \item{\code{SUBREGION}}{character COLUMN_DESCRIPTION}
-  \item{\code{REGION_WB}}{character COLUMN_DESCRIPTION}
   \item{\code{ECONOMY}}{character COLUMN_DESCRIPTION}
   \item{\code{INCOME_GRP}}{character COLUMN_DESCRIPTION}
   \item{\code{POP_EST}}{double COLUMN_DESCRIPTION}
   \item{\code{POP_RANK}}{double COLUMN_DESCRIPTION}
   \item{\code{GDP_MD_EST}}{double COLUMN_DESCRIPTION}
   \item{\code{POP_YEAR}}{double COLUMN_DESCRIPTION}
-  \item{\code{LASTCENSUS}}{double COLUMN_DESCRIPTION}
-  \item{\code{M49_code}}{double COLUMN_DESCRIPTION} 
+  \item{\code{LASTCENSUS}}{double COLUMN_DESCRIPTION} 
 }
 }
 \source{

@@ -25,12 +25,12 @@ update_dataset <- function(){
 
     ckanr::ckanr_setup("https://data.humdata.org")
     
-    ckanr::package_search("name:unhcr-population-data-for-world", as = "table") %>% 
-      purrr::pluck("results", "resources", 1, "url") %>% 
+    ckanr::package_search("name:unhcr-population-data-for-world", as = "table") |> 
+      purrr::pluck("results", "resources", 1, "url") |> 
       purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
     
     read_sans_hxl <- function(file, ...) {
-      hdrs <- readr::read_csv(file, n_max = 0) %>% names()
+      hdrs <- readr::read_csv(file, n_max = 0) |> names()
       
       readr::read_csv(file, col_names = hdrs, skip = 2, ...)
     }

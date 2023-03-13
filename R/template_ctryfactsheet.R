@@ -37,19 +37,21 @@
 #' # ## get all countries with more than 1000 Reported individuals
 #' # ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
 #' #                                 y= unhcrdatapackage::reference,
-#' #                                 by = c("CountryAsylumCode" = "iso_3")) %>%
+#' #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #' #         filter(Year == year &
-#' #                 UNHCRBureau == region ) %>%
-#' #         group_by( CountryAsylumName, CountryAsylumCode   ) %>%
-#' #         summarise(Value = sum(Value) ) %>%
-#' #         ungroup() %>%
+#' #                 UNHCRBureau == region ) |>
+#' #         group_by( CountryAsylumName, CountryAsylumCode   ) |>
+#' #         summarise(Value = sum(Value) ) |>
+#' #         ungroup() |>
 #' #         filter( Value  > 1000 )
 #' # 
 #' # for ( i in (1:nrow(ctr))) {
 #' #     # i <- 1
 #' #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #' #     cat(paste0(country_asylum_iso3ci, "\n"))
-#' #     unhcrdatapackage::template_CtryFactsheet(year = 2022, country_asylum_iso3c = country_asylum_iso3ci,   folder = "Report")  }
+#' #     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#' #               country_asylum_iso3c = country_asylum_iso3ci,  
+#' #                folder = "Report")  }
 template_CtryFactsheet <- function(year = 2022,
                                    country_asylum_iso3c,
                                    folder = "Report") {

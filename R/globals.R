@@ -4,14 +4,16 @@
 
 
 globalVariables(unique(c(
+  # plot_ctr_keyfig
+  "icon", "pal","fig",
   # plot_ctr_asylum: 
-  "CountryAsylumCode", "iso_3", "Total", "Year", 
+  "CountryAsylumCode", "iso_3", "Total", "Year", "AsylumStage", "ComplementaryProtection", "country_asylum_iso3", "ctryname", "NumberApplications", "OtherwiseClosed", "Recognized", "Rejected", "TotalDecided", 
   # plot_ctr_destination: 
-  "CountryAsylumName", "CountryOriginCode", "DisplacedAcrossBorders", "DisplacedAcrossBordersRound", "iso_3", "Population.type", "Value", "Year", 
+  "ctryname", "CountryAsylumName", "CountryOriginCode", "DisplacedAcrossBorders", "DisplacedAcrossBordersRound", "iso_3", "Population.type", "Value", "Year", 
   # plot_ctr_diff_in_pop_groups: 
   "CountryAsylumCode", "CountryAsylumName", "diffabs", "diffper", "diffperc", "OIP_diffperc", "REF_diffabs", "v", "value", "value_type", "Year", 
   # plot_ctr_disp_migrant: 
-  "CountryAsylumCode", "CountryOriginCode", "CountryOriginName", "iso_3", "Population.type", "totImmigrant", "UNHCRBureau", "Value", "Year", 
+  "Asylum_Refugee_in", "CountryDestinationM49", "ctryname", "hcr_subregion", "Immigrant", "INCOME_GRP", "M49_code", "ratioAsylum_Immigrant", "shareOrgin", "SP.POP.TOTL", "population_type", "CountryAsylumCode", "CountryOriginCode", "CountryOriginName", "iso_3", "Population.type", "totImmigrant", "UNHCRBureau", "Value", "Year", 
   # plot_ctr_location: 
   "CountryAsylumCode", "iso_3", "iso_a3", "latitude", "level", "location", "location_level", "locpcode", "longitude", "Population.type", "Population.type.label.short", "Total", "Year", 
   # plot_ctr_origin_history: 
@@ -23,43 +25,43 @@ globalVariables(unique(c(
   # plot_ctr_population_type_perc: 
   "CountryAsylumCode", "CountryAsylumName", "CountryOriginName", "origin_data_prot", "perc", "pop_type_value", "Year", 
   # plot_ctr_process: 
-  "CountryAsylumCode", "CountryOriginName", "iso_3", "ProcedureName", "Value", "Year", 
+  "CountryAsylumCode", "CountryOriginName", "iso_3", "ProcedureName", "Value", "Year", "DecisionTypeName","Decision.output", "x", "id", "y",
   # plot_ctr_processing_time: 
-  "CountryAsylumCode", "CountryAsylumName", "CountryOriginCode", "iso_3", "ProcedureName", "Year", 
+  "ComplementaryProtection", "country_asylum_iso3", "ctryname", "DecisionTypeCode", "flow", "NumberApplications", "OtherwiseClosed", "ProcedureType", "Recognized", "Rejected", "TotalDecided", "CountryAsylumCode", "CountryAsylumName", "CountryOriginCode", "iso_3", "ProcedureName", "Year", 
   # plot_ctr_pyramid: 
-  "age", "CountryAsylumCode", "Female04", "Female1217", "Female1859", "Female511", "Female60ormore", "FemaleTotal", "FemaleUnknown", "gender", "iso_3", "Male04", "Male1217", "Male1859", "Male511", "Male60ormore", "MaleTotal", "MaleUnknown", "pc", "Population.type", "Population.type.label.short", "Total", "totGen", "UNHCRBureau", "Year", 
+  "ctryname", "FamilyName", "female", "fontfile", "male", "age", "CountryAsylumCode", "Female04", "Female1217", "Female1859", "Female511", "Female60ormore", "FemaleTotal", "FemaleUnknown", "gender", "iso_3", "Male04", "Male1217", "Male1859", "Male511", "Male60ormore", "MaleTotal", "MaleUnknown", "pc", "Population.type", "Population.type.label.short", "Total", "totGen", "UNHCRBureau", "Year", 
   # plot_ctr_recognition: 
-  "CountryAsylumCode", "CountryOriginName", "iso_3", "Year", 
+  "ComplementaryProtection", "ctryname", "DecisionsAveragePersonsPerCase", "measured", "Recognized", "TotalDecided", "CountryAsylumCode", "CountryOriginName", "iso_3", "Year", 
   # plot_ctr_solution: 
-  "CountryAsylumCode", "iso_3", "Value", "Year", 
+  "ctryname", "Solution.type.label", "Value2", "CountryAsylumCode", "iso_3", "Value", "Year", 
   # plot_ctr_treemap: 
-  "CountryAsylumCode", "CountryAsylumName", "iso_3", "Population.type", "Population.type.label", "Population.type.label.short", "Value", "Year", 
+  "ctryname", "CountryAsylumCode", "CountryAsylumName", "iso_3", "Population.type", "Population.type.label", "Population.type.label.short", "Value", "Year", 
   # plot_reg_decrease: 
-  "CountryAsylumName", "Population.type", "UNHCRBureau", "Value", "Year", 
+  "gap", "Value2", "CountryAsylumName", "Population.type", "UNHCRBureau", "Value", "Year", 
   # plot_reg_evolution: 
   "Population.type", "UNHCRBureau", "Value", "Year", 
   # plot_reg_increase: 
-  "CountryAsylumName", "Population.type", "UNHCRBureau", "Value", "Year", 
+  "gap", "Value2", "CountryAsylumName", "Population.type", "UNHCRBureau", "Value", "Year", 
   # plot_reg_map: 
-  ".", "CountryAsylumCode", "CountryAsylumName", "iso_3", "Population.type", "UNHCRBureau", "Value", "Year", 
+  "adm0_a3", "continent", "Latitude", "Longitude", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "SP.POP.TOTL",".", "CountryAsylumCode", "CountryAsylumName", "iso_3", "Population.type", "UNHCRBureau", "Value", "Year", 
   # plot_reg_origin_dest: 
-  "CountryAsylumName", "CountryOriginName", "iso_3", "UNHCRBureau", "Year", 
+  "ASY", "coa_region", "OIP", "REF", "total","CountryAsylumName", "CountryOriginName", "iso_3", "UNHCRBureau", "Year", 
   # plot_reg_population_type_abs: 
-  "CountryAsylumName", "diff_pop_type_value", "iso_3", "Population.type", "UNHCRBureau", "Value", "Year", 
+  "coa_region", "CountryAsylumName", "diff_pop_type_value", "iso_3", "Population.type", "UNHCRBureau", "Value", "Year", 
   # plot_reg_population_type_per_year: 
-  "..y..", "iso_3", "Population.type", "Population.type.label", "UNHCRBureau", "Value", "Year", 
+  "coa_region", "..y..", "iso_3", "Population.type", "Population.type.label", "UNHCRBureau", "Value", "Year", 
   # plot_reg_prop_origin: 
-  "CountryOriginCode", "CountryOriginName", "Population.type", "UNHCRBureau", "Value", "Year", 
+  "ref.part", "SP.POP.TOTL", "Value2", "CountryOriginCode", "CountryOriginName", "Population.type", "UNHCRBureau", "Value", "Year", 
   # plot_reg_rsd: 
-  "CountryAsylumName", "CountryOriginName", "iso_3", "UNHCRBureau", "Year", 
+  "coa_region", "ComplementaryProtection", "DecisionsAveragePersonsPerCase", "measured", "Recognized", "TotalDecided","CountryAsylumName", "CountryOriginName", "iso_3", "UNHCRBureau", "Year", 
   # plot_reg_share: 
-  "Population.type", "Population.type.label", "UNHCRBureau", "Value", "Year", 
+  "Compare", "freq", "Population.type", "Population.type.label", "UNHCRBureau", "Value", "Year", 
   # plot_reg_solution: 
-  "UNHCRBureau", "Value", "Year", 
+  "label", "Solution.type", "Solution.type.label", "UNHCRBureau", "Value", "Year", 
   # plot_reg_treemap: 
-  "Population.type", "Population.type.label", "UNHCRBureau", "Value", "Year", 
+  "freqinReg", "Population.type", "Population.type.label", "UNHCRBureau", "Value", "Year", 
   # template_CtryFactsheet: 
-  "iso_3", 
+  "ctryname","iso_3", 
   # template_CtryPrez: 
-  "iso_3"
+  "ctryname", "iso_3"
 )))

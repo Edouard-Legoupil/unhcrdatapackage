@@ -39,7 +39,7 @@ plot_reg_evolution <- function(year = 2022,
   
   allpop <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                               y= unhcrdatapackage::reference, 
-                              by = c("CountryAsylumCode" = "iso_3")) %>% 
+                              by = c("CountryAsylumCode" = "iso_3")) |> 
               dplyr::filter(Population.type   %in%  pop_type & 
                               Year >=  (year - lag) &
                               UNHCRBureau  == region )|> 

@@ -10,19 +10,22 @@
 #' 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
-#' @importFrom  ggtext geom_textbox
+#' @importFrom ggtext geom_textbox
 #' @importFrom unhcrthemes theme_unhcr
 #' @importFrom extrafont fonttable font_import
 #' @importFrom sysfonts font_add
+#' @importFrom utils download.file
+#' 
 #' @export
+
 #' @examples
 #' plot_ctr_keyfig(year = 2022,
 #'                 country_asylum_iso3c = "COL")
 plot_ctr_keyfig <- function(country_asylum_iso3c, year){
 
     ## FontAwesome6  includes humanitarian icon... 
-    fontcheck <- extrafont::fonttable() %>% 
-              dplyr::as_tibble() %>% 
+    fontcheck <- extrafont::fonttable() |>
+              dplyr::as_tibble() |>
               dplyr::filter(grepl("Awesom", FamilyName)) 
 
     if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
@@ -162,6 +165,7 @@ keyfig <- data.frame(
                                    "OOC" ="#8395b9",
                                    "STA"="#E1CC0D")) +
   xlim(c(0, 2)) +
+  ylim(c(0, 3)) +
   facet_wrap(vars(fig), ncol = 2)  +
   labs(title = paste0("Key Figures for ", CountryAsylum_name_text, " as of ", year), 
        subtitle = paste0("A total of ",

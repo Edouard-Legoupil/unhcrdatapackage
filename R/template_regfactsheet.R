@@ -10,8 +10,10 @@
 #' 
 #' @param year Numeric value of the year (for instance 2020)
 #' @param region Bureau that covers all the countrie factsheet to generate
-#' @param lag Number of year to used as comparison base#' @param folder folder within your project where to put the generated report. 
-#' Folder will be created if it does not exist
+#' @param lag Number of year to used as comparison base
+#' @param folder folder within your project where to put the generated report. 
+#'           Folder will be created if it does not exist
+#'           
 #' @importFrom unhcrdown paged_simple
 #' @importFrom dplyr filter select pull
 #' @importFrom rmarkdown render
@@ -24,7 +26,9 @@
 
 #' @examples
 #' 
-#' # template_RegFactsheet(year = 2022, region = "Europe", lag = 10,   folder = "Report")
+#' # template_RegFactsheet(year = 2022, 
+#' #                       region = "Europe", lag = 10,  
+#' #                       folder = "Report")
 #' 
 #' ## We can also generate all factsheets in a loop for 2022
 #' 
@@ -35,7 +39,8 @@
 #' # 
 #' # for( reg in region) {
 #' #   unhcrdatapackage::template_RegFactsheet(year = 2022, 
-#' #                         region = reg, lag = 10,   folder = "Report")
+#' #                         region = reg, lag = 10, 
+#' #                         folder = "Report")
 #' # }
 #' 
 #' 

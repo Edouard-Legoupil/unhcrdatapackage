@@ -47,16 +47,16 @@ plot_ctr_solution <- function(year = 2021,
                 pull()
   
   
-    Solution <- unhcrdatapackage::solutions_long  %>%
+    Solution <- unhcrdatapackage::solutions_long  |>
                 dplyr::left_join(y= unhcrdatapackage::reference, 
-                               by = c("CountryAsylumCode" = "iso_3")) %>%
+                               by = c("CountryAsylumCode" = "iso_3")) |>
       
               filter(CountryAsylumCode  == country_asylum_iso3c & 
                       Year > (year - lag) &
-                      Solution.type.label != "IDP returns" ) %>%
-              mutate(Year = as.factor(Year) ) %>%
-              group_by(Year, Solution.type.label ) %>%
-              summarise(Value2 = sum(Value) )  %>%
+                      Solution.type.label != "IDP returns" ) |>
+              mutate(Year = as.factor(Year) ) |>
+              group_by(Year, Solution.type.label ) |>
+              summarise(Value2 = sum(Value) )  |>
               mutate( valabel =  ifelse(Value2 > 1000, 
                                        paste(scales::label_number_si(accuracy = 0.1)(Value2)),
                                        as.character(Value2)) )   
@@ -89,9 +89,9 @@ p <- ggplot(Solution, aes(x = Year, y = Value2  )) +
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc" ) + # here we configure that it will be bar chart
- # scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
+ # scale_y_continuous( labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
   
-  scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+
+  scale_y_continuous( labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+
 
   scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
   #xlim(c(year-lag, year +1)) +

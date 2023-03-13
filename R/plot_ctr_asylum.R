@@ -79,7 +79,7 @@ plot_ctr_asylum <- function(year = 2022,
     # scale_fill_manual(values = c( "#FAAB18", "#0072bc", "#FEEB18")) +  
      scale_x_continuous(breaks = pretty_breaks(10)) +
     # scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
-     scale_y_continuous( label = scales::label_number(accuracy = 1, scale_cut = cut_short_scale()))+ ## Format axis number
+     scale_y_continuous( labels = scales::label_number(accuracy = 1, scale_cut = cut_short_scale()))+ ## Format axis number
      labs(title = paste0( " Asylum Applications & Decisions | ", ctrylabel, " " ,  (year-lag) ," - ", year),
        subtitle = paste0( "Note that under certain circumstance, one person may have more than one applications "), 
        x="",

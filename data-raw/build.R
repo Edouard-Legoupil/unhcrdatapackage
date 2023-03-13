@@ -338,14 +338,6 @@ tools::resaveRdaFiles(here::here("data","asylum_decisions_long.RData"),compress=
 # table(asylum$gapapplieddecided, useNA = "ifany")
 
 
-## Reference ######
-
-reference <- readr::read_csv(here::here("data-raw","reference.csv"))
-save(reference, file =  here::here("data","reference.RData"))
-sinew::makeOxygen(reference, add_fields = "source")
-tools::resaveRdaFiles(here::here("data","reference.RData"),compress="xz")
-
-
 
 
 

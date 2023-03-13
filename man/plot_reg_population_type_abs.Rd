@@ -20,6 +20,8 @@ plot_reg_population_type_abs(
 \item{top_n_countries}{Numeric value of number of main countries that the graph should display}
 
 \item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)}
+
+\item{show_diff_label}{logical to indicate whether or not adding the the label displaying difference in percentage compared to the previous year}
 }
 \value{
 a ggplot2 object

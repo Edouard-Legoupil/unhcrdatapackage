@@ -16,7 +16,6 @@ A data frame with 160,334 rows and 13 variables:
   \item{\code{ProcedureName}}{character Procedure Name}
   \item{\code{DecisionTypeCode}}{character Decision Type Code}
   \item{\code{DecisionTypeName}}{character Decision Type Name}
-  \item{\code{DecisionDataType}}{character Decision Data Type}
   \item{\code{DecisionData}}{character Decision Data}
   \item{\code{DecisionsAveragePersonsPerCase}}{integer Decisions Average Persons Per Case}
   \item{\code{Decision.output}}{integer COLUMN_DESCRIPTION}

@@ -49,7 +49,11 @@ knitr::opts_chunk$set(echo = FALSE,
 library(testthat)
 library(ggplot2)
 library(unhcrthemes)
+
+##  make sure to get last version 
+if ( packageVersion("unhcrdatapackage") != "0.1.7"){pak::pkg_install("edouard-legoupil/unhcrdatapackage")}
 library(unhcrdatapackage)
+
 theme_set( unhcrthemes::theme_unhcr())
 
 ```
@@ -239,7 +243,7 @@ According to official information provided by government authorities, as of Dece
 :::
 
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 1, fig.width = 12, fig.asp = 0.618, fig.align = "left", dev = "ragg_png", out.width = "110%"}
-plot_ctr_population_type_per_year(year = 2022,
+plot_ctr_population_type_per_year(year = params$year,
                                   lag = 5,
                          country_asylum_iso3c = params$country,
                           pop_type = c("REF",

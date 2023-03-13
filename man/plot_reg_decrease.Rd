@@ -19,9 +19,11 @@ plot_reg_decrease(
 
 \item{topn}{how many top countries to show..}
 
-\item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
+\item{region}{Character value with the related UNHCR bureau - when left null,
+it will display the whole world}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
+\item{pop_type}{Vector of character values. Possible population type 
+(e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \value{
 a ggplot2 object

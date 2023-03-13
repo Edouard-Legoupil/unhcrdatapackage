@@ -3,9 +3,14 @@
 #' Main country of origin - Absolute value
 #'
 #' @param year Numeric value of the year (for instance 2020)
+#' 
 #' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' 
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
+#' 
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)
+#' 
+#' @param show_diff_label logical to indicate whether or not adding the the label displaying difference in percentage compared to the previous year
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -139,7 +144,8 @@ plot_reg_population_type_abs <- function(year = 2022,
   if(show_diff_label == TRUE) {
     # diff label positive general
     p <- p + geom_text( 
-      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (Value < max(Value) / 1.5)),
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & 
+                      (Value < max(Value) / 1.5)),
       aes(
         y = Value,
         x = reorder(CountryAsylumName, Value),
@@ -152,7 +158,8 @@ plot_reg_population_type_abs <- function(year = 2022,
     ) +
       # diff label negative general
       geom_text(
-        data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (Value < max(Value) / 1.5)),
+        data = subset(df, with(df, grepl('-', diff_pop_type_value)) &
+                        (Value < max(Value) / 1.5)),
         aes(
           y = Value,
           x = reorder(CountryAsylumName, Value),
@@ -165,7 +172,8 @@ plot_reg_population_type_abs <- function(year = 2022,
       ) +
       # diff label positive max
       geom_text(
-        data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (Value >= max(Value) / 1.5)),
+        data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & 
+                        (Value >= max(Value) / 1.5)),
         aes(
           y = Value,
           x = reorder(CountryAsylumName, Value),
@@ -178,7 +186,8 @@ plot_reg_population_type_abs <- function(year = 2022,
       ) +
       # diff label negative max
       geom_text(
-        data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (Value >= max(Value) / 1.5)),
+        data = subset(df, with(df, grepl('-', diff_pop_type_value)) & 
+                        (Value >= max(Value) / 1.5)),
         aes(
           y = Value,
           x = reorder(CountryAsylumName, Value),
@@ -192,7 +201,8 @@ plot_reg_population_type_abs <- function(year = 2022,
   
   p <- p +
     labs(
-      title = paste0("Main Host Countries for ", labelcat , " | ",  year, " in ", region),
+      title = paste0("Main Host Countries for ", labelcat ,
+                     " | ",  year, " in ", region),
       subtitle = paste0(
         "Number of people for top ",
         top_n_countries,

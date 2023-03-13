@@ -16,13 +16,20 @@ plot_reg_map(
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
+\item{region}{Character value with the related UNHCR bureau - when left
+null, it will display the whole world}
 
 \item{topn}{how many top countries to show..}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
+\item{pop_type}{Vector of character values. Possible population type 
+(e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 
-\item{useBertin}{-Tells if the map should use Bertin 1953 projection - https://visionscarto.net/bertin-projection-1953)}
+\item{projection}{use a projection system - default is "Mercator"
+ for instance this can be Bertin 1953 projection - 
+https://visionscarto.net/bertin-projection-1953)}
+
+\item{maxSymbolsize}{size in point to adjust for the maximum value
+to display on the map}
 }
 \value{
 a base plot

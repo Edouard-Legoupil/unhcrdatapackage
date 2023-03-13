@@ -207,7 +207,16 @@ value<a class="anchor" aria-label="anchor" href="#plot-main-country-of-origin-in
 <span>                    top_n_countries <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>                    pop_type <span class="op">=</span> <span class="st">"REF"</span>,</span>
 <span>                    show_diff_label <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>                    <span class="op">)</span> </span></code></pre></div>
+<span>                    <span class="op">)</span> </span>
+<span><span class="co">#&gt; Warning: There was 1 warning in `mutate()`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `origin_data_prot = forcats::fct_explicit_na(origin_data_prot,</span></span>
+<span><span class="co">#&gt;   "Other nationalities")`.</span></span>
+<span><span class="co">#&gt; Caused by warning:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `fct_explicit_na()` was deprecated in forcats 1.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `fct_na_value_to_level()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">unhcrdatapackage</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;</span></span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/examples-plot_ctr_population_type_abs-1.png" width="90%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -247,7 +256,15 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <span><span class="fu"><a href="../reference/plot_ctr_diff_in_pop_groups.html">plot_ctr_diff_in_pop_groups</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                            country_asylum_iso3c <span class="op">=</span> <span class="st">"ARG"</span>,</span>
 <span>                            pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span><span class="op">)</span></span>
-<span>         <span class="op">)</span></span></code></pre></div>
+<span>         <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in</span></span>
+<span><span class="co">#&gt; dplyr 1.1.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `reframe()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> When switching from `summarise()` to `reframe()`, remember that `reframe()`</span></span>
+<span><span class="co">#&gt;   always returns an ungrouped data frame and adjust accordingly.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">unhcrdatapackage</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;</span></span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/examples-plot_ctr_diff_in_pop_groups-1.png" width="90%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
@@ -336,7 +353,7 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_asylum.html">plot_ctr_asylum</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                country_asylum_iso3c <span class="op">=</span> <span class="st">"ECU"</span>, </span>
 <span>                            lag <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = c("Year", "CountryAsylumCode")</span></span></code></pre></div>
+<span><span class="co">#&gt; Joining with `by = join_by(Year, CountryAsylumCode)`</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_ctr_asylum-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -367,14 +384,14 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_processing_time.html">plot_ctr_processing_time</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"ARG"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = c("Year", "CountryAsylumCode")</span></span></code></pre></div>
+<span><span class="co">#&gt; Joining with `by = join_by(Year, CountryAsylumCode)`</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_ctr_processing_time-1.png" width="700"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_ctr_processing_time.html">plot_ctr_processing_time</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"USA"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = c("Year", "CountryAsylumCode")</span></span></code></pre></div>
+<span><span class="co">#&gt; Joining with `by = join_by(Year, CountryAsylumCode)`</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_ctr_processing_time-2.png" width="700"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -383,7 +400,7 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"EGY"</span>,</span>
 <span>                         country_origin_iso3c <span class="op">=</span> <span class="st">"ERI"</span>,</span>
 <span>                         procedureType <span class="op">=</span> <span class="st">"U"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = c("Year", "CountryAsylumCode")</span></span></code></pre></div>
+<span><span class="co">#&gt; Joining with `by = join_by(Year, CountryAsylumCode)`</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_ctr_processing_time-3.png" width="700"></p>
 </div>
 </div>
@@ -397,7 +414,11 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_ctr_solution.html">plot_ctr_solution</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>                  country_asylum_iso3c<span class="op">=</span> <span class="st">"UGA"</span>,</span>
 <span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: `label_number_si()` was deprecated in scales 1.2.0.</span></span>
+<span><span class="co">#&gt; Warning: There was 1 warning in `mutate()`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `valabel = ifelse(...)`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In group 1: `Year = 2012`.</span></span>
+<span><span class="co">#&gt; Caused by warning:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `label_number_si()` was deprecated in scales 1.2.0.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `scale_cut` argument of `label_number()` instead.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">unhcrdatapackage</span> package.</span></span>
 <span><span class="co">#&gt;   Please report the issue at</span></span>
@@ -670,36 +691,36 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <span>                            region <span class="op">=</span> <span class="st">"Americas"</span>,</span>
 <span>                            lag <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : span too small. fewer data values than degrees of freedom.</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : pseudoinverse used at 2012</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : neighborhood radius 1.05</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : reciprocal condition number 0</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : There are other near singularities as well. 1.1025</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : span too small. fewer data values than degrees of freedom.</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : pseudoinverse used at 2012</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : neighborhood radius 1.05</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : reciprocal condition number 0</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : There are other near singularities as well. 1.1025</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : span too small. fewer data values than degrees of freedom.</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : pseudoinverse used at 2012</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : neighborhood radius 1.045</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : reciprocal condition number 0</span></span>
-<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric =</span></span>
-<span><span class="co">#&gt; parametric, : There are other near singularities as well. 1.092</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : span too small.  fewer data values than degrees of freedom.</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : pseudoinverse used at 2012</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : neighborhood radius 1.05</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : reciprocal condition number 0</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : There are other near singularities as well. 1.1025</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : span too small.  fewer data values than degrees of freedom.</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : pseudoinverse used at 2012</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : neighborhood radius 1.05</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : reciprocal condition number 0</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : There are other near singularities as well. 1.1025</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : span too small.  fewer data values than degrees of freedom.</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : pseudoinverse used at 2012</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : neighborhood radius 1.045</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : reciprocal condition number 0</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : There are other near singularities as well. 1.092</span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_solution-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -749,12 +770,12 @@ are available either for countries or regions.</p>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
 <span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
 <span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
-<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) %&gt;%</span></span>
+<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
-<span><span class="co">#                 UNHCRBureau == region ) %&gt;%</span></span>
-<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) %&gt;%</span></span>
-<span><span class="co">#         summarise(Value = sum(Value) ) %&gt;%</span></span>
-<span><span class="co">#         ungroup() %&gt;%</span></span>
+<span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
+<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) |&gt;</span></span>
+<span><span class="co">#         summarise(Value = sum(Value) ) |&gt;</span></span>
+<span><span class="co">#         ungroup() |&gt;</span></span>
 <span><span class="co">#         filter( Value  &gt; 1000 )</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># for ( i in (1:nrow(ctr))) {</span></span>
@@ -777,12 +798,12 @@ are available either for countries or regions.</p>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
 <span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
 <span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
-<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) %&gt;%</span></span>
+<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
-<span><span class="co">#                 UNHCRBureau == region ) %&gt;%</span></span>
-<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) %&gt;%</span></span>
-<span><span class="co">#         summarise(Value = sum(Value) ) %&gt;%</span></span>
-<span><span class="co">#         ungroup() %&gt;%</span></span>
+<span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
+<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) |&gt;</span></span>
+<span><span class="co">#         summarise(Value = sum(Value) ) |&gt;</span></span>
+<span><span class="co">#         ungroup() |&gt;</span></span>
 <span><span class="co">#         filter( Value  &gt; 1000 )</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># for ( i in (1:nrow(ctr))) {</span></span>
@@ -823,12 +844,12 @@ are available either for countries or regions.</p>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
 <span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
 <span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
-<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) %&gt;%</span></span>
+<span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
-<span><span class="co">#                 UNHCRBureau == region ) %&gt;%</span></span>
-<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) %&gt;%</span></span>
-<span><span class="co">#         summarise(Value = sum(Value) ) %&gt;%</span></span>
-<span><span class="co">#         ungroup() %&gt;%</span></span>
+<span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
+<span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) |&gt;</span></span>
+<span><span class="co">#         summarise(Value = sum(Value) ) |&gt;</span></span>
+<span><span class="co">#         ungroup() |&gt;</span></span>
 <span><span class="co">#         filter( Value  &gt; 1000 )</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co">#   for ( i in (1:nrow(ctr))) {</span></span>

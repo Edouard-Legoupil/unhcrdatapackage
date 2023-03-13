@@ -3,9 +3,15 @@
 #' Main country of origin - Absolute value
 #'
 #' @param year Numeric value of the year (for instance 2020)
+#' 
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' 
 #' @param top_n_countries Numeric value of number of main countries that the graph should display
+#' 
 #' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)
+#' 
+#' @param show_diff_label logical to indicate whether or not adding the the label displaying difference in percentage compared to the previous year
+#' 
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary

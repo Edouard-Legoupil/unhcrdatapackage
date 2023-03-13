@@ -7,8 +7,10 @@
 #' @param year Numeric value of the year (for instance 2020)
 #' @param lag Number of year to used as comparison base
 #' @param topn how many top countries to show..
-#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @param region Character value with the related UNHCR bureau - when left null, 
+#'              it will display the whole world
+#' @param pop_type Vector of character values. Possible population type 
+#'                  (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -53,23 +55,23 @@ plot_reg_increase <- function(  year = 2021,
   baseline <- thisyear -lag
   data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
-    filter(Population.type  %in% pop_type)  %>%
-    filter(Year == baseline | Year == thisyear) %>%
+                                                     by = c("CountryAsylumCode" = "iso_3")) |>
+    filter(Population.type  %in% pop_type)  |>
+    filter(Year == baseline | Year == thisyear) |>
     mutate( Year = case_when(
       Year == thisyear ~ paste("thisyear"),
-      Year == baseline ~ paste("baseline") )) %>%
-    filter(UNHCRBureau == region) %>%
-    group_by( CountryAsylumName, Year) %>%
-    summarise(Value2 = sum(Value) )  %>%
-    select(CountryAsylumName, Year, Value2) %>% 
+      Year == baseline ~ paste("baseline") )) |>
+    filter(UNHCRBureau == region) |>
+    group_by( CountryAsylumName, Year) |>
+    summarise(Value2 = sum(Value) )  |>
+    select(CountryAsylumName, Year, Value2) |> 
     mutate(CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
         CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
-        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) %>% 
-   # mutate(Year = paste0("year_",Year )) %>%
-    spread(Year, Value2) %>%
-    mutate(gap =   thisyear -baseline  ) %>%
-    arrange(desc(gap)) %>%
+        CountryAsylumName = str_replace(CountryAsylumName, "United Kingdom of Great Britain and Northern Ireland", "UK")) |> 
+   # mutate(Year = paste0("year_",Year )) |>
+    spread(Year, Value2) |>
+    mutate(gap =   thisyear -baseline  ) |>
+    arrange(desc(gap)) |>
     head(topn) 
   
  p <- ggplot(data, aes(x = baseline , 
@@ -84,7 +86,9 @@ plot_reg_increase <- function(  year = 2021,
        subtitle = paste0("Biggest increase in Refugee Population, ", baseline," - ",thisyear),
        x="", y ="",
        caption = "Source: UNHCR.org/refugee-statistics") +
-  scale_x_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+ ## Format axis number
+   ## Format axis number
+  scale_x_continuous(labels = scales::label_number(accuracy = 1,   
+                                                   scale_cut = cut_short_scale()))+ 
   theme_unhcr(font_size = 14)  + ## Insert UNHCR Style
   theme(panel.grid.major.x = element_line(color = "#cbcbcb"), 
         panel.grid.major.y = element_blank()) ### changing grid line that should appear

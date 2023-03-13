@@ -80,13 +80,13 @@ plot_ctr_origin_recognition <- function(year = 2022,
        order_by == "TotalDecided"  ~ "Total Decision (independently of the outcome)"
      )
    
-   topAsylum <-  unhcrdatapackage::asylum_decisions %>%
+   topAsylum <-  unhcrdatapackage::asylum_decisions |>
      filter(CountryOriginCode == country_origin_iso3c &
-              Year == year) %>%
+              Year == year) |>
      ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
-     # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) %>%
-     mutate(DecisionsAveragePersonsPerCase = 1) %>%
-     group_by(CountryAsylumName) %>%
+     # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) |>
+     mutate(DecisionsAveragePersonsPerCase = 1) |>
+     group_by(CountryAsylumName) |>
      summarize(
        Recognized = sum(Recognized * DecisionsAveragePersonsPerCase, na.rm = TRUE),
        ComplementaryProtection = sum(
@@ -94,16 +94,16 @@ plot_ctr_origin_recognition <- function(year = 2022,
          na.rm = TRUE
        ),
        TotalDecided = sum(TotalDecided * DecisionsAveragePersonsPerCase, na.rm = TRUE)
-     ) %>%
+     ) |>
      mutate(
        RefugeeRecognitionRate = (Recognized) / TotalDecided,
        TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided
      )   
 
-   topAsylum1 <-  topAsylum  %>%
-     mutate(measured = .data[[measure]])  %>%
-     mutate(order_by = .data[[order_by]])  %>%
-     arrange(desc(order_by)) %>%
+   topAsylum1 <-  topAsylum  |>
+     mutate(measured = .data[[measure]])  |>
+     mutate(order_by = .data[[order_by]])  |>
+     arrange(desc(order_by)) |>
      head(top_n_countries)   
  
  
@@ -115,8 +115,8 @@ plot_ctr_origin_recognition <- function(year = 2022,
                   x = reorder(CountryAsylumName, measured)),
               stat = "identity", fill = "#0072bc") +
      coord_flip() +
-     #scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
-     scale_y_continuous(label =  scales::label_percent(accuracy = 0.1, suffix = "%")) +
+     #scale_y_continuous( labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
+     scale_y_continuous( labels =   scales::label_percent(accuracy = 0.1, suffix = "%")) +
      
      #facet_grid(.~ ctry_asy) +
      #  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +

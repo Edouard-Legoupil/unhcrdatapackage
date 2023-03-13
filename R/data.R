@@ -3,19 +3,28 @@
 ## Reference ##########
 #' @title reference
 #' @description Code Mapping table
-#' @format A data frame with 267 rows and 34 variables:
+#' @format A data frame with 270 rows and 38 variables:
 #' \describe{
 #'   \item{\code{iso_3}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{UNHCRcode}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{M49_code}}{double COLUMN_DESCRIPTION}
 #'   \item{\code{ctryname}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{namepostat}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{namepostat2}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{gis_name}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{UNHCRBureau}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{main_office}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{code_op}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{code_opType}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{ABCCode}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{ABCname}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{OpType}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{hcr_region}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{hcr_subregion}}{character COLUMN_DESCRIPTION}
-#'   \item{\code{code_op}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{CONTINENT}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{REGION_UN}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{SUBREGION}}{character COLUMN_DESCRIPTION}
+#'   \item{\code{REGION_WB}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{Latitude}}{double COLUMN_DESCRIPTION}
 #'   \item{\code{Longitude}}{double COLUMN_DESCRIPTION}
 #'   \item{\code{scalerank}}{double COLUMN_DESCRIPTION}
@@ -27,18 +36,13 @@
 #'   \item{\code{TYPE}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{ADMIN}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{ADM0_A3}}{character COLUMN_DESCRIPTION}
-#'   \item{\code{CONTINENT}}{character COLUMN_DESCRIPTION}
-#'   \item{\code{REGION_UN}}{character COLUMN_DESCRIPTION}
-#'   \item{\code{SUBREGION}}{character COLUMN_DESCRIPTION}
-#'   \item{\code{REGION_WB}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{ECONOMY}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{INCOME_GRP}}{character COLUMN_DESCRIPTION}
 #'   \item{\code{POP_EST}}{double COLUMN_DESCRIPTION}
 #'   \item{\code{POP_RANK}}{double COLUMN_DESCRIPTION}
 #'   \item{\code{GDP_MD_EST}}{double COLUMN_DESCRIPTION}
 #'   \item{\code{POP_YEAR}}{double COLUMN_DESCRIPTION}
-#'   \item{\code{LASTCENSUS}}{double COLUMN_DESCRIPTION}
-#'   \item{\code{M49_code}}{double COLUMN_DESCRIPTION} 
+#'   \item{\code{LASTCENSUS}}{double COLUMN_DESCRIPTION} 
 #'}
 #' @source \url{http://somewhere.important.com/}
 "reference"
@@ -62,6 +66,7 @@
 #'   \item{\code{OOC}}{integer Number of Others of Concern to UNHCR: Other groups or persons of concern refers to individuals who do not necessarily fall directly into any of these groups above but to whom UNHCR has extended its protection and/or assistance services, based on humanitarian or other special grounds.}
 #'   \item{\code{STA}}{integer Number of Stateless persons: Individuals under UNHCR’s statelessness mandate are defined under the 1954 Convention Relating to the Status of Stateless Persons as those not considered as nationals by any State under the operation of its law. In other words, they do not possess the nationality of any State. UNHCR statistics refer to people who fall under the organization’s statelessness mandate as those who are stateless according to this international definition. Data from some countries may also include people with undetermined nationality. These are people who lack proof of possession of any nationality and at the same time have or are regarded as having important links to more than one State. UNHCR also works with populations at risk of statelessness, but persons at risk of statelessness are not reported on under the statistical category of individuals under UNHCR’s statelessness mandate.}
 #'   \item{\code{OIP}}{integer Number of Other People in Need of International Protection:  People who are outside their country or territory of origin, typically because they have been forcibly displaced across international borders, who have not been reported under other categories (asylum-seekers, refugees, people in refugee-like situation) but who are likely to be in need of international protection and who require protection against forced return, and access to basic services on a temporary or longer-term basis.  } 
+#'   \item{\code{HCO}}{integer Number of Other People in Host Communities  } 
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "end_year_population_totals"
@@ -200,7 +205,6 @@
 #'   \item{\code{ProcedureName}}{character Procedure Name}
 #'   \item{\code{DecisionTypeCode}}{character Decision Type Code}
 #'   \item{\code{DecisionTypeName}}{character Decision Type Name}
-#'   \item{\code{DecisionDataType}}{character Decision Data Type}
 #'   \item{\code{DecisionData}}{character Decision Data}
 #'   \item{\code{DecisionsAveragePersonsPerCase}}{integer Decisions Average Persons Per Case}
 #'   \item{\code{Decision.output}}{integer COLUMN_DESCRIPTION}
@@ -208,7 +212,7 @@
 #'}
 #' @source \url{https://data.humdata.org/dataset/unhcr-population-data-for-world}
 "asylum_decisions_long"
-
+#  \item{\code{DecisionDataType}}{character Decision Data Type}
 
 ## RSD Application ##########
 #' @title Asylum applications by asylum-seekers

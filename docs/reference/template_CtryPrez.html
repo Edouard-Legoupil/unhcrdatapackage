@@ -99,12 +99,12 @@ Folder will be created if it does not exist</p></dd>
 <span class="r-in"><span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span></span>
 <span class="r-in"><span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span></span>
 <span class="r-in"><span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span></span>
-<span class="r-in"><span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) %&gt;%</span></span></span>
+<span class="r-in"><span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span></span>
 <span class="r-in"><span><span class="co">#         filter(Year == year &amp;</span></span></span>
-<span class="r-in"><span><span class="co">#                 UNHCRBureau == region ) %&gt;%</span></span></span>
-<span class="r-in"><span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) %&gt;%</span></span></span>
-<span class="r-in"><span><span class="co">#         summarise(Value = sum(Value) ) %&gt;%</span></span></span>
-<span class="r-in"><span><span class="co">#         ungroup() %&gt;%</span></span></span>
+<span class="r-in"><span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span></span>
+<span class="r-in"><span><span class="co">#         group_by( CountryAsylumName, CountryAsylumCode   ) |&gt;</span></span></span>
+<span class="r-in"><span><span class="co">#         summarise(Value = sum(Value) ) |&gt;</span></span></span>
+<span class="r-in"><span><span class="co">#         ungroup() |&gt;</span></span></span>
 <span class="r-in"><span><span class="co">#         filter( Value  &gt; 1000 )</span></span></span>
 <span class="r-in"><span><span class="co"># </span></span></span>
 <span class="r-in"><span><span class="co"># for ( i in (1:nrow(ctr))) {</span></span></span>

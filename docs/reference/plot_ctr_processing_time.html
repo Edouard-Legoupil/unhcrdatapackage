@@ -105,13 +105,13 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">plot_ctr_processing_time</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span></span>
 <span class="r-in"><span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"ARG"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining, by = c("Year", "CountryAsylumCode")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(Year, CountryAsylumCode)`</span>
 <span class="r-plt img"><img src="plot_ctr_processing_time-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot_ctr_processing_time</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span></span>
 <span class="r-in"><span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"USA"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining, by = c("Year", "CountryAsylumCode")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(Year, CountryAsylumCode)`</span>
 <span class="r-plt img"><img src="plot_ctr_processing_time-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Display a filtered version of the chart for a specific country and procedure</span></span></span>
@@ -119,7 +119,7 @@
 <span class="r-in"><span>                         country_asylum_iso3c <span class="op">=</span> <span class="st">"EGY"</span>,</span></span>
 <span class="r-in"><span>                         country_origin_iso3c <span class="op">=</span> <span class="st">"ERI"</span>,</span></span>
 <span class="r-in"><span>                         procedureType <span class="op">=</span> <span class="st">"U"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining, by = c("Year", "CountryAsylumCode")</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(Year, CountryAsylumCode)`</span>
 <span class="r-plt img"><img src="plot_ctr_processing_time-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -30,7 +30,8 @@ plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
   
 
   ## World bank API to retrieve total population
-  # wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+  # wb_data <- wbstats::wb( indicator = c("SP.POP.TOTL", "NY.GDP.MKTP.CD",
+  #                                     "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
   #              startdate = 1990, 
   #              enddate = year, 
   #              return_wide = TRUE)
@@ -40,7 +41,8 @@ plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
   # names(wb_data)[2] <- "Year"
   
   wb_data <- WDI::WDI(country='all' ,
-                      indicator=c("SP.POP.TOTL", "NY.GDP.MKTP.CD", "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
+                      indicator=c("SP.POP.TOTL", "NY.GDP.MKTP.CD",
+                                  "NY.GDP.PCAP.CD", "NY.GNP.PCAP.CD"),
                       start = 1990, 
                       end = year,
                       extra = TRUE)   
@@ -54,7 +56,7 @@ plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
   
   departed <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
-                                                     by = c("CountryOriginCode" = "iso_3")) %>% 
+                                                     by = c("CountryOriginCode" = "iso_3")) |> 
     dplyr::filter(Population.type  %in% c("REF","ASY","OIP") & 
            Year ==  year &
            UNHCRBureau  == region #&

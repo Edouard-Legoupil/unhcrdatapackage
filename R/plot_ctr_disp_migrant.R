@@ -77,40 +77,40 @@ plot_ctr_disp_migrant <- function(year = 2021,
   ## Getting summary of forcibly displaced   ##############
   displaced <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                y= unhcrdatapackage::reference, 
-                               by = c("CountryAsylumCode" = "iso_3")) %>%
-              filter(Population.type  %in% c("REF", "ASY", "OIP")) %>%
-              filter(CountryAsylumCode == country_asylum_iso3c) %>%
-              filter( Year == max(Year) ) %>%
-              mutate( iso_3 = CountryOriginCode) %>% 
-              group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
-              summarise(Asylum_Refugee_in = sum(Value, na.rm = TRUE) )  %>%
-              filter( iso_3 != "UKN") %>%
-              arrange( desc(Asylum_Refugee_in)) %>%
-             # head(10)%>%
+                               by = c("CountryAsylumCode" = "iso_3")) |>
+              filter(Population.type  %in% c("REF", "ASY", "OIP")) |>
+              filter(CountryAsylumCode == country_asylum_iso3c) |>
+              filter( Year == max(Year) ) |>
+              mutate( iso_3 = CountryOriginCode) |> 
+              group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) |>
+              summarise(Asylum_Refugee_in = sum(Value, na.rm = TRUE) )  |>
+              filter( iso_3 != "UKN") |>
+              arrange( desc(Asylum_Refugee_in)) |>
+             # head(10)|>
               as.data.frame()
   
   
   ## Now getting migrant data  ##############
   migrant <-  left_join( x= unhcrdatapackage::migrants, 
                                y= unhcrdatapackage::reference, 
-                               by = c("CountryOriginM49" = "M49_code")) %>%
-              filter(CountryDestinationM49 == thiscodeM49) %>%
-              filter( Year == 2020 ) %>%
-              as.data.frame() %>%
-              group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) %>%
-              summarise(Immigrant = sum(Value) ) %>%
-              ungroup()#%>%
-              #mutate( shareOrgin = (Immigrant / sum(Immigrant, na.rm = TRUE))*100 ) %>%
-              #mutate( Year = as.numeric(Year) ) %>%
+                               by = c("CountryOriginM49" = "M49_code")) |>
+              filter(CountryDestinationM49 == thiscodeM49) |>
+              filter( Year == 2020 ) |>
+              as.data.frame() |>
+              group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) |>
+              summarise(Immigrant = sum(Value) ) |>
+              ungroup()#|>
+              #mutate( shareOrgin = (Immigrant / sum(Immigrant, na.rm = TRUE))*100 ) |>
+              #mutate( Year = as.numeric(Year) ) |>
               #mutate(  )
 
 
   ## Now merge everyting   #########
-  thismigProfile <-  migrant  %>%
-    dplyr::full_join( displaced |> select(Asylum_Refugee_in, iso_3), by = c("iso_3")) %>%
-    dplyr::mutate(  SP.POP.TOTL = as.integer(wb_data |> filter( Year == 2020) |> pull(SP.POP.TOTL) ) ) %>%
-     #mutate_each(funs(replace(., which(is.na(.)), 0))) %>%
-        mutate(across( where(is.numeric), ~replace_na(.,0)))%>%
+  thismigProfile <-  migrant  |>
+    dplyr::full_join( displaced |> select(Asylum_Refugee_in, iso_3), by = c("iso_3")) |>
+    dplyr::mutate(  SP.POP.TOTL = as.integer(wb_data |> filter( Year == 2020) |> pull(SP.POP.TOTL) ) ) |>
+     #mutate_each(funs(replace(., which(is.na(.)), 0))) |>
+        mutate(across( where(is.numeric), ~replace_na(.,0)))|>
     ## Calculate a few ration
     mutate(  totImmigrant =   Immigrant + Asylum_Refugee_in  ,
    # mutate(  totImmigrant =   rowSums(as.integer(Immigrant) , as.integer(Asylum_Refugee_in), na.rm = TRUE )  )
@@ -119,8 +119,8 @@ plot_ctr_disp_migrant <- function(year = 2021,
              shareOrgin =  round(totImmigrant / sum(totImmigrant, na.rm = TRUE),4),
 
              ratioAsylum_Refugee_in = Asylum_Refugee_in / SP.POP.TOTL,
-            ratioImmigrant = Immigrant / SP.POP.TOTL )  %>%
-    arrange( desc(Asylum_Refugee_in)) %>%
+            ratioImmigrant = Immigrant / SP.POP.TOTL )  |>
+    arrange( desc(Asylum_Refugee_in)) |>
    head(10)
 
 

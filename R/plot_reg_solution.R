@@ -37,7 +37,7 @@ plot_reg_solution <- function( year = 2022,
   
     solution <-  dplyr::left_join( x= unhcrdatapackage::solutions_long, 
                                                      y= unhcrdatapackage::reference, 
-                                                     by = c("CountryOriginCode" = "iso_3")) %>% 
+                                                     by = c("CountryOriginCode" = "iso_3")) |> 
                 dplyr::filter(Solution.type %in% c("NAT","RST","RET" ) & 
                        UNHCRBureau  == region &
                        Year >= (year - lag) ) |>
@@ -56,8 +56,10 @@ p <- ggplot(solution, aes(x = Year,
                           colour = Solution.type)) + # Adding reference to color
     geom_smooth(se = FALSE, method = "loess", span = .2) +
     scale_x_continuous( breaks = seq(year - lag, year, by = 5) )+ 
-    scale_y_continuous( label = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale()))+
-    #scale_colour_viridis_d() + ## Add color for each lines based on color-blind friendly palette
+    scale_y_continuous( labels = scales::label_number(accuracy = 1, 
+                                                      scale_cut = cut_short_scale()))+
+    #scale_colour_viridis_d() + 
+     ## Add color for each lines based on color-blind friendly palette
     scale_colour_manual( values = c( "NAT" = "#a6cee3",
                                      "RST"  = "#1f78b4",
                                      "RET" = "#b2df8a" )) +

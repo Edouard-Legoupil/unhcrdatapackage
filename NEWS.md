@@ -1,3 +1,12 @@
+## unhcrdatapackage 0.1.7
+
+ * Revised the reference to add the new Operation to Country mapping
+ 
+ * adding a xaringan template -- unhcrdown::html_slides -- with the branding to correctly display humanitarian part of fontawesome
+ 
+ * Fixing some importFrom and global variales with checkhelper::print_globals()
+
+
 ## unhcrdatapackage 0.1.6
 
  * Added new plots with Humanitarian font (key figures - and disp vs host)

@@ -4,16 +4,29 @@
 #' 
 #' 
 #' @param year Numeric value of the year (for instance 2020)
-#' @param region Character value with the related UNHCR bureau - when left null, it will display the whole world
+#' 
+#' @param region Character value with the related UNHCR bureau - when left
+#'                null, it will display the whole world
+#'                
 #' @param topn how many top countries to show..
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
-#' @param useBertin -Tells if the map should use Bertin 1953 projection - https://visionscarto.net/bertin-projection-1953)
+#' @param pop_type Vector of character values. Possible population type 
+#'                (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#'                
+#' @param projection use a projection system - default is "Mercator"
+#'           for instance this can be Bertin 1953 projection - 
+#'          https://visionscarto.net/bertin-projection-1953)
+#'          
+#' @param maxSymbolsize size in point to adjust for the maximum value
+#'  to display on the map
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
-#'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
-#'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
+#'             element_text expansion geom_bar geom_col geom_hline unit
+#'              stat_summary
+#'             geom_label geom_text labs  position_stack  scale_color_manual
+#'              scale_colour_manual 
 #'             geom_text
-#'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
+#'             scale_fill_manual scale_x_continuous scale_x_discrete  
+#'             scale_y_continuous   sym theme  
 #' @importFrom utils  head
 #' @importFrom sf st_transform st_as_sf st_drop_geometry
 #' @importFrom rnaturalearth ne_countries
@@ -21,7 +34,8 @@
 #' @importFrom stringr  str_replace 
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
 #' @importFrom stats  reorder aggregate 
-#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter 
+#'                summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer
 #' @importFrom graphics par
@@ -69,11 +83,18 @@ plot_reg_map <- function(    year = 2022,
   # names(wb_data)[1] <- "CountryAsylumCode"
   # names(wb_data)[2] <- "Year"
   
-  wb_data <- WDI::WDI(country='all',
-                      indicator=c("SP.POP.TOTL",  ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
-                                            "NY.GDP.MKTP.CD", ## GDP current https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
-                                            "NY.GDP.PCAP.CD", ## GDP per capita https://data.worldbank.org/indicator/NY.GDP.PCAP.CD 
-                                            "NY.GNP.PCAP.CD" ## GNI per capita, Atlas method (current US$) https://data.worldbank.org/indicator/NY.GNP.PCAP.CD
+  wb_data <- WDI::WDI(country='all', 
+                                 ## Population total https://data.worldbank.org/indicator/SP.POP.TOTL
+                      indicator=c("SP.POP.TOTL",
+                                  ## GDP current
+                                  # https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
+                                            "NY.GDP.MKTP.CD",
+                                  ## GDP per capita 
+                                  # https://data.worldbank.org/indicator/NY.GDP.PCAP.CD
+                                            "NY.GDP.PCAP.CD", 
+                                  ## GNI per capita, Atlas method (current US$)
+                                  # https://data.worldbank.org/indicator/NY.GNP.PCAP.CD
+                                            "NY.GNP.PCAP.CD" 
                                   ),
                       start = year-1,
                       end = year,
@@ -84,7 +105,7 @@ plot_reg_map <- function(    year = 2022,
       
       
       
-      wb_data <- wb_data%>%
+      wb_data <- wb_data|>
         filter(Year == year-1) 
       
       ## Get spatial data to add ##########
@@ -100,21 +121,21 @@ plot_reg_map <- function(    year = 2022,
       ## Loading the stat tables ######
       data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                 y= unhcrdatapackage::reference, 
-                                by = c("CountryAsylumCode" = "iso_3")) %>%
+                                by = c("CountryAsylumCode" = "iso_3")) |>
         filter(Population.type  %in% pop_type &
                  Year == year & 
-                 UNHCRBureau == region ) %>%
-        group_by(Year, CountryAsylumName, CountryAsylumCode, UNHCRBureau,Latitude, Longitude  ) %>%
-        summarise(Value = sum(Value) ) %>%
+                 UNHCRBureau == region ) |>
+        group_by(Year, CountryAsylumName, CountryAsylumCode, UNHCRBureau,Latitude, Longitude  ) |>
+        summarise(Value = sum(Value) ) |>
         ungroup()
       
       
       ## Join ########
-      data2 <- data %>% 
+      data2 <- data |> 
         left_join(wb_data, 
-                  by = c( "CountryAsylumCode")) %>%  
-        mutate(ratio_disp_gdp = round( (Value / NY.GDP.MKTP.CD)*100, 4)  )  %>% 
-        mutate(ratio_disp_gdpcap = round(  (Value/ NY.GDP.PCAP.CD)*100, 2)  )   %>% 
+                  by = c( "CountryAsylumCode")) |>  
+        mutate(ratio_disp_gdp = round( (Value / NY.GDP.MKTP.CD)*100, 4)  )  |> 
+        mutate(ratio_disp_gdpcap = round(  (Value/ NY.GDP.PCAP.CD)*100, 2)  )   |> 
         mutate(ratio_disp_host = round( (Value/  SP.POP.TOTL)*100 , 2)  )  
       
       ## Get Break https://riatelab.github.io/mapsf/reference/mf_get_breaks.html
@@ -125,26 +146,26 @@ plot_reg_map <- function(    year = 2022,
         
       
       #names(data2)
-      data2 <- data2 %>%
+      data2 <- data2 |>
         sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
       
       
       ## Getting world map for mapping
-      world <- rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>% 
-        filter(continent != "Antarctica")  %>%  
+      world <- rnaturalearth::ne_countries(scale = "small", returnclass = "sf") |> 
+        filter(continent != "Antarctica")  |>  
         filter(adm0_a3 %in%  listctr) 
       
       ### Need to fix specific case for Asisa... where the proj disperse the country...
       ##  filter(adm0_a3 != "VUT") 
       
       ## Manage Projection... 
-      data2 <- data2 %>%  
+      data2 <- data2 |>  
         # this is the crs from d, which has no EPSG code:
-        sf::st_transform(., '+init=epsg:4326')
+        sf::st_transform( '+init=epsg:4326')
       
-      world <- world %>%  
+      world <- world |>  
         # this is the crs from d, which has no EPSG code:
-        sf::st_transform(., '+init=epsg:4326')
+        sf::st_transform('+init=epsg:4326')
       #   # this is the crs from d, which has no EPSG code:
       #   #sf::st_transform(., '+init=epsg:4326')
       #   #sf::st_transform(., '+proj=bertin1953 +R=1 0.72 0.73')

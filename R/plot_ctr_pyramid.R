@@ -13,7 +13,7 @@
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
 #'             geom_text .pt theme_void
 #'             scale_fill_manual scale_x_continuous scale_x_discrete  scale_y_continuous   sym theme  
-#' @importFrom utils  head
+#' @importFrom utils  head download.file
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace str_detect
 #' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
@@ -21,7 +21,7 @@
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer pivot_wider
-#' @importFrom unhcrthemes theme_unhcr
+#' @importFrom unhcrthemes theme_unhcr 
 #' 
 #' @return a ggplot2 object
 #' 
@@ -41,8 +41,8 @@ plot_ctr_pyramid <- function(year ,
   
   
     ## FontAwesome6  includes humanitarian icon... 
-    fontcheck <- extrafont::fonttable() %>% 
-              dplyr::as_tibble() %>% 
+    fontcheck <- extrafont::fonttable() |>
+              dplyr::as_tibble() |>
               dplyr::filter(grepl("Awesom", FamilyName)) 
 
     if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
@@ -206,14 +206,16 @@ plot_ctr_pyramid <- function(year ,
                        family = "Font Awesome 6 Free Solid",
                        color = "#18375F",# "#0072BC" "#8EBEFF"
                        box.colour = NA ,   hjust = 0,   vjust = 0,
-                      size = 11.5, width = 0.2, height = 0.2) +
+                       width = unit(0.4, "npc"),
+                      size = 11.5 ) +
         ggtext::geom_textbox(aes(x = as.numeric(-0.25), 
                                  y = "60+",  
                        label = "\uf183" ), 
                       family = "Font Awesome 6 Free Solid",
                        color = "#0072BC",# "#0072BC" "#8EBEFF"
                       box.colour = NA ,   hjust = 0,   vjust = 0,
-                     size = 11.5, width = 0.2, height = 0.2) +
+                       width = unit(0.4, "npc"),
+                     size = 11.5 ) +
         scale_x_continuous(expand = expansion(c(0.2, 0.2))) +
         scale_fill_manual(breaks=c('Male', 'Female'),
                           values = setNames(

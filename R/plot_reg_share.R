@@ -57,15 +57,15 @@ plot_reg_share <- function(year = 2022,
 
 datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
                                                      y= unhcrdatapackage::reference, 
-                                                     by = c("CountryAsylumCode" = "iso_3")) %>%
-  dplyr::filter( Year == year  ) %>%
-  dplyr::filter( Population.type %in% pop_type  ) %>%
- # dplyr::filter( Year == year | Year == (year -1) ) %>%
-  dplyr::select(Year, UNHCRBureau ,Population.type, Population.type.label, Value) %>%
-    dplyr::mutate(Compare = ifelse(UNHCRBureau == region, region, "Rest of the World")) %>%
-  dplyr::group_by( Year, Compare, Population.type.label , Population.type ) %>%
-  dplyr::summarise(Value = sum( Value, na.rm = TRUE))  %>%
-  dplyr::ungroup(Year, Compare ,Population.type, Population.type.label)  %>%
+                                                     by = c("CountryAsylumCode" = "iso_3")) |>
+  dplyr::filter( Year == year  ) |>
+  dplyr::filter( Population.type %in% pop_type  ) |>
+ # dplyr::filter( Year == year | Year == (year -1) ) |>
+  dplyr::select(Year, UNHCRBureau ,Population.type, Population.type.label, Value) |>
+    dplyr::mutate(Compare = ifelse(UNHCRBureau == region, region, "Rest of the World")) |>
+  dplyr::group_by( Year, Compare, Population.type.label , Population.type ) |>
+  dplyr::summarise(Value = sum( Value, na.rm = TRUE))  |>
+  dplyr::ungroup(Year, Compare ,Population.type, Population.type.label)  |>
   dplyr::mutate(  freq = scales::label_percent(accuracy= .1, suffix = "%")(Value / sum(Value)) ) 
  
 ## Treemapify
