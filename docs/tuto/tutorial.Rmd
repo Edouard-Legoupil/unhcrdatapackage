@@ -27,10 +27,9 @@ library(unhcrdatapackage)
 background-position: 50% 25%
 class: center, bottom, inverse
 
-#   “Numbers have an important story to tell. They rely on YOU to give them a voice!”
+#   “Numbers have an important story to tell. They rely on <span style='color:yellow;'>YOU</span> to give them a voice!”
 
 -- Stephen Few
-
 
 ---
 
@@ -78,15 +77,11 @@ A story usually address a broad research question and matches one of the __narra
 
 Rather than starting from raw data and excel, using  the chart library from [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage) allows you to:
 
- * Benefit from an initial data exploration
-
- * Save time to get a first version of your charts
+ * Benefit from an initial data exploration - for instance consult the [Factsheets for the Americas](https://edouard-legoupil.github.io/unhcrdatapackage/factsheet/factsheet.html), which means practically "_Save time to get a first version of your charts!_"
  
  * Ensure to use the correct style in line with [Brand Recommendations](https://dataviz.unhcr.org/tools/r/) using [`{unhcrthemes}`](https://vidonne.github.io/unhcrthemes), meaning using consistent color, font, elements...
  
- * Have you process documented and fully [reproducible](https://unhcr-americas.github.io/reproducibility)
- 
- * Use the [datajournalism lingua franca](https://learn.r-journalism.com/en/introduction/) 
+ * Have you process documented and fully [reproducible](https://unhcr-americas.github.io/reproducibility) by using the [datajournalism lingua franca](https://learn.r-journalism.com/en/introduction/) 
 
 ---
 
@@ -253,7 +248,7 @@ p
 
 Now we can start getting an idea of a key story to tell..
 
-For instance, we can see that quite a number of refugees are actually not coming from countries affected by a conflict.
+For instance, we can see that quite a number of refugees are actually not coming from countries affected by a conflict. This match the narrative frame around a widely held belief: "_all refugees are fleeing war_"
 
 and change both the title and the subtitle
 
@@ -462,7 +457,7 @@ With this approach, the effort spent on polishing content can benefit a series o
 
 When packing up your story - you can not only use the chart as a single image but also embed it into products
 
-You can nstall the `unhcrdown` package from [Github](https://github.com/vidonne/unhcrdown) to benefit from a series of template:
+You can install the `unhcrdown` package from [Github](https://github.com/vidonne/unhcrdown) to benefit from a series of template:
 
 ```{r eval=FALSE, tidy=FALSE}
 # install.packages("remotes")
