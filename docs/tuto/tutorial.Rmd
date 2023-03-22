@@ -82,7 +82,7 @@ Rather than starting from raw data and excel, using  the chart library from [`{U
 
  * Save time to get a first version of your charts
  
- * Ensure to use the correct style in line with [Brand Recommendations](https://dataviz.unhcr.org/tools/r/), meaning using consistent color, font, elements...
+ * Ensure to use the correct style in line with [Brand Recommendations](https://dataviz.unhcr.org/tools/r/) using [`{unhcrthemes}`](https://vidonne.github.io/unhcrthemes), meaning using consistent color, font, elements...
  
  * Have you process documented and fully [reproducible](https://unhcr-americas.github.io/reproducibility)
  
@@ -106,9 +106,9 @@ From a simple default chart, chart crafting can be done by:
 
 # An example 
 
-We will not demonstrate this through an example: The history of refugee arrival in the United States.
+We will not demonstrate this through an example: The __history of refugee arrival in the United States__.
 
-This story has been actually explored in this blog post: [Exploring U.S. Refugee Data](https://www.favstats.eu/post/exploring_us_refugee_data/)
+This story has been actually explored in this blog post: [Exploring U.S. Refugee Data](https://www.favstats.eu/post/exploring_us_refugee_data/), which came with another series of [Refugee Data Stories](https://www.favstats.eu/tags/refugees/)
 
 The Example for inspiration is presented in the next slide. You will notice that the data source is not the UNHCR Global Population Statistic Database... This is probably because  [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage)  was not yet available when the chart was created :) 
 
@@ -253,12 +253,17 @@ p
 
 Now we can start getting an idea of a key story to tell..
 
+For instance, we can see that quite a number of refugees are actually not coming from countries affected by a conflict.
+
 and change both the title and the subtitle
 
 ``` 
 p <- p +
-    labs(title = "New Title",
-         subtitel = "New sub")
+labs(title = "Not only Conflicts fuels
+              demand for Asylum",
+              
+     subtitle = "Arrival in the US
+                 since 2000")
 ```
 
 ]
@@ -266,7 +271,8 @@ p <- p +
 .pull-right[
 ```{r echo=FALSE, fig.width=9}
 p <- p +
-    labs(title = "New Title")
+    labs(title = "Not only Conflicts fuel demand for Asylum",
+         subtitle = "Arrival in the US since 2000")
 
 p
 ```
@@ -454,18 +460,41 @@ With this approach, the effort spent on polishing content can benefit a series o
 
 # Product Template
 
-**`html_slides`** is a simple online presentation template which is part of the [`unhcrdown`](https://github.com/vidonne/unhcrdown) package.
+When packing up your story - you can not only use the chart as a single image but also embed it into products
 
-Install the `unhcrdown` package from [Github](https://github.com/vidonne/unhcrdown):
+You can nstall the `unhcrdown` package from [Github](https://github.com/vidonne/unhcrdown) to benefit from a series of template:
 
 ```{r eval=FALSE, tidy=FALSE}
 # install.packages("remotes")
 remotes::install_github("vidonne/unhcrdown")
 ```
 
-**Main resources:**
 
-- [`unhcrdown::html_slides`](https://vidonne.github.io/unhcrdown/articles/create_html_slides.html) vignette
+.pull-left[
+
+For the Web - can be convert to PDF - 
+
+ * [`unhcrdown::html_slides`](https://vidonne.github.io/unhcrdown/articles/create_html_slides.html) is a simple online presentation template, actually demonstrated through this document.
+
+ * [`unhcrdown::html_page`](https://vidonne.github.io/unhcrdown/reference/html_page.html)   Convert to UNHCR branded HTML website
+
+ * [`unhcrdown::paged_report`](https://vidonne.github.io/unhcrdown/reference/paged_report.html)  Function for UNHCR paged report template
+
+ * [`unhcrdown::paged_simple`](https://vidonne.github.io/unhcrdown/reference/docx_simple.html)   Function for UNHCR paged simple template
+ ]
+
+.pull-right[
+For Office
+
+ * [`unhcrdown::pptx_slides`](https://vidonne.github.io/unhcrdown/reference/pptx_slides.html)   Convert to UNHCR branded Powerpoint presentation 
+ 
+ 
+ * [`unhcrdown::docx_simple`](https://vidonne.github.io/unhcrdown/reference/docx_simple.html) Convert to UNHCR branded Word document
+
+]
+
+???
+**Main resources:**
 - [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) documentation
 - [`unhcrthemes`](https://vidonne.github.io/unhcrthemes/index.html) package
 - [UNHCR Data Visualization Platform](https://dataviz.unhcr.org/)
@@ -475,7 +504,7 @@ remotes::install_github("vidonne/unhcrdown")
 ---
 class: inverse, center, middle
 
-# Summary
+# Summary take away
 
 
  1. Read the graphs to identify patterns or insights
