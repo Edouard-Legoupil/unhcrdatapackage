@@ -1,0 +1,60 @@
+---
+title: "{UnhcrDataPackage} Facsheet"
+subtitle: " Americas "
+author: " "
+institute: "DIMA Amerias"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+output:
+  unhcrdown::html_slides:
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+## North America
+
+ * [Canada](StatFactsheet-CAN-2022.html)
+
+ * [USA](StatFactsheet-USA-2022.html)
+
+---
+
+## Caribean
+
+ * [Aruba](StatFactsheet-ABW-2022.html)  
+ * [Curacao](StatFactsheet-CUW-2022.html)  
+ * [Dominican Republic](StatFactsheet-DOM-2022.html)  
+ * [Trinida & Tobago](StatFactsheet-TTO-2022.html)  
+
+---
+
+## Central America
+
+ * [Belize](StatFactsheet-BLZ-2022.html)  
+ * [Costa Rica](StatFactsheet-CRI-2022.html)  
+ * [Guatemala](StatFactsheet-GTM-2022.html)  
+ * [Honduras](StatFactsheet-HND-2022.html)  
+ * [Mexico](StatFactsheet-MEX-2022.html)  
+ * [Nicaragua](StatFactsheet-NIC-2022.html)  
+ * [Panama](StatFactsheet-PAN-2022.html)  
+ * [El Salvador](StatFactsheet-SLV-2022.html)  
+
+---
+
+## South America
+
+ * [Argentina](StatFactsheet-ARG-2022.html) 
+ * [Bolivia](StatFactsheet-BOL-2022.html)  
+ * [Brazil](StatFactsheet-BRA-2022.html)  
+ * [Chile](StatFactsheet-CHL-2022.html)  
+ * [Colombia](StatFactsheet-COL-2022.html)  
+ * [Ecuador](StatFactsheet-ECU-2022.html)  
+ * [Guyana](StatFactsheet-GUY-2022.html)  
+ * [Peru](StatFactsheet-PER-2022.html)  
+ * [Paraguay](StatFactsheet-PRY-2022.html)  
+ * [Suriname](StatFactsheet-SUR-2022.html)  
+ * [Uruguay](StatFactsheet-URY-2022.html)  
+ * [Venezuela](StatFactsheet-VEN-2022.html)  
