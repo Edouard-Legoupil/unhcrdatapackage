@@ -57,6 +57,8 @@ Impactful charts with are characterized by their [story telling](https://medium.
  
  3. __Highlighting__ specific parts in the chart to reinforce the main message and ease legibility: See [tutorial here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)_
  
+ 4. __Adding background information__
+ 
  
 ## How to get started: Start building your country or regional/situational factsheet now 
 
