@@ -29,6 +29,7 @@
 #' @importFrom ggspatial geom_sf coord_sf
 #' @importFrom sf st_as_sf st_set_crs st_bbox
 #' @importFrom rnaturalearth ne_countries
+#' @import rnaturalearthdata
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom grDevices hcl.colors
 #' @importFrom OpenStreetMap openmap openproj autoplot.OpenStreetMap
@@ -60,18 +61,18 @@ plot_ctr_location <- function( year  ,
                              mapbackground = "osm" #  could be "stamen-toner" , "stamen-terrain","stamen-watercolor"
                              ) {
   
-  ctrylabel <- unhcrdatapackage::reference |> 
+  ctrylabel <- ForcedDisplacementStat::reference |> 
     dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
     dplyr::distinct(ctryname) |> 
     dplyr::pull()
   
-  poptype_label <- unhcrdatapackage::end_year_population_totals_long |> 
+  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |> 
     dplyr::filter(Population.type  %in% as.vector(pop_type)) |> 
     dplyr::distinct(Population.type.label.short) |> 
     dplyr::pull()
   
-  # names(unhcrdatapackage::demographics)
-  mapped1 <- unhcrdatapackage::demographics |>
+  # names(ForcedDisplacementStat::demographics)
+  mapped1 <- ForcedDisplacementStat::demographics |>
     dplyr::filter(Year == year,  #### Parameter
            CountryAsylumCode == country_asylum_iso3c, #### Parameter
            Population.type %in% pop_type  ) |> 
@@ -79,13 +80,13 @@ plot_ctr_location <- function( year  ,
     dplyr::summarise( Total = sum(Total, na.rm = TRUE)) |>
     dplyr::ungroup() |>
     ## add geometry
-    dplyr::left_join( unhcrdatapackage::locpcode ,
+    dplyr::left_join( ForcedDisplacementStat::locpcode ,
                by = c("location" = "location"))
   
   ## Check if fall back is needed.. 
   if(nrow(mapped1) == 0) { 
     year <- year -1 
-    mapped1 <- unhcrdatapackage::demographics |>
+    mapped1 <- ForcedDisplacementStat::demographics |>
     dplyr::filter(Year == year,  #### Parameter
            CountryAsylumCode == country_asylum_iso3c, #### Parameter
            Population.type %in% pop_type  ) |> 
@@ -93,7 +94,7 @@ plot_ctr_location <- function( year  ,
     dplyr::summarise( Total = sum(Total, na.rm = TRUE)) |>
     dplyr::ungroup() |>
     ## add geometry
-    dplyr::left_join( unhcrdatapackage::locpcode ,
+    dplyr::left_join( ForcedDisplacementStat::locpcode ,
                by = c("location" = "location"))
     
     }
@@ -116,6 +117,7 @@ plot_ctr_location <- function( year  ,
     # Get Bounding box
     # plot(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |>  dplyr::filter(iso_a3 == country_asylum_iso3c) |> dplyr::pull(geometry))
     # ctr <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+    requireNamespace("rnaturalearthdata")
     box <- sf::st_bbox(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |>  
                          dplyr::filter(iso_a3 == country_asylum_iso3c))
     LON1 <- as.numeric( box[1] - 0.1* (box[3]-box[1])) 

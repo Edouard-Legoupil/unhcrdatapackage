@@ -59,7 +59,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
                     "Stateless Persons" = "#E1CC0D")
   
   
-  df <- unhcrdatapackage::end_year_population_totals_long  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year >= (year - lag),  #### Parameter

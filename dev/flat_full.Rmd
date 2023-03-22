@@ -92,18 +92,18 @@ plot_ctr_keyfig <- function(country_asylum_iso3c, year){
                                                 dplyr::pull(fontfile)) )
     }
  
-CountryAsylum_name_text <-  unhcrdatapackage::reference |> 
+CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
   dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
   dplyr::distinct(ctryname) |> 
   dplyr::pull()
 
-total_poc <- unhcrdatapackage::end_year_population_totals_long |> 
+total_poc <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c ) |> 
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |> 
+total_poc_last_year <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == as.numeric(year)-1,
                 CountryAsylumCode == country_asylum_iso3c) |> 
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
@@ -111,7 +111,7 @@ total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |>
 
 perc_change_poc <- ((total_poc - total_poc_last_year)/total_poc_last_year)*100
 
-total_ref <- unhcrdatapackage::end_year_population_totals_long |> 
+total_ref <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "REF"
@@ -119,7 +119,7 @@ total_ref <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_asy <- unhcrdatapackage::end_year_population_totals_long |> 
+total_asy <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "ASY"
@@ -127,7 +127,7 @@ total_asy <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_oip <- unhcrdatapackage::end_year_population_totals_long |> 
+total_oip <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "OIP"
@@ -135,7 +135,7 @@ total_oip <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_idp <- unhcrdatapackage::end_year_population_totals_long |> 
+total_idp <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "IDP"
@@ -143,7 +143,7 @@ total_idp <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_sta <- unhcrdatapackage::end_year_population_totals_long |> 
+total_sta <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "STA"
@@ -151,7 +151,7 @@ total_sta <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_ooc <- unhcrdatapackage::end_year_population_totals_long |> 
+total_ooc <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "OOC"
@@ -277,12 +277,12 @@ plot_ctr_treemap <- function(year = 2021,
                      pop_type = pop_type) {
 
 
-   ctrylabel <- unhcrdatapackage::reference |> 
+   ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
 
-  datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
+  datatree <-  ForcedDisplacementStat::end_year_population_totals_long  |> 
     filter(Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 
@@ -402,7 +402,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
                     "Stateless Persons" = "#E1CC0D")
   
   
-  df <- unhcrdatapackage::end_year_population_totals_long  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year >= (year - lag),  #### Parameter
@@ -610,7 +610,7 @@ plot_ctr_population_type_abs <- function(year = 2021,
   
   
   df <- 
-    unhcrdatapackage::end_year_population_totals  |> 
+    ForcedDisplacementStat::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
            !is.na(CountryAsylumCode),
            (Year == year | Year == year -1),  #### Parameter
@@ -846,7 +846,7 @@ plot_ctr_population_type_perc <- function(year = 2021,
   
   
   df <-  
-    unhcrdatapackage::end_year_population_totals  |> 
+    ForcedDisplacementStat::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year == year,  #### Parameter
@@ -1004,7 +1004,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   }
   
   
-  df <- unhcrdatapackage::end_year_population_totals  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
            !is.na(CountryAsylumCode),
            (Year == year-1 | Year == year),  #### Parameter
@@ -1204,7 +1204,7 @@ plot_ctr_origin_history <- function(year = 2022,
   
 
 
-  df <- unhcrdatapackage::end_year_population_totals_long  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
           filter(       Year >= (year - lag),  #### Parameter
                         CountryAsylumCode == country_asylum_iso3c, #### Parameter
                         Population.type %in% pop_type #### Parameter
@@ -1323,18 +1323,18 @@ plot_ctr_pyramid <- function(year ,
     }
  
   
-  ctrylabel <- unhcrdatapackage::reference |> 
+  ctrylabel <- ForcedDisplacementStat::reference |> 
     filter(iso_3 == country_asylum_iso3c ) |> 
     distinct(ctryname) |> 
     pull()
   
-  poptype_label <- unhcrdatapackage::end_year_population_totals_long |> 
+  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |> 
     filter(Population.type  %in% as.vector(pop_type)) |> 
     distinct(Population.type.label.short) |> 
     pull()
   
-  demographics1 <- unhcrdatapackage::demographics |>
-    left_join( unhcrdatapackage::reference |> 
+  demographics1 <- ForcedDisplacementStat::demographics |>
+    left_join( ForcedDisplacementStat::reference |> 
                  select(UNHCRBureau, iso_3),  
                by = c("CountryAsylumCode" = "iso_3")) |> 
     filter(CountryAsylumCode  == country_asylum_iso3c &
@@ -1352,8 +1352,8 @@ plot_ctr_pyramid <- function(year ,
   ## Check if fall back is needed.. 
   if(nrow(demographics1) == 0) { 
     year <- year -1 
-    demographics1 <- unhcrdatapackage::demographics |>
-      left_join( unhcrdatapackage::reference |> 
+    demographics1 <- ForcedDisplacementStat::demographics |>
+      left_join( ForcedDisplacementStat::reference |> 
                    select(UNHCRBureau, iso_3),  
                  by = c("CountryAsylumCode" = "iso_3")) |> 
       filter(CountryAsylumCode  == country_asylum_iso3c &
@@ -1545,6 +1545,7 @@ plot_ctr_pyramid(year = 2022,
 #' @importFrom ggspatial geom_sf coord_sf
 #' @importFrom sf st_as_sf st_set_crs st_bbox
 #' @importFrom rnaturalearth ne_countries
+#' @import rnaturalearthdata
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom grDevices hcl.colors
 #' @importFrom OpenStreetMap openmap openproj autoplot.OpenStreetMap
@@ -1560,18 +1561,18 @@ plot_ctr_location <- function( year  ,
                              mapbackground = "osm" #  could be "stamen-toner" , "stamen-terrain","stamen-watercolor"
                              ) {
   
-  ctrylabel <- unhcrdatapackage::reference |> 
+  ctrylabel <- ForcedDisplacementStat::reference |> 
     dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
     dplyr::distinct(ctryname) |> 
     dplyr::pull()
   
-  poptype_label <- unhcrdatapackage::end_year_population_totals_long |> 
+  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |> 
     dplyr::filter(Population.type  %in% as.vector(pop_type)) |> 
     dplyr::distinct(Population.type.label.short) |> 
     dplyr::pull()
   
-  # names(unhcrdatapackage::demographics)
-  mapped1 <- unhcrdatapackage::demographics |>
+  # names(ForcedDisplacementStat::demographics)
+  mapped1 <- ForcedDisplacementStat::demographics |>
     dplyr::filter(Year == year,  #### Parameter
            CountryAsylumCode == country_asylum_iso3c, #### Parameter
            Population.type %in% pop_type  ) |> 
@@ -1579,13 +1580,13 @@ plot_ctr_location <- function( year  ,
     dplyr::summarise( Total = sum(Total, na.rm = TRUE)) |>
     dplyr::ungroup() |>
     ## add geometry
-    dplyr::left_join( unhcrdatapackage::locpcode ,
+    dplyr::left_join( ForcedDisplacementStat::locpcode ,
                by = c("location" = "location"))
   
   ## Check if fall back is needed.. 
   if(nrow(mapped1) == 0) { 
     year <- year -1 
-    mapped1 <- unhcrdatapackage::demographics |>
+    mapped1 <- ForcedDisplacementStat::demographics |>
     dplyr::filter(Year == year,  #### Parameter
            CountryAsylumCode == country_asylum_iso3c, #### Parameter
            Population.type %in% pop_type  ) |> 
@@ -1593,7 +1594,7 @@ plot_ctr_location <- function( year  ,
     dplyr::summarise( Total = sum(Total, na.rm = TRUE)) |>
     dplyr::ungroup() |>
     ## add geometry
-    dplyr::left_join( unhcrdatapackage::locpcode ,
+    dplyr::left_join( ForcedDisplacementStat::locpcode ,
                by = c("location" = "location"))
     
     }
@@ -1616,6 +1617,7 @@ plot_ctr_location <- function( year  ,
     # Get Bounding box
     # plot(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |>  dplyr::filter(iso_a3 == country_asylum_iso3c) |> dplyr::pull(geometry))
     # ctr <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+    requireNamespace("rnaturalearthdata")
     box <- sf::st_bbox(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |>  
                          dplyr::filter(iso_a3 == country_asylum_iso3c))
     LON1 <- as.numeric( box[1] - 0.1* (box[3]-box[1])) 
@@ -1770,7 +1772,7 @@ plot_ctr_recognition <- function(year = 2022,
                                  measure = "RefugeeRecognitionRate",
                                  order_by = "TotalDecided" ){
    
-   ctrylabel <- unhcrdatapackage::reference |> 
+   ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
@@ -1789,7 +1791,7 @@ plot_ctr_recognition <- function(year = 2022,
        order_by == "TotalDecided"  ~ "Total Decision (independently of the outcome)"
      )
    
-   topOrigin <-  unhcrdatapackage::asylum_decisions |>
+   topOrigin <-  ForcedDisplacementStat::asylum_decisions |>
      filter(CountryAsylumCode == country_asylum_iso3c &
               Year == year) |>
      ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
@@ -1908,17 +1910,17 @@ plot_ctr_asylum <- function(year = 2022,
                             country_asylum_iso3c = country_asylum_iso3, 
                             lag = 10){
     
-     ctrylabel <- unhcrdatapackage::reference |> 
+     ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
   
-    apps <- unhcrdatapackage::asylum_applications|>
+    apps <- ForcedDisplacementStat::asylum_applications|>
           filter(CountryAsylumCode == country_asylum_iso3c )|>
           group_by(Year, CountryAsylumCode) |>
          summarize (NumberApplications = sum(NumberApplications , na.rm= TRUE) )
 
-    decs <- unhcrdatapackage::asylum_decisions |>
+    decs <- ForcedDisplacementStat::asylum_decisions |>
           filter(CountryAsylumCode == country_asylum_iso3c ) |>
           group_by(Year, CountryAsylumCode) |>
          summarize (Recognized = sum(Recognized , na.rm= TRUE),
@@ -2025,9 +2027,9 @@ plot_ctr_process <- function(year = 2022,
                              otherprop = .02){
   
 
-  #table(as.factor(unhcrdatapackage::asylum_decisions_long$CountryAsylumCode))
+  #table(as.factor(ForcedDisplacementStat::asylum_decisions_long$CountryAsylumCode))
   
-  links <- unhcrdatapackage::asylum_decisions_long |>
+  links <- ForcedDisplacementStat::asylum_decisions_long |>
     filter(Year == year   & CountryAsylumCode  == country_asylum_iso3c ) |> 
     dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName,
                                                              prop = otherprop, 
@@ -2040,7 +2042,7 @@ plot_ctr_process <- function(year = 2022,
   
   ## Case no record outut a ggplot2 object with anotation
   if( nrow(links) == 0) {
-    info <-  paste0("There\'s no recorded Asylum Decisions in ", unhcrdatapackage::reference |>
+    info <-  paste0("There\'s no recorded Asylum Decisions in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -2095,7 +2097,7 @@ p <- ggplot(flow_table,
       legend.title = element_blank(),                # remove title
   ) +
   labs(title = "Refugee Status Determination Decisions",
-       subtitle = glue::glue("{unhcrdatapackage::reference |>
+       subtitle = glue::glue("{ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) }, {format(sum(links$n),  big.mark=\",\")} decisions recorded in {year}"),
        x = NULL,
@@ -2177,25 +2179,25 @@ plot_ctr_processing_time <- function(year = 2022,
 #   country_asylum_iso3c <- "CHL" # iso3 code
   
   if( is.null(country_origin_iso3c)) {
-        originfilter <-     c(unhcrdatapackage::asylum_applications |>
+        originfilter <-     c(ForcedDisplacementStat::asylum_applications |>
                                       dplyr::select(CountryOriginCode) |>
                                       unique() |>
                                     dplyr::pull() ) 
         originfilterlab <- ""
         } else { 
         originfilter <- c(country_origin_iso3c) 
-        originfilterlab <- unhcrdatapackage::reference |>
+        originfilterlab <- ForcedDisplacementStat::reference |>
                                    dplyr::filter( iso_3 == country_origin_iso3c) |>
                                    dplyr::pull(ctryname)}
   if( is.null(procedureType)) {
-          procedurefilter <-     c(unhcrdatapackage::asylum_applications |>
+          procedurefilter <-     c(ForcedDisplacementStat::asylum_applications |>
                                       dplyr::select(ProcedureType) |>
                                       unique() |>
                                     dplyr::pull() )
           procedurefilterlab <- ""
           } else { 
           procedurefilter <- c(procedureType)
-          procedurefilterlab <- unhcrdatapackage::asylum_applications |>
+          procedurefilterlab <- ForcedDisplacementStat::asylum_applications |>
                                       dplyr::filter(ProcedureType == procedureType ) |>
                                      dplyr::select(ProcedureName)|>
                                       unique() |>
@@ -2212,7 +2214,7 @@ plot_ctr_processing_time <- function(year = 2022,
       
   
   
-    apps <- unhcrdatapackage::asylum_applications |>
+    apps <- ForcedDisplacementStat::asylum_applications |>
           filter(CountryAsylumCode == country_asylum_iso3c )|>
       
           ## add conditional filter  if setup
@@ -2239,19 +2241,19 @@ plot_ctr_processing_time <- function(year = 2022,
 # # apps1 <- jsonlite::fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-applications/?limit=100&dataset=asylum-applications&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=app_type&columns%5B%5D=app_pc&columns%5B%5D=app_size&columns%5B%5D=dec_level&columns%5B%5D=applied"))$items |>  as_tibble()
     
   if( is.null(country_origin_iso3c)) {
-        originfilter <-     c(unhcrdatapackage::asylum_decisions |>
+        originfilter <-     c(ForcedDisplacementStat::asylum_decisions |>
                                       dplyr::select(CountryOriginCode) |>
                                       unique() |>
                                     dplyr::pull() ) } else { 
         originfilter <- c(country_origin_iso3c) }
   if( is.null(procedureType)) {
-          procedurefilter <-     c(unhcrdatapackage::asylum_decisions |>
+          procedurefilter <-     c(ForcedDisplacementStat::asylum_decisions |>
                                       dplyr::select(ProcedureType) |>
                                       unique() |>
                                     dplyr::pull() ) } else { 
           procedurefilter <- c(procedureType) }
 # 
-  decs <- unhcrdatapackage::asylum_decisions |>
+  decs <- ForcedDisplacementStat::asylum_decisions |>
           filter(CountryAsylumCode == country_asylum_iso3c ) |>
           ## add conditional filter  if setup
           filter(CountryOriginCode %in% c(originfilter)  ) |>
@@ -2323,7 +2325,7 @@ data <-
                                  apps = "#FAEB00"),
                       name = NULL) +
     labs(title = stringr::str_wrap("Average Processing Time from Asylum Registration to First Instance Decision", 100),
-         subtitle = glue::glue("In {unhcrdatapackage::reference |>
+         subtitle = glue::glue("In {ForcedDisplacementStat::reference |>
                                    dplyr::filter( iso_3 == country_asylum_iso3c) |>
                                    dplyr::pull(ctryname)}, comparative cumulative applications and decisions with gap measured in days as of {year} {filterlab}"),
          x = NULL,
@@ -2402,14 +2404,14 @@ plot_ctr_solution <- function(year = 2021,
                               country_asylum_iso3c = country_asylum_iso3c,
                               pop_type = pop_type){
   
-    ctrylabel <- unhcrdatapackage::reference |> 
+    ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
   
   
-    Solution <- unhcrdatapackage::solutions_long  |>
-                dplyr::left_join(y= unhcrdatapackage::reference, 
+    Solution <- ForcedDisplacementStat::solutions_long  |>
+                dplyr::left_join(y= ForcedDisplacementStat::reference, 
                                by = c("CountryAsylumCode" = "iso_3")) |>
       
               filter(CountryAsylumCode  == country_asylum_iso3c & 
@@ -2435,7 +2437,7 @@ plot_ctr_solution <- function(year = 2021,
 
 if( nrow(Solution) ==  0 ){
   
-    info <-  paste0("There\'s no recorded solutions in ", unhcrdatapackage::reference |>
+    info <-  paste0("There\'s no recorded solutions in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -2522,15 +2524,15 @@ plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
                                  pop_type = pop_type) {
 
-  ctrylabel <- unhcrdatapackage::reference |>
+  ctrylabel <- ForcedDisplacementStat::reference |>
     filter(iso_3 == country_origin_iso3c) |>
     select(ctryname) |>
     pull()
   
   Destination <-
     left_join(
-      x = unhcrdatapackage::end_year_population_totals_long,
-      y = unhcrdatapackage::reference,
+      x = ForcedDisplacementStat::end_year_population_totals_long,
+      y = ForcedDisplacementStat::reference,
       by = c("CountryAsylumCode" = "iso_3")
     )  |>
     filter(
@@ -2564,7 +2566,7 @@ plot_ctr_destination <- function(year = 2021,
 
   if(nrow(Destination) ==  0) {
     
-    info <-  paste0("There\'s no recorded Countries of destination in ", unhcrdatapackage::reference |>
+    info <-  paste0("There\'s no recorded Countries of destination in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_origin_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -2721,7 +2723,7 @@ plot_ctr_origin_recognition <- function(year = 2022,
                                  measure = "RefugeeRecognitionRate",
                                  order_by = "TotalDecided" ){
    
-   ctrylabel <- unhcrdatapackage::reference |> 
+   ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_origin_iso3c ) |> 
                select(ctryname) |> 
                 pull()
@@ -2740,7 +2742,7 @@ plot_ctr_origin_recognition <- function(year = 2022,
        order_by == "TotalDecided"  ~ "Total Decision (independently of the outcome)"
      )
    
-   topAsylum <-  unhcrdatapackage::asylum_decisions |>
+   topAsylum <-  ForcedDisplacementStat::asylum_decisions |>
      filter(CountryOriginCode == country_origin_iso3c &
               Year == year) |>
      ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
@@ -2873,12 +2875,12 @@ dumbel
 plot_ctr_disp_migrant <- function(year = 2021,
                               country_asylum_iso3c ){
   
-  ctrylabel <- unhcrdatapackage::reference |> 
+  ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
   
-  thiscodeM49 <- unhcrdatapackage::reference |>
+  thiscodeM49 <- ForcedDisplacementStat::reference |>
                 filter(iso_3 == country_asylum_iso3c) |>
                  select(M49_code) |>
                  pull()
@@ -2906,8 +2908,8 @@ plot_ctr_disp_migrant <- function(year = 2021,
   wb_data$Year <- as.numeric(wb_data$Year)
 
   ## Getting summary of forcibly displaced   ##############
-  displaced <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                               y= unhcrdatapackage::reference, 
+  displaced <- left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                               y= ForcedDisplacementStat::reference, 
                                by = c("CountryAsylumCode" = "iso_3")) |>
               filter(Population.type  %in% c("REF", "ASY", "OIP")) |>
               filter(CountryAsylumCode == country_asylum_iso3c) |>
@@ -2922,8 +2924,8 @@ plot_ctr_disp_migrant <- function(year = 2021,
   
   
   ## Now getting migrant data  ##############
-  migrant <-  left_join( x= unhcrdatapackage::migrants, 
-                               y= unhcrdatapackage::reference, 
+  migrant <-  left_join( x= ForcedDisplacementStat::migrants, 
+                               y= ForcedDisplacementStat::reference, 
                                by = c("CountryOriginM49" = "M49_code")) |>
               filter(CountryDestinationM49 == thiscodeM49) |>
               filter( Year == 2020 ) |>
@@ -3060,8 +3062,8 @@ plot_reg_treemap <- function(year = 2022,
   ## Comparison of Refugees
 ## Filter popdata for the country report
 
-datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+datatree <-   dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) |>
   dplyr::filter( Year == year  ) |>
   dplyr::filter( Population.type %in% pop_type  ) |>
@@ -3156,8 +3158,8 @@ plot_reg_share <- function(year = 2022,
     
     
 
-datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+datatree <-   dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) |>
   dplyr::filter( Year == year  ) |>
   dplyr::filter( Population.type %in% pop_type  ) |>
@@ -3253,8 +3255,8 @@ plot_reg_evolution <- function(year = 2022,
                                              #"HCO"
                                              ) ){
   
-  allpop <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                              y= unhcrdatapackage::reference, 
+  allpop <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                              y= ForcedDisplacementStat::reference, 
                               by = c("CountryAsylumCode" = "iso_3")) |> 
               dplyr::filter(Population.type   %in%  pop_type & 
                               Year >=  (year - lag) &
@@ -3344,8 +3346,8 @@ plot_reg_population_type_per_year <- function(year = 2022,
                                      pop_type =  c("REF", "ASY", "IDP", "OIP", "STA", "OOC") ) {
   
 
-  df <- unhcrdatapackage::end_year_population_totals_long  |> 
-        dplyr::left_join( unhcrdatapackage::reference |> 
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
+        dplyr::left_join( ForcedDisplacementStat::reference |> 
                       dplyr::select(coa_region = `UNHCRBureau`, iso_3), 
                       by = c("CountryAsylumCode" = "iso_3")) |> 
   dplyr::filter(coa_region == region &
@@ -3449,8 +3451,8 @@ plot_reg_origin_dest <- function(year = 2022,  region = "Americas"){
    
 
 
-chords <- unhcrdatapackage::end_year_population_totals |>
-  dplyr::left_join( unhcrdatapackage::reference |> 
+chords <- ForcedDisplacementStat::end_year_population_totals |>
+  dplyr::left_join( ForcedDisplacementStat::reference |> 
                       dplyr::select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) |> 
   dplyr::filter(coa_region == region &
            Year == year) |> 
@@ -3579,9 +3581,9 @@ plot_reg_population_type_abs <- function(year = 2022,
                                 pop_type == "STA"  ~ "#E1CC0D")
   
   
-  df <- unhcrdatapackage::end_year_population_totals_long |>
+  df <- ForcedDisplacementStat::end_year_population_totals_long |>
     dplyr::left_join(
-      unhcrdatapackage::reference |>
+      ForcedDisplacementStat::reference |>
         dplyr::select(coa_region = `UNHCRBureau`, iso_3),
       by = c("CountryAsylumCode" = "iso_3")
     ) |>
@@ -3792,8 +3794,8 @@ plot_reg_decrease <- function(year = 2021,
   
   thisyear <- year
   baseline <- thisyear -lag
-  data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+  data <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) |>
     filter(Population.type  %in% pop_type)  |>
     filter(Year == baseline | Year == thisyear) |>
@@ -3903,8 +3905,8 @@ plot_reg_increase <- function(  year = 2021,
   
   thisyear <- year
   baseline <- thisyear -lag
-  data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+  data <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) |>
     filter(Population.type  %in% pop_type)  |>
     filter(Year == baseline | Year == thisyear) |>
@@ -4022,8 +4024,8 @@ plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
       wb_data$Year <- as.numeric(wb_data$Year)
   
   
-  departed <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+  departed <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryOriginCode" = "iso_3")) |> 
     dplyr::filter(Population.type  %in% c("REF","ASY","OIP") & 
            Year ==  year &
@@ -4127,9 +4129,9 @@ plot_reg_rsd <- function(year = 2022,
                        measure == "RefugeeRecognitionRate"  ~ "Refugee Recognition Rate", 
                        measure == "TotalRecognitionRate"  ~ "Total Recognition Rate")
 
-topasyl <-  unhcrdatapackage::asylum_decisions |>
+topasyl <-  ForcedDisplacementStat::asylum_decisions |>
   ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference |> 
+  dplyr::left_join( ForcedDisplacementStat::reference |> 
                       select(coa_region = `UNHCRBureau`, iso_3),
                     by = c("CountryAsylumCode" = "iso_3")) |> 
   filter(coa_region == region & Year == year) |> 
@@ -4153,9 +4155,9 @@ topasyl1 <-  topasyl  |>
   head(top_n_countries)  
   
  
-topOrigin <-  unhcrdatapackage::asylum_decisions |>
+topOrigin <-  ForcedDisplacementStat::asylum_decisions |>
   ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference |> 
+  dplyr::left_join( ForcedDisplacementStat::reference |> 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryOriginCode" = "iso_3")) |> 
   filter(coa_region == region & Year == year) |> 
   ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
@@ -4331,8 +4333,8 @@ plot_reg_solution <- function( year = 2022,
                             region = "Americas",
                             lag = 10){
   
-    solution <-  dplyr::left_join( x= unhcrdatapackage::solutions_long, 
-                                                     y= unhcrdatapackage::reference, 
+    solution <-  dplyr::left_join( x= ForcedDisplacementStat::solutions_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryOriginCode" = "iso_3")) |> 
                 dplyr::filter(Solution.type %in% c("NAT","RST","RET" ) & 
                        UNHCRBureau  == region &
@@ -4491,7 +4493,7 @@ plot_reg_map <- function(    year = 2022,
       ## Get spatial data to add ##########
       mapproject <- ""
       
-      listctr <-  unhcrdatapackage::reference |>
+      listctr <-  ForcedDisplacementStat::reference |>
         filter(UNHCRBureau == region) |>
         select(iso_3) |>
         pull()
@@ -4499,8 +4501,8 @@ plot_reg_map <- function(    year = 2022,
       
       
       ## Loading the stat tables ######
-      data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                y= unhcrdatapackage::reference, 
+      data <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                y= ForcedDisplacementStat::reference, 
                                 by = c("CountryAsylumCode" = "iso_3")) |>
         filter(Population.type  %in% pop_type &
                  Year == year & 
@@ -4729,7 +4731,7 @@ template_CtryFactsheet <- function(year = 2022,
   output_dir <- paste0(getwd(),"/",folder)
   if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
-  ctrname <- unhcrdatapackage::reference |>
+  ctrname <- ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::select(ctryname) |>
              dplyr::pull()
@@ -4754,8 +4756,8 @@ template_CtryFactsheet <- function(year = 2022,
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#                                 y= unhcrdatapackage::reference,
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
 #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #         filter(Year == year &
 #                 UNHCRBureau == region ) |>
@@ -4808,7 +4810,7 @@ template_CtryPrez <- function(year = 2022,
   output_dir <- paste0(getwd(),"/",folder)
   if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
-  ctrname <- unhcrdatapackage::reference |>
+  ctrname <- ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::select(ctryname) |>
              dplyr::pull()
@@ -4834,8 +4836,8 @@ template_CtryPrez <- function(year = 2022,
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#                                 y= unhcrdatapackage::reference,
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
 #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #         filter(Year == year &
 #                 UNHCRBureau == region ) |>
@@ -4890,14 +4892,14 @@ template_Ctryslides <- function(year = 2022,
   output_dir <- paste0(getwd(),"/",folder)
   if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
-  ctrname <- unhcrdatapackage::reference |>
+  ctrname <- ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::select(ctryname) |>
              dplyr::pull()
   
   rmarkdown::render(
     system.file("rmarkdown/templates/country_slides/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.pptx') ),
+    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.html') ),
     params = list(countryname= ctrname,
                   country = country_asylum_iso3c, 
                   year = year)  )
@@ -4916,8 +4918,8 @@ template_Ctryslides <- function(year = 2022,
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#                                 y= unhcrdatapackage::reference,
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
 #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #         filter(Year == year &
 #                 UNHCRBureau == region ) |>
@@ -4930,9 +4932,9 @@ template_Ctryslides <- function(year = 2022,
 #     # i <- 1
 #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #     cat(paste0(country_asylum_iso3ci, "\n"))
-#     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022,
 #                                 country_asylum_iso3c = country_asylum_iso3ci,
-#                                folder = "Report")  }
+#                                folder = "docs/factsheet")  }
 ```
 
 
@@ -5000,7 +5002,7 @@ template_RegFactsheet <- function(year = 2022,
 
 ## We can also generate all factsheets in a loop for 2022
 
-# region <-  unhcrdatapackage::reference |>
+# region <-  ForcedDisplacementStat::reference |>
 #   dplyr::distinct(UNHCRBureau) |>
 #   dplyr::filter(!(is.na(UNHCRBureau))) |>
 #   dplyr::pull()
@@ -5080,8 +5082,8 @@ template_RegPrez <- function(year = 2022,
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#                                 y= unhcrdatapackage::reference,
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
 #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #         filter(Year == year &
 #                 UNHCRBureau == region ) |>
@@ -5100,371 +5102,7 @@ template_RegPrez <- function(year = 2022,
 #   }
 ```
 
-# Update Dataset
-    
-```{r function-update_dataset}
-#' Update the data on the package
-#' 
-#' The function pull the data from https://data.humdata.org/dataset/unhcr-population-data-for-world and do a few adjustement before inserting them in the package
-#' 
-#' @importFrom ckanr   ckanr_setup  package_search
-#' @importFrom purrr  pluck  walk
-#' @importFrom readr read_csv
-#' @importFrom fs path path_file
-#' @importFrom here here
-#' @importFrom dplyr rename
-#' @importFrom reshape2 melt
-#' @importFrom sinew makeOxygen
-#' @importFrom tools resaveRdaFiles
-#' 
-#' @return nothing just refresh the data .rda
-#' 
-#' @export
-update_dataset <- function(){
-  
 
-
-    ckanr::ckanr_setup("https://data.humdata.org")
-    
-    ckanr::package_search("name:unhcr-population-data-for-world", as = "table") |> 
-      purrr::pluck("results", "resources", 1, "url") |> 
-      purrr::walk(~ckanr::ckan_fetch(., store = "disk", path = fs::path("data-raw", fs::path_file(.))))
-    
-    read_sans_hxl <- function(file, ...) {
-      hdrs <- readr::read_csv(file, n_max = 0) |> names()
-      
-      readr::read_csv(file, col_names = hdrs, skip = 2, ...)
-    }
-
-
-
-    ## Displaced ##########
-    cat(paste0("Reading end_year_population_totals_residing_world \n"))
-    end_year_population_totals <- read_sans_hxl(file =  here::here("data-raw","end_year_population_totals_residing_world.csv"))
-    
-    
-    # Rename column to have proper Variable names
-    end_year_population_totals <- dplyr::rename(end_year_population_totals, c("Country of Origin Code"="CountryOriginCode",
-                                           "Country of Asylum Code"="CountryAsylumCode", 
-                                           "Country of Origin Name"="CountryOriginName",
-                                           "Country of Asylum Name"="CountryAsylumName", 
-                                           "Refugees"="REF", 
-                                           "Internally displaced persons"="IDP", 
-                                           "Asylum seekers"="ASY",
-                                           "Others of concern to UNHCR"="OOC",
-                                           "Stateless Persons"="STA",    
-                                          #  "Venezuelans Displaced Abroad"="VDA"
-                                           "Host community" = "HCO",
-                                           "Other people in need of international protection"="OIP"))
-    cat(names(end_year_population_totals))
-    
-    sinew::makeOxygen(end_year_population_totals, add_fields = "source")
-    
-    save(end_year_population_totals, file =  here::here("data","end_year_population_totals.RData"))
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data
-    tools::resaveRdaFiles(here::here("data","end_year_population_totals.RData"),compress="bzip2")
-    
-    cat(paste0("Saving end_year_population_totals_residing_world \n"))
-     
-    
-    
-    
-    ## Create a long format for the dataset
-    
-    end_year_population_totals_long <- reshape2::melt(end_year_population_totals,
-                                               # ID variables - all the variables to keep but not split apart on
-                                               id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
-                                               # The source columns
-                                               measure.vars=c("REF","IDP", "ASY","OOC","STA","OIP","HCO"),
-                                               # Name of the destination column that will identify the original
-                                               # column that the measurement came from
-                                               variable.name="Population.type",
-                                               value.name="Value")
-    
-    end_year_population_totals_long <- end_year_population_totals_long[end_year_population_totals_long$Value > 0, ]
-    
-    end_year_population_totals_long$Population.type.label <- ""
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="IDP"] <- "Internally displaced persons"
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum seekers"
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OOC"] <- "Others of concern to UNHCR"
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
-    #end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="OIP"] <- "Other people in need of international protection"
-    end_year_population_totals_long$Population.type.label[end_year_population_totals_long$Population.type=="HCO"] <- "Host community"
-    
-    end_year_population_totals_long$Population.type.label.short <- ""
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="REF"] <- "Refugees"
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="IDP"] <- "IDPs"
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="ASY"] <- "Asylum seekers"
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OOC"] <- "Others of concern"
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="STA"] <- "Stateless Persons"
-    #end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="OIP"] <- "In need of int. protect."
-    #end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="VDA"] <- "Venezuelans Abroad"
-    end_year_population_totals_long$Population.type.label.short[end_year_population_totals_long$Population.type=="HCO"] <- "Host community"
-    
-      
-    save(end_year_population_totals_long, file =  here::here("data","end_year_population_totals_long.RData"))
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data 
-    tools::resaveRdaFiles(here::here("data","end_year_population_totals_long.RData"),compress="xz") 
-    
-    cat(paste0("Saving long format for  end_year_population_totals_residing_world \n"))
-    
-    
-    ## Solutions ##########
-    
-    solutions_residing <- read_sans_hxl(file =  here::here("data-raw","solutions_residing_world.csv"))
-    
-    cat(paste0("Reading solutions_residing_world \n"))
-    
-    sinew::makeOxygen(solutions_residing, add_fields = "source")
-    # Rename column to have proper Variable names
-    solutions <- dplyr::rename(solutions_residing, c("Country of Origin Code"="CountryOriginCode",
-                                                                             "Country of Asylum Code"="CountryAsylumCode", 
-                                                                             "Country of Origin Name"="CountryOriginName",
-                                                                             "Country of Asylum Name"="CountryAsylumName", 
-                                                                             "Resettlement arrivals"="RST",
-                                                                             "Refugee returns"="RET",
-                                                                             "Naturalisation"="NAT",
-                                                                             "IDP returns"="RDP" ))
-    
-    save(solutions, file =  here::here("data","solutions.RData"))
-    sinew::makeOxygen(solutions, add_fields = "source")
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data
-    tools::resaveRdaFiles(here::here("data","solutions.RData"),compress="bzip2")
-    
-    cat(paste0("Saving solutions_residing_world \n"))
-    
-    solutions_long <- reshape2::melt(solutions,
-                                                      # ID variables - all the variables to keep but not split apart on
-                                                      id.vars=c("Year", "CountryOriginCode","CountryAsylumCode","CountryOriginName","CountryAsylumName" ),
-                                                      # The source columns
-                                                      measure.vars=c("NAT","RST", "RET","RDP"),
-                                                      # Name of the destination column that will identify the original
-                                                      # column that the measurement came from
-                                                      variable.name="Solution.type",
-                                                      value.name="Value")
-    
-    solutions_long <- solutions_long[solutions_long$Value > 0, ]
-    
-    
-    solutions_long$Solution.type.label <- ""
-    solutions_long$Solution.type.label[solutions_long$Solution.type=="RST"] <- "Resettlement arrivals"
-    solutions_long$Solution.type.label[solutions_long$Solution.type=="NAT"] <- "Naturalisation"
-    solutions_long$Solution.type.label[solutions_long$Solution.type=="RET"] <- "Refugee returns"
-    solutions_long$Solution.type.label[solutions_long$Solution.type=="RDP"] <- "IDP returns"
-    
-    save(solutions_long , file =  here::here("data","solutions_long.RData"))
-    sinew::makeOxygen(solutions_long , add_fields = "source")
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data
-    tools::resaveRdaFiles(here::here("data","solutions_long.RData"),compress="xz")
-    
-    cat(paste0("Saving long format for solutions_residing_world \n"))
-    
-    ## Demographics ##########
-    
-    demographics_residing <- read_sans_hxl(file =  here::here("data-raw","demographics_residing_world.csv"))
-    
-    cat(paste0("Reading demographics_residing_world \n"))
-    #names(demographics_residing)
-    
-    sinew::makeOxygen(demographics_residing, add_fields = "source")
-    # Rename column to have proper Variable names
-    demographics <- dplyr::rename(demographics_residing, c("Country of Origin Code"="CountryOriginCode",
-                                                             "Country of Asylum Code"="CountryAsylumCode", 
-                                                             "Country of Origin Name"="CountryOriginName",
-                                                             "Country of Asylum Name"="CountryAsylumName",  
-                                                             "Population Type"= "Population.type",
-                                                             "Female 0-4"="Female04", 
-                                                             "Female 5-11"="Female511", 
-                                                             "Female 12-17"="Female1217", 
-                                                             "Female 18-59"="Female1859",
-                                                             "Female 60 or more"="Female60ormore",
-                                                             "Female Unknown"="FemaleUnknown",
-                                                             "Female Total"="FemaleTotal", 
-                                                             "Male 0-4"="Male04", 
-                                                             "Male 5-11"="Male511", 
-                                                             "Male 12-17"="Male1217", 
-                                                             "Male 18-59"="Male1859",
-                                                             "Male 60 or more"="Male60ormore",
-                                                             "Male Unknown"="MaleUnknown",
-                                                             "Male Total"="MaleTotal")
-                                                             )
-    
-    
-    #names(demographics)
-    
-    demographics$Population.type.label <- ""
-    demographics$Population.type.label[demographics$Population.type=="REF"] <- "Refugees"
-    demographics$Population.type.label[demographics$Population.type=="IDP"] <- "Internally displaced persons"
-    demographics$Population.type.label[demographics$Population.type=="ASY"] <- "Asylum seekers"
-    demographics$Population.type.label[demographics$Population.type=="OOC"] <- "Others of concern to UNHCR"
-    demographics$Population.type.label[demographics$Population.type=="STA"] <- "Stateless Persons"
-    #demographics$Population.type.label[demographics$Population.type=="VDA"] <- "Venezuelans Displaced Abroad"
-    demographics$Population.type.label[demographics$Population.type=="OIP"] <- "Other people in need of international protection"
-    demographics$Population.type.label[demographics$Population.type=="HCO"] <- "Host community" 
-    demographics$Population.type.label[demographics$Population.type=="RET"] <- "Refugee returns"
-    demographics$Population.type.label[demographics$Population.type=="RDP"] <- "IDP returns"
-    
-    demographics$Population.type.label.short <- ""
-    demographics$Population.type.label.short[demographics$Population.type=="REF"] <- "Refugees"
-    demographics$Population.type.label.short[demographics$Population.type=="IDP"] <- "IDPs"
-    demographics$Population.type.label.short[demographics$Population.type=="ASY"] <- "Asylum seekers"
-    demographics$Population.type.label.short[demographics$Population.type=="OOC"] <- "Others of Concern"
-    demographics$Population.type.label.short[demographics$Population.type=="STA"] <- "Stateless Persons"
-    #demographics$Population.type.label.short[demographics$Population.type=="VDA"] <- "Venezuelans Abroad"
-    demographics$Population.type.label.short[demographics$Population.type=="OIP"] <- "In need of int. protect."
-    demographics$Population.type.label.short[demographics$Population.type=="HCO"] <- "Host community" 
-    demographics$Population.type.label.short[demographics$Population.type=="RET"] <- "Refugee returns"
-    demographics$Population.type.label.short[demographics$Population.type=="RDP"] <- "IDP returns"
-    
-    # names(demographics)
-    # table(demographics$location, useNA = "ifany")
-    # table(demographics$urbanRural, useNA = "ifany")
-    # table(demographics$accommodationType, useNA = "ifany")
-    # table(demographics$Population.type.label.short, useNA = "ifany")
-    
-    save(demographics, file =  here::here("data","demographics.RData"))
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data 
-    tools::resaveRdaFiles(here::here("data","demographics.RData"),compress="bzip2")
-    
-    cat(paste0("Saving demographics_residing_world \n"))
-    
-    ## RSD Application ########## 
-    asylum_applications_residing <- read_sans_hxl(file =  here::here("data-raw","asylum_applications_residing_world.csv"))
-    
-    cat(paste0("Reading asylum_applications_residing_world \n"))
-    sinew::makeOxygen(asylum_applications_residing, add_fields = "source")
-    
-    # Rename column to have proper Variable names
-    asylum_applications <- dplyr::rename(asylum_applications_residing, c("Country of Origin Code"="CountryOriginCode",
-                                                                        "Country of Asylum Code"="CountryAsylumCode", 
-                                                                        "Country of Origin Name"="CountryOriginName",
-                                                                        "Country of Asylum Name"="CountryAsylumName", 
-                                                                        "Procedure Type"="ProcedureType",                      
-                                                                        "Procedure Name"="ProcedureName",                      
-                                                                        "Application Type Code"="ApplicationTypeCode",               
-                                                                        "Application Type"="ApplicationType",                    
-                                                                        "Application Data Type"="ApplicationDataType",               
-                                                                        "Application Data"="ApplicationData",                    
-                                                                        "Application Average Persons Per Case"="ApplicationAveragePersonsPerCase",
-                                                                        "Number of Applications"="NumberApplications" 
-    )
-    )
-    
-    asylum_applications$ApplicationType[asylum_applications$ApplicationTypeCode == "V"] <- "Various"
-    asylum_applications$ApplicationTypeCode[asylum_applications$ApplicationType == "New and appeal"] <- "NA"
-    
-    #View(unique(asylum_applications[ ,c("ApplicationTypeCode","ApplicationType")]))
-    
-    # View(unique(asylum_applications[ ,c("ProcedureType",  "ProcedureName")]))
-    # 
-    # View(unique(asylum_applications[ ,c("ApplicationDataType","ApplicationData")]))
-    
-    save(asylum_applications, file =  here::here("data","asylum_applications.RData"))
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data
-    tools::resaveRdaFiles(here::here("data","asylum_applications.RData"),compress="bzip2")
-    
-    cat(paste0("Saving asylum_applications_residing_world \n"))
-    
-    ## RSD Decision ##########
-    asylum_decisions_residing <- read_sans_hxl(file =  here::here("data-raw","asylum_decisions_residing_world.csv"))
-    
-    cat(paste0("Reading asylum_decisions_residing_world \n"))
-    
-    sinew::makeOxygen(asylum_decisions_residing, add_fields = "source")
-    # Rename column to have proper Variable names
-    asylum_decisions <- dplyr::rename(asylum_decisions_residing, c("Country of Origin Code"="CountryOriginCode",
-                                                                   "Country of Asylum Code"="CountryAsylumCode", 
-                                                                   "Country of Origin Name"="CountryOriginName",
-                                                                   "Country of Asylum Name"="CountryAsylumName", 
-                                                                   "Procedure Type"="ProcedureType",                    
-                                                                   "Procedure Name"="ProcedureName",                    
-                                                                   "Decision Type Code"="DecisionTypeCode",                
-                                                                   "Decision Data Type"="DecisionDataType",                
-                                                                   "Decision Data"="DecisionData",                     
-                                                                   "Decisions Average Persons Per Case"= "DecisionsAveragePersonsPerCase",
-                                                                   "Complementary Protection"="ComplementaryProtection",          
-                                                                   "Otherwise Closed" ="OtherwiseClosed",                
-                                                                   "Total Decided" = "TotalDecided"
-                                                                   )
-    )
-    
-    
-    # View(unique(asylum_decisions[ ,c("ProcedureType",  "ProcedureName")]))
-    # View(unique(asylum_decisions[ ,c("DecisionTypeCode")]))
-    
-    asylum_decisions$DecisionTypeName <- ""
-    asylum_decisions$DecisionTypeCode[is.na(asylum_decisions$DecisionTypeCode) ] <- "NA"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "FI"] <- "First instance"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "AR"] <- "Re-opened/repeat"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "FA"] <- "First instance and appeal"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "BL"] <- "BL"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "NA"] <- "New applications"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "RA"] <- "Repeat/reopened applications"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "CA"] <- "CA"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "EO"] <- "US Executive Office of Immigration Review"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "IN"] <- "US Citizenship and Immigration Services"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TR"] <- "TR"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "JR"] <- "Judicial Review "
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "SP"] <- "Subsidiary protection"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TA"] <- "Temporary asylum"
-    asylum_decisions$DecisionTypeName[asylum_decisions$DecisionTypeCode == "TP"] <- "Temporary Protection" 
-    
-    #View(unique(asylum_decisions[ ,c("DecisionTypeCode","DecisionTypeName")])) 
-    sinew::makeOxygen(asylum_decisions, add_fields = "source")
-    save(asylum_decisions, file =  here::here("data","asylum_decisions.RData"))
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data
-    tools::resaveRdaFiles(here::here("data","asylum_decisions.RData"),compress="bzip2")
-    
-    cat(paste0("Saving asylum_decisions_residing_world \n"))
-    
-    ## RDS Decision Long format ########
-    
-    #names(asylum_decisions)
-    
-    asylum_decisions_long <- reshape2::melt(asylum_decisions,
-                                                      # ID variables - all the variables to keep but not split apart on
-                                                      id.vars=c("Year", "CountryOriginCode","CountryAsylumCode",
-                                                                "CountryOriginName","CountryAsylumName",
-                                                                "ProcedureType",  "ProcedureName",
-                                                                "DecisionTypeCode","DecisionTypeName",
-                                                                "DecisionData","DecisionsAveragePersonsPerCase"),
-                                                      # The source columns
-                                                      measure.vars=c("Recognized","ComplementaryProtection","OtherwiseClosed","Rejected"),
-                                                      # Name of the destination column that will identify the original
-                                                      # column that the measurement came from
-                                                      variable.name="Decision.output",
-                                                      value.name="Value")
-    
-    asylum_decisions_long <- asylum_decisions_long[asylum_decisions_long$Value > 0, ]
-    
-    sinew::makeOxygen(asylum_decisions_long, add_fields = "source")
-    save(asylum_decisions_long, file =  here::here("data","asylum_decisions_long.RData"))
-    # Note: significantly better compression could be obtained
-    #by using R CMD build --resave-data
-    tools::resaveRdaFiles(here::here("data","asylum_decisions_long.RData"),compress="xz")  
-    
-    cat(paste0("Saving long format for asylum_decisions_residing_world \n"))
-}
-```
-  
-```{r example-update_dataset}
-#update_dataset()
-```
-  
-```{r tests-update_dataset}
-#test_that("update_dataset works", {  expect_true(inherits(update_dataset, "function")) })
-```
-  
 
 # Refresh package
 

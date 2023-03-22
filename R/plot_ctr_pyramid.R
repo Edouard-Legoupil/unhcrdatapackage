@@ -60,18 +60,18 @@ plot_ctr_pyramid <- function(year ,
     }
  
   
-  ctrylabel <- unhcrdatapackage::reference |> 
+  ctrylabel <- ForcedDisplacementStat::reference |> 
     filter(iso_3 == country_asylum_iso3c ) |> 
     distinct(ctryname) |> 
     pull()
   
-  poptype_label <- unhcrdatapackage::end_year_population_totals_long |> 
+  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |> 
     filter(Population.type  %in% as.vector(pop_type)) |> 
     distinct(Population.type.label.short) |> 
     pull()
   
-  demographics1 <- unhcrdatapackage::demographics |>
-    left_join( unhcrdatapackage::reference |> 
+  demographics1 <- ForcedDisplacementStat::demographics |>
+    left_join( ForcedDisplacementStat::reference |> 
                  select(UNHCRBureau, iso_3),  
                by = c("CountryAsylumCode" = "iso_3")) |> 
     filter(CountryAsylumCode  == country_asylum_iso3c &
@@ -89,8 +89,8 @@ plot_ctr_pyramid <- function(year ,
   ## Check if fall back is needed.. 
   if(nrow(demographics1) == 0) { 
     year <- year -1 
-    demographics1 <- unhcrdatapackage::demographics |>
-      left_join( unhcrdatapackage::reference |> 
+    demographics1 <- ForcedDisplacementStat::demographics |>
+      left_join( ForcedDisplacementStat::reference |> 
                    select(UNHCRBureau, iso_3),  
                  by = c("CountryAsylumCode" = "iso_3")) |> 
       filter(CountryAsylumCode  == country_asylum_iso3c &

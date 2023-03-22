@@ -47,7 +47,7 @@
     
     <a class="navbar-brand me-2" href="index.html">unhcrdatapackage</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,9 +63,6 @@
     <a class="dropdown-item" href="articles/chart-library.html">Chart library directory</a>
     <a class="dropdown-item" href="articles/adding-new-charts.html">Adding new Charts in the Library</a>
   </div>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="CountryFocus.html">Country Focus</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="news/index.html">News</a>
@@ -94,8 +91,8 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="unhcrdatapackage-a-data-package-with-unhcr-statistics-database-">
-<a href="https://unhcr.github.io/unhcrdatapackage/docs/" class="external-link"><code>{UnhcrDataPackage}</code></a>: A data package with UNHCR statistics Database <a class="anchor" aria-label="anchor" href="#unhcrdatapackage-a-data-package-with-unhcr-statistics-database-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="unhcrdatapackage-unhcr-chart-library-package-">
+<a href="https://edouard-legoupil.github.io/unhcrdatapackage/docs/" class="external-link"><code>{UnhcrDataPackage}</code></a>: UNHCR Chart Library Package <a class="anchor" aria-label="anchor" href="#unhcrdatapackage-unhcr-chart-library-package-"></a>
 </h1>
 </div>
 <blockquote>
@@ -104,78 +101,31 @@
 <blockquote>
 <p>– Stephen Few</p>
 </blockquote>
-<p>The package is inspired from tutorial @ <a href="https://r-pkgs.org/data.html" class="external-link uri">https://r-pkgs.org/data.html</a> (the code used to build the package is in <code>data-raw/build.R</code>). Data are pulled from HDX @ <a href="https://data.humdata.org/dataset/unhcr-population-data-for-world" class="external-link">unhcr-population-data-for-world</a> and are then conveniently packaged for R users intending to build <strong>data stories</strong>. Note, that you can also explore data through <a href="https://www.unhcr.org/refugee-statistics/" class="external-link">Refugee Data Finder</a>.</p>
-<p>This package promotes <a href="https://unhcr-americas.github.io/reproducibility" class="external-link">reproducible approaches</a> within UNHCR.If you are UNHCR Staff and want to learn R, visit <a href="https://unhcr.csod.com/ui/lms-learner-playlist/PlaylistDetails?playlistId=e90e2279-e3a4-4ef2-8b74-757f91d224b2" class="external-link">UNHCR Learn &amp; Connect- R training</a>.</p>
-<div class="section level2">
-<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
-</h2>
-<p>First install UNHCR branding packages for R as showcased here: <a href="https://dataviz.unhcr.org/tools/r/" class="external-link uri">https://dataviz.unhcr.org/tools/r/</a></p>
-<pre class="{r}"><code><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdesign"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrthemes"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdown"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"edouard-legoupil/unhcrdatapackage"</span><span class="op">)</span></span></code></pre>
-</div>
-<div class="section level2">
-<h2 id="chart-library">Chart Library<a class="anchor" aria-label="anchor" href="#chart-library"></a>
-</h2>
-<p>The package includes a series of functions that provides recipes to create re-usable charts in line with a <a href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/" class="external-link">Divisible Content Strategy</a>. All those functions are then rendered through predefined Report template, aka “<strong>Statistical Factsheet</strong>” got Countries or Regions, generated either as PDF or Powerpoint presentations.</p>
-<p>For Designers, convenient versions of each plot in <strong>svg</strong> format (usable with Illustrator/Inkscape or Indesign/Scribus) can be generated directly with: <code>unhcrthemes::unhcr_save(plot, "plot.svg")</code>.</p>
-<p>You can also explore <strong>Country Statistical Focus</strong>, accessible <a href="CountryFocus.html">here</a> that provides visualization by country in relation to 6 dimensions of displacement: Categories, Origin, Demographics, Solutions, Processing and Source.</p>
-</div>
-<div class="section level2">
-<h2 id="data-content">Data Content<a class="anchor" aria-label="anchor" href="#data-content"></a>
-</h2>
-<p>The data presented in this website consists of the following dataset:</p>
-<ul>
-<li>
-<a href="reference/end_year_population_totals.html">End-year population figures</a> - these are stock figures for specific types of populations at the end of each year, including refugees, IDPs and asylum seekers.</li>
-<li>
-<a href="reference/demographics.html">Demographics</a> – are available for the UNHCR data, IDMC and UNRWA data. No demographics are available for resettlement and naturalization data</li>
-<li>
-<a href="reference/asylum_applications.html">Asylum applications</a> by asylum-seekers</li>
-<li>
-<a href="reference/asylum_decisions.html">Asylum decisions</a> taken on asylum claims of asylum-seekers</li>
-<li>
-<a href="reference/solutions.html">Solutions</a> – these are flow figures, with the total number of individuals that have availed each solution in each year.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="data-structure">Data structure<a class="anchor" aria-label="anchor" href="#data-structure"></a>
-</h2>
-<p>Details is provided for each dataset</p>
-<p>All data is disaggregated by year, since 1951 for stock figures, type of population, country/territory of asylum and origin.</p>
-<blockquote>
-<p>Note that the term country/territory of asylum has a range of contexts depending on the dataset chosen</p>
-</blockquote>
-<ul>
-<li>
-<strong>Resettlement</strong> – in this context this is the country of arrival – i.e. the country to which a refugee has been resettled</li>
-<li>
-<strong>Returns</strong> – in this context this is the country of departure – i.e. the country from which a refugee has voluntarily repatriated.</li>
-</ul>
-<p>Country/territory of asylum and origin – the full list of UN countries is available on the UNSD methodology page . ISO3 country codes are included. UNHCR uses the following non-standard ISO3 country codes:</p>
-<ul>
-<li>
-<code>UNK</code> for Various/unknown<br>
-</li>
-<li>
-<code>STA</code> for Stateless</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="data-protection--statistical-disclosure-risk-treatment">Data protection &amp; Statistical Disclosure Risk Treatment<a class="anchor" aria-label="anchor" href="#data-protection--statistical-disclosure-risk-treatment"></a>
-</h2>
-<p>Before publishing any statistics on the refugee statistics website, UNHCR applies safeguards to protect confidentiality. Small numbers less than five are rounded to the nearest multiple of five. Additionally data relating to pending asylum applications, new applications and decisions is rounded between five and ten.</p>
-<p>Data between tables remains additive therefore the totals should be considered approximations.</p>
-</div>
+<p>The package conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of <strong><a href="https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html" class="external-link">persuasive data stories</a></strong>.</p>
+<p>Each plot is created through a function that provides a <strong>recipe</strong> that creates a re-usable chart in line with a <a href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/" class="external-link">Divisible Content Strategy</a>. Those functions are then rendered through predefined Report templates for Countries or Regions, generated either as html, PDF or PowerPoint presentations. You may <a href="https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html" class="external-link">enhance the charts story-telling ability</a> by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.</p>
+<p>You can consult the default <a href="https://edouard-legoupil.github.io/unhcrdatapackage/factsheet/factsheet.html" class="external-link">Factsheets for the Americas through that link</a>.</p>
+<p>Note, that if only need the data you can use directly <a href="https://unhcr.github.io/ForcedDisplacementStat/" class="external-link"><code>{ForcedDisplacementStat}</code></a>. You can also explore data through <a href="https://www.unhcr.org/refugee-statistics/" class="external-link">Refugee Data Finder</a>.</p>
+<p>This package promotes <a href="https://unhcr-americas.github.io/reproducibility" class="external-link">reproducible approaches</a>.If you are UNHCR Staff and want to learn R, visit <a href="https://unhcr.csod.com/ui/lms-learner-playlist/PlaylistDetails?playlistId=e90e2279-e3a4-4ef2-8b74-757f91d224b2" class="external-link">UNHCR Learn &amp; Connect- R training</a>. For Designers, convenient versions of each plot in <strong>svg</strong> format (usable with Illustrator/Inkscape or Indesign/Scribus) can be generated directly with: <code>unhcrthemes::unhcr_save(plot, "plot.svg")</code>.</p>
 <div class="section level2">
 <h2 id="missing-chart">Missing chart<a class="anchor" aria-label="anchor" href="#missing-chart"></a>
 </h2>
 <p>You can submit <strong>request for new charts</strong> <a href="https://github.com/Edouard-Legoupil/unhcrdatapackage/issues/new" class="external-link">here</a></p>
 <p><strong>Contributions</strong>, specifically creation of new functions for the chart library are welcome! Please <a href="https://edouard-legoupil.github.io/unhcrdatapackage/articles/adding-new-charts.html" class="external-link">consult instructions here</a></p>
+</div>
+<div class="section level2">
+<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
+</h2>
+<p>Pending the creation of a shiny interface for the package, you will need to install the package to use it. If you are on Windows, you will first need to install <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> on the top of <a href="https://cran.r-project.org/bin/windows/base/" class="external-link">R</a> and <a href="https://posit.co/download/rstudio-desktop/" class="external-link">Rstudio</a> in order to install the package locally.</p>
+<p>Make sure to have your <strong>JAVA_HOME</strong> environment variable set up as it will be used for the map generation functions</p>
+<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
+<span><span class="co">## First install UNHCR branding packages for R as showcased here: https://dataviz.unhcr.org/tools/r/</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdesign"</span><span class="op">)</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrthemes"</span><span class="op">)</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdown"</span><span class="op">)</span></span>
+<span><span class="co">## Now the data </span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"edouard-legoupil/ForcedDisplacementStat"</span><span class="op">)</span></span>
+<span><span class="co">## Then the chart library</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"edouard-legoupil/unhcrdatapackage"</span><span class="op">)</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

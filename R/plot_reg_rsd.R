@@ -77,9 +77,9 @@ plot_reg_rsd <- function(year = 2022,
                        measure == "RefugeeRecognitionRate"  ~ "Refugee Recognition Rate", 
                        measure == "TotalRecognitionRate"  ~ "Total Recognition Rate")
 
-topasyl <-  unhcrdatapackage::asylum_decisions |>
+topasyl <-  ForcedDisplacementStat::asylum_decisions |>
   ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference |> 
+  dplyr::left_join( ForcedDisplacementStat::reference |> 
                       select(coa_region = `UNHCRBureau`, iso_3),
                     by = c("CountryAsylumCode" = "iso_3")) |> 
   filter(coa_region == region & Year == year) |> 
@@ -103,9 +103,9 @@ topasyl1 <-  topasyl  |>
   head(top_n_countries)  
   
  
-topOrigin <-  unhcrdatapackage::asylum_decisions |>
+topOrigin <-  ForcedDisplacementStat::asylum_decisions |>
   ## Add reference for the filters
-  dplyr::left_join( unhcrdatapackage::reference |> 
+  dplyr::left_join( ForcedDisplacementStat::reference |> 
                       select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryOriginCode" = "iso_3")) |> 
   filter(coa_region == region & Year == year) |> 
   ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m

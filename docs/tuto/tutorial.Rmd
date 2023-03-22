@@ -27,6 +27,88 @@ library(fontawesome)
 library(unhcrdatapackage)
 ```
 
+---
+
+> “__Numbers have an important story to tell. They rely on YOU to give them a voice!__”
+
+> -- Stephen Few
+
+
+---
+
+
+# What is data story telling?
+
+
+Data storytelling is the art of presenting data with a contextual narrative. It implies to put data insights into context for (__an understandable storyline__) and inspire action from and influence the targeted audience.
+
+From a simple chart, this can be done by:
+
+ *  adjusting the message in the title,  
+ 
+ *  highlighting specific parts of the data or  
+ 
+ *  adding annotation to ease interpretation or provide more contextual background
+ 
+
+---
+
+
+# Pairing assumptions with evidences
+
+Start from assumptions and associate to them graphs from crunching output in order to give foundation for potential data stories according to narrative frames: 
+
+ *  Shed light on a previously unexplored topic - 
+
+ *  Introduce an interesting angle  - 
+
+ *  Provide useful suggestions to solve a problem  
+
+ *  Disprove an hypothesis / debunk a widely held belief 
+
+
+---
+
+
+
+# Divisible Content Strategy 
+
+An approach to content creation where you use a single asset to create multiple pieces. For example, you might break an a long report into a few articles, an infographic, social __microcontent__, or even a video. 
+
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png)
+
+[blog post from Column Five Media](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/)
+
+
+
+???
+
+Nowadays, the average consumer attention span is less than 10 sec. Long reports are therefore less likely to draw large audience. “Divisible Content Strategy” consists in breaking  a traditional report into a few articles, an infographic, social microcontent, or even a motion graphic video. For instance, if an article includes 5 different charts, each chart can be posted it as a visual tweet implying that the same content can be promoted through different angles.  
+
+---
+
+
+# More Content With Less Work
+
+The chart library is therefore designed to speed up the creation of __microcontent__ that can be then re-embedded wherever needed:
+
+ * Social Media
+ 
+ * Donor Presentation
+ 
+ * Talking points
+ 
+ * Situation Analysis or Protection Monitoring Reports
+ 
+ 
+ 
+With this approach, the effort spent on polishing content can benefit a series of product  
+ 
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/microcontent.png)
+
+
+---
+
 
 
 # Template

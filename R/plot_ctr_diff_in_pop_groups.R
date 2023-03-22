@@ -46,7 +46,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   }
   
   
-  df <- unhcrdatapackage::end_year_population_totals  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
            !is.na(CountryAsylumCode),
            (Year == year-1 | Year == year),  #### Parameter

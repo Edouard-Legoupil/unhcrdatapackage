@@ -34,8 +34,8 @@
 #' # year <- 2022
 #' # library(tidyverse)
 #' # ## get all countries with more than 1000 Reported individuals
-#' # ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#' #                                 y= unhcrdatapackage::reference,
+#' # ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#' #                                 y= ForcedDisplacementStat::reference,
 #' #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #' #         filter(Year == year &
 #' #                 UNHCRBureau == region ) |>
@@ -59,7 +59,7 @@ template_CtryPrez <- function(year = 2022,
   output_dir <- paste0(getwd(),"/",folder)
   if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
-  ctrname <- unhcrdatapackage::reference |>
+  ctrname <- ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::select(ctryname) |>
              dplyr::pull()

@@ -61,25 +61,25 @@ plot_ctr_processing_time <- function(year = 2022,
 #   country_asylum_iso3c <- "CHL" # iso3 code
   
   if( is.null(country_origin_iso3c)) {
-        originfilter <-     c(unhcrdatapackage::asylum_applications |>
+        originfilter <-     c(ForcedDisplacementStat::asylum_applications |>
                                       dplyr::select(CountryOriginCode) |>
                                       unique() |>
                                     dplyr::pull() ) 
         originfilterlab <- ""
         } else { 
         originfilter <- c(country_origin_iso3c) 
-        originfilterlab <- unhcrdatapackage::reference |>
+        originfilterlab <- ForcedDisplacementStat::reference |>
                                    dplyr::filter( iso_3 == country_origin_iso3c) |>
                                    dplyr::pull(ctryname)}
   if( is.null(procedureType)) {
-          procedurefilter <-     c(unhcrdatapackage::asylum_applications |>
+          procedurefilter <-     c(ForcedDisplacementStat::asylum_applications |>
                                       dplyr::select(ProcedureType) |>
                                       unique() |>
                                     dplyr::pull() )
           procedurefilterlab <- ""
           } else { 
           procedurefilter <- c(procedureType)
-          procedurefilterlab <- unhcrdatapackage::asylum_applications |>
+          procedurefilterlab <- ForcedDisplacementStat::asylum_applications |>
                                       dplyr::filter(ProcedureType == procedureType ) |>
                                      dplyr::select(ProcedureName)|>
                                       unique() |>
@@ -96,7 +96,7 @@ plot_ctr_processing_time <- function(year = 2022,
       
   
   
-    apps <- unhcrdatapackage::asylum_applications |>
+    apps <- ForcedDisplacementStat::asylum_applications |>
           filter(CountryAsylumCode == country_asylum_iso3c )|>
       
           ## add conditional filter  if setup
@@ -123,19 +123,19 @@ plot_ctr_processing_time <- function(year = 2022,
 # # apps1 <- jsonlite::fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-applications/?limit=100&dataset=asylum-applications&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=app_type&columns%5B%5D=app_pc&columns%5B%5D=app_size&columns%5B%5D=dec_level&columns%5B%5D=applied"))$items |>  as_tibble()
     
   if( is.null(country_origin_iso3c)) {
-        originfilter <-     c(unhcrdatapackage::asylum_decisions |>
+        originfilter <-     c(ForcedDisplacementStat::asylum_decisions |>
                                       dplyr::select(CountryOriginCode) |>
                                       unique() |>
                                     dplyr::pull() ) } else { 
         originfilter <- c(country_origin_iso3c) }
   if( is.null(procedureType)) {
-          procedurefilter <-     c(unhcrdatapackage::asylum_decisions |>
+          procedurefilter <-     c(ForcedDisplacementStat::asylum_decisions |>
                                       dplyr::select(ProcedureType) |>
                                       unique() |>
                                     dplyr::pull() ) } else { 
           procedurefilter <- c(procedureType) }
 # 
-  decs <- unhcrdatapackage::asylum_decisions |>
+  decs <- ForcedDisplacementStat::asylum_decisions |>
           filter(CountryAsylumCode == country_asylum_iso3c ) |>
           ## add conditional filter  if setup
           filter(CountryOriginCode %in% c(originfilter)  ) |>
@@ -207,7 +207,7 @@ data <-
                                  apps = "#FAEB00"),
                       name = NULL) +
     labs(title = stringr::str_wrap("Average Processing Time from Asylum Registration to First Instance Decision", 100),
-         subtitle = glue::glue("In {unhcrdatapackage::reference |>
+         subtitle = glue::glue("In {ForcedDisplacementStat::reference |>
                                    dplyr::filter( iso_3 == country_asylum_iso3c) |>
                                    dplyr::pull(ctryname)}, comparative cumulative applications and decisions with gap measured in days as of {year} {filterlab}"),
          x = NULL,

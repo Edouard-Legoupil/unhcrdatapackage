@@ -35,8 +35,8 @@ plot_reg_solution <- function( year = 2022,
                             region = "Americas",
                             lag = 10){
   
-    solution <-  dplyr::left_join( x= unhcrdatapackage::solutions_long, 
-                                                     y= unhcrdatapackage::reference, 
+    solution <-  dplyr::left_join( x= ForcedDisplacementStat::solutions_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryOriginCode" = "iso_3")) |> 
                 dplyr::filter(Solution.type %in% c("NAT","RST","RET" ) & 
                        UNHCRBureau  == region &

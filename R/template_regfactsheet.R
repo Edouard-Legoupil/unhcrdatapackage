@@ -32,7 +32,7 @@
 #' 
 #' ## We can also generate all factsheets in a loop for 2022
 #' 
-#' # region <-  unhcrdatapackage::reference |>
+#' # region <-  ForcedDisplacementStat::reference |>
 #' #   dplyr::distinct(UNHCRBureau) |>
 #' #   dplyr::filter(!(is.na(UNHCRBureau))) |>
 #' #   dplyr::pull()

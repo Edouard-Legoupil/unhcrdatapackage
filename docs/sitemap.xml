@@ -25,37 +25,94 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/factsheet/StatFactsheet-ABW-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-ARG-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-BLZ-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-BOL-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-BRA-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-CAN-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-CHL-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-COL-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-CRI-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-CUW-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-DOM-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-ECU-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-GTM-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-GUY-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-HND-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-MEX-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-NIC-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-PAN-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-PER-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-PRY-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-SLV-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-SUR-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-TTO-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-URY-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-USA-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/StatFactsheet-VEN-2022.html</loc>
+  </url>
+  <url>
+    <loc>/factsheet/factsheet.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
   </url>
   <url>
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/asylum_applications.html</loc>
-  </url>
-  <url>
-    <loc>/reference/asylum_decisions.html</loc>
-  </url>
-  <url>
-    <loc>/reference/asylum_decisions_long.html</loc>
-  </url>
-  <url>
-    <loc>/reference/demographics.html</loc>
-  </url>
-  <url>
-    <loc>/reference/end_year_population_totals.html</loc>
-  </url>
-  <url>
-    <loc>/reference/end_year_population_totals_long.html</loc>
-  </url>
-  <url>
     <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/locpcode.html</loc>
-  </url>
-  <url>
-    <loc>/reference/migrants.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
@@ -148,15 +205,6 @@
     <loc>/reference/plot_reg_treemap.html</loc>
   </url>
   <url>
-    <loc>/reference/reference.html</loc>
-  </url>
-  <url>
-    <loc>/reference/solutions.html</loc>
-  </url>
-  <url>
-    <loc>/reference/solutions_long.html</loc>
-  </url>
-  <url>
     <loc>/reference/template_CtryFactsheet.html</loc>
   </url>
   <url>
@@ -170,9 +218,6 @@
   </url>
   <url>
     <loc>/reference/template_RegPrez.html</loc>
-  </url>
-  <url>
-    <loc>/reference/update_dataset.html</loc>
   </url>
   <url>
     <loc>/tuto/tutorial.html</loc>

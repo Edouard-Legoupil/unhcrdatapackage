@@ -42,8 +42,8 @@ plot_reg_population_type_per_year <- function(year = 2022,
                                      pop_type =  c("REF", "ASY", "IDP", "OIP", "STA", "OOC") ) {
   
 
-  df <- unhcrdatapackage::end_year_population_totals_long  |> 
-        dplyr::left_join( unhcrdatapackage::reference |> 
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
+        dplyr::left_join( ForcedDisplacementStat::reference |> 
                       dplyr::select(coa_region = `UNHCRBureau`, iso_3), 
                       by = c("CountryAsylumCode" = "iso_3")) |> 
   dplyr::filter(coa_region == region &

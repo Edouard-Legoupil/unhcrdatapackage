@@ -36,8 +36,8 @@
 #' # year <- 2022
 #' # library(tidyverse)
 #' # ## get all countries with more than 1000 Reported individuals
-#' # ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#' #                                 y= unhcrdatapackage::reference,
+#' # ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#' #                                 y= ForcedDisplacementStat::reference,
 #' #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #' #         filter(Year == year &
 #' #                 UNHCRBureau == region ) |>
@@ -50,9 +50,9 @@
 #' #     # i <- 1
 #' #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #' #     cat(paste0(country_asylum_iso3ci, "\n"))
-#' #     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#' #     unhcrdatapackage::template_CtryFactsheet(year = 2022,
 #' #                                 country_asylum_iso3c = country_asylum_iso3ci,
-#' #                                folder = "Report")  }
+#' #                                folder = "docs/factsheet")  }
 template_Ctryslides <- function(year = 2022,
                                    country_asylum_iso3c,   
                               folder = "Report") {
@@ -61,14 +61,14 @@ template_Ctryslides <- function(year = 2022,
   output_dir <- paste0(getwd(),"/",folder)
   if (!dir.exists(output_dir)) {dir.create(output_dir)}
   
-  ctrname <- unhcrdatapackage::reference |>
+  ctrname <- ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::select(ctryname) |>
              dplyr::pull()
   
   rmarkdown::render(
     system.file("rmarkdown/templates/country_slides/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.pptx') ),
+    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.html') ),
     params = list(countryname= ctrname,
                   country = country_asylum_iso3c, 
                   year = year)  )

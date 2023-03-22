@@ -41,14 +41,14 @@ plot_ctr_solution <- function(year = 2021,
                               country_asylum_iso3c = country_asylum_iso3c,
                               pop_type = pop_type){
   
-    ctrylabel <- unhcrdatapackage::reference |> 
+    ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
   
   
-    Solution <- unhcrdatapackage::solutions_long  |>
-                dplyr::left_join(y= unhcrdatapackage::reference, 
+    Solution <- ForcedDisplacementStat::solutions_long  |>
+                dplyr::left_join(y= ForcedDisplacementStat::reference, 
                                by = c("CountryAsylumCode" = "iso_3")) |>
       
               filter(CountryAsylumCode  == country_asylum_iso3c & 
@@ -74,7 +74,7 @@ plot_ctr_solution <- function(year = 2021,
 
 if( nrow(Solution) ==  0 ){
   
-    info <-  paste0("There\'s no recorded solutions in ", unhcrdatapackage::reference |>
+    info <-  paste0("There\'s no recorded solutions in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 

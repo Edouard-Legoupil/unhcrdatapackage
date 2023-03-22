@@ -14,31 +14,12 @@ navbar:
        href: articles/chart-library.html
      - text: Adding new Charts in the Library
        href: articles/adding-new-charts.html
-  - text: Country Focus
-    href: CountryFocus.html
   - text: News
     href: news/index.html
   - text: Reference
     href: reference/index.html     
     
 reference:
-- title: UNHCR Statistics Database
-  desc: Main Table from Refugee Data Finder - also available on https://data.humdata.org/dataset/unhcr-population-data-for-world
-- contents:
-  - end_year_population_totals 
-  - end_year_population_totals_long 
-  - demographics
-  - asylum_applications 
-  - asylum_decisions 
-  - asylum_decisions_long 
-  - solutions 
-  - solutions_long
-- title: Data Reference
-  desc: other Tables conveniently stored here
-- contents:
-  - migrants 
-  - reference 
-  - locpcode
 - title: Chart for Country
   desc: Charts adressing questions at country level
 - contents:

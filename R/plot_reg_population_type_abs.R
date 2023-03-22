@@ -80,9 +80,9 @@ plot_reg_population_type_abs <- function(year = 2022,
                                 pop_type == "STA"  ~ "#E1CC0D")
   
   
-  df <- unhcrdatapackage::end_year_population_totals_long |>
+  df <- ForcedDisplacementStat::end_year_population_totals_long |>
     dplyr::left_join(
-      unhcrdatapackage::reference |>
+      ForcedDisplacementStat::reference |>
         dplyr::select(coa_region = `UNHCRBureau`, iso_3),
       by = c("CountryAsylumCode" = "iso_3")
     ) |>

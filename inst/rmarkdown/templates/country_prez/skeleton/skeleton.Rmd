@@ -29,8 +29,13 @@ library(tidyverse)
 library(scales)
 library(lubridate) 
 library(fontawesome)
-##  make sure to get last version 
-if ( packageVersion("unhcrdatapackage") != "0.1.7"){pak::pkg_install("edouard-legoupil/unhcrdatapackage")}
+
+##  make sure to get last version of the data
+if ( packageVersion("ForcedDisplacementStat") != "0.0.1"){pak::pkg_install("edouard-legoupil/ForcedDisplacementStat")}
+library(ForcedDisplacementStat)
+
+##  make sure to get last version of the chart library
+if ( packageVersion("unhcrdatapackage") != "0.1.8"){pak::pkg_install("edouard-legoupil/unhcrdatapackage")}
 library(unhcrdatapackage)
 
 # fa_metadata()

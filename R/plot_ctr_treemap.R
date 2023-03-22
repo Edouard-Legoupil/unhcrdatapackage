@@ -37,12 +37,12 @@ plot_ctr_treemap <- function(year = 2021,
                      pop_type = pop_type) {
 
 
-   ctrylabel <- unhcrdatapackage::reference |> 
+   ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
 
-  datatree <-  unhcrdatapackage::end_year_population_totals_long  |> 
+  datatree <-  ForcedDisplacementStat::end_year_population_totals_long  |> 
     filter(Year == year,  #### Parameter
                   CountryAsylumCode == country_asylum_iso3c #### Parameter
     ) |> 

@@ -42,12 +42,12 @@
 plot_ctr_disp_migrant <- function(year = 2021,
                               country_asylum_iso3c ){
   
-  ctrylabel <- unhcrdatapackage::reference |> 
+  ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
   
-  thiscodeM49 <- unhcrdatapackage::reference |>
+  thiscodeM49 <- ForcedDisplacementStat::reference |>
                 filter(iso_3 == country_asylum_iso3c) |>
                  select(M49_code) |>
                  pull()
@@ -75,8 +75,8 @@ plot_ctr_disp_migrant <- function(year = 2021,
   wb_data$Year <- as.numeric(wb_data$Year)
 
   ## Getting summary of forcibly displaced   ##############
-  displaced <- left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                               y= unhcrdatapackage::reference, 
+  displaced <- left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                               y= ForcedDisplacementStat::reference, 
                                by = c("CountryAsylumCode" = "iso_3")) |>
               filter(Population.type  %in% c("REF", "ASY", "OIP")) |>
               filter(CountryAsylumCode == country_asylum_iso3c) |>
@@ -91,8 +91,8 @@ plot_ctr_disp_migrant <- function(year = 2021,
   
   
   ## Now getting migrant data  ##############
-  migrant <-  left_join( x= unhcrdatapackage::migrants, 
-                               y= unhcrdatapackage::reference, 
+  migrant <-  left_join( x= ForcedDisplacementStat::migrants, 
+                               y= ForcedDisplacementStat::reference, 
                                by = c("CountryOriginM49" = "M49_code")) |>
               filter(CountryDestinationM49 == thiscodeM49) |>
               filter( Year == 2020 ) |>

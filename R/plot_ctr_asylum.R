@@ -34,17 +34,17 @@ plot_ctr_asylum <- function(year = 2022,
                             country_asylum_iso3c = country_asylum_iso3, 
                             lag = 10){
     
-     ctrylabel <- unhcrdatapackage::reference |> 
+     ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
   
-    apps <- unhcrdatapackage::asylum_applications|>
+    apps <- ForcedDisplacementStat::asylum_applications|>
           filter(CountryAsylumCode == country_asylum_iso3c )|>
           group_by(Year, CountryAsylumCode) |>
          summarize (NumberApplications = sum(NumberApplications , na.rm= TRUE) )
 
-    decs <- unhcrdatapackage::asylum_decisions |>
+    decs <- ForcedDisplacementStat::asylum_decisions |>
           filter(CountryAsylumCode == country_asylum_iso3c ) |>
           group_by(Year, CountryAsylumCode) |>
          summarize (Recognized = sum(Recognized , na.rm= TRUE),

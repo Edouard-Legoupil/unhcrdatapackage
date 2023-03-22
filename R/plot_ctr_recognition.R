@@ -62,7 +62,7 @@ plot_ctr_recognition <- function(year = 2022,
                                  measure = "RefugeeRecognitionRate",
                                  order_by = "TotalDecided" ){
    
-   ctrylabel <- unhcrdatapackage::reference |> 
+   ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
                select(ctryname) |> 
                 pull()
@@ -81,7 +81,7 @@ plot_ctr_recognition <- function(year = 2022,
        order_by == "TotalDecided"  ~ "Total Decision (independently of the outcome)"
      )
    
-   topOrigin <-  unhcrdatapackage::asylum_decisions |>
+   topOrigin <-  ForcedDisplacementStat::asylum_decisions |>
      filter(CountryAsylumCode == country_asylum_iso3c &
               Year == year) |>
      ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m

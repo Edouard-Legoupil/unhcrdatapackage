@@ -2,7 +2,7 @@ Type: Package
 Package: unhcrdatapackage
 Title: UNHCR Population Statistics Database with Chart Library and
     Factsheet Template
-Version: 0.1.7
+Version: 0.1.8
 Authors@R: c(
     person("Edouard", "Legoupil", , "legoupil@unhcr.org", role = c("aut", "cre")),
     person("Matheus", "Soldi Hardt", , "matheus@unhcr.org", role = "aut"),
@@ -20,11 +20,10 @@ URL: https://edouard-legoupil.github.io/unhcrdatapackage/docs/
 BugReports: https://github.com/edouard-legoupil/unhcrdatapackage/issues
 Imports: 
     circlize,
-    ckanr,
     dplyr,
     extrafont,
     forcats,
-    fs,
+    ForcedDisplacementStat,
     ggalluvial,
     ggalt,
     ggforce,
@@ -43,21 +42,18 @@ Imports:
     OpenStreetMap,
     patchwork,
     purrr,
-    readr,
-    reshape2,
     rmarkdown,
     rnaturalearth,
+    rnaturalearthdata,
     scales,
     sf,
     showtext,
-    sinew,
     stats,
     stringr,
     sysfonts,
     systemfonts,
     tidyr,
     tidyselect,
-    tools,
     treemapify,
     unhcrdown,
     unhcrthemes,
@@ -70,6 +66,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes: 
+    edouard-legoupil/ForcedDisplacementStat,
     vidonne/unhcrdown,
     vidonne/unhcrthemes
 Encoding: UTF-8

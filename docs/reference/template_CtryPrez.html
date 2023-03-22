@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">unhcrdatapackage</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,9 +25,6 @@
     <a class="dropdown-item" href="../articles/chart-library.html">Chart library directory</a>
     <a class="dropdown-item" href="../articles/adding-new-charts.html">Adding new Charts in the Library</a>
   </div>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../CountryFocus.html">Country Focus</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">News</a>
@@ -99,8 +96,8 @@ Folder will be created if it does not exist</p></dd>
 <span class="r-in"><span><span class="co"># year &lt;- 2022</span></span></span>
 <span class="r-in"><span><span class="co"># library(tidyverse)</span></span></span>
 <span class="r-in"><span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span></span>
-<span class="r-in"><span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span></span>
-<span class="r-in"><span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span></span>
+<span class="r-in"><span><span class="co"># ctr &lt;- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,</span></span></span>
+<span class="r-in"><span><span class="co">#                                 y= ForcedDisplacementStat::reference,</span></span></span>
 <span class="r-in"><span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span></span>
 <span class="r-in"><span><span class="co">#         filter(Year == year &amp;</span></span></span>
 <span class="r-in"><span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span></span>

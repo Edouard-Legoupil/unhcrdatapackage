@@ -48,9 +48,9 @@ plot_ctr_process <- function(year = 2022,
                              otherprop = .02){
   
 
-  #table(as.factor(unhcrdatapackage::asylum_decisions_long$CountryAsylumCode))
+  #table(as.factor(ForcedDisplacementStat::asylum_decisions_long$CountryAsylumCode))
   
-  links <- unhcrdatapackage::asylum_decisions_long |>
+  links <- ForcedDisplacementStat::asylum_decisions_long |>
     filter(Year == year   & CountryAsylumCode  == country_asylum_iso3c ) |> 
     dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName,
                                                              prop = otherprop, 
@@ -63,7 +63,7 @@ plot_ctr_process <- function(year = 2022,
   
   ## Case no record outut a ggplot2 object with anotation
   if( nrow(links) == 0) {
-    info <-  paste0("There\'s no recorded Asylum Decisions in ", unhcrdatapackage::reference |>
+    info <-  paste0("There\'s no recorded Asylum Decisions in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -118,7 +118,7 @@ p <- ggplot(flow_table,
       legend.title = element_blank(),                # remove title
   ) +
   labs(title = "Refugee Status Determination Decisions",
-       subtitle = glue::glue("{unhcrdatapackage::reference |>
+       subtitle = glue::glue("{ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) }, {format(sum(links$n),  big.mark=\",\")} decisions recorded in {year}"),
        x = NULL,

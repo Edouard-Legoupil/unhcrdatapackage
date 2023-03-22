@@ -30,8 +30,8 @@ plot_reg_origin_dest <- function(year = 2022,  region = "Americas"){
    
 
 
-chords <- unhcrdatapackage::end_year_population_totals |>
-  dplyr::left_join( unhcrdatapackage::reference |> 
+chords <- ForcedDisplacementStat::end_year_population_totals |>
+  dplyr::left_join( ForcedDisplacementStat::reference |> 
                       dplyr::select(coa_region = `UNHCRBureau`, iso_3),  by = c("CountryAsylumCode" = "iso_3")) |> 
   dplyr::filter(coa_region == region &
            Year == year) |> 

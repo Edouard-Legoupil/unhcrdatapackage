@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">unhcrdatapackage</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,9 +51,6 @@
     <a class="dropdown-item" href="../articles/chart-library.html">Chart library directory</a>
     <a class="dropdown-item" href="../articles/adding-new-charts.html">Adding new Charts in the Library</a>
   </div>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../CountryFocus.html">Country Focus</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">News</a>
@@ -264,7 +261,10 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <span><span class="co">#&gt;   always returns an ungrouped data frame and adjust accordingly.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">unhcrdatapackage</span> package.</span></span>
 <span><span class="co">#&gt;   Please report the issue at</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;</span></span></span>
+<span><span class="co"><span style="color: #0000BB; font-style: italic;">#&gt; </span><span style="color: #555555; font-style: italic;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co"><span style="font-style: italic;">#&gt; </span><span style="color: #555555; font-style: italic;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co"><span style="font-style: italic;">#&gt; </span><span style="color: #555555; font-style: italic;">generated.</span></span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/examples-plot_ctr_diff_in_pop_groups-1.png" width="90%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
@@ -555,7 +555,10 @@ Percentage<a class="anchor" aria-label="anchor" href="#plot-main-country-of-orig
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `after_stat(y)` instead.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">unhcrdatapackage</span> package.</span></span>
 <span><span class="co">#&gt;   Please report the issue at</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;</span></span></span>
+<span><span class="co"><span style="color: #0000BB; font-style: italic;">#&gt; </span><span style="color: #555555; font-style: italic;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co"><span style="font-style: italic;">#&gt; </span><span style="color: #555555; font-style: italic;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co"><span style="font-style: italic;">#&gt; </span><span style="color: #555555; font-style: italic;">generated.</span></span></span></code></pre></div>
 <p><img src="chart-library_files/figure-html/example-plot_reg_population_type_per_year-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -768,8 +771,8 @@ are available either for countries or regions.</p>
 <span><span class="co"># year &lt;- 2022</span></span>
 <span><span class="co"># library(tidyverse)</span></span>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
-<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
-<span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
+<span><span class="co"># ctr &lt;- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,</span></span>
+<span><span class="co">#                                 y= ForcedDisplacementStat::reference,</span></span>
 <span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
 <span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
@@ -800,8 +803,8 @@ are available either for countries or regions.</p>
 <span><span class="co"># year &lt;- 2022</span></span>
 <span><span class="co"># library(tidyverse)</span></span>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
-<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
-<span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
+<span><span class="co"># ctr &lt;- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,</span></span>
+<span><span class="co">#                                 y= ForcedDisplacementStat::reference,</span></span>
 <span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
 <span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
@@ -832,8 +835,8 @@ are available either for countries or regions.</p>
 <span><span class="co"># year &lt;- 2022</span></span>
 <span><span class="co"># library(tidyverse)</span></span>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
-<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
-<span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
+<span><span class="co"># ctr &lt;- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,</span></span>
+<span><span class="co">#                                 y= ForcedDisplacementStat::reference,</span></span>
 <span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
 <span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
@@ -846,9 +849,9 @@ are available either for countries or regions.</p>
 <span><span class="co">#     # i &lt;- 1</span></span>
 <span><span class="co">#     country_asylum_iso3ci = as.character(ctr[i ,2 ])</span></span>
 <span><span class="co">#     cat(paste0(country_asylum_iso3ci, "\n"))</span></span>
-<span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022, </span></span>
+<span><span class="co">#     unhcrdatapackage::template_CtryFactsheet(year = 2022,</span></span>
 <span><span class="co">#                                 country_asylum_iso3c = country_asylum_iso3ci,</span></span>
-<span><span class="co">#                                folder = "Report")  }</span></span></code></pre></div>
+<span><span class="co">#                                folder = "docs/factsheet")  }</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="regional-factsheet">Regional Factsheet<a class="anchor" aria-label="anchor" href="#regional-factsheet"></a>
@@ -861,7 +864,7 @@ are available either for countries or regions.</p>
 <span></span>
 <span><span class="co">## We can also generate all factsheets in a loop for 2022</span></span>
 <span></span>
-<span><span class="co"># region &lt;-  unhcrdatapackage::reference |&gt;</span></span>
+<span><span class="co"># region &lt;-  ForcedDisplacementStat::reference |&gt;</span></span>
 <span><span class="co">#   dplyr::distinct(UNHCRBureau) |&gt;</span></span>
 <span><span class="co">#   dplyr::filter(!(is.na(UNHCRBureau))) |&gt;</span></span>
 <span><span class="co">#   dplyr::pull()</span></span>
@@ -883,8 +886,8 @@ are available either for countries or regions.</p>
 <span><span class="co"># year &lt;- 2022</span></span>
 <span><span class="co"># library(tidyverse)</span></span>
 <span><span class="co"># ## get all countries with more than 1000 Reported individuals</span></span>
-<span><span class="co"># ctr &lt;- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,</span></span>
-<span><span class="co">#                                 y= unhcrdatapackage::reference,</span></span>
+<span><span class="co"># ctr &lt;- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,</span></span>
+<span><span class="co">#                                 y= ForcedDisplacementStat::reference,</span></span>
 <span><span class="co">#                                 by = c("CountryAsylumCode" = "iso_3")) |&gt;</span></span>
 <span><span class="co">#         filter(Year == year &amp;</span></span>
 <span><span class="co">#                 UNHCRBureau == region ) |&gt;</span></span>
@@ -902,12 +905,6 @@ are available either for countries or regions.</p>
 <span><span class="co">#                                   folder = "Report")</span></span>
 <span><span class="co">#   }</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="update-dataset">Update Dataset<a class="anchor" aria-label="anchor" href="#update-dataset"></a>
-</h2>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#update_dataset()</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="refresh-package">Refresh package<a class="anchor" aria-label="anchor" href="#refresh-package"></a>

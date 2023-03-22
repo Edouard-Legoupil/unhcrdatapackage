@@ -37,15 +37,15 @@ plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
                                  pop_type = pop_type) {
 
-  ctrylabel <- unhcrdatapackage::reference |>
+  ctrylabel <- ForcedDisplacementStat::reference |>
     filter(iso_3 == country_origin_iso3c) |>
     select(ctryname) |>
     pull()
   
   Destination <-
     left_join(
-      x = unhcrdatapackage::end_year_population_totals_long,
-      y = unhcrdatapackage::reference,
+      x = ForcedDisplacementStat::end_year_population_totals_long,
+      y = ForcedDisplacementStat::reference,
       by = c("CountryAsylumCode" = "iso_3")
     )  |>
     filter(
@@ -79,7 +79,7 @@ plot_ctr_destination <- function(year = 2021,
 
   if(nrow(Destination) ==  0) {
     
-    info <-  paste0("There\'s no recorded Countries of destination in ", unhcrdatapackage::reference |>
+    info <-  paste0("There\'s no recorded Countries of destination in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_origin_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 

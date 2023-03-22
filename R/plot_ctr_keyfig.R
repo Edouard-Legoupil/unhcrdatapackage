@@ -42,18 +42,18 @@ plot_ctr_keyfig <- function(country_asylum_iso3c, year){
                                                 dplyr::pull(fontfile)) )
     }
  
-CountryAsylum_name_text <-  unhcrdatapackage::reference |> 
+CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
   dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
   dplyr::distinct(ctryname) |> 
   dplyr::pull()
 
-total_poc <- unhcrdatapackage::end_year_population_totals_long |> 
+total_poc <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c ) |> 
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |> 
+total_poc_last_year <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == as.numeric(year)-1,
                 CountryAsylumCode == country_asylum_iso3c) |> 
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
@@ -61,7 +61,7 @@ total_poc_last_year <- unhcrdatapackage::end_year_population_totals_long |>
 
 perc_change_poc <- ((total_poc - total_poc_last_year)/total_poc_last_year)*100
 
-total_ref <- unhcrdatapackage::end_year_population_totals_long |> 
+total_ref <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "REF"
@@ -69,7 +69,7 @@ total_ref <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_asy <- unhcrdatapackage::end_year_population_totals_long |> 
+total_asy <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "ASY"
@@ -77,7 +77,7 @@ total_asy <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_oip <- unhcrdatapackage::end_year_population_totals_long |> 
+total_oip <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "OIP"
@@ -85,7 +85,7 @@ total_oip <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_idp <- unhcrdatapackage::end_year_population_totals_long |> 
+total_idp <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "IDP"
@@ -93,7 +93,7 @@ total_idp <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_sta <- unhcrdatapackage::end_year_population_totals_long |> 
+total_sta <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "STA"
@@ -101,7 +101,7 @@ total_sta <- unhcrdatapackage::end_year_population_totals_long |>
   dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
   dplyr::pull()
 
-total_ooc <- unhcrdatapackage::end_year_population_totals_long |> 
+total_ooc <- ForcedDisplacementStat::end_year_population_totals_long |> 
   dplyr::filter(Year == year,
                 CountryAsylumCode == country_asylum_iso3c,
                 Population.type == "OOC"

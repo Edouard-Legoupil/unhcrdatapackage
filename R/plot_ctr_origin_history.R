@@ -47,7 +47,7 @@ plot_ctr_origin_history <- function(year = 2022,
   
 
 
-  df <- unhcrdatapackage::end_year_population_totals_long  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
           filter(       Year >= (year - lag),  #### Parameter
                         CountryAsylumCode == country_asylum_iso3c, #### Parameter
                         Population.type %in% pop_type #### Parameter

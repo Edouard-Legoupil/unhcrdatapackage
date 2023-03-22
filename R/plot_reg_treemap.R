@@ -30,8 +30,8 @@ plot_reg_treemap <- function(year = 2022,
   ## Comparison of Refugees
 ## Filter popdata for the country report
 
-datatree <-   dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+datatree <-   dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) |>
   dplyr::filter( Year == year  ) |>
   dplyr::filter( Population.type %in% pop_type  ) |>

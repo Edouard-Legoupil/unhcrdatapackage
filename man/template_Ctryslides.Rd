@@ -31,8 +31,8 @@ Output is PDF slide deck that preserves well the humanitarian icons
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long,
-#                                 y= unhcrdatapackage::reference,
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
 #                                 by = c("CountryAsylumCode" = "iso_3")) |>
 #         filter(Year == year &
 #                 UNHCRBureau == region ) |>
@@ -45,7 +45,7 @@ Output is PDF slide deck that preserves well the humanitarian icons
 #     # i <- 1
 #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #     cat(paste0(country_asylum_iso3ci, "\n"))
-#     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022,
 #                                 country_asylum_iso3c = country_asylum_iso3ci,
-#                                folder = "Report")  }
+#                                folder = "docs/factsheet")  }
 }

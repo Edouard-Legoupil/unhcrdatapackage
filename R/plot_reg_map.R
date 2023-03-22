@@ -111,7 +111,7 @@ plot_reg_map <- function(    year = 2022,
       ## Get spatial data to add ##########
       mapproject <- ""
       
-      listctr <-  unhcrdatapackage::reference |>
+      listctr <-  ForcedDisplacementStat::reference |>
         filter(UNHCRBureau == region) |>
         select(iso_3) |>
         pull()
@@ -119,8 +119,8 @@ plot_reg_map <- function(    year = 2022,
       
       
       ## Loading the stat tables ######
-      data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                y= unhcrdatapackage::reference, 
+      data <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                y= ForcedDisplacementStat::reference, 
                                 by = c("CountryAsylumCode" = "iso_3")) |>
         filter(Population.type  %in% pop_type &
                  Year == year & 

@@ -53,8 +53,8 @@ plot_reg_increase <- function(  year = 2021,
   
   thisyear <- year
   baseline <- thisyear -lag
-  data <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+  data <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryAsylumCode" = "iso_3")) |>
     filter(Population.type  %in% pop_type)  |>
     filter(Year == baseline | Year == thisyear) |>

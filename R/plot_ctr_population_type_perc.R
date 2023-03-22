@@ -57,7 +57,7 @@ plot_ctr_population_type_perc <- function(year = 2021,
   
   
   df <-  
-    unhcrdatapackage::end_year_population_totals  |> 
+    ForcedDisplacementStat::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
                   !is.na(CountryAsylumCode),
                   Year == year,  #### Parameter

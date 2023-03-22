@@ -54,8 +54,8 @@ plot_reg_prop_origin <- function(year = 2022,  region = "Americas"){
       wb_data$Year <- as.numeric(wb_data$Year)
   
   
-  departed <- dplyr::left_join( x= unhcrdatapackage::end_year_population_totals_long, 
-                                                     y= unhcrdatapackage::reference, 
+  departed <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
+                                                     y= ForcedDisplacementStat::reference, 
                                                      by = c("CountryOriginCode" = "iso_3")) |> 
     dplyr::filter(Population.type  %in% c("REF","ASY","OIP") & 
            Year ==  year &
