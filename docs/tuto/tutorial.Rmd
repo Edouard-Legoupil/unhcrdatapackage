@@ -75,13 +75,26 @@ A story usually address a broad research question and matches one of the __narra
 
 # Do not start from scratch!
 
+.pull-left[
+
 Rather than starting from raw data and excel, using  the chart library from [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage) allows you to:
 
- * Benefit from an initial data exploration - for instance consult the [Factsheets for the Americas](https://edouard-legoupil.github.io/unhcrdatapackage/factsheet/factsheet.html), which means practically "_Save time to get a first version of your charts!_"
+ * Benefit from an initial data exploration - for instance consult the [Factsheets for the Americas](https://edouard-legoupil.github.io/unhcrdatapackage/factsheet/factsheet.html), which means practically "_Save time & pain to get a first version of your charts!_"
  
  * Ensure to use the correct style in line with [Brand Recommendations](https://dataviz.unhcr.org/tools/r/) using [`{unhcrthemes}`](https://vidonne.github.io/unhcrthemes), meaning using consistent color, font, elements...
  
  * Have you process documented and fully [reproducible](https://unhcr-americas.github.io/reproducibility) by using the [datajournalism lingua franca](https://learn.r-journalism.com/en/introduction/) 
+
+]
+
+.pull-right[
+
+
+![ ](../../inst/wheel.png)
+]
+
+
+
 
 ---
 
@@ -460,31 +473,26 @@ When packing up your story - you can not only use the chart as a single image bu
 You can install the `unhcrdown` package from [Github](https://github.com/vidonne/unhcrdown) to benefit from a series of template:
 
 ```{r eval=FALSE, tidy=FALSE}
-# install.packages("remotes")
 remotes::install_github("vidonne/unhcrdown")
 ```
 
-
 .pull-left[
+For the Web: 
+ * [`unhcrdown::html_slides`](https://vidonne.github.io/unhcrdown/articles/create_html_slides.html) generates simple online presentation template, actually demonstrated through this document
 
-For the Web - can be convert to PDF - 
+ * [`unhcrdown::html_page`](https://vidonne.github.io/unhcrdown/reference/html_page.html)   converts to UNHCR branded HTML website
 
- * [`unhcrdown::html_slides`](https://vidonne.github.io/unhcrdown/articles/create_html_slides.html) is a simple online presentation template, actually demonstrated through this document.
-
- * [`unhcrdown::html_page`](https://vidonne.github.io/unhcrdown/reference/html_page.html)   Convert to UNHCR branded HTML website
-
- * [`unhcrdown::paged_report`](https://vidonne.github.io/unhcrdown/reference/paged_report.html)  Function for UNHCR paged report template
-
- * [`unhcrdown::paged_simple`](https://vidonne.github.io/unhcrdown/reference/docx_simple.html)   Function for UNHCR paged simple template
+For PDF:  
+ * [`unhcrdown::paged_report`](https://vidonne.github.io/unhcrdown/reference/paged_report.html)  &  [`unhcrdown::paged_simple`](https://vidonne.github.io/unhcrdown/reference/docx_simple.html) creates formatted paginated reports 
  ]
 
 .pull-right[
 For Office
 
- * [`unhcrdown::pptx_slides`](https://vidonne.github.io/unhcrdown/reference/pptx_slides.html)   Convert to UNHCR branded Powerpoint presentation 
+ * [`unhcrdown::pptx_slides`](https://vidonne.github.io/unhcrdown/reference/pptx_slides.html) converts to UNHCR branded PowerPoint presentation 
  
  
- * [`unhcrdown::docx_simple`](https://vidonne.github.io/unhcrdown/reference/docx_simple.html) Convert to UNHCR branded Word document
+ * [`unhcrdown::docx_simple`](https://vidonne.github.io/unhcrdown/reference/docx_simple.html) converts to UNHCR branded Word document
 
 ]
 
@@ -511,3 +519,5 @@ class: inverse, center, middle
  4. Put that argument into a narrative frame
  
  5. Design for the web with re-usability in mind
+ 
+ 6. Share for the data blog - https://www.unhcr.org/blogs/category/notable-chart/ 
