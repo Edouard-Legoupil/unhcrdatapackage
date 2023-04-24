@@ -71,7 +71,7 @@ theme_dashboard <- function() {
     ,boxBorderRadius = 5
     ,boxShadowSize = "0px 0px 0px"
     ,boxShadowColor = paste0(primary,"30")
-    ,boxTitleSize = 16
+    ,boxTitleSize = 19
     ,boxDefaultColor = "white"
     ,boxPrimaryColor = "white"
     ,boxInfoColor = "rgb(210,214,220)"
@@ -80,7 +80,7 @@ theme_dashboard <- function() {
     ,boxDangerColor = "rgb(255,88,55)"
 
     ,tabBoxTabColor = "white"
-    ,tabBoxTabTextSize = 12
+    ,tabBoxTabTextSize = 14
     ,tabBoxTabTextColor = "#696969"
     ,tabBoxTabTextColorSelected = primary
     ,tabBoxBackColor = "white"
