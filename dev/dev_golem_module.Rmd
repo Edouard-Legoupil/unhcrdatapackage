@@ -1,0 +1,1393 @@
+---
+title: "Golem Modules for ShinyApp"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# mod_input
+
+this is a shared module that takes all the parameters to filter the data..
+https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
+
+```{r function-mod_input}
+#' input UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_input_ui <- function(id){
+  ns <- NS(id)
+  tagList( 
+        # selectInput(inputId = ns("country"),
+        #             label = " and filter by country..",
+        #             choices = list("Panama" = "PAN",
+        #                            "Colombia" = "COL",
+        #                            "Ecuador" = "ECU",
+        #                            "United States" = "USA",
+        #                            "Mexico" = "MEX" ),
+        #             selected = "Panama"),
+        selectizeInput(inputId = ns("country"),
+                       label = " Filter by country..", 
+                      choices = ForcedDisplacementStat::end_year_population_totals |>
+              dplyr::arrange(CountryAsylumName) |>
+              dplyr::select(CountryAsylumCode) |>
+              dplyr::distinct()  |>
+              dplyr::pull(CountryAsylumCode) |>
+              purrr::set_names(
+                               ForcedDisplacementStat::end_year_population_totals |>
+                                 dplyr::arrange(CountryAsylumName) |>
+                                 dplyr::select(CountryAsylumName) |>
+                                 dplyr::distinct()|>
+                                 dplyr::pull(CountryAsylumName) ), 
+                       selected = "USA", 
+                       multiple = FALSE,
+                       options = NULL),
+        
+        
+        selectInput(inputId = ns("year"),
+                    label = "  select another year",
+                    choices = list("2022" = "2022",
+                                   "2021" = "2021",
+                                   "2020" = "2020",
+                                   "2019" = "2019",
+                                   "2018" = "2018" ),
+                    selected = "2022")
+  )
+}
+    
+#' input Server Functions
+#'
+#' @noRd 
+mod_input_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+     
+    
+    observe({
+      reactiveParameters$country <- input$country
+    })
+    observe({
+      reactiveParameters$year <- input$year
+    })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_input_ui("input_1")
+    
+## To be copied in the server
+# mod_input_server("input_1")
+
+```
+
+```{r examples-mod_input}
+
+```
+
+```{r tests-mod_input}
+test_that("mod_input works", {
+
+})
+```
+
+
+# mod_annotate
+
+this is the story telling module - it takes the output of chart and allows to change the title and the subtitle - as well as to add annotation..
+
+Inspired from https://community.rstudio.com/t/graph-annotator-shiny-contest-submission/104687 
+
+See how we could share the story then on twitter - https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
+
+```{r function-mod_annotate}
+# all possible UI widgets used here
+default_annotate_layer_widgets <- list(colourInput = function(inputId, label = 'Colour',
+                                                              showColour = "text",
+                                                              palette = "square",
+                                                              value = "#000000",
+                                                              ...) 
+  colourpicker::colourInput(inputId = inputId,
+                            label = label,
+                            showColour = showColour, 
+                            palette = palette,
+                            value = value, ...),
+   textInput = function(inputId, label, ...) textInput(inputId = inputId, label = label, ...),
+   selectInput = function(inputId, label, ...) shiny::selectInput(inputId = inputId, label = label, ...),
+   numericInput = function(inputId, label, ...) shiny::numericInput(inputId = inputId, label = label, ...),
+   radioButton = function(inputId, label, choices, ...) shiny::radioButtons(inputId = inputId, label = label, choices = choices, ...)
+)
+
+
+# list of possible arguments
+annotate_layer_args <- list(
+  text = list(
+    x = list(req = TRUE),
+    y = list(req = TRUE),
+    label = list(req = TRUE),
+    parse = list(req = TRUE),
+    color = list(req = FALSE),
+    size = list(req = FALSE),
+    alpha = list(req = FALSE),
+    fontface = list(req = FALSE),
+    # family = list(req = FALSE),
+    angle = list(req = FALSE),
+    hjust = list(req = FALSE), #"inward", # (“left”, “center”, “right”, “inward”, “outward”)
+    vjust = list(req = FALSE) # "inward", # (“bottom”, “middle”, “top”, “inward”, “outward”)
+    # check_overlap = list(req = FALSE) # TRUE # boolean
+  ),
+  hline = list(
+    yintercept = list(req = TRUE),
+    # y = list(req = TRUE),
+    linetype = list(req = FALSE),
+    color = list(req = FALSE),
+    alpha = list(req = FALSE),
+    size = list(req = FALSE)
+  ),
+  vline = list(
+    xintercept = list(req = TRUE),
+    # x = list(req = TRUE),
+    linetype = list(req = FALSE),
+    color = list(req = FALSE),
+    alpha = list(req = FALSE),
+    size = list(req = FALSE)
+  ),
+  rect = list(
+    xmin = list(req = TRUE),
+    xmax = list(req = TRUE),
+    ymin = list(req = TRUE),
+    ymax = list(req = TRUE),
+    alpha = list(req = TRUE),
+    color = list(req = FALSE),
+    fill = list(req = FALSE)
+  )
+)
+
+
+
+
+#' annotate UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,annotate,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_annotate_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+    fluidRow(
+      column(width = 12, 
+             default_annotate_layer_widgets$selectInput(inputId = ns("geom_type"), 
+                                                       label = "Select Annotation type",
+                                                       choices = c(names(annotate_layer_args))) )),
+    fluidRow(
+      column(width = 3, tags$b("Read mouse")),
+      column(width = 6, offset = -1, 
+             style = 'padding-left: 5px; padding-right: 5px;',
+             shiny::radioButtons(inputId = ns("read_mouse"), 
+                                 label = NULL, 
+                                 choices = list('Off' = FALSE, 'On' = TRUE), 
+                                 selected = FALSE) )),
+    fluidRow(
+      column(width = 12, uiOutput(ns("multiple_args")))), # multiple select drop down
+    fluidRow(
+      column(width = 12, uiOutput(ns("widget"))))
+  )
+}
+    
+#' annotate Server Functions
+#'
+#' @noRd 
+mod_annotate_server <- function(id){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+    
+    
+      mrv <- reactiveValues()
+
+      # all possible value arguments
+      annotate_args <- list(label = list(initial = function(...) default_annotate_layer_widgets$textInput(inputId = ns('label'), label = NULL, value = "", ...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$textInput(inputId = ns('label'), label = NULL, value = selected, ...)),
+
+                            parse = list(initial = function(...) default_annotate_layer_widgets$radioButton(inputId = ns('parse'), label = NULL, choices = list('FALSE' = FALSE, 'TRUE' = TRUE), selected = FALSE, ...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$radioButton(inputId = ns('parse'), label = NULL, choices = list('FALSE' = FALSE, 'TRUE' = TRUE), selected = selected, ...)),
+
+                            x = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('x'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                     selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('x'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            y = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('y'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                     selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('y'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            xmin = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xmin'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xmin'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            xmax = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xmax'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xmax'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            ymin = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('ymin'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('ymin'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            ymax = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('ymax'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('ymax'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            color = list(initial = function(...) default_annotate_layer_widgets$colourInput(inputId = ns('color'), label = NULL, ...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$colourInput(inputId = ns('color'), label = NULL, value = selected, ...)),
+
+                            fill = list(initial = function(...) default_annotate_layer_widgets$colourInput(inputId = ns('fill'), label = NULL, value = "#d8d8ff", ...),
+                                        selected = function(selected, ...) default_annotate_layer_widgets$colourInput(inputId = ns('fill'), label = NULL, value = selected, ...)),
+
+                            size = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('size'), label = NULL, value = NULL, min = 0, max = 20, step = 1,...),
+                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('size'), label = NULL, value = selected, min = 0, max = 20, step = 1, ...)),
+
+                            fontface = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('fontface'), label = NULL, choices = c("", "plain", "bold", "italic"),...),
+                                            selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('fontface'), label = NULL, choices = c("", "plain", "bold", "italic"), selected = selected, ...)),
+
+                            family = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('family'), label = NULL, choices = c("","sans", "serif", "mono"),...),
+                                          selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('family'), label = NULL, choices = c("", "sans", "serif", "mono"), selected = selected, ...)),
+
+                            angle = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('angle'), label = NULL, value = NULL, min = 0, max = 360, step = 5,...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('angle'), label = NULL, value = selected, min = 0, max = 360, step = 5, ...)),
+
+                            alpha = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('alpha'), label = NULL, value = NULL, min = 0, max = 1, step = 0.1,...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('alpha'), label = NULL, value = selected, min = 0, max = 1, step = 0.1, ...)),
+
+                            vjust = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('vjust'), label = NULL, choices = c("", "middle", "inward", "outward", "bottom", "top"),...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('vjust'), label = NULL, choices = c("", "middle", "inward", "outward", "bottom", "top"), selected = selected, ...)),
+
+                            hjust = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('hjust'), label = NULL, choices = c("", "center", "inward", "outward", "left", "right"), ...),
+                                         selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('hjust'), label = NULL, choices = c("", "center", "inward", "outward", "left", "right"), selected = selected, ...)),
+
+                            yintercept = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('yintercept'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                              selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('yintercept'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            xintercept = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xintercept'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
+                                              selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xintercept'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
+
+                            linetype = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('linetype'), label = NULL, choices = c("", "twodash","blank", "solid", "dashed", "dotted", "dotdash", "longdash","11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff"), ...),
+                                            selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('linetype'), label = NULL, choices = c("", "twodash","blank", "solid", "dashed", "dotted", "dotdash", "longdash","11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff"), selected = selected, ...))
+      )
+
+      if(isFALSE(is.null(selected[["geom"]]))){
+        updateSelectInput(session = session, inputId = "geom_type", selected = selected[["geom"]])
+      }
+
+      # update read mouse to off whenever user switches annotate type
+      observeEvent(input$geom_type,{
+        updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
+      }, ignoreInit = TRUE)
+
+      # show/hide attributes based on multiple_args selection
+      output$multiple_args <- renderUI({
+        if (isTRUE(length(selected) == 0)) {
+          if(input$geom_type == ""){
+            return(NULL)
+          } else {
+            shiny::selectInput(
+              inputId = ns('geom_attr'),
+              label = "Attribute(s) Selector",
+              # width = '90%',
+              choices = names(annotate_layer_args[[input$geom_type]]),
+              multiple = TRUE,
+              selected = names(annotate_layer_args[[input$geom_type]])[sapply(annotate_layer_args[[input$geom_type]], function(element_i) {
+                if (isTRUE(element_i[["req"]] == TRUE))
+                  return(TRUE)
+                else
+                  return(FALSE)
+              })]
+            )
+          }
+        } else {
+          shiny::selectInput(
+            inputId = ns('geom_attr'),
+            label = "Attribute(s) Selector",
+            # width = '90%',
+            choices = names(annotate_layer_args[[input$geom_type]]),
+            multiple = TRUE,
+            selected = names(selected)
+          )
+        }
+      })
+
+      output$widget <- renderUI({
+
+        if(isFALSE(input$geom_type == "")){
+
+          # building widgets for geom
+          annotate_widgets <- annotate_layer_args[[input$geom_type]]
+
+          for(arg_i in names(annotate_widgets)){
+
+            if(isTRUE(is.null(selected[[arg_i]]))){
+              annotate_widgets[[arg_i]]$widget$name <- arg_i
+              annotate_widgets[[arg_i]]$widget$ui <- annotate_args[[arg_i]]$initial()
+            } else {
+              annotate_widgets[[arg_i]]$widget$name <- arg_i
+              annotate_widgets[[arg_i]]$widget$ui <- annotate_args[[arg_i]]$selected(selected[[arg_i]])
+            }
+
+          } # close for loop
+
+          # return
+          tagList(
+            lapply(annotate_widgets, FUN = function(fun_i){
+              fluidRow(
+                class = ns(fun_i$widget$name), style = 'display:none;',
+                column(width = 3, style = 'padding-top: 5px;',
+                       fun_i$widget$name),
+                column(width = 6, offset = -1, style = 'padding-left: 5px; padding-right: 5px;',
+                       fun_i$widget$ui)
+              )
+            })
+          )
+
+        } # close of input$geom_type check
+      }) # close of widget renderUI
+
+
+      # read Attribute selector and force `req` attribute to always re-populate if user removes it
+      observeEvent(input[["geom_attr"]], {
+        # observe({
+        if (isFALSE(input$geom_type == "")) {
+
+          geom_req_attr <-
+            names(annotate_layer_args[[input$geom_type]])[sapply(annotate_layer_args[[input$geom_type]], function(element_i) {
+              if (isTRUE(element_i[["req"]] == TRUE))
+                return(TRUE)
+              else
+                return(FALSE)
+            })]
+
+          if (isFALSE(all(geom_req_attr %in% input[["geom_attr"]]))) {
+            shiny::updateSelectInput(
+              session = session,
+              inputId = 'geom_attr',
+              selected = base::union(geom_req_attr, input[["geom_attr"]])
+            )
+          }
+
+        } # close of outer if to check null input$geom_type
+      }, ignoreInit = TRUE) # close of observe
+
+
+      ############################################################################################
+      ### geom text, hline, vline section - module server logic
+      ############################################################################################
+      ## Read mouse and update x and y inputs
+      observeEvent(input$read_mouse,{
+        if(input$geom_type != "rect"){
+
+          if(input$read_mouse){
+            if(input$geom_type == "text"){
+              sanofiJS$disable(id = ns('x'))
+              sanofiJS$disable(id = ns('y'))
+            }
+            else if(input$geom_type == "hline"){
+              # yintercept
+              sanofiJS$disable(id = ns('yintercept'))
+              sanofiJS$disable(id = ns('y'))
+            }
+            else if(input$geom_type == "vline"){
+              # xintercept
+              sanofiJS$disable(id = ns('xintercept'))
+              sanofiJS$disable(id = ns('x'))
+            }
+
+            mrv$x_hover <- NULL
+            mrv$x_click <- NULL
+            mrv$x_dynamic <- NULL
+
+            mrv$y_hover <- NULL
+            mrv$y_click <- NULL
+            mrv$y_dynamic <- NULL
+
+            mrv$click <- NULL
+
+          } else {
+            if(input$geom_type == "text"){
+              sanofiJS$enable(id = ns('x'))
+              sanofiJS$enable(id = ns('y'))
+            }
+            else if(input$geom_type == "hline"){
+              # yintercept
+              sanofiJS$enable(id = ns('yintercept'))
+              sanofiJS$enable(id = ns('y'))
+            }
+            else if(input$geom_type == "vline"){
+              # xintercept
+              sanofiJS$enable(id = ns('xintercept'))
+              sanofiJS$enable(id = ns('x'))
+            }
+          }
+
+        }
+      })
+
+
+      # if reading mouse, clicking will record and turn off reading mouse
+      observeEvent(plotClick(),{
+
+        if(input$geom_type != "rect"){
+          if(isFALSE(is.null(plotClick()$x)) && isFALSE(is.null(plotClick()$y))){
+            if(input$read_mouse) {
+
+              if(is.null(mrv$x_click)) {
+                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
+                mrv$x_click <- plotClick()$x
+              } else {
+                mrv$x_click <- NULL
+                mrv$x_dynamic <- NULL
+              }
+
+              if(is.null(mrv$y_click)) {
+                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
+                mrv$y_click <- plotClick()$y
+              } else {
+                mrv$y_click <- NULL
+                mrv$y_dynamic <- NULL
+              }
+
+            }
+          }
+        }
+      })
+
+      # current hover: as the plot updates, current hover is lost
+      observe({
+        # if(input$geom_type != "rect"){
+        if(!is.null(plotHover()$x)){
+          mrv$x_hover <- plotHover()$x
+        }
+        if(!is.null(plotHover()$y)){
+          mrv$y_hover <- plotHover()$y
+        }
+        # }
+      })
+
+      # selecting the appropriate coordinate
+      observeEvent(plotHover(),{
+        # if(input$geom_type != "rect"){
+        if(isFALSE(is.null(plotHover()$x)) && isFALSE(is.null(plotHover()$y))){
+
+          if(!is.null(mrv$x_click)) {
+            mrv$x_dynamic <- mrv$x_click
+          } else {
+            mrv$x_dynamic <- mrv$x_hover
+          }
+
+          if(!is.null(mrv$y_click)) {
+            mrv$y_dynamic <- mrv$y_click
+          } else {
+            mrv$y_dynamic <- mrv$y_hover
+          }
+
+        }
+        # }
+      })
+
+      # updating the input widgets
+      observeEvent(mrv$x_dynamic, ignoreNULL = FALSE,{
+        if(input$read_mouse){
+          if(input$geom_type == "text"){
+            updateNumericInput(inputId = ('x'), value = mrv$x_dynamic)
+            updateNumericInput(inputId = ('y'), value = mrv$y_dynamic)
+          }
+          else if(input$geom_type == "hline"){
+            #yintercept
+            updateNumericInput(inputId = ('yintercept'), value = mrv$y_dynamic)
+            updateNumericInput(inputId = ('y'), value = mrv$y_dynamic)
+          }
+          else if(input$geom_type == "vline"){
+            #xintercept
+            updateNumericInput(inputId = ('xintercept'), value = mrv$x_dynamic)
+            updateNumericInput(inputId = ('x'), value = mrv$x_dynamic)
+          }
+        }
+      })
+
+      ############################################################################################
+      ### geom Rectangle section - module server logic
+      ############################################################################################
+
+      observeEvent(input$read_mouse,{
+        if(input$geom_type == "rect"){
+          if(input$read_mouse){
+            # rect
+            sanofiJS$disable(id = ns('xmin'))
+            sanofiJS$disable(id = ns('xmax'))
+            sanofiJS$disable(id = ns('ymin'))
+            sanofiJS$disable(id = ns('ymax'))
+
+            mrv$x_min <- NULL
+            mrv$x_max <- NULL
+            mrv$y_min <- NULL
+            mrv$y_max <- NULL
+
+            mrv$dbl_x_click <- NULL
+            mrv$dbl_y_click <- NULL
+
+          } else {
+            # rect
+            sanofiJS$enable(id = ns('xmin'))
+            sanofiJS$enable(id = ns('xmax'))
+            sanofiJS$enable(id = ns('ymin'))
+            sanofiJS$enable(id = ns('ymax'))
+          }
+        }
+      })
+
+      # double click to confirm rectangle location and update read mouse to Off
+      observeEvent(plotDblClick(),{
+        if(input$geom_type == "rect"){
+          if(isFALSE(is.null(plotBrush()$xmin)) && isFALSE(is.null(plotBrush()$xmax))
+             && isFALSE(is.null(plotBrush()$ymin)) && isFALSE(is.null(plotBrush()$ymax))){
+            if(input$read_mouse) {
+              if(is.null(mrv$dbl_x_click) && is.null(mrv$dbl_y_click)){
+                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
+                mrv$dbl_x_click <- plotDblClick()$x
+                mrv$dbl_y_click <- plotDblClick()$y
+                # make plot hover height & width to 0 on double click
+                if(plotName != "")
+                  session$sendCustomMessage(type = 'plot_brush_minimize', message = list(id = paste0(plotName,"_brush")))
+              } else {
+                mrv$dbl_x_click <- NULL
+                mrv$dbl_y_click <- NULL
+              }
+            }
+          }
+        }
+      })
+
+      # current rect: as the plot updates, current rect points are lost
+      observe({
+        if(input$geom_type == "rect"){
+          if(!is.null(plotBrush()$xmin)){
+            mrv$x_min <- plotBrush()$xmin
+            mrv$dbl_x_click <- plotDblClick()$x
+          }
+          if(!is.null(plotBrush()$xmax)){
+            mrv$x_max <- plotBrush()$xmax
+          }
+          if(!is.null(plotBrush()$ymin)){
+            mrv$y_min <- plotBrush()$ymin
+            mrv$dbl_y_click <- plotDblClick()$y
+          }
+          if(!is.null(plotBrush()$ymax)){
+            mrv$y_max <- plotBrush()$ymax
+          }
+        }
+      })
+
+      # updating the input widgets
+      observeEvent(list(mrv$x_min,mrv$x_max,mrv$y_min,mrv$y_max), ignoreNULL = FALSE,{
+        if(input$read_mouse){
+          #rect
+          updateNumericInput(inputId = ('xmin'), value = mrv$x_min)
+          updateNumericInput(inputId = ('xmax'), value = mrv$x_max)
+          updateNumericInput(inputId = ('ymin'), value = mrv$y_min)
+          updateNumericInput(inputId = ('ymax'), value = mrv$y_max)
+        }
+      })
+
+
+      ############################################################################################
+      # return Module
+      ############################################################################################
+      return(reactive({
+        # ans <- list()
+        ans <- list(.fn = "annotate", geom = input$geom_type)
+
+        lapply(names(annotate_layer_args[[input$geom_type]]), FUN = function(arg_i) {
+          if(arg_i %in% input[["geom_attr"]])
+            sanofiJS$show(class = ns(arg_i), display = 'inherit', session = session)
+          else
+            sanofiJS$hide(class = ns(arg_i), session = session)
+        })
+
+
+        # for (arg_i in names(annotate_layer_args[[input$geom_type]])) {
+        for (arg_i in input[["geom_attr"]]) { # to Module return values selected in 'Attribute Selector'
+          if (isFALSE(input[[arg_i]] == "")) {
+
+            # capture user input
+            ans[[arg_i]] <- input[[arg_i]]
+
+          }
+        }
+
+        # force x & y values for vline and hline respectively for it to work
+        if(input$geom_type == 'hline'){
+          ans[['y']] <- ans[['yintercept']]
+        } else if(input$geom_type == 'vline'){
+          ans[['x']] <- ans[['xintercept']]
+        }
+
+        # return
+        ans
+
+      })) # close of module end reactive return
+    
+    
+    
+    
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_annotate_ui("annotate_1")
+    
+## To be copied in the server
+# mod_annotate_server("annotate_1")
+
+```
+
+```{r examples-mod_annotate}
+
+```
+
+```{r tests-mod_annotate}
+test_that("mod_annotate works", {
+
+})
+```
+
+
+
+
+# mod_categories
+
+```{r function-mod_categories}
+#' categories UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+#' @importFrom shinydashboard box 
+mod_categories_ui <- function(id){
+  ns <- NS(id)
+  tagList( 
+        plotOutput(ns("plot_ctr_population_type_per_year")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value="") ,
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)")
+            
+            ),
+                            column( 4, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "Population Types to include",
+                        choices = c(  "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP" ,
+                                      "Other of Concern"=     "OOC",
+                                           "Stateless"="STA",
+                                       "Internally Displaced Persons"=     "IDP" ),
+                        selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) )),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+            
+            
+            
+                             )  ) )
+    )
+}
+    
+#' categories Server Functions
+#'
+#' @noRd 
+mod_categories_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+    output$plot_ctr_population_type_per_year <- renderPlot({
+      p <- plot_ctr_population_type_per_year(
+              year = as.numeric(reactiveParameters$year),
+              country_asylum_iso3c = reactiveParameters$country,
+                         lag = 5,
+                         pop_type = input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+      
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_categories_ui("categories_1")
+    
+## To be copied in the server
+# mod_categories_server("categories_1")
+
+```
+
+```{r examples-mod_categories}
+
+```
+
+```{r tests-mod_categories}
+testServer(
+  mod_categories_server,
+  # Add here your module params
+  args = list()
+  , {
+    ns <- session$ns
+    expect_true(
+      inherits(ns, "function")
+    )
+    expect_true(
+      grepl(id, ns(""))
+    )
+    expect_true(
+      grepl("test", ns("test"))
+    )
+    # Here are some examples of tests you can
+    # run on your module
+    # - Testing the setting of inputs
+    # session$setInputs(x = 1)
+    # expect_true(input$x == 1)
+    # - If ever your input updates a reactiveValues
+    # - Note that this reactiveValues must be passed
+    # - to the testServer function via args = list()
+    # expect_true(r$x == 1)
+    # - Testing output
+    # expect_true(inherits(output$tbl$html, "html"))
+})
+ 
+test_that("module categories works", {
+  ui <- mod_categories_ui(id = "test")
+  golem::expect_shinytaglist(ui)
+  # Check that formals have not been removed
+  fmls <- formals(mod_categories_ui)
+  for (i in c("id")){
+    expect_true(i %in% names(fmls))
+  }
+})
+```
+
+
+# mod_origin
+
+```{r function-mod_origin}
+#' origin UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_origin_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+        plotOutput(ns("plot_ctr_population_type_abs")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value=""),
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)") ),
+                            column( 4, 
+            selectInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected =   "ASY" )),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+                             )  ) )
+  )
+}
+    
+#' origin Server Functions
+#'
+#' @noRd 
+mod_origin_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+    output$plot_ctr_population_type_abs <- renderPlot({
+                 p <- plot_ctr_population_type_abs(
+                        year = as.integer(reactiveParameters$year),
+                        country_asylum_iso3c = reactiveParameters$country,
+                        top_n_countries = 9,
+                        show_diff_label = TRUE,
+                        pop_type = input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_origin_ui("origin_1")
+    
+## To be copied in the server
+# mod_origin_server("origin_1")
+
+```
+
+```{r examples-mod_origin}
+
+```
+
+```{r tests-mod_origin}
+testServer(
+  mod_origin_server,
+  # Add here your module params
+  args = list()
+  , {
+    ns <- session$ns
+    expect_true(
+      inherits(ns, "function")
+    )
+    expect_true(
+      grepl(id, ns(""))
+    )
+    expect_true(
+      grepl("test", ns("test"))
+    )
+    # Here are some examples of tests you can
+    # run on your module
+    # - Testing the setting of inputs
+    # session$setInputs(x = 1)
+    # expect_true(input$x == 1)
+    # - If ever your input updates a reactiveValues
+    # - Note that this reactiveValues must be passed
+    # - to the testServer function via args = list()
+    # expect_true(r$x == 1)
+    # - Testing output
+    # expect_true(inherits(output$tbl$html, "html"))
+})
+ 
+test_that("module origin works", {
+  ui <- mod_origin_ui(id = "test")
+  golem::expect_shinytaglist(ui)
+  # Check that formals have not been removed
+  fmls <- formals(mod_origin_ui)
+  for (i in c("id")){
+    expect_true(i %in% names(fmls))
+  }
+})
+
+```
+
+
+# mod_destination
+
+```{r function-mod_destination}
+#' destination UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_destination_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+            plotOutput(ns("plot_ctr_destination")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value=""),
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)") ),
+                            column( 4, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected = c(  "ASY"  ) )),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+                             )  ) )
+  )
+}
+    
+#' destination Server Functions
+#'
+#' @noRd 
+mod_destination_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+    output$plot_ctr_destination <- renderPlot({
+              p <-          plot_ctr_destination(
+              year = as.numeric(reactiveParameters$year),
+              country_origin_iso3c = reactiveParameters$country,
+                     pop_type =   input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_destination_ui("destination_1")
+    
+## To be copied in the server
+# mod_destination_server("destination_1")
+
+```
+
+```{r examples-mod_destination}
+
+```
+
+```{r tests-mod_destination}
+test_that("mod_destination works", {
+
+})
+```
+
+
+# mod_demographics
+
+```{r function-mod_demographics}
+#' demographics UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_demographics_ui <- function(id){
+  ns <- NS(id)
+  tagList( 
+        plotOutput(ns("plot_ctr_pyramid")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value=""),
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)") ),
+                            column( 4, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected = c(  "REF"  ) )),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+                             )  ) )
+  )
+}
+    
+#' demographics Server Functions
+#'
+#' @noRd 
+mod_demographics_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns 
+        output$plot_ctr_pyramid <- renderPlot({
+               p <-          plot_ctr_pyramid(
+              year = as.numeric(reactiveParameters$year),
+              country_asylum_iso3c = reactiveParameters$country,
+              pop_type =  input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_demographics_ui("demographics_1")
+    
+## To be copied in the server
+# mod_demographics_server("demographics_1")
+
+```
+
+```{r examples-mod_demographics}
+
+```
+
+```{r tests-mod_demographics}
+test_that("mod_demographics works", {
+
+})
+```
+
+
+# mod_processing
+
+```{r function-mod_processing}
+#' processing UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_processing_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+        plotOutput(ns("plot_ctr_process")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value=""),
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)") ),
+                            column( 4, ""),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+                             )  ) )
+  )
+}
+    
+#' processing Server Functions
+#'
+#' @noRd 
+mod_processing_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+    output$plot_ctr_process <- renderPlot({
+                  p <-      plot_ctr_process(
+              year = as.numeric(reactiveParameters$year),
+              country_asylum_iso3c = reactiveParameters$country)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_processing_ui("processing_1")
+    
+## To be copied in the server
+# mod_processing_server("processing_1")
+
+```
+
+```{r examples-mod_processing}
+
+```
+
+```{r tests-mod_processing}
+test_that("mod_processing works", {
+
+})
+```
+
+
+# mod_solution
+
+```{r function-mod_solution}
+#' solution UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_solution_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+        plotOutput(ns("plot_ctr_solution")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value="") ,
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)")),
+                            column( 4, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected = c(  "ASY"  ) )),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+                             )  ) )
+  )
+}
+    
+#' solution Server Functions
+#'
+#' @noRd 
+mod_solution_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+        output$plot_ctr_solution <- renderPlot({
+             p <-            plot_ctr_solution(
+              year = as.numeric(reactiveParameters$year),
+              country_asylum_iso3c = reactiveParameters$country,
+              pop_type =  input$pop_type)
+          
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_solution_ui("solution_1")
+    
+## To be copied in the server
+# mod_solution_server("solution_1")
+
+```
+
+```{r examples-mod_solution}
+
+```
+
+```{r tests-mod_solution}
+test_that("mod_solution works", {
+
+})
+```
+
+
+# mod_migrants
+
+```{r function-mod_migrants}
+#' migrants UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_migrants_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+        plotOutput(ns("plot_ctr_disp_migrant")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Title -  Highlight your main message! Keep it short!",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="SubTitle -  Add Insights!",
+                       value=""),
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                          label="Position the annotation on the chart (not working yet)") ),
+                            column( 4, ""),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
+                             )))
+  )
+}
+    
+#' migrants Server Functions
+#'
+#' @noRd 
+mod_migrants_server <- function(id, reactiveParameters){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns 
+    output$plot_ctr_disp_migrant <- renderPlot({
+                  p <-       plot_ctr_disp_migrant(
+              year = as.numeric(reactiveParameters$year),
+              country_asylum_iso3c = reactiveParameters$country)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+                             })
+ 
+  })
+}
+    
+## To be copied in the UI
+# mod_migrants_ui("migrants_1")
+    
+## To be copied in the server
+# mod_migrants_server("migrants_1")
+
+```
+
+```{r examples-mod_migrants}
+
+```
+
+```{r tests-mod_migrants}
+test_that("mod_migrants works", {
+
+})
+```
+
+
+
+
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/dev_golem_module.Rmd", 
+               check = FALSE,
+               document = FALSE,
+               overwrite = TRUE,
+               vignette_name = "Golem Modules for ShinyApp")
+```
+

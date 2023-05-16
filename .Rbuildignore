@@ -1,8 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 usethis::use_data_raw()
-
 ^dev$
+^dev\.R$
+^dev\.Rmd$
 ^LICENSE\.md$
 ^README\.Rmd$
 ^CODE_OF_CONDUCT\.md$
@@ -16,3 +17,5 @@ usethis::use_data_raw()
 ^unhcrdatapackagedev\.Rproj$
 ^archive
 ^Report
+^app\.R$
+^rsconnect$

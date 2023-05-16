@@ -59,7 +59,7 @@ pkgload::load_all(export_all = FALSE)
 #'   https://fontawesome.com/icons/categories/humanitarian  
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @return ggplot2#'
+#' @return ggplot2
 #' 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -509,8 +509,8 @@ After inflating the template
 
 p <- plot_ctr_population_type_per_year(
                          year = 2022,
-                         lag = 5,
                          country_asylum_iso3c = "PAN",
+                         lag = 5,
                          pop_type = c("REF", 
                                        "ASY", 
                                        "OIP", 

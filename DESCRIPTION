@@ -20,6 +20,9 @@ URL: https://edouard-legoupil.github.io/unhcrdatapackage/docs/
 BugReports: https://github.com/edouard-legoupil/unhcrdatapackage/issues
 Imports: 
     circlize,
+    colourpicker,
+    config,
+    dashboardthemes,
     dplyr,
     extrafont,
     forcats,
@@ -32,6 +35,7 @@ Imports:
     ggspatial,
     ggtext,
     glue,
+    golem,
     graphics,
     grDevices,
     here,
@@ -47,6 +51,8 @@ Imports:
     rnaturalearthdata,
     scales,
     sf,
+    shiny,
+    shinydashboard,
     showtext,
     stats,
     stringr,

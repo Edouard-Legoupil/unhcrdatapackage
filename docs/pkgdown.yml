@@ -4,6 +4,7 @@ pkgdown_sha: ~
 articles:
   adding-new-charts: adding-new-charts.html
   chart-library: chart-library.html
+  golem-modules-for-shinyapp: golem-modules-for-shinyapp.html
   library: library.html
-last_built: 2023-03-22T13:13Z
+last_built: 2023-05-16T23:22Z
 

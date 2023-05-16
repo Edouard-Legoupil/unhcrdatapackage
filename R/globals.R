@@ -63,5 +63,9 @@ globalVariables(unique(c(
   # template_CtryFactsheet: 
   "ctryname","iso_3", 
   # template_CtryPrez: 
-  "ctryname", "iso_3"
+  "ctryname", "iso_3",
+  ## Golem
+  "reactiveParameters",
+  # Shiny 
+  "plotBrush", "plotClick", "plotDblClick", "plotHover", "plotName", "sanofiJS", "selected"
 )))
