@@ -12,3 +12,4 @@ Front end of app
 \description{
 Assemble UI modules
 }
+\keyword{internal}

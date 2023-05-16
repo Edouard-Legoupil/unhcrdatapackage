@@ -4,6 +4,7 @@
 #'
 #' @import shiny
 #' @import shinydashboard
+#' @keywords internal
 #'
 #'
 #' @export
@@ -40,15 +41,35 @@ app_ui <- function() {
                   #Jumbotrons are pretty, they make nice headers
                   tags$div(class = "jumbotron text-left", 
                            style = "margin-bottom:15px;margin-top:15px;margin-left:15px",
-                           tags$h1(style = 'color:#0072BC;',
-                                  style = 'margin-bottom:0px;margin-top:0px',
-                                   '7 Key Questions on Forced Displacement'),
-                           tags$h3(class = 'jumbotron-heading', 
-                                   style = 'margin-left:25px',
-                                   ' Numbers have an important story to TELL' ),
-                          tags$h3(class = 'jumbotron-heading', 
-                                  style = 'margin-left:25px',
-                                  ' They rely on YOU to give them a voice!')
+                          fluidRow(
+                            column( 10, 
+                                    tags$h1(style = 'color:#0072BC;',
+                                                style = 'margin-bottom:0px;margin-top:0px',
+                                                '7 Key Questions on Forced Displacement')),
+                            column( 2, 
+                                    tags$i(style = 'font-size: 12rem;color:#0072BC;',
+                                           class = "fa-solid fa-bullhorn")
+                                    )
+                          ) ,
+                          fluidRow(
+                            column( 4,  
+                                    tags$h3(class = 'jumbotron-heading', 
+                                                style = 'margin-left:25px',
+                                                ' "Numbers have an important story to TELL' ),
+                                    tags$h3(class = 'jumbotron-heading', 
+                                            style = 'margin-left:25px',
+                                            ' They rely on YOU to give them a voice!"')),
+                            column( 8, 
+                                    tags$p(class = 'jumbotron-heading', 
+                                            style = 'margin-left:25px',
+                                            ' Data Literacy describes the ability to read, interpret, and argue with data.' ),
+                                    tags$p(class = 'jumbotron-heading', 
+                                            style = 'margin-left:25px',
+                                            ' Data Storytelling is the art of presenting data
+                                  with a contextual narrative, or in other words, to put
+                                  data insights into context in order to inspire action and influence your audience.' )
+                                    )
+                          ) 
                    ), ## end jumbotron..
                   
                   br(),
@@ -98,6 +119,9 @@ golem_add_external_resources <- function(){
   tags$head(
     golem::activate_js(),
     golem::favicon(),
+    
+    # <script src="https://kit.fontawesome.com/6e9406f45f.js" crossorigin="anonymous"></script>
+    tags$script(src = "https://kit.fontawesome.com/6e9406f45f.js"),
     tags$title("unhcrdatapackage")
     # Add here all the external resources
     # If you have a custom.css in the inst/app/www

@@ -23,18 +23,27 @@ mod_demographics_ui <- function(id){
                              fluidRow( 
                             column( 6, 
             textInput( inputId =ns( "title"),
-                   label ="Your message (max 80 Char)",
+                   label ="Title -  Highlight your main message! Keep it short!",
                    value=""),
             textInput( inputId = ns( "subtitle"),
-                       label ="Add Insights",
-                       value="") ),
-                            column( 6, 
+                       label ="SubTitle -  Add Insights!",
+                       value=""),
+            textInput( inputId = ns( "annot"),
+                       label ="Annotate -  Add Interpretation!",
+                       value="") , 
+             actionButton(inputId="position",
+                                       label="Position the annotation on the chart (not working yet)") ),
+                            column( 4, 
             checkboxGroupInput(  inputId = ns("pop_type"),
                         label = "What Population Type to include",
                         choices = c(   "Refugee" ="REF", 
                                      "Asylum Seeker"= "ASY", 
                                       "Other in Need of International Protection"="OIP"  ),
-                        selected = c(  "REF"  ) ))
+                        selected = c(  "REF"  ) )),
+                             column( 2, 
+                     actionButton(inputId="publish",
+                                       label="Share your story (not working yet)",
+                                       icon("share-from-square"))   )
                              )  ) )
   )
 }

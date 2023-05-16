@@ -32,7 +32,7 @@ reference:
   desc: Prebuild Report template to explore, interpret & Disseminate
   contents:
   - starts_with("template_")  
-- title: Update Data 
-  desc: Refresh the data every 6 months.. 
+- title: Data Literacy App 
+  desc: Data Story Telling App
   contents:
-  - starts_with("update_")    
+  - starts_with("run_")    

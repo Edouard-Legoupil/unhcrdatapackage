@@ -16,6 +16,9 @@
     <loc>/articles/chart-library.html</loc>
   </url>
   <url>
+    <loc>/articles/golem-modules-for-shinyapp.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -106,10 +109,10 @@
     <loc>/factsheet/factsheet.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>/reference/app_ui.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
@@ -203,6 +206,9 @@
   </url>
   <url>
     <loc>/reference/plot_reg_treemap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/run_app.html</loc>
   </url>
   <url>
     <loc>/reference/template_CtryFactsheet.html</loc>

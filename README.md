@@ -1,4 +1,4 @@
-# [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage): UNHCR Chart Library Package <img src="man/figures/logo.png" width="200" align="right" />
+# [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage): UNHCR Chart Library Package <img src="man/figures/hex-UnhcrDataPackage.png" width="200" align="right" />
 
 
 > “__Numbers have an important story to tell. They rely on YOU to give them a voice!__”
@@ -6,6 +6,7 @@
 > -- Stephen Few
 
 The package conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of __[persuasive data stories](https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html)__. 
+You can also consult directly the [Data Literacy App](https://rstudio.unhcr.org/Data_Literacy/) created from this package. 
 
 Each plot is created through a function that provides a __recipe__ that creates a re-usable chart in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). Those functions are then rendered through predefined Report templates for Countries or Regions, generated either as html, PDF or PowerPoint presentations. You may [enhance the charts story-telling ability](https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html) by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.
 
@@ -41,4 +42,9 @@ pak::pkg_install("vidonne/unhcrdown")
 pak::pkg_install("edouard-legoupil/ForcedDisplacementStat")
 ## Then the chart library
 pak::pkg_install("edouard-legoupil/unhcrdatapackage")
+```
+
+```{r}
+## you can then run the app locally with
+unhcrdatapackage::run_app()
 ```
