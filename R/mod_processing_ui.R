@@ -12,7 +12,24 @@
 mod_processing_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_process"))
+        plotOutput(ns("plot_ctr_process")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, "")
+                             )  ) )
   )
 }
     
@@ -23,9 +40,14 @@ mod_processing_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_process <- renderPlot({
-                        plot_ctr_process(
+                  p <-      plot_ctr_process(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })

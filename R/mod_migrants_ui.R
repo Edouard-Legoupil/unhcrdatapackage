@@ -12,7 +12,24 @@
 mod_migrants_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_disp_migrant"))
+        plotOutput(ns("plot_ctr_disp_migrant")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, "")
+                             )  ) )
   )
 }
     
@@ -23,9 +40,14 @@ mod_migrants_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
     output$plot_ctr_disp_migrant <- renderPlot({
-                        plot_ctr_disp_migrant(
+                  p <-       plot_ctr_disp_migrant(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })

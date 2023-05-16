@@ -21,7 +21,7 @@ mod_input_ui <- function(id){
         #                            "Mexico" = "MEX" ),
         #             selected = "Panama"),
         selectizeInput(inputId = ns("country"),
-                       label = " and filter by country..", 
+                       label = " Filter by country..", 
                       choices = ForcedDisplacementStat::end_year_population_totals |>
               dplyr::arrange(CountryAsylumName) |>
               dplyr::select(CountryAsylumCode) |>
@@ -33,13 +33,13 @@ mod_input_ui <- function(id){
                                  dplyr::select(CountryAsylumName) |>
                                  dplyr::distinct()|>
                                  dplyr::pull(CountryAsylumName) ), 
-                       selected = "United States of America", 
+                       selected = "USA", 
                        multiple = FALSE,
                        options = NULL),
         
         
         selectInput(inputId = ns("year"),
-                    label = " or select another year",
+                    label = "  select another year",
                     choices = list("2022" = "2022",
                                    "2021" = "2021",
                                    "2020" = "2020",

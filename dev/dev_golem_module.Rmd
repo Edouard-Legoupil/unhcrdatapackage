@@ -683,10 +683,37 @@ test_that("mod_annotate works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @importFrom shinydashboard box 
 mod_categories_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_population_type_per_year"))
+        plotOutput(ns("plot_ctr_population_type_per_year")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(  "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP" ,
+                                      "Other of Concern"=     "OOC",
+                                           "Stateless"="STA",
+                                       "Internally Displaced Persons"=     "IDP" ),
+                        selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) ))
+                             )  ) )
     )
 }
     
@@ -697,16 +724,17 @@ mod_categories_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_population_type_per_year <- renderPlot({
-      plot_ctr_population_type_per_year(
+      p <- plot_ctr_population_type_per_year(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country,
                          lag = 5,
-                         pop_type = c("REF", 
-                                       "ASY", 
-                                       "OIP", 
-                                       "OOC",
-                                       "STA",
-                                       "IDP" ))
+                         pop_type = input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+      
                              })
  
   })
@@ -780,7 +808,30 @@ test_that("module categories works", {
 mod_origin_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_population_type_abs"))
+        plotOutput(ns("plot_ctr_population_type_abs")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            selectInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected =   "ASY" ))
+                             )  ) )
   )
 }
     
@@ -791,12 +842,17 @@ mod_origin_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_population_type_abs <- renderPlot({
-                        plot_ctr_population_type_abs(
+                 p <- plot_ctr_population_type_abs(
                         year = as.integer(reactiveParameters$year),
                         country_asylum_iso3c = reactiveParameters$country,
                         top_n_countries = 9,
-                        pop_type = "ASY",
-                        show_diff_label = TRUE)
+                        show_diff_label = TRUE,
+                        pop_type = input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })
@@ -871,7 +927,30 @@ test_that("module origin works", {
 mod_destination_ui <- function(id){
   ns <- NS(id)
   tagList(
-            plotOutput(ns("plot_ctr_destination"))
+            plotOutput(ns("plot_ctr_destination")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected = c(  "ASY"  ) ))
+                             )  ) )
   )
 }
     
@@ -882,10 +961,15 @@ mod_destination_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_destination <- renderPlot({
-                        plot_ctr_destination(
+              p <-          plot_ctr_destination(
               year = as.numeric(reactiveParameters$year),
               country_origin_iso3c = reactiveParameters$country,
-                     pop_type = c("REF", "ASY") )
+                     pop_type =   input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })
@@ -925,7 +1009,30 @@ test_that("mod_destination works", {
 mod_demographics_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_pyramid"))
+        plotOutput(ns("plot_ctr_pyramid")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected = c(  "REF"  ) ))
+                             )  ) )
   )
 }
     
@@ -936,10 +1043,15 @@ mod_demographics_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
         output$plot_ctr_pyramid <- renderPlot({
-                        plot_ctr_pyramid(
+               p <-          plot_ctr_pyramid(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country,
-              pop_type = c(  "REF"))
+              pop_type =  input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })
@@ -979,7 +1091,24 @@ test_that("mod_demographics works", {
 mod_processing_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_process"))
+        plotOutput(ns("plot_ctr_process")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, "")
+                             )  ) )
   )
 }
     
@@ -990,9 +1119,14 @@ mod_processing_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_process <- renderPlot({
-                        plot_ctr_process(
+                  p <-      plot_ctr_process(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })
@@ -1032,7 +1166,30 @@ test_that("mod_processing works", {
 mod_solution_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_solution"))
+        plotOutput(ns("plot_ctr_solution")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected = c(  "ASY"  ) ))
+                             )  ) )
   )
 }
     
@@ -1043,10 +1200,16 @@ mod_solution_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
         output$plot_ctr_solution <- renderPlot({
-                        plot_ctr_solution(
+             p <-            plot_ctr_solution(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country,
-              pop_type = c("REF", "ASY"))
+              pop_type =  input$pop_type)
+          
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })
@@ -1086,7 +1249,24 @@ test_that("mod_solution works", {
 mod_migrants_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_disp_migrant"))
+        plotOutput(ns("plot_ctr_disp_migrant")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, "")
+                             )  ) )
   )
 }
     
@@ -1097,9 +1277,14 @@ mod_migrants_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
     output$plot_ctr_disp_migrant <- renderPlot({
-                        plot_ctr_disp_migrant(
+                  p <-       plot_ctr_disp_migrant(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })
@@ -1131,6 +1316,10 @@ test_that("mod_migrants works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/dev_golem_module.Rmd", vignette_name = "Golem Modules for ShinyApp")
+fusen::inflate(flat_file = "dev/dev_golem_module.Rmd", 
+               check = FALSE,
+               document = FALSE,
+               overwrite = TRUE,
+               vignette_name = "Golem Modules for ShinyApp")
 ```
 

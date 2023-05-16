@@ -12,7 +12,30 @@
 mod_origin_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_population_type_abs"))
+        plotOutput(ns("plot_ctr_population_type_abs")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            selectInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                        selected =   "ASY" ))
+                             )  ) )
   )
 }
     
@@ -23,12 +46,17 @@ mod_origin_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_population_type_abs <- renderPlot({
-                        plot_ctr_population_type_abs(
+                 p <- plot_ctr_population_type_abs(
                         year = as.integer(reactiveParameters$year),
                         country_asylum_iso3c = reactiveParameters$country,
                         top_n_countries = 9,
-                        pop_type = "ASY",
-                        show_diff_label = TRUE)
+                        show_diff_label = TRUE,
+                        pop_type = input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
                              })
  
   })

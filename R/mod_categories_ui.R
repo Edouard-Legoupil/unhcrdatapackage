@@ -9,10 +9,37 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @importFrom shinydashboard box 
 mod_categories_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_population_type_per_year"))
+        plotOutput(ns("plot_ctr_population_type_per_year")),
+       fluidRow(
+        shinydashboard::box( title = "Tell Your Story!",
+                              status = "info", 
+                              solidHeader = TRUE, 
+                              collapsible = TRUE,
+                              #background = "light-blue",
+                              width = 12, 
+                             fluidRow( 
+                            column( 6, 
+            textInput( inputId =ns( "title"),
+                   label ="Your message (max 80 Char)",
+                   value=""),
+            textInput( inputId = ns( "subtitle"),
+                       label ="Add Insights",
+                       value="") ),
+                            column( 6, 
+            checkboxGroupInput(  inputId = ns("pop_type"),
+                        label = "What Population Type to include",
+                        choices = c(  "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP" ,
+                                      "Other of Concern"=     "OOC",
+                                           "Stateless"="STA",
+                                       "Internally Displaced Persons"=     "IDP" ),
+                        selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) ))
+                             )  ) )
     )
 }
     
@@ -23,16 +50,17 @@ mod_categories_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     output$plot_ctr_population_type_per_year <- renderPlot({
-      plot_ctr_population_type_per_year(
+      p <- plot_ctr_population_type_per_year(
               year = as.numeric(reactiveParameters$year),
               country_asylum_iso3c = reactiveParameters$country,
                          lag = 5,
-                         pop_type = c("REF", 
-                                       "ASY", 
-                                       "OIP", 
-                                       "OOC",
-                                       "STA",
-                                       "IDP" ))
+                         pop_type = input$pop_type)
+      
+   if (input$title != "") { p<- p + labs(title = input$title)}
+   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
+      
+      p
+      
                              })
  
   })
