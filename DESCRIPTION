@@ -43,6 +43,7 @@ Imports:
     lubridate,
     magrittr,
     mapsf,
+    miniUI,
     OpenStreetMap,
     patchwork,
     purrr,

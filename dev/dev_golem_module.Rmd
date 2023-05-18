@@ -106,83 +106,180 @@ test_that("mod_input works", {
 ```
 
 
+
+# annotate_gadget
+    
+```{r function-annotate_gadget}
+#' A ShinyGadget to simply overlay an annotation on a ggplot2 chart
+#'
+#'  See https://shiny.posit.co/r/articles/build/gadgets/
+#'  https://shiny.posit.co/r/articles/build/gadget-ui/
+#'  https://posit.co/resources/videos/building-interactive-tools-for-exploratory-data-analysis/
+#'  https://posit.co/resources/videos/introducing-shiny-gadgets-interactive-tools/
+#'  https://stackoverflow.com/questions/30527977/ggplot2-how-to-differentiate-click-from-brush
+#'
+#' @param chart the ggplot2 object...
+#' @return the code snippet wit the annoation
+#' @importFrom miniUI miniPage gadgetTitleBar miniContentPanel miniButtonBlock
+#' @importFrom ggtext geom_textbox
+#' @import ggplot2
+#' @import shiny
+#' @export
+annotate_gadget <- function(chart, viewer=paneViewer()) {
+  ui <- miniUI::miniPage(
+    miniUI::gadgetTitleBar("Overlay your interpretation on the chart!"),
+    miniUI::miniContentPanel(
+
+      shiny::textAreaInput(inputId="annot",
+                label= "First Add your text",
+                placeholder = "Use double quote on your text and
+                \\n special character to add carriage return on the text in the plot",
+                width = '100%'),
+      "Then POSITION:  One first single click on the plot to point what you would like
+      to highlight and then a long brush click to draw the box where the annotation
+      should be overlaid",
+      shiny::plotOutput("plot",
+                 height = "100%",
+                 click="annotate_point",
+                 brush=brushOpts(id="annotate_box"))
+       ),
+    miniUI::miniButtonBlock(
+      actionButton("arrow",
+                   label = "Click here to reset the positionning",
+                   border = "bottom",
+                   icon = icon("arrow-up-right-from-square"))
+       )
+  )
+
+  server <- function(input, output, session) {
+    ## Observe Point
+    observeEvent(input$annotate_point,
+                 handlerExpr = {
+      xend_p = input$annotate_point$x
+      yend_p = input$annotate_point$y }
+      )
+    ## Observer Brush o define the attachment point
+    observeEvent(input$annotate_box,
+                 handlerExpr = {
+                   xbox_p = input$annotate_box$xmin
+                   ybox_p = input$annotate_box$ymin
+        ## Now some thinking done to position the arrow
+        ## xmin, xmax, ymin, and ymax
+
+                   }
+                 )
+    # Render the plot
+    output$plot <- shiny::renderPlot({
+      # Display plot with added annotation
+      chart
+      ## get everything ready - text, point and box - then redraw the chart
+      # if( !(is.na(input$annotate_point$x) &
+      #       is.na(input$annotate_box$xmin)) ){
+      #
+      #   ### Adding some annotation...
+      #   chart <- chart +
+      #           geom_curve(aes(xend = xend_p,
+      #                          yend = yend_p,
+      #                          x = xbox_p,
+      #                          y = ybox_p),
+      #                      size = 2,
+      #                      color = "tan",
+      #                      arrow = arrow(length = unit(0.07, "npc"))) +
+      #           ggtext::geom_textbox(data = data.frame(x = xbox_p,
+      #                                                 y = ybox_p,
+      #                                                 label = input$annot),
+      #                                  mapping = aes(x = x,
+      #                                                y = y,
+      #                                                label = label),
+      #                                  width = unit(0.6, "npc"),
+      #                                  family = "Lato",
+      #                                  size = 7,
+      #                                  fill = "cornsilk",
+      #                                  inherit.aes = FALSE)
+      #
+      # }
+
+    })
+
+    ## Get the code snippet to add to the ggplot object to render this annotation
+    output$code <- shiny::renderText({
+
+     # return("Tata")
+
+      # geom_curve(aes(xend = xend_p,
+      #                yend = yend_p,
+      #                x = xbox_p,
+      #                y = ybox_p),
+      #            size = 2,
+      #            color = "tan",
+      #            arrow = arrow(length = unit(0.07, "npc"))) +
+      # ggtext::geom_textbox(data = data.frame(x = xbox_p,
+      #                                       y = ybox_p,
+      #                                       label = "Why so many people are using **other** category? \n Is there an important missing category ?"),
+      #                        mapping = aes(x = x,
+      #                                      y = y,
+      #                                      label = label),
+      #                        width = unit(0.6, "npc"),
+      #                        family = "Lato",
+      #                        size = 7,
+      #                        fill = "cornsilk",
+      #                        inherit.aes = FALSE)
+    })
+
+    ## Observe Reset
+    observeEvent(input$reset, handlerExpr = {
+        chart = chart
+    })
+    # Handle the Done button being pressed.
+    observeEvent(input$done, {
+      # Return the code that will be used in the rest of the app...
+      stopApp(#output$code  
+        )
+    })
+  }
+  shiny::runGadget(ui, server)
+}
+```
+  
+```{r example-annotate_gadget}
+# if (interactive())
+# thischart <- ggplot2::ggplot(datasets::iris,
+#                              ggplot2::aes_string("Sepal.Length", "Sepal.Width")) +
+#             ggplot2::geom_point()  
+# annotate_gadget(chart = thischart)
+
+```
+  
+```{r tests-annotate_gadget}
+test_that("annotate_gadget works", {
+  expect_true(inherits(annotate_gadget, "function")) 
+})
+```
+  
+
+
 # mod_annotate
 
-this is the story telling module - it takes the output of chart and allows to change the title and the subtitle - as well as to add annotation..
+this is the story telling module  to add annotation..
 
-Inspired from https://community.rstudio.com/t/graph-annotator-shiny-contest-submission/104687 
+Based on https://github.com/MattCowgill/ggannotate 
+also inspired from https://community.rstudio.com/t/graph-annotator-shiny-contest-submission/104687 
 
-See how we could share the story then on twitter - https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
+Once the button "Position the annotation on the chart" is launched:
+
+ - a window with the chart - 
+
+- click first time to indicate the top-left point to position the infobox
+- ask if an arrow is required - if no - the windows closed and the annotation is added - 
+- if yes - click a second time to add the arrow pointer - then window closed and the annotation is added- - a button is added with the option to remove this annotation -
+- user can click the 
+
+
 
 ```{r function-mod_annotate}
-# all possible UI widgets used here
-default_annotate_layer_widgets <- list(colourInput = function(inputId, label = 'Colour',
-                                                              showColour = "text",
-                                                              palette = "square",
-                                                              value = "#000000",
-                                                              ...) 
-  colourpicker::colourInput(inputId = inputId,
-                            label = label,
-                            showColour = showColour, 
-                            palette = palette,
-                            value = value, ...),
-   textInput = function(inputId, label, ...) textInput(inputId = inputId, label = label, ...),
-   selectInput = function(inputId, label, ...) shiny::selectInput(inputId = inputId, label = label, ...),
-   numericInput = function(inputId, label, ...) shiny::numericInput(inputId = inputId, label = label, ...),
-   radioButton = function(inputId, label, choices, ...) shiny::radioButtons(inputId = inputId, label = label, choices = choices, ...)
-)
-
-
-# list of possible arguments
-annotate_layer_args <- list(
-  text = list(
-    x = list(req = TRUE),
-    y = list(req = TRUE),
-    label = list(req = TRUE),
-    parse = list(req = TRUE),
-    color = list(req = FALSE),
-    size = list(req = FALSE),
-    alpha = list(req = FALSE),
-    fontface = list(req = FALSE),
-    # family = list(req = FALSE),
-    angle = list(req = FALSE),
-    hjust = list(req = FALSE), #"inward", # (“left”, “center”, “right”, “inward”, “outward”)
-    vjust = list(req = FALSE) # "inward", # (“bottom”, “middle”, “top”, “inward”, “outward”)
-    # check_overlap = list(req = FALSE) # TRUE # boolean
-  ),
-  hline = list(
-    yintercept = list(req = TRUE),
-    # y = list(req = TRUE),
-    linetype = list(req = FALSE),
-    color = list(req = FALSE),
-    alpha = list(req = FALSE),
-    size = list(req = FALSE)
-  ),
-  vline = list(
-    xintercept = list(req = TRUE),
-    # x = list(req = TRUE),
-    linetype = list(req = FALSE),
-    color = list(req = FALSE),
-    alpha = list(req = FALSE),
-    size = list(req = FALSE)
-  ),
-  rect = list(
-    xmin = list(req = TRUE),
-    xmax = list(req = TRUE),
-    ymin = list(req = TRUE),
-    ymax = list(req = TRUE),
-    alpha = list(req = TRUE),
-    color = list(req = FALSE),
-    fill = list(req = FALSE)
-  )
-)
-
-
-
-
 #' annotate UI Function
 #'
-#' @description A shiny Module.
+#' @description A shiny Module to lauch the annotatation gadget for a chart
 #'
 #' @param id,annotate,output,session Internal parameters for {shiny}.
 #'
@@ -192,459 +289,22 @@ annotate_layer_args <- list(
 mod_annotate_ui <- function(id){
   ns <- NS(id)
   tagList(
-    fluidRow(
-      column(width = 12, 
-             default_annotate_layer_widgets$selectInput(inputId = ns("geom_type"), 
-                                                       label = "Select Annotation type",
-                                                       choices = c(names(annotate_layer_args))) )),
-    fluidRow(
-      column(width = 3, tags$b("Read mouse")),
-      column(width = 6, offset = -1, 
-             style = 'padding-left: 5px; padding-right: 5px;',
-             shiny::radioButtons(inputId = ns("read_mouse"), 
-                                 label = NULL, 
-                                 choices = list('Off' = FALSE, 'On' = TRUE), 
-                                 selected = FALSE) )),
-    fluidRow(
-      column(width = 12, uiOutput(ns("multiple_args")))), # multiple select drop down
-    fluidRow(
-      column(width = 12, uiOutput(ns("widget"))))
+
+     # actionButton("overlay_annotate",
+     #               label = "Overlay an interpretation annotation!  -- not working yet",
+     #               icon = icon("hand-point-up"),
+     #               onclick = "" ) 
   )
 }
     
 #' annotate Server Functions
 #'
 #' @noRd 
-mod_annotate_server <- function(id){
+mod_annotate_server <- function(id, chart){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
-    
-      mrv <- reactiveValues()
+    #annotate_gadget(chart = thischart)
 
-      # all possible value arguments
-      annotate_args <- list(label = list(initial = function(...) default_annotate_layer_widgets$textInput(inputId = ns('label'), label = NULL, value = "", ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$textInput(inputId = ns('label'), label = NULL, value = selected, ...)),
-
-                            parse = list(initial = function(...) default_annotate_layer_widgets$radioButton(inputId = ns('parse'), label = NULL, choices = list('FALSE' = FALSE, 'TRUE' = TRUE), selected = FALSE, ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$radioButton(inputId = ns('parse'), label = NULL, choices = list('FALSE' = FALSE, 'TRUE' = TRUE), selected = selected, ...)),
-
-                            x = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('x'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                     selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('x'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            y = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('y'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                     selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('y'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            xmin = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xmin'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xmin'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            xmax = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xmax'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xmax'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            ymin = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('ymin'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('ymin'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            ymax = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('ymax'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('ymax'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            color = list(initial = function(...) default_annotate_layer_widgets$colourInput(inputId = ns('color'), label = NULL, ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$colourInput(inputId = ns('color'), label = NULL, value = selected, ...)),
-
-                            fill = list(initial = function(...) default_annotate_layer_widgets$colourInput(inputId = ns('fill'), label = NULL, value = "#d8d8ff", ...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$colourInput(inputId = ns('fill'), label = NULL, value = selected, ...)),
-
-                            size = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('size'), label = NULL, value = NULL, min = 0, max = 20, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('size'), label = NULL, value = selected, min = 0, max = 20, step = 1, ...)),
-
-                            fontface = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('fontface'), label = NULL, choices = c("", "plain", "bold", "italic"),...),
-                                            selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('fontface'), label = NULL, choices = c("", "plain", "bold", "italic"), selected = selected, ...)),
-
-                            family = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('family'), label = NULL, choices = c("","sans", "serif", "mono"),...),
-                                          selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('family'), label = NULL, choices = c("", "sans", "serif", "mono"), selected = selected, ...)),
-
-                            angle = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('angle'), label = NULL, value = NULL, min = 0, max = 360, step = 5,...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('angle'), label = NULL, value = selected, min = 0, max = 360, step = 5, ...)),
-
-                            alpha = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('alpha'), label = NULL, value = NULL, min = 0, max = 1, step = 0.1,...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('alpha'), label = NULL, value = selected, min = 0, max = 1, step = 0.1, ...)),
-
-                            vjust = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('vjust'), label = NULL, choices = c("", "middle", "inward", "outward", "bottom", "top"),...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('vjust'), label = NULL, choices = c("", "middle", "inward", "outward", "bottom", "top"), selected = selected, ...)),
-
-                            hjust = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('hjust'), label = NULL, choices = c("", "center", "inward", "outward", "left", "right"), ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('hjust'), label = NULL, choices = c("", "center", "inward", "outward", "left", "right"), selected = selected, ...)),
-
-                            yintercept = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('yintercept'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                              selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('yintercept'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            xintercept = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xintercept'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                              selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xintercept'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            linetype = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('linetype'), label = NULL, choices = c("", "twodash","blank", "solid", "dashed", "dotted", "dotdash", "longdash","11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff"), ...),
-                                            selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('linetype'), label = NULL, choices = c("", "twodash","blank", "solid", "dashed", "dotted", "dotdash", "longdash","11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff"), selected = selected, ...))
-      )
-
-      if(isFALSE(is.null(selected[["geom"]]))){
-        updateSelectInput(session = session, inputId = "geom_type", selected = selected[["geom"]])
-      }
-
-      # update read mouse to off whenever user switches annotate type
-      observeEvent(input$geom_type,{
-        updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-      }, ignoreInit = TRUE)
-
-      # show/hide attributes based on multiple_args selection
-      output$multiple_args <- renderUI({
-        if (isTRUE(length(selected) == 0)) {
-          if(input$geom_type == ""){
-            return(NULL)
-          } else {
-            shiny::selectInput(
-              inputId = ns('geom_attr'),
-              label = "Attribute(s) Selector",
-              # width = '90%',
-              choices = names(annotate_layer_args[[input$geom_type]]),
-              multiple = TRUE,
-              selected = names(annotate_layer_args[[input$geom_type]])[sapply(annotate_layer_args[[input$geom_type]], function(element_i) {
-                if (isTRUE(element_i[["req"]] == TRUE))
-                  return(TRUE)
-                else
-                  return(FALSE)
-              })]
-            )
-          }
-        } else {
-          shiny::selectInput(
-            inputId = ns('geom_attr'),
-            label = "Attribute(s) Selector",
-            # width = '90%',
-            choices = names(annotate_layer_args[[input$geom_type]]),
-            multiple = TRUE,
-            selected = names(selected)
-          )
-        }
-      })
-
-      output$widget <- renderUI({
-
-        if(isFALSE(input$geom_type == "")){
-
-          # building widgets for geom
-          annotate_widgets <- annotate_layer_args[[input$geom_type]]
-
-          for(arg_i in names(annotate_widgets)){
-
-            if(isTRUE(is.null(selected[[arg_i]]))){
-              annotate_widgets[[arg_i]]$widget$name <- arg_i
-              annotate_widgets[[arg_i]]$widget$ui <- annotate_args[[arg_i]]$initial()
-            } else {
-              annotate_widgets[[arg_i]]$widget$name <- arg_i
-              annotate_widgets[[arg_i]]$widget$ui <- annotate_args[[arg_i]]$selected(selected[[arg_i]])
-            }
-
-          } # close for loop
-
-          # return
-          tagList(
-            lapply(annotate_widgets, FUN = function(fun_i){
-              fluidRow(
-                class = ns(fun_i$widget$name), style = 'display:none;',
-                column(width = 3, style = 'padding-top: 5px;',
-                       fun_i$widget$name),
-                column(width = 6, offset = -1, style = 'padding-left: 5px; padding-right: 5px;',
-                       fun_i$widget$ui)
-              )
-            })
-          )
-
-        } # close of input$geom_type check
-      }) # close of widget renderUI
-
-
-      # read Attribute selector and force `req` attribute to always re-populate if user removes it
-      observeEvent(input[["geom_attr"]], {
-        # observe({
-        if (isFALSE(input$geom_type == "")) {
-
-          geom_req_attr <-
-            names(annotate_layer_args[[input$geom_type]])[sapply(annotate_layer_args[[input$geom_type]], function(element_i) {
-              if (isTRUE(element_i[["req"]] == TRUE))
-                return(TRUE)
-              else
-                return(FALSE)
-            })]
-
-          if (isFALSE(all(geom_req_attr %in% input[["geom_attr"]]))) {
-            shiny::updateSelectInput(
-              session = session,
-              inputId = 'geom_attr',
-              selected = base::union(geom_req_attr, input[["geom_attr"]])
-            )
-          }
-
-        } # close of outer if to check null input$geom_type
-      }, ignoreInit = TRUE) # close of observe
-
-
-      ############################################################################################
-      ### geom text, hline, vline section - module server logic
-      ############################################################################################
-      ## Read mouse and update x and y inputs
-      observeEvent(input$read_mouse,{
-        if(input$geom_type != "rect"){
-
-          if(input$read_mouse){
-            if(input$geom_type == "text"){
-              sanofiJS$disable(id = ns('x'))
-              sanofiJS$disable(id = ns('y'))
-            }
-            else if(input$geom_type == "hline"){
-              # yintercept
-              sanofiJS$disable(id = ns('yintercept'))
-              sanofiJS$disable(id = ns('y'))
-            }
-            else if(input$geom_type == "vline"){
-              # xintercept
-              sanofiJS$disable(id = ns('xintercept'))
-              sanofiJS$disable(id = ns('x'))
-            }
-
-            mrv$x_hover <- NULL
-            mrv$x_click <- NULL
-            mrv$x_dynamic <- NULL
-
-            mrv$y_hover <- NULL
-            mrv$y_click <- NULL
-            mrv$y_dynamic <- NULL
-
-            mrv$click <- NULL
-
-          } else {
-            if(input$geom_type == "text"){
-              sanofiJS$enable(id = ns('x'))
-              sanofiJS$enable(id = ns('y'))
-            }
-            else if(input$geom_type == "hline"){
-              # yintercept
-              sanofiJS$enable(id = ns('yintercept'))
-              sanofiJS$enable(id = ns('y'))
-            }
-            else if(input$geom_type == "vline"){
-              # xintercept
-              sanofiJS$enable(id = ns('xintercept'))
-              sanofiJS$enable(id = ns('x'))
-            }
-          }
-
-        }
-      })
-
-
-      # if reading mouse, clicking will record and turn off reading mouse
-      observeEvent(plotClick(),{
-
-        if(input$geom_type != "rect"){
-          if(isFALSE(is.null(plotClick()$x)) && isFALSE(is.null(plotClick()$y))){
-            if(input$read_mouse) {
-
-              if(is.null(mrv$x_click)) {
-                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-                mrv$x_click <- plotClick()$x
-              } else {
-                mrv$x_click <- NULL
-                mrv$x_dynamic <- NULL
-              }
-
-              if(is.null(mrv$y_click)) {
-                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-                mrv$y_click <- plotClick()$y
-              } else {
-                mrv$y_click <- NULL
-                mrv$y_dynamic <- NULL
-              }
-
-            }
-          }
-        }
-      })
-
-      # current hover: as the plot updates, current hover is lost
-      observe({
-        # if(input$geom_type != "rect"){
-        if(!is.null(plotHover()$x)){
-          mrv$x_hover <- plotHover()$x
-        }
-        if(!is.null(plotHover()$y)){
-          mrv$y_hover <- plotHover()$y
-        }
-        # }
-      })
-
-      # selecting the appropriate coordinate
-      observeEvent(plotHover(),{
-        # if(input$geom_type != "rect"){
-        if(isFALSE(is.null(plotHover()$x)) && isFALSE(is.null(plotHover()$y))){
-
-          if(!is.null(mrv$x_click)) {
-            mrv$x_dynamic <- mrv$x_click
-          } else {
-            mrv$x_dynamic <- mrv$x_hover
-          }
-
-          if(!is.null(mrv$y_click)) {
-            mrv$y_dynamic <- mrv$y_click
-          } else {
-            mrv$y_dynamic <- mrv$y_hover
-          }
-
-        }
-        # }
-      })
-
-      # updating the input widgets
-      observeEvent(mrv$x_dynamic, ignoreNULL = FALSE,{
-        if(input$read_mouse){
-          if(input$geom_type == "text"){
-            updateNumericInput(inputId = ('x'), value = mrv$x_dynamic)
-            updateNumericInput(inputId = ('y'), value = mrv$y_dynamic)
-          }
-          else if(input$geom_type == "hline"){
-            #yintercept
-            updateNumericInput(inputId = ('yintercept'), value = mrv$y_dynamic)
-            updateNumericInput(inputId = ('y'), value = mrv$y_dynamic)
-          }
-          else if(input$geom_type == "vline"){
-            #xintercept
-            updateNumericInput(inputId = ('xintercept'), value = mrv$x_dynamic)
-            updateNumericInput(inputId = ('x'), value = mrv$x_dynamic)
-          }
-        }
-      })
-
-      ############################################################################################
-      ### geom Rectangle section - module server logic
-      ############################################################################################
-
-      observeEvent(input$read_mouse,{
-        if(input$geom_type == "rect"){
-          if(input$read_mouse){
-            # rect
-            sanofiJS$disable(id = ns('xmin'))
-            sanofiJS$disable(id = ns('xmax'))
-            sanofiJS$disable(id = ns('ymin'))
-            sanofiJS$disable(id = ns('ymax'))
-
-            mrv$x_min <- NULL
-            mrv$x_max <- NULL
-            mrv$y_min <- NULL
-            mrv$y_max <- NULL
-
-            mrv$dbl_x_click <- NULL
-            mrv$dbl_y_click <- NULL
-
-          } else {
-            # rect
-            sanofiJS$enable(id = ns('xmin'))
-            sanofiJS$enable(id = ns('xmax'))
-            sanofiJS$enable(id = ns('ymin'))
-            sanofiJS$enable(id = ns('ymax'))
-          }
-        }
-      })
-
-      # double click to confirm rectangle location and update read mouse to Off
-      observeEvent(plotDblClick(),{
-        if(input$geom_type == "rect"){
-          if(isFALSE(is.null(plotBrush()$xmin)) && isFALSE(is.null(plotBrush()$xmax))
-             && isFALSE(is.null(plotBrush()$ymin)) && isFALSE(is.null(plotBrush()$ymax))){
-            if(input$read_mouse) {
-              if(is.null(mrv$dbl_x_click) && is.null(mrv$dbl_y_click)){
-                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-                mrv$dbl_x_click <- plotDblClick()$x
-                mrv$dbl_y_click <- plotDblClick()$y
-                # make plot hover height & width to 0 on double click
-                if(plotName != "")
-                  session$sendCustomMessage(type = 'plot_brush_minimize', message = list(id = paste0(plotName,"_brush")))
-              } else {
-                mrv$dbl_x_click <- NULL
-                mrv$dbl_y_click <- NULL
-              }
-            }
-          }
-        }
-      })
-
-      # current rect: as the plot updates, current rect points are lost
-      observe({
-        if(input$geom_type == "rect"){
-          if(!is.null(plotBrush()$xmin)){
-            mrv$x_min <- plotBrush()$xmin
-            mrv$dbl_x_click <- plotDblClick()$x
-          }
-          if(!is.null(plotBrush()$xmax)){
-            mrv$x_max <- plotBrush()$xmax
-          }
-          if(!is.null(plotBrush()$ymin)){
-            mrv$y_min <- plotBrush()$ymin
-            mrv$dbl_y_click <- plotDblClick()$y
-          }
-          if(!is.null(plotBrush()$ymax)){
-            mrv$y_max <- plotBrush()$ymax
-          }
-        }
-      })
-
-      # updating the input widgets
-      observeEvent(list(mrv$x_min,mrv$x_max,mrv$y_min,mrv$y_max), ignoreNULL = FALSE,{
-        if(input$read_mouse){
-          #rect
-          updateNumericInput(inputId = ('xmin'), value = mrv$x_min)
-          updateNumericInput(inputId = ('xmax'), value = mrv$x_max)
-          updateNumericInput(inputId = ('ymin'), value = mrv$y_min)
-          updateNumericInput(inputId = ('ymax'), value = mrv$y_max)
-        }
-      })
-
-
-      ############################################################################################
-      # return Module
-      ############################################################################################
-      return(reactive({
-        # ans <- list()
-        ans <- list(.fn = "annotate", geom = input$geom_type)
-
-        lapply(names(annotate_layer_args[[input$geom_type]]), FUN = function(arg_i) {
-          if(arg_i %in% input[["geom_attr"]])
-            sanofiJS$show(class = ns(arg_i), display = 'inherit', session = session)
-          else
-            sanofiJS$hide(class = ns(arg_i), session = session)
-        })
-
-
-        # for (arg_i in names(annotate_layer_args[[input$geom_type]])) {
-        for (arg_i in input[["geom_attr"]]) { # to Module return values selected in 'Attribute Selector'
-          if (isFALSE(input[[arg_i]] == "")) {
-
-            # capture user input
-            ans[[arg_i]] <- input[[arg_i]]
-
-          }
-        }
-
-        # force x & y values for vline and hline respectively for it to work
-        if(input$geom_type == 'hline'){
-          ans[['y']] <- ans[['yintercept']]
-        } else if(input$geom_type == 'vline'){
-          ans[['x']] <- ans[['xintercept']]
-        }
-
-        # return
-        ans
-
-      })) # close of module end reactive return
-    
-    
-    
     
  
   })
@@ -665,6 +325,161 @@ mod_annotate_server <- function(id){
 ```{r tests-mod_annotate}
 test_that("mod_annotate works", {
 
+})
+```
+
+
+# mod_share
+
+See how we could share the story then on twitter -
+
+This is a module that will work based on a specific module id.. 
+https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
+
+https://stackoverflow.com/questions/62052804/is-there-a-way-to-add-share-buttons-to-make-plots-shareable-in-shiny
+The way a Twitter Card could work would be if you were sharing a link to a static web page in the Tweet text, and if that page had some markup which included the image, so that the image would be shown as a preview for the link. 
+
+
+
+```{r function-mod_share}
+#' categories UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+#' @importFrom shinydashboard box 
+mod_share_ui <- function(id){
+  ns <- NS(id)
+
+  tagList( 
+     # actionButton(inputId="publish",
+     #     label="Share your story (not working yet)",
+     #     icon("share-from-square"))  ,
+     # Combine text with url variable
+      # Use the onclick parameter to open a new window to the twitter url
+     
+     # HTML("<div style='float:right'>
+     #         <a href='https://twitter.com/share' 
+     #         class='twitter-share-button' 
+     #         align='middle' 
+     #         data-url='https://rstudio.unhcr.org/Data_Literacy/' 
+     #         data-text='Insert text here!' 
+     #         data-size='large'>Tweet
+     #         </a>
+     #         <script>!function(d,s,id){
+     #         var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+     #         if(!d.getElementById(id)){
+     #         js=d.createElement(s);
+     #         js.id=id;
+     #         js.src=p+'://platform.twitter.com/widgets.js';
+     #         fjs.parentNode.insertBefore(js,fjs);
+     #         }
+     #         }(document, 'script', 'twitter-wjs');
+     #         </script>
+     #         </div>")
+     
+     # actionButton("twitter_share",
+     #               label = "Share your story!",
+     #               icon = icon("twitter"),
+     #               onclick = sprintf("window.open('%s')", output$url)) 
+     
+     
+     )
+}
+    
+#' categories Server Functions
+#'
+#' @noRd 
+mod_share_server <- function(id, tweetplot){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+  #   output$url <- renderText({ 
+  #      
+  #   ### Build and save the twitter card 
+  #   
+  #   ## Get the plot and save it as an image   on the disk  
+  #  # tweechart <-   ""
+  #   ## extract tweet message aka the plot tile
+  # #  tweetmessage <- ""
+  #   ## Now build the html tweetcard file to reference the image
+  #  # tweetcard <- 
+  #   # <meta name="twitter:card" content="summary_large_image">
+  #   # <meta name="twitter:site" content="@Refugees">
+  #   # <meta name="twitter:creator" content="@edouard_lgp">
+  #   # <meta name="twitter:title" content="">
+  #   # <meta name="twitter:description" content="Data Literacy on Forced Displacement">
+  #   # <meta name="twitter:image" content="https://rstudio.unhcr.org/Data_Literacy/image.jpg">
+  #   # <meta name="twitter:url" content="https://rstudio.unhcr.org/Data_Literacy/" />
+  #   
+  #   ### Save the twitter card on the disk 
+  #   
+  #   
+  #   ## Create the URL and append it to the twitter intend.. 
+  #    #  url <- paste0("https://twitter.com/intent/tweet?text=",
+  #    #                tweetmessage,
+  #    #               "&url=https://rstudio.unhcr.org/Data_Literacy/",
+  #    #               tweetchart,"\"")
+  #    # 
+  #    # ## Give back that URL 
+  #    # return(url)
+  #  ## For FB 'https://www.facebook.com/sharer/sharer.php?u='  
+  #     })
+  })
+}
+    
+## To be copied in the UI
+# mod_share_ui("categories_1")
+    
+## To be copied in the server
+# mod_share_server("categories_1")
+
+```
+
+```{r examples-mod_share}
+
+```
+
+```{r tests-mod_share}
+testServer(
+  mod_share_server,
+  # Add here your module params
+  args = list()
+  , {
+    ns <- session$ns
+    expect_true(
+      inherits(ns, "function")
+    )
+    expect_true(
+      grepl(id, ns(""))
+    )
+    expect_true(
+      grepl("test", ns("test"))
+    )
+    # Here are some examples of tests you can
+    # run on your module
+    # - Testing the setting of inputs
+    # session$setInputs(x = 1)
+    # expect_true(input$x == 1)
+    # - If ever your input updates a reactiveValues
+    # - Note that this reactiveValues must be passed
+    # - to the testServer function via args = list()
+    # expect_true(r$x == 1)
+    # - Testing output
+    # expect_true(inherits(output$tbl$html, "html"))
+})
+ 
+test_that("module categories works", {
+  ui <- mod_share_ui(id = "test")
+  golem::expect_shinytaglist(ui)
+  # Check that formals have not been removed
+  fmls <- formals(mod_share_ui)
+  for (i in c("id")){
+    expect_true(i %in% names(fmls))
+  }
 })
 ```
 
@@ -703,11 +518,11 @@ mod_categories_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value="") ,
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)")
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%')
             
             ),
                             column( 4, 
@@ -838,11 +653,11 @@ mod_origin_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%') ),
                             column( 4, 
             selectInput(  inputId = ns("pop_type"),
                         label = "What Population Type to include",
@@ -966,11 +781,11 @@ mod_destination_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%') ),
                             column( 4, 
             checkboxGroupInput(  inputId = ns("pop_type"),
                         label = "What Population Type to include",
@@ -1057,11 +872,11 @@ mod_demographics_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%') ),
                             column( 4, 
             checkboxGroupInput(  inputId = ns("pop_type"),
                         label = "What Population Type to include",
@@ -1148,11 +963,11 @@ mod_processing_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%') ),
                             column( 4, ""),
                              column( 2, 
                      actionButton(inputId="publish",
@@ -1232,11 +1047,11 @@ mod_solution_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value="") ,
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)")),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%')),
                             column( 4, 
             checkboxGroupInput(  inputId = ns("pop_type"),
                         label = "What Population Type to include",
@@ -1324,11 +1139,12 @@ mod_migrants_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                          label="Position the annotation on the chart (not working yet)") ),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%')
+                            ),
                             column( 4, ""),
                              column( 2, 
                      actionButton(inputId="publish",

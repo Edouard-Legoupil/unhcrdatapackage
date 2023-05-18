@@ -58,9 +58,11 @@ plot_ctr_solution <- function(year = 2021,
               group_by(Year, Solution.type.label ) |>
               summarise(Value2 = sum(Value) )  |>
               mutate( valabel =  ifelse(Value2 > 1000, 
-                                       paste(scales::label_number_si(accuracy = 0.1)(Value2)),
+                                       paste(scales::label_number(accuracy = 0.1,
+                                                      scale_cut = cut_short_scale())(Value2)),
                                        as.character(Value2)) )   
 
+    
     
     ncat <- ifelse( nlevels(as.factor(Solution$Solution.type.label)) %in% c(2,4), 2,3)
     #levels(as.factor(solutions_long.asy$Solution.type.label))
@@ -74,7 +76,7 @@ plot_ctr_solution <- function(year = 2021,
 
 if( nrow(Solution) ==  0 ){
   
-    info <-  paste0("There\'s no recorded solutions in ", ForcedDisplacementStat::reference |>
+    info <-  paste0("There\'s no recorded solutions \n in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 

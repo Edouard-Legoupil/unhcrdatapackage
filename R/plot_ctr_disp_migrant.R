@@ -125,7 +125,7 @@ plot_ctr_disp_migrant <- function(year = 2021,
 
 
 if( nrow(displaced) ==  0 ){
-     info  <- paste0("There\'s no recorded Forcibly Displaced People across Borders in ",ctrylabel )
+     info  <- paste0("There\'s no recorded \n Forcibly Displaced People across Borders \n in ",ctrylabel )
      p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                                         label = info ) +  theme_void() 
   

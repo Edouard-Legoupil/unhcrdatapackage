@@ -79,7 +79,7 @@ plot_ctr_destination <- function(year = 2021,
 
   if(nrow(Destination) ==  0) {
     
-    info <-  paste0("There\'s no recorded Countries of destination in ", ForcedDisplacementStat::reference |>
+    info <-  paste0("There\'s no recorded Countries of destination \n in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_origin_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 

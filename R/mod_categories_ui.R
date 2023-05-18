@@ -29,11 +29,11 @@ mod_categories_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value="") ,
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)")
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%')
             
             ),
                             column( 4, 

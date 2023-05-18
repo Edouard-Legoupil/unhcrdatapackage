@@ -1,4 +1,4 @@
-# [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage): UNHCR Chart Library Package <img src="man/figures/hex-UnhcrDataPackage.png" width="200" align="right" />
+# [`{UnhcrDataPackage}`](https://edouard-legoupil.github.io/unhcrdatapackage): A Chart Library on Forced Displacement <img src="man/figures/logo.png" width="200" align="right" />
 
 
 > “__Numbers have an important story to tell. They rely on YOU to give them a voice!__”

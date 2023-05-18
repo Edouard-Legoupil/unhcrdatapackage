@@ -5,9 +5,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<!-- Run this 'development' chunk -->
-<!-- Store every call to library() that you need to explore your functions -->
-
 ```{r development, include=FALSE}
 knitr::opts_chunk$set(
                       comment = "#>",
@@ -32,19 +29,10 @@ library(unhcrthemes)
 # font_install('fontcm')
 ```
 
-<!--
- You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
-
-If it is the first time you use {fusen}, after 'description', you can directly run the last chunk of the present file with inflate() inside.
---> 
-
 ```{r development-load}
 # Load already included functions if relevant
 pkgload::load_all(export_all = FALSE)
 ```
-
-
-
 
 # Country Questions
 
@@ -74,23 +62,7 @@ pkgload::load_all(export_all = FALSE)
 plot_ctr_keyfig <- function(country_asylum_iso3c, year){
 
     ## FontAwesome6  includes humanitarian icon... 
-    fontcheck <- extrafont::fonttable() |>
-              dplyr::as_tibble() |>
-              dplyr::filter(grepl("Awesom", FamilyName)) 
-
-    if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
-      fa_font <- here::here("",  "fa-solid-900-6.ttf")
-      download.file("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/webfonts/fa-solid-900.ttf",
-                    destfile = fa_font, method = "curl")
-      extrafont::font_import(paths = dirname(fa_font), prompt = FALSE)
-      sysfonts::font_add(family =  "Font Awesome 6 Free Solid", regular = fa_font)
-    } else {
-    
-    sysfonts::font_add(family = "Font Awesome 6 Free Solid" , 
-                       regular = as.character(fontcheck |> 
-                                                dplyr::filter( FamilyName == "Font Awesome 6 Free Solid") |>
-                                                dplyr::pull(fontfile)) )
-    }
+    #check_font()
  
 CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
   dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
@@ -442,7 +414,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
              aes(x = Year, 
                   y = Value, 
                   color = Population.type.label, 
-                  label = label_number(accuracy = 1,
+                  label = label_number(accuracy = .1,
                                    scale_cut = cut_short_scale())(Value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
@@ -452,7 +424,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
                   fun = sum, 
                  aes(x = Year,
                      y = Value, 
-                     label = scales::label_number(accuracy = 1,
+                     label = scales::label_number(accuracy = .1,
                                           scale_cut = cut_short_scale())(after_stat(y)),
                      group = Year), 
                  geom = "text", size = 5,    vjust = -0.5) +
@@ -1304,23 +1276,7 @@ plot_ctr_pyramid <- function(year ,
   
   
     ## FontAwesome6  includes humanitarian icon... 
-    fontcheck <- extrafont::fonttable() |>
-              dplyr::as_tibble() |>
-              dplyr::filter(grepl("Awesom", FamilyName)) 
-
-    if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
-      fa_font <- here::here("",  "fa-solid-900-6.ttf")
-      download.file("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/webfonts/fa-solid-900.ttf",
-                    destfile = fa_font, method = "curl")
-      extrafont::font_import(paths = dirname(fa_font), prompt = FALSE)
-      sysfonts::font_add(family =  "Font Awesome 6 Free Solid", regular = fa_font)
-    } else {
-    
-    sysfonts::font_add(family = "Font Awesome 6 Free Solid" , 
-                       regular = as.character(fontcheck |> 
-                                                dplyr::filter( FamilyName == "Font Awesome 6 Free Solid") |>
-                                                dplyr::pull(fontfile)) )
-    }
+    #check_font()
  
   
   ctrylabel <- ForcedDisplacementStat::reference |> 
@@ -1374,7 +1330,7 @@ plot_ctr_pyramid <- function(year ,
   
   
   if ( nrow(demographics1) ==  0 ){
-    info <-  paste0("There\'s no recorded Gender disaggregation for Forcibly Displaced People across Borders in ", ctrylabel, "as of", year )
+    info <-  paste0("There\'s no recorded Gender disaggregation \n for Forcibly Displaced People across Borders \n in ", ctrylabel, "as of", year )
     p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                               label = info ) +  theme_void() 
     
@@ -1386,7 +1342,7 @@ plot_ctr_pyramid <- function(year ,
                                   sum(demographics1$Total )  *100,1),  big.mark=",")  
     
     if (totprop == 0 ) {
-      info <- paste0("There\'s no recorded Gender disaggregation for \n all of the ",tot, " persons in ", ctrylabel  )
+      info <- paste0("There\'s no recorded Gender disaggregation \n for  all of the ",tot, " persons \n in ", ctrylabel  )
       p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                                 label = info ) +  theme_void() 
       
@@ -1463,22 +1419,22 @@ plot_ctr_pyramid <- function(year ,
                       label = percent(abs(female), accuracy = 1)  ), 
                   hjust = -0.25,  size = 11.5 / ggplot2::.pt) +
         ## Now get the icon for male and female 
-        ggtext::geom_textbox(aes(x = 0.25, 
-                                  y = "60+",  
-                        label = "\uf182" ), 
-                       family = "Font Awesome 6 Free Solid",
-                       color = "#18375F",# "#0072BC" "#8EBEFF"
-                       box.colour = NA ,   hjust = 0,   vjust = 0,
-                       width = unit(0.4, "npc"),
-                      size = 11.5 ) +
-        ggtext::geom_textbox(aes(x = as.numeric(-0.25), 
-                                 y = "60+",  
-                       label = "\uf183" ), 
-                      family = "Font Awesome 6 Free Solid",
-                       color = "#0072BC",# "#0072BC" "#8EBEFF"
-                      box.colour = NA ,   hjust = 0,   vjust = 0,
-                       width = unit(0.4, "npc"),
-                     size = 11.5 ) +
+        # ggtext::geom_textbox(aes(x = 0.25, 
+        #                           y = "60+",  
+        #                 label = "\uf182" ), 
+        #                family = "Font Awesome 6 Free Solid",
+        #                color = "#18375F",# "#0072BC" "#8EBEFF"
+        #                box.colour = NA ,   hjust = 0,   vjust = 0,
+        #                width = unit(0.4, "npc"),
+        #               size = 11.5 ) +
+        # ggtext::geom_textbox(aes(x = as.numeric(-0.25), 
+        #                          y = "60+",  
+        #                label = "\uf183" ), 
+        #               family = "Font Awesome 6 Free Solid",
+        #                color = "#0072BC",# "#0072BC" "#8EBEFF"
+        #               box.colour = NA ,   hjust = 0,   vjust = 0,
+        #                width = unit(0.4, "npc"),
+        #              size = 11.5 ) +
         scale_x_continuous(expand = expansion(c(0.2, 0.2))) +
         scale_fill_manual(breaks=c('Male', 'Female'),
                           values = setNames(
@@ -2042,7 +1998,7 @@ plot_ctr_process <- function(year = 2022,
   
   ## Case no record outut a ggplot2 object with anotation
   if( nrow(links) == 0) {
-    info <-  paste0("There\'s no recorded Asylum Decisions in ", ForcedDisplacementStat::reference |>
+    info <-  paste0("There\'s no recorded Asylum Decisions \n in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -2421,9 +2377,11 @@ plot_ctr_solution <- function(year = 2021,
               group_by(Year, Solution.type.label ) |>
               summarise(Value2 = sum(Value) )  |>
               mutate( valabel =  ifelse(Value2 > 1000, 
-                                       paste(scales::label_number_si(accuracy = 0.1)(Value2)),
+                                       paste(scales::label_number(accuracy = 0.1,
+                                                      scale_cut = cut_short_scale())(Value2)),
                                        as.character(Value2)) )   
 
+    
     
     ncat <- ifelse( nlevels(as.factor(Solution$Solution.type.label)) %in% c(2,4), 2,3)
     #levels(as.factor(solutions_long.asy$Solution.type.label))
@@ -2437,7 +2395,7 @@ plot_ctr_solution <- function(year = 2021,
 
 if( nrow(Solution) ==  0 ){
   
-    info <-  paste0("There\'s no recorded solutions in ", ForcedDisplacementStat::reference |>
+    info <-  paste0("There\'s no recorded solutions \n in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_asylum_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -2566,7 +2524,7 @@ plot_ctr_destination <- function(year = 2021,
 
   if(nrow(Destination) ==  0) {
     
-    info <-  paste0("There\'s no recorded Countries of destination in ", ForcedDisplacementStat::reference |>
+    info <-  paste0("There\'s no recorded Countries of destination \n in ", ForcedDisplacementStat::reference |>
              dplyr::filter( iso_3 == country_origin_iso3c) |>
              dplyr::pull(ctryname) , " for ", year)
     p <- ggplot() +  annotate(stringr::str_wrap("text", 80), 
@@ -2958,7 +2916,7 @@ plot_ctr_disp_migrant <- function(year = 2021,
 
 
 if( nrow(displaced) ==  0 ){
-     info  <- paste0("There\'s no recorded Forcibly Displaced People across Borders in ",ctrylabel )
+     info  <- paste0("There\'s no recorded \n Forcibly Displaced People across Borders \n in ",ctrylabel )
      p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                                         label = info ) +  theme_void() 
   
@@ -5102,7 +5060,50 @@ template_RegPrez <- function(year = 2022,
 #   }
 ```
 
+# check_font
+    
+```{r function-check_font}
+#' Tcheck_font 
+#' 
+#' verify that FontAwesome6Free-Solid is actually available
+#' 
+#' @return
+#' 
+#' @export
+check_font <- function(){
+  
+      ## FontAwesome6  includes humanitarian icon... 
+    fontcheck <- extrafont::fonttable() |>
+              dplyr::as_tibble() |>
+              dplyr::filter(grepl("Awesom", FamilyName)) 
 
+    if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
+      fa_font <- here::here("",  "fa-solid-900-6.ttf")
+      download.file("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/webfonts/fa-solid-900.ttf",
+                    destfile = fa_font, method = "curl")
+      extrafont::font_import(paths = dirname(fa_font), prompt = FALSE)
+      sysfonts::font_add(family =  "Font Awesome 6 Free Solid", regular = fa_font)
+    } else {
+    
+    sysfonts::font_add(family = "Font Awesome 6 Free Solid" , 
+                       regular = as.character(fontcheck |> 
+                                                dplyr::filter( FamilyName == "Font Awesome 6 Free Solid") |>
+                                                dplyr::pull(fontfile)) )
+    }
+    
+}
+```
+  
+```{r example-check_font}
+check_font()
+```
+  
+```{r tests-check_font}
+test_that("check_font works", {
+  expect_true(inherits(check_font, "function")) 
+})
+```
+  
 
 # Refresh package
 

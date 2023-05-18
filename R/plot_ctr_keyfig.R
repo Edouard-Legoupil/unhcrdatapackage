@@ -6,7 +6,7 @@
 #'   https://fontawesome.com/icons/categories/humanitarian  
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @return ggplot2#'
+#' @return ggplot2
 #' 
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -24,23 +24,7 @@
 plot_ctr_keyfig <- function(country_asylum_iso3c, year){
 
     ## FontAwesome6  includes humanitarian icon... 
-    fontcheck <- extrafont::fonttable() |>
-              dplyr::as_tibble() |>
-              dplyr::filter(grepl("Awesom", FamilyName)) 
-
-    if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
-      fa_font <- here::here("",  "fa-solid-900-6.ttf")
-      download.file("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/webfonts/fa-solid-900.ttf",
-                    destfile = fa_font, method = "curl")
-      extrafont::font_import(paths = dirname(fa_font), prompt = FALSE)
-      sysfonts::font_add(family =  "Font Awesome 6 Free Solid", regular = fa_font)
-    } else {
-    
-    sysfonts::font_add(family = "Font Awesome 6 Free Solid" , 
-                       regular = as.character(fontcheck |> 
-                                                dplyr::filter( FamilyName == "Font Awesome 6 Free Solid") |>
-                                                dplyr::pull(fontfile)) )
-    }
+    #check_font()
  
 CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
   dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
