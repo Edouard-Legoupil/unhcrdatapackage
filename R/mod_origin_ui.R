@@ -9,6 +9,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_origin_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -28,11 +29,11 @@ mod_origin_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
              actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
+                   label = "Overlay an interpretation annotation!  -- not working yet", 
+                   class = "btn-success",
+                   icon = icon("hand-point-up"),
+                   width = '100%') ),
                             column( 4, 
             selectInput(  inputId = ns("pop_type"),
                         label = "What Population Type to include",
@@ -41,16 +42,22 @@ mod_origin_ui <- function(id){
                                       "Other in Need of International Protection"="OIP"  ),
                         selected =   "ASY" )),
                              column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
+                                         downloadButton(outputId =  ns("dl"),
+                                    label = "Share your story",
+                                    class = "btn-success" ,
+                                    icon = shiny::icon("share-from-square")
+                                   )  )
                              )  ) )
   )
 }
     
 #' origin Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_origin_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -64,9 +71,23 @@ mod_origin_server <- function(id, reactiveParameters){
       
    if (input$title != "") { p<- p + labs(title = input$title)}
    if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
+      reactiveParameters$p <- p
       p
+      
                              })
+    
+    output$dl <- downloadHandler(
+            filename = function() {
+              paste('plot_ctr_population_type_per_year-', Sys.Date(), '.png', sep='')
+            },
+            content = function(con) {
+              ggsave(con,
+                     reactiveParameters$p, 
+                     device = "png", 
+                     width = 8, 
+                     height = 5)
+            }
+          )
  
   })
 }

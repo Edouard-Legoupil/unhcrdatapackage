@@ -122,11 +122,23 @@ golem_add_external_resources <- function(){
     
     # <script src="https://kit.fontawesome.com/6e9406f45f.js" crossorigin="anonymous"></script>
     tags$script(src = "https://kit.fontawesome.com/6e9406f45f.js"),
-    tags$title("unhcrdatapackage")
+    tags$title("unhcrdatapackage"),
     # Add here all the external resources
     # If you have a custom.css in the inst/app/www
     # Or for example, you can add shinyalert::useShinyalert() here
-    #tags$link(rel="stylesheet", type="text/css", href="www/custom.css")
+    tags$link(rel="stylesheet", type="text/css", href="www/custom.css"),
+    tags$meta(charset="UTF-8"),
+    tags$meta(name="description", content="Data Literacy on Forced Displacement"),
+    tags$meta(name="keywords", content="Refugee, UNHCR"),
+    tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
+    tags$meta(name="twitter:card", content="summary_large_image"),
+    tags$meta(name="twitter:site", content="@Refugees"),
+    tags$meta(name="twitter:creator", content="@edouard_lgp"),
+    tags$meta(name="twitter:title", content="Data Literacy on Forced Displacement"),
+    tags$meta(name="twitter:description", content="Numbers have an important story to TELL, They rely on YOU to give them a voice!"),
+    tags$meta(name="twitter:url", content="https://rstudio.unhcr.org/Data_Literacy/"),
+    tags$meta(name="twitter:image", content="https://edouard-legoupil.github.io/unhcrdatapackage/reference/figures/hex-UnhcrDataPackage.png")
+    
 
   )
 }

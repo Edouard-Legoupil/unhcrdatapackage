@@ -10,10 +10,14 @@ navbar:
     menu:
      - text: Why a chart library?
        href: articles/library.html
-     - text: Chart library directory
-       href: articles/chart-library.html
+     - text: Chart library Country
+       href: articles/chart-library-country.html
+     - text: Chart library Region
+       href: articles/chart-library-region.html
      - text: Adding new Charts in the Library
        href: articles/adding-new-charts.html
+     - text: Template for factsheet
+       href: articles/report-template.html
   - text: News
     href: news/index.html
   - text: Reference

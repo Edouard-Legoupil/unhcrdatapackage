@@ -1,0 +1,738 @@
+---
+title: "Report Template"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+knitr::opts_chunk$set(
+                      comment = "#>",
+                      message=FALSE, 
+                      warning=FALSE,
+                      #fig.retina = 2, 
+                      fig.width = 8,
+                      fig.asp = 0.718,
+                     # fig.align = "center",
+                     # dev = "ragg_png",
+                      out.width = "90%"
+)
+unlink(".RData")
+library(testthat)
+library(ggplot2)
+library(tidyverse)
+library(scales)
+library(unhcrthemes)
+# library(extrafont) 
+# font_import()
+# loadfonts()
+# font_install('fontcm')
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+
+
+Templates are re-built notebook that includes all the plotting functions above and are integrated with report parameters. Templates are available both as html report (that can be converted to PDF) and as PowerPoint presentations, all defined from UNHCR standard brand (cf [unhcrdown](https://github.com/vidonne/unhcrdown). The templates are available either for countries or regions.
+
+
+# Template
+
+## Country Factsheet
+
+```{r function-template_CtryFactsheet}
+# usethis::use_rmarkdown_template(
+#   template_name = "Country_Factsheet",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Country",
+#   template_create_dir = TRUE
+# )
+#' Generate an html / pdf country factsheet 
+#' 
+#' This functions provides a quick access to a basic Statistical Fact sheet 
+#' template that can be customised according to the needs
+#' 
+#' @param year Numeric value of the year (for instance 2022)
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @param folder folder within your project where to put the generated report. 
+#' Folder will be created if it does not exist
+#' 
+#' @importFrom unhcrdown paged_simple
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
+#'
+
+template_CtryFactsheet <- function(year = 2022,
+                                   country_asylum_iso3c,
+                                   folder = "Report") {
+  
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
+  
+  ctrname <- ForcedDisplacementStat::reference |>
+             dplyr::filter( iso_3 == country_asylum_iso3c) |>
+             dplyr::select(ctryname) |>
+             dplyr::pull()
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(folder, paste0('StatFactsheetCtr-', country_asylum_iso3c, '-', year, '.html') ),
+    params = list(countryname= ctrname,
+                  country = country_asylum_iso3c, 
+                  year = year)  )
+}
+  
+
+```
+
+```{r example-template_CtryFactsheet}
+## generate for one country
+# template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+
+# ## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) |>
+#         filter(Year == year &
+#                 UNHCRBureau == region ) |>
+#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
+#         summarise(Value = sum(Value) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+# 
+# for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3ci, "\n"))
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#               country_asylum_iso3c = country_asylum_iso3ci,  
+#                folder = "Report")  }
+```
+
+
+## Country Presentation
+
+```{r function-template_CtryPrez}
+# usethis::use_rmarkdown_template(
+#   template_name = "country_prez",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Country",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' @param year Numeric value of the year (for instance 2022)
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country 
+#' @param folder folder within your project where to put the generated report. 
+#'              Folder will be created if it does not exist
+#' 
+#' @importFrom unhcrdown pptx_slides
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
+#'
+
+template_CtryPrez <- function(year = 2022,
+                                   country_asylum_iso3c,   
+                              folder = "Report") {
+  
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
+  
+  ctrname <- ForcedDisplacementStat::reference |>
+             dplyr::filter( iso_3 == country_asylum_iso3c) |>
+             dplyr::select(ctryname) |>
+             dplyr::pull()
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.pptx') ),
+    params = list(countryname= ctrname,
+                  country = country_asylum_iso3c, 
+                  year = year)  )
+}
+
+```
+
+```{r example-template_CtryPrez} 
+## generate for one country
+# unhcrdatapackage::template_CtryPrez(year = 2022, 
+#                             country_asylum_iso3c = "CHL",
+#                             folder = "Report")
+
+# ## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) |>
+#         filter(Year == year &
+#                 UNHCRBureau == region ) |>
+#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
+#         summarise(Value = sum(Value) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+# 
+# for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3ci, "\n"))
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#                                 country_asylum_iso3c = country_asylum_iso3ci,
+#                                folder = "Report")  }
+```
+
+
+## Country Slides
+
+```{r function-template_CtrySlides}
+# usethis::use_rmarkdown_template(
+#   template_name = "country_slides",
+#   template_dir = NULL,
+#   template_description = "Slide Deck - Statistical Facts",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' Output is PDF slide deck that preserves well the humanitarian icons
+#' 
+#' @param year Numeric value of the year (for instance 2022)
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country 
+#' @param folder folder within your project where to put the generated report. 
+#'              Folder will be created if it does not exist
+#' 
+#' @importFrom unhcrdown html_slides
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
+#'
+
+template_Ctryslides <- function(year = 2022,
+                                   country_asylum_iso3c,   
+                              folder = "Report") {
+  
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
+  
+  ctrname <- ForcedDisplacementStat::reference |>
+             dplyr::filter( iso_3 == country_asylum_iso3c) |>
+             dplyr::select(ctryname) |>
+             dplyr::pull()
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_slides/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.html') ),
+    params = list(countryname= ctrname,
+                  country = country_asylum_iso3c, 
+                  year = year)  )
+}
+
+```
+
+```{r example-template_Ctryslides} 
+## generate for one country
+# unhcrdatapackage::template_Ctryslides(year = 2022, 
+#                             country_asylum_iso3c = "CHL",
+#                             folder = "Report")
+
+# ## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) |>
+#         filter(Year == year &
+#                 UNHCRBureau == region ) |>
+#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
+#         summarise(Value = sum(Value) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+# 
+# for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3ci, "\n"))
+#     unhcrdatapackage::template_CtryFactsheet(year = 2022,
+#                                 country_asylum_iso3c = country_asylum_iso3ci,
+#                                folder = "docs/factsheet")  }
+```
+
+
+
+## Regional Factsheet
+
+```{r function-template_RegFactsheet}
+# usethis::use_rmarkdown_template(
+#   template_name = "regional_factsheet",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Country",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Bureau that covers all the countrie factsheet to generate
+#' @param lag Number of year to used as comparison base
+#' @param folder folder within your project where to put the generated report. 
+#'           Folder will be created if it does not exist
+#'           
+#' @importFrom unhcrdown paged_simple
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
+#'
+
+template_RegFactsheet <- function(year = 2022,
+                                 region = "Americas",
+                                 lag = 10,   
+                                 folder = "Report") {
+  
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
+  
+  regionname <- dplyr::case_when( region == "Americas"  ~  "Americas",
+                                  region == "Asia"  ~  "Asia & the Pacific",
+                                  region == "EastAfrica"  ~  "Eastern Africa",
+                                  region =="Europe"  ~  "Europe",
+                                  region == "MENA"  ~  "Middle East & North Africa",
+                                  region == "SouthAfrica"  ~  "Southern Africa",
+                                  region == "WestAfrica"  ~  "Western Africa")
+  
+  rmarkdown::render(
+    system.file("rmarkdown/templates/regional_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(folder, paste0('StatFactsheet-',  region, '-', year, '.html') ),
+    params = list(region=region,
+                  regionname = regionname,
+                  year = year,
+                  lag = lag)  )
+}
+
+```
+
+```{r example-template_RegFactsheet}
+
+# template_RegFactsheet(year = 2022, 
+#                       region = "Europe", lag = 10,  
+#                       folder = "Report")
+
+## We can also generate all factsheets in a loop for 2022
+
+# region <-  ForcedDisplacementStat::reference |>
+#   dplyr::distinct(UNHCRBureau) |>
+#   dplyr::filter(!(is.na(UNHCRBureau))) |>
+#   dplyr::pull()
+# 
+# for( reg in region) {
+#   unhcrdatapackage::template_RegFactsheet(year = 2022, 
+#                         region = reg, lag = 10, 
+#                         folder = "Report")
+# }
+
+
+
+```
+
+## Regional Presentation
+
+```{r function-template_RegPrez}
+# usethis::use_rmarkdown_template(
+#   template_name = "regional_prez",
+#   template_dir = NULL,
+#   template_description = "Key Statistical Facts for each Region",
+#   template_create_dir = TRUE
+# )
+#' Generate all country factsheet 
+#' 
+#' @param year Numeric value of the year (for instance 2020)
+#' @param region Bureau that covers all the countrie factsheet to generate
+#' @param lag Number of year to used as comparison base
+#' 
+#' @param folder folder within your project where to put the generated report. 
+#' Folder will be created if it does not exist
+#' 
+#' @importFrom unhcrdown pptx_slides
+#' @importFrom dplyr filter select pull
+#' @importFrom rmarkdown render
+#' @importFrom here here
+#' 
+#' 
+#' @return nothing the file for the report is generated
+#' 
+#' @export 
+#'
+
+template_RegPrez <- function(year = 2022,
+                             region = "Americas",
+                             lag = 10,
+                             folder = "Report") {
+  
+  ## Create the outfolder if it does not exist
+  output_dir <- paste0(getwd(),"/",folder)
+  if (!dir.exists(output_dir)) {dir.create(output_dir)}
+  
+  regionname <- dplyr::case_when( region == "Americas"  ~  "Americas",
+                                  region == "Asia"  ~  "Asia & the Pacific",
+                                  region == "EastAfrica"  ~  "Eastern Africa",
+                                  region =="Europe"  ~  "Europe",
+                                  region == "MENA"  ~  "Middle East & North Africa",
+                                  region == "SouthAfrica"  ~  "Southern Africa",
+                                  region == "WestAfrica"  ~  "Western Africa")
+  rmarkdown::render(
+    system.file("rmarkdown/templates/regional_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
+    output_file = here::here(folder, paste0('StatFactsheet-', region, '-', year, '.pptx') ),
+    params = list(region=region, 
+                  regionname = regionname,
+                  year = year,
+                  lag = lag)  )
+ 
+}
+
+```
+
+```{r example-template_RegPrez}
+# template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+
+# # Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
+#                                 y= ForcedDisplacementStat::reference,
+#                                 by = c("CountryAsylumCode" = "iso_3")) |>
+#         filter(Year == year &
+#                 UNHCRBureau == region ) |>
+#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
+#         summarise(Value = sum(Value) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+# 
+#   for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3c = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3c, "\n"))
+#     unhcrdatapackage::template_CtryPrez(year = 2022, 
+#                                   country_asylum_iso3c = country_asylum_iso3c,  
+#                                   folder = "Report")
+#   }
+```
+
+
+# Utilities 
+
+
+## annotate_gadget
+
+
+A shinyGadget to add annotation to a ggplot2!..
+
+Based on https://github.com/MattCowgill/ggannotate 
+also inspired from https://community.rstudio.com/t/graph-annotator-shiny-contest-submission/104687 
+
+Once the button "Position the annotation on the chart" is launched:
+
+ - a window with the chart - 
+
+- click first time to indicate the top-left point to position the infobox
+- ask if an arrow is required - if no - the windows closed and the annotation is added - 
+- if yes - click a second time to add the arrow pointer - then window closed and the annotation is added- - a button is added with the option to remove this annotation -
+- user can click the 
+    
+```{r function-annotate_gadget}
+#' A ShinyGadget to simply overlay an annotation on a ggplot2 chart
+#'
+#'  See https://shiny.posit.co/r/articles/build/gadgets/
+#'  https://shiny.posit.co/r/articles/build/gadget-ui/
+#'  https://posit.co/resources/videos/building-interactive-tools-for-exploratory-data-analysis/
+#'  https://posit.co/resources/videos/introducing-shiny-gadgets-interactive-tools/
+#'  https://stackoverflow.com/questions/30527977/ggplot2-how-to-differentiate-click-from-brush
+#'
+#' @param chart the ggplot2 object...
+#' @param viewer Specify where the gadget should be displayed–viewer pane, dialog window, or external browser–by passing in a call to one of the viewer() functions.
+#' @return the code snippet wit the annoation
+#' @importFrom miniUI miniPage gadgetTitleBar miniContentPanel miniButtonBlock
+#' @importFrom ggtext geom_textbox
+#' @importFrom stringr str_wrap
+#' @import ggplot2
+#' @import shiny
+#' @noRd 
+#' @keywords internal
+#' @export
+annotate_gadget <- function(chart, viewer=paneViewer()) {
+  ui <- miniUI::miniPage(
+    miniUI::gadgetTitleBar("Overlay your interpretation on the chart!"),
+    miniUI::miniContentPanel(
+      shiny::textAreaInput(inputId="annot",
+                           label= "First Add your text",
+                #            placeholder = "Use double quote on your text and
+                # \\n special character to add carriage return on the text in the plot",
+                           width = '100%'),
+      "Then POSITION:  One first single click on the plot to point what you would like
+      to highlight and then a long brush click to draw the box where the annotation
+      should be overlaid",
+      shiny::plotOutput("plot",
+                        height = "60%",
+                        width = "80%",
+                        click="annotate_point",
+                        brush= shiny::brushOpts(id="annotate_box")) #,
+     # shiny::verbatimTextOutput("info", placeholder = TRUE )
+      ) #,
+     
+    # miniUI::miniButtonBlock(
+    #   shiny::actionButton("reset",
+    #                       label = "Click here to reset the positionning",
+    #                       border = "bottom",
+    #                       icon = shiny::icon("arrow-up-right-from-square"))
+    # )
+  )
+  server <- function(input, output, session) {
+    # Initialize reactive values
+    r <- reactiveValues(x = 0,
+                        y = 0,
+                        xmax = 0,
+                        ymax = 0,
+                        xmin = 0,
+                        ymin = 0,
+                        xbox = 0,
+                        ybox = 0,
+                        arrowcurve = 0.3,
+                        arrowangle = 140,
+                        annot = " ",
+                        xcentroid = 0,
+                        ycentroid = 0,
+                        chart = chart)
+    ## Observe Point
+    observeEvent(input$annot,
+                 handlerExpr = {
+                   r$annot = input$annot }
+    )
+    ## Observe Point
+    observeEvent(input$annotate_point,
+                 handlerExpr = {
+                   r$x = input$annotate_point$x
+                   r$y = input$annotate_point$y }
+    )
+    ## Observer Brush o define the attachment point
+    observeEvent(input$annotate_box,
+                 handlerExpr = {
+                   
+       r$xmax <- input$annotate_box$xmax  
+       r$xmin <- input$annotate_box$xmin  
+       r$ymax <- input$annotate_box$ymax  
+       r$ymin <- input$annotate_box$ymin 
+       ## Position based on centroid of the box
+       r$xcentroid = r$xmin #+ (r$xmax - r$xmin)/2
+       r$ycentroid = r$ymin + (r$ymax - r$ymin)/2
+       ## Now adjust the point to link the box to arrow
+       r$xbox = r$xmin - (r$xmax - r$xmin)*0.1
+       r$ybox = r$ycentroid 
+       if(r$ybox > r$ycentroid) {r$arrowcurve = -.3} else { r$arrowcurve = .3 }
+       if(r$ybox > r$ycentroid) {r$arrowangle = 240} else { r$arrowangle = 140 }
+                 }
+    )
+    # browser()
+    # Render the plot
+    output$plot <- shiny::renderPlot({
+      ## get everything ready - text, point and box - then redraw the chart
+      if( r$x > 0 & r$xcentroid > 0 ){
+        r$chart <- chart +
+          ## Annotation
+          ggplot2::annotate(
+            geom = "text",
+            x = r$xcentroid,
+            y = r$ycentroid, 
+            #label =  r$annot  ,
+            label = stringr::str_wrap(r$annot,20) ,
+            # hjust and vjust make the reference point the lower left corner of your text
+            hjust = 0, vjust = 0.5,
+            color = "grey50",  
+            size = 4, 
+            #fontface = "bold",
+            lineheight = .9) +
+          ## Arrow
+          ggplot2::annotate(
+            geom = "curve",
+            x = r$xbox,
+            y = r$ybox, 
+            xend = r$x, 
+            yend = r$y,
+            angle = r$arrowangle,
+            curvature = r$arrowcurve, 
+            color = "grey50",  
+            arrow = ggplot2::arrow(
+              length = ggplot2::unit(12, "pt"),
+              type = "closed", ends = "last")  )
+         }
+      
+       r$chart 
+    })
+    ## Get the parameters to add to the ggplot object to render this annotation
+     output$code <- shiny::renderText({
+      result <-  c(
+         annot = r$annot,
+         xcentroid = r$xcentroid,
+         ycentroid = r$ycentroid,
+         xbox = r$xbox,
+         ybox = r$ybox,
+         x = r$x,
+         y = r$y)
+      result
+     })
+
+     output$info <- shiny::renderText({
+        paste0(" Text box coordinates: ",
+               "\n  - xmin: ",  r$xmin,
+               " / ymin: ", r$ymin,
+               "\n  - xmax: ", r$xmax,
+               " / ymax: ", r$ymax ,
+               "\n  - xcentroid: ", r$xcentroid,
+               " / ycentroid: ", r$ycentroid ,
+               "\n Arrow pointer oordinates:",
+               "\n  - x: ", r$x, " / y: ", r$y,
+               "\n  - xbox: ", r$xbox, " / ybox: ", r$ybox)
+     })
+    
+    ## Observe Reset
+    observeEvent(input$reset, handlerExpr = {
+      ## Center of the label
+      r$xmin <-  0
+      r$ymin <-  0
+      r$xmax <-  0
+      r$ymax  <-  00
+      r$xcentroid <-  0
+      r$ycentroid  <-  0
+      ## Begin arrow0
+      r$xbox <-  0
+      r$ybox <-  0
+      ## End arrow
+      r$x <-  0
+      r$y <-  0
+    })
+    # Handle the Done button being pressed.
+    observeEvent(input$done, {
+      # Return the code that will be used in the rest of the app...
+      stopApp(
+        output$info
+        )
+    })
+  }
+  shiny::runGadget(ui, server)
+}
+```
+  
+```{r example-annotate_gadget}
+# if (interactive())
+# thischart <- plot_ctr_population_type_abs(year = 2020,
+#                     country_asylum_iso3c = "USA",
+#                     top_n_countries = 4,
+#                     pop_type = "REF"
+#                     )
+# annotate_gadget(chart = thischart, viewer=paneViewer())
+
+```
+  
+```{r tests-annotate_gadget}
+test_that("annotate_gadget works", {
+  expect_true(inherits(annotate_gadget, "function")) 
+})
+```
+  
+
+
+
+
+
+
+## check_font awesome humanitarian
+    
+```{r function-check_font}
+#' Tcheck_font 
+#' 
+#' verify that FontAwesome6Free-Solid is actually available
+#' 
+#' @return nada
+#' @noRd 
+#' @keywords internal
+#' 
+#' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
+#'               pull distinct n arrange across slice left_join
+#' @importFrom extrafont fonttable font_import
+#' @importFrom sysfonts font_add
+#' @importFrom utils download.file
+#' @export
+check_font <- function(){
+  
+      ## FontAwesome6  includes humanitarian icon... 
+    fontcheck <- extrafont::fonttable() |>
+              dplyr::as_tibble() |>
+              dplyr::filter(grepl("Awesom", FamilyName)) 
+
+    if( ! ("FontAwesome6Free-Solid" %in% fontcheck$FontName) ) {
+      fa_font <- here::here("",  "fa-solid-900-6.ttf")
+      download.file("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/webfonts/fa-solid-900.ttf",
+                    destfile = fa_font, method = "curl")
+      extrafont::font_import(paths = dirname(fa_font), prompt = FALSE)
+      sysfonts::font_add(family =  "Font Awesome 6 Free Solid", regular = fa_font)
+    } else {
+    
+    sysfonts::font_add(family = "Font Awesome 6 Free Solid" , 
+                       regular = as.character(fontcheck |> 
+                                                dplyr::filter( FamilyName == "Font Awesome 6 Free Solid") |>
+                                                dplyr::pull(fontfile)) )
+    }
+    
+}
+```
+  
+```{r example-check_font}
+check_font()
+```
+  
+```{r tests-check_font}
+test_that("check_font works", {
+  expect_true(inherits(check_font, "function")) 
+})
+```
+  
+
+# Refresh package
+
+```{r development-inflate, eval=FALSE}
+# Keep eval=FALSE to avoid infinite loop in case you hit the knit button
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/dev_template.Rmd", vignette_name = "Report Template", overwrite = 'yes')
+
+```
+

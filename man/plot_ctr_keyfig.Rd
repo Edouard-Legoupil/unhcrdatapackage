@@ -12,7 +12,7 @@ plot_ctr_keyfig(country_asylum_iso3c, year)
 \item{year}{Numeric value of the year (for instance 2020)}
 }
 \value{
-ggplot2#'
+ggplot2
 }
 \description{
 Key figures can be highlighted with humanitarian icons
