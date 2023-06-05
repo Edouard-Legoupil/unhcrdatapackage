@@ -10,10 +10,21 @@
 #'
 #' @importFrom shiny NS tagList 
 #' @importFrom shinydashboard box 
+#' @keywords internal
 mod_categories_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_population_type_per_year")),
+        plotOutput(ns("plot_ctr_population_type_per_year"),
+                        click="annotate_point",
+                        brush= shiny::brushOpts(id="annotate_box")) 
+        #|>
+          # tagAppendAttributes(
+          #   onclick = sprintf(
+          #     "Shiny.setInputValue('%s', true, {priority : 'event'})",
+          #     ns("show")
+          #   )
+          #)
+        ,
        fluidRow(
         shinydashboard::box( title = "Tell Your Story!",
                               status = "info", 
@@ -29,11 +40,21 @@ mod_categories_ui <- function(id){
             textInput( inputId = ns( "subtitle"),
                        label ="SubTitle -  Add Insights!",
                        value="") ,
-             actionButton(inputId="position",
-                   label = "Overlay an interpretation annotation!  -- not working yet", 
-                   class = "btn-success",
-                   icon = icon("hand-point-up"),
-                   width = '100%')
+            
+            shiny::textAreaInput(inputId="annot",
+                           label= "First Add your text",
+                #            placeholder = "Use double quote on your text and
+                # \\n special character to add carriage return on the text in the plot",
+                           width = '100%'),
+             "Then POSITION:  One first single click on the plot to point what you would like
+      to highlight and then a long brush click to draw the box where the annotation
+      should be overlaid",
+      
+             # actionButton(inputId="position",
+             #       label = "Overlay an interpretation annotation!  -- not working yet", 
+             #       class = "btn-success",
+             #       icon = icon("hand-point-up"),
+             #       width = '100%')
             
             ),
                             column( 4, 
@@ -47,35 +68,210 @@ mod_categories_ui <- function(id){
                                        "Internally Displaced Persons"=     "IDP" ),
                         selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) )),
                              column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-            
-            
-            
-                             )  ) )
+                     downloadButton(outputId =  ns("dl"),
+                                    label = "Share your story",
+                                    class = "btn-success" ,
+                                    icon = shiny::icon("share-from-square")
+                                   )
+                             )  ) ))
     )
 }
     
 #' categories Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @importFrom styler style_text
+#' @import ggplot2
+#' @import shiny
+#' @importFrom stringr str_wrap
+#' @keywords internal
 mod_categories_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_population_type_per_year <- renderPlot({
-      p <- plot_ctr_population_type_per_year(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-                         lag = 5,
-                         pop_type = input$pop_type)
+    
+         # output$syntax <- sprintf(
+         #  " syntax"
+         #  #
+         #  #   "unhcrdatapackage::plot_ctr_population_type_per_year(
+         #  #         year = as.numeric(%s),
+         #  #         country_asylum_iso3c = %s,
+         #  #                    lag = 5,
+         #  #                    pop_type = %s)",
+         #  #   reactiveParameters$year,
+         #  #   reactiveParameters$country,
+         #  #   input$pop_type
+         #  )
+          # Initialize reactive values
+          r <- reactiveValues(x = 0,
+                              y = 0,
+                              xmax = 0,
+                              ymax = 0,
+                              xmin = 0,
+                              ymin = 0,
+                              xbox = 0,
+                              ybox = 0,
+                              arrowcurve = 0.3,
+                              arrowangle = 140,
+                              annot = " ",
+                              xcentroid = 0,
+                              ycentroid = 0,
+                              chart =   ggplot2::ggplot(iris), 
+                              code = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" ,
+                              syntax = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" )
+          ## Observe Point
+          observeEvent(input$annot,
+                       handlerExpr = {
+                         r$annot = input$annot }
+          )
+          ## Observe Brush
+          observeEvent(input$annotate_point,
+                       handlerExpr = {
+                         r$x = input$annotate_point$x
+                         r$y = input$annotate_point$y }
+          )
+          ## Observer Brush o define the attachment point
+          observeEvent(input$annotate_box,
+                       handlerExpr = {
+                         
+             r$xmax <- input$annotate_box$xmax  
+             r$xmin <- input$annotate_box$xmin  
+             r$ymax <- input$annotate_box$ymax  
+             r$ymin <- input$annotate_box$ymin 
+             ## Position based on centroid of the box
+             r$xcentroid = r$xmin #+ (r$xmax - r$xmin)/2
+             r$ycentroid = r$ymin + (r$ymax - r$ymin)/2
+             ## Now adjust the point to link the box to arrow
+             r$xbox = r$xmin - (r$xmax - r$xmin)*0.1
+             r$ybox = r$ycentroid 
+             if(r$ybox > r$ycentroid) {r$arrowcurve = -.3} else { r$arrowcurve = .3 }
+             if(r$ybox > r$ycentroid) {r$arrowangle = 240} else { r$arrowangle = 140 }
+                       }
+          )
+
+        output$plot_ctr_population_type_per_year <- renderPlot({
+          
+          
+          r$plot <- plot_ctr_population_type_per_year(
+            year = as.numeric(reactiveParameters$year),
+            country_asylum_iso3c = reactiveParameters$country ,
+            lag = 5,
+            pop_type =  input$pop_type
+          )
+          
+          r$code <- sprintf(
+            "plot_ctr_population_type_per_year(
+                    year = as.numeric( %s ),
+                    country_asylum_iso3c = %s ,
+                               lag = 5,
+                               pop_type =  %s)",
+            reactiveParameters$year,
+            reactiveParameters$country,
+            input$pop_type
+            
+          )
+          
+          if (input$title != "") {
+            r$plot <- r$plot +
+              labs(title = input$title)
+            
+            r$code <- sprintf('%s +\n  labs(title = "%s")',
+                              r$code, input$title)
+          }
+          if (input$subtitle != "") {
+            r$plot <- r$plot +
+              labs(subtitle = input$subtitle)
+            
+            r$code <- sprintf('%s +\n  labs(subtitle = "%s")',
+                              r$code, input$subtitle)
+          }
+          ## Now annotation
+          if (r$x > 0 & r$xcentroid > 0) {
+            r$plot <- r$plot +
+              ## Annotation
+              ggplot2::annotate(
+                geom = "text",
+                x = r$xcentroid,
+                y = r$ycentroid,
+                #label =  r$annot  ,
+                label = stringr::str_wrap(r$annot, 20) ,
+                # hjust and vjust make the reference point the lower left corner of your text
+                hjust = 0,
+                vjust = 0.5,
+                color = "grey50",
+                size = 4,
+                #fontface = "bold",
+                lineheight = .9
+              ) +
+              ## Arrow
+              ggplot2::annotate(
+                geom = "curve",
+                x = r$xbox,
+                y = r$ybox,
+                xend = r$x,
+                yend = r$y,
+                angle = r$arrowangle,
+                curvature = r$arrowcurve,
+                color = "grey50",
+                arrow = ggplot2::arrow(
+                  length = ggplot2::unit(12, "pt"),
+                  type = "closed",
+                  ends = "last"
+                )
+              )
+            ## update Syntax
+            r$syntax <- sprintf('%s +\n  labs(subtitle = "%s")',
+                                r$code, input$subtitle)
+            
+          }
+          ## Output the plot with current reactive values.
+          r$plot
+          })
+    
+          # Modal displaying chart syntax when clicking inside the chart
+          mod <- function() {
+            modalDialog(
+              tagList(
+                tags$p("Reproducible Code in R Language" ),
+                tags$code(
+                  id = ns("codeinner"),
+                  tags$pre(
+                    #paste(style_text(output$syntax), collapse = "\n")
+                    paste(style_text("r$syntax"), collapse = "\n")
+                  )
+                )
+              ),
+              footer = tagList(
+                actionButton(ns("ok"), "Thanks!")
+              )
+            )
+          }
+  
+          observeEvent(input$show, {
+            showModal(mod())
+          })
+          observeEvent(input$ok, {
+            removeModal()
+          })
+        
+        # output$code <- renderPlot({
+        #   r$code
+        #})
       
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-      
-                             })
+        ## Download chart
+        output$dl <- downloadHandler(
+            filename = function() {
+              paste('plot_ctr_population_type_per_year-', 
+                    Sys.Date(), '.png', sep='')
+            },
+            content = function(con) {
+              ggsave(con,
+                     reactiveParameters$p, 
+                     device = "png", 
+                     width = 8, 
+                     height = 5)
+            }
+          )
  
   })
 }
