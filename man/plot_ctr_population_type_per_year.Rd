@@ -31,8 +31,8 @@ Graph of population type per year
 
 p <- plot_ctr_population_type_per_year(
                          year = 2022,
-                         lag = 5,
                          country_asylum_iso3c = "PAN",
+                         lag = 5,
                          pop_type = c("REF", 
                                        "ASY", 
                                        "OIP", 

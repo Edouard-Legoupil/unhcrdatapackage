@@ -9,6 +9,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_demographics_ui <- function(id){
   ns <- NS(id)
   tagList( 
@@ -41,9 +42,11 @@ mod_demographics_ui <- function(id){
                                       "Other in Need of International Protection"="OIP"  ),
                         selected = c(  "REF"  ) )),
                              column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
+                                          downloadButton(outputId =  ns("dl"),
+                                    label = "Share your story",
+                                    class = "btn-success" ,
+                                    icon = shiny::icon("share-from-square")
+                                   )  )
                              )  ) )
   )
 }
@@ -51,6 +54,9 @@ mod_demographics_ui <- function(id){
 #' demographics Server Functions
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_demographics_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
@@ -62,9 +68,23 @@ mod_demographics_server <- function(id, reactiveParameters){
       
    if (input$title != "") { p<- p + labs(title = input$title)}
    if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
+      reactiveParameters$p <- p
       p
+      
                              })
+    
+    output$dl <- downloadHandler(
+            filename = function() {
+              paste('plot_ctr_pyramid-', Sys.Date(), '.png', sep='')
+            },
+            content = function(con) {
+              ggsave(con,
+                     reactiveParameters$p, 
+                     device = "png", 
+                     width = 8, 
+                     height = 5)
+            }
+          )
  
   })
 }

@@ -5,4 +5,21 @@ body {
   font-size: 16px;
 }
 
- 
+#beta {
+    float: right;
+    top: 1.5em;
+    right: -3em;
+    position: absolute; /* or fixed if you want it to always be visible */
+    transform: rotate(45deg);
+    background: yellow;
+    color: black;
+    font-weight: bold;
+    padding-left: 3em;  padding-right: 3em;
+    padding-top: .5em;  padding-bottom: .5em;
+    border: 0;  margin: 0;
+    height: auto;   width: auto;
+    z-index: 999999999; /* or whatever is needed to show on top of other elements */
+}
+#beta::before {
+    content: " Beta Version ⚠️";
+} 
