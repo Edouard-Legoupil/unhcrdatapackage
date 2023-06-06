@@ -87,6 +87,9 @@ theme_shinydashboard_unhcr <- function() {
   boxDefaultColor = "white"
   boxPrimaryColor = "white"
   boxInfoColor = "rgb(210,214,220)"
+  #boxInfoColor = "#0072BC"
+  #boxTitleFontColor = "#FAEB00"
+  #boxTitleFontColor = "white"
   boxSuccessColor = "rgba(0,255,213,1)"
   boxWarningColor = "rgb(244,156,104)"
   boxDangerColor = "rgb(255,88,55)"
@@ -276,7 +279,7 @@ theme_shinydashboard_unhcr <- function() {
       background: ', bodyBackColor, ';
     }
 
-    /* box */
+    /* box 
     .box {
       background: ', boxBackColor, ';
       border-radius: ', boxBorderRadius, 'px;

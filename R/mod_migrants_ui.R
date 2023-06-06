@@ -9,57 +9,30 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_migrants_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_disp_migrant")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-             actionButton(inputId="position",
-                   label = "Overlay an interpretation annotation!  -- not working yet", 
-                   class = "btn-success",
-                   icon = icon("hand-point-up"),
-                   width = '100%')
-                            ),
-                            column( 4, ""),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )))
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Migration and Displacement",
+                  mod_plotviz_ui(ns("migrants1"),
+                  thisPlot = "plot_ctr_disp_migrant" ) ) 
+      ) ## End Tabset
   )
+  
 }
     
 #' migrants Server Functions
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_migrants_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
-    output$plot_ctr_disp_migrant <- renderPlot({
-                  p <-       plot_ctr_disp_migrant(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
- 
+       mod_plotviz_server("migrants1", thisPlot = "plot_ctr_disp_migrant", reactiveParameters ) 
   })
 }
     
