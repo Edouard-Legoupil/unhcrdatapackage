@@ -19,8 +19,8 @@ mod_destination_ui <- function(id){
                   thisPlot = "plot_ctr_destination" ) ),
          
          tabPanel(title= "Recognition by Origin",
-                  mod_plotviz_ui(ns("destination2"), 
-                  thisPlot = "plot_ctr_origin_recognition" ) ) 
+                  mod_plotviz_ui(ns("destination2"),
+                  thisPlot = "plot_ctr_origin_recognition" ) )
       ) ## End Tabset 
   )
 }
@@ -35,8 +35,12 @@ mod_destination_ui <- function(id){
 mod_destination_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-      mod_plotviz_server("destination1", thisPlot = "plot_ctr_destination", reactiveParameters )
-       mod_plotviz_server("destination2", thisPlot = "plot_ctr_origin_recognition", reactiveParameters )
+      mod_plotviz_server("destination1", 
+                         thisPlot = "plot_ctr_destination",
+                         reactiveParameters )
+       mod_plotviz_server("destination2", 
+                          thisPlot = "plot_ctr_origin_recognition",
+                          reactiveParameters )
  
   })
 }

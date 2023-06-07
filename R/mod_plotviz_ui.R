@@ -193,7 +193,7 @@ mod_plotviz_ui <- function(id, thisPlot){
                           choices = c( "Government"="G",
                                         "Joint"= "J" ,
                                         "UNHCR" = "U"),
-                          selected =   "J" )} else {""},
+                          selected =   "G" )} else {""},
              ##   measure ,  selectOne and 
                if (thisPlot %in% c("plot_ctr_origin_recognition" ,
                                     "plot_ctr_recognition")  
@@ -259,7 +259,10 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
        xbox = 0,   ybox = 0,  arrowcurve = 0.3,  arrowangle = 140,
        annot = " ", xcentroid = 0,  ycentroid = 0,
        thisPlot = "",
-       chart =   ggplot2::ggplot(iris), 
+       chart =   ggplot2::ggplot() +  
+          ggplot2::annotate("text", x = 1, y = 1, size = 11, 
+                            label = "There was a problem" ) +  
+          ggplot2::theme_void(), 
        code = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" ,
         syntax = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" )
     

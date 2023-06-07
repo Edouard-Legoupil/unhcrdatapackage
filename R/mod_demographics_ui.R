@@ -16,11 +16,11 @@ mod_demographics_ui <- function(id){
    tabsetPanel(type = "tabs",
          tabPanel(title= "Age and Gender",
                   mod_plotviz_ui(ns("demographics1"),
-                  thisPlot = "plot_ctr_pyramid" ) ) ,
+                  thisPlot = "plot_ctr_pyramid" ) ) #,
          
-         tabPanel(title= "Location",
-                  mod_plotviz_ui(ns("demographics2"), 
-                  thisPlot = "plot_ctr_location" ) )
+         # tabPanel(title= "Location",
+         #          mod_plotviz_ui(ns("demographics2"), 
+         #          thisPlot = "plot_ctr_location" ) )
       ) ## End Tabset 
   )
 }
@@ -37,9 +37,9 @@ mod_demographics_server <- function(id, reactiveParameters){
    mod_plotviz_server("demographics1", 
                       thisPlot = "plot_ctr_pyramid", 
                       reactiveParameters ) 
-   mod_plotviz_server("demographics2", 
-                      thisPlot = "plot_ctr_location", 
-                      reactiveParameters ) 
+   # mod_plotviz_server("demographics2", 
+   #                    thisPlot = "plot_ctr_location", 
+   #                    reactiveParameters ) 
  
   })
 }

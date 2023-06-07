@@ -1111,7 +1111,7 @@ mod_plotviz_ui <- function(id, thisPlot){
                           choices = c( "Government"="G",
                                         "Joint"= "J" ,
                                         "UNHCR" = "U"),
-                          selected =   "J" )} else {""},
+                          selected =   "G" )} else {""},
              ##   measure ,  selectOne and 
                if (thisPlot %in% c("plot_ctr_origin_recognition" ,
                                     "plot_ctr_recognition")  
@@ -1177,7 +1177,10 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
        xbox = 0,   ybox = 0,  arrowcurve = 0.3,  arrowangle = 140,
        annot = " ", xcentroid = 0,  ycentroid = 0,
        thisPlot = "",
-       chart =   ggplot2::ggplot(iris), 
+       chart =   ggplot2::ggplot() +  
+          ggplot2::annotate("text", x = 1, y = 1, size = 11, 
+                            label = "There was a problem" ) +  
+          ggplot2::theme_void(), 
        code = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" ,
         syntax = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" )
     
@@ -1861,8 +1864,8 @@ mod_destination_ui <- function(id){
                   thisPlot = "plot_ctr_destination" ) ),
          
          tabPanel(title= "Recognition by Origin",
-                  mod_plotviz_ui(ns("destination2"), 
-                  thisPlot = "plot_ctr_origin_recognition" ) ) 
+                  mod_plotviz_ui(ns("destination2"),
+                  thisPlot = "plot_ctr_origin_recognition" ) )
       ) ## End Tabset 
   )
 }
@@ -1877,8 +1880,12 @@ mod_destination_ui <- function(id){
 mod_destination_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-      mod_plotviz_server("destination1", thisPlot = "plot_ctr_destination", reactiveParameters )
-       mod_plotviz_server("destination2", thisPlot = "plot_ctr_origin_recognition", reactiveParameters )
+      mod_plotviz_server("destination1", 
+                         thisPlot = "plot_ctr_destination",
+                         reactiveParameters )
+       mod_plotviz_server("destination2", 
+                          thisPlot = "plot_ctr_origin_recognition",
+                          reactiveParameters )
  
   })
 }
@@ -1921,11 +1928,11 @@ mod_demographics_ui <- function(id){
    tabsetPanel(type = "tabs",
          tabPanel(title= "Age and Gender",
                   mod_plotviz_ui(ns("demographics1"),
-                  thisPlot = "plot_ctr_pyramid" ) ) ,
+                  thisPlot = "plot_ctr_pyramid" ) ) #,
          
-         tabPanel(title= "Location",
-                  mod_plotviz_ui(ns("demographics2"), 
-                  thisPlot = "plot_ctr_location" ) )
+         # tabPanel(title= "Location",
+         #          mod_plotviz_ui(ns("demographics2"), 
+         #          thisPlot = "plot_ctr_location" ) )
       ) ## End Tabset 
   )
 }
@@ -1942,9 +1949,9 @@ mod_demographics_server <- function(id, reactiveParameters){
    mod_plotviz_server("demographics1", 
                       thisPlot = "plot_ctr_pyramid", 
                       reactiveParameters ) 
-   mod_plotviz_server("demographics2", 
-                      thisPlot = "plot_ctr_location", 
-                      reactiveParameters ) 
+   # mod_plotviz_server("demographics2", 
+   #                    thisPlot = "plot_ctr_location", 
+   #                    reactiveParameters ) 
  
   })
 }

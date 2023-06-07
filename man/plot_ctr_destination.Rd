@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ctr_destination.R
 \name{plot_ctr_destination}
 \alias{plot_ctr_destination}
-\title{Tree map of Population Groups within a country}
+\title{Main Destination from  one specific countr}
 \usage{
 plot_ctr_destination(
   year = 2021,
@@ -21,7 +21,7 @@ plot_ctr_destination(
 a ggplot2 object
 }
 \description{
-Tree map of Population Groups within a country
+Main Destination from  one specific countr
 }
 \examples{
 # 

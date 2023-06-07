@@ -61,9 +61,6 @@ Below is the library with all Country Focused questions organised around the 7 k
 
 plot_ctr_keyfig <- function(country_asylum_iso3c, year){
 
-    ## FontAwesome6  includes humanitarian icon... 
-    check_font()
- 
 CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
   dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
   dplyr::distinct(ctryname) |> 
@@ -1614,12 +1611,7 @@ plot_ctr_origin_recognition(year = 2022,
 plot_ctr_pyramid <- function(year ,
                              country_asylum_iso3c = country_asylum_iso3c,
                              pop_type = pop_type) {
-  
-  
-    ## FontAwesome6  includes humanitarian icon... 
-    #check_font()
- 
-  
+
   ctrylabel <- ForcedDisplacementStat::reference |> 
     filter(iso_3 == country_asylum_iso3c ) |> 
     distinct(ctryname) |> 
