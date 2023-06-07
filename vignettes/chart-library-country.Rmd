@@ -59,7 +59,7 @@ plot_ctr_treemap(year = 2021,
 
 
 
-## Plot Population type per year
+## Plot Population Type Over Year
 
 <!--
 Create a chunk for the core of the function

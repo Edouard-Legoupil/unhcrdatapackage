@@ -25,6 +25,7 @@ mod_home_ui <- function(id){
                                            class = "fa-solid fa-bullhorn")
                                     )
                           ) ,
+                          hr(),
                           fluidRow(
                             column( 4,  
                                     tags$h3(class = 'jumbotron-heading', 

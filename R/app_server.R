@@ -12,6 +12,7 @@ app_server <- function(input, output, session) {
 
  ## get the different module on server side...
   #  mod_input_server("input_1" )
+  mod_home_server("home_1")
   mod_input_server("input_1", reactiveParameters = reactiveParameters)
   mod_categories_server("categories_1", reactiveParameters = reactiveParameters) 
   mod_origin_server("origin_1", reactiveParameters = reactiveParameters) 

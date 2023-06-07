@@ -13,41 +13,11 @@
 mod_solution_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_solution")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value="") ,
-             actionButton(inputId="position",
-                   label = "Overlay an interpretation annotation!  -- not working yet", 
-                   class = "btn-success",
-                   icon = icon("hand-point-up"),
-                   width = '100%')),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected = c(  "ASY"  ) )),
-                             column( 2, 
-                           downloadButton(outputId =  ns("dl"),
-                                    label = "Share your story",
-                                    class = "btn-success" ,
-                                    icon = shiny::icon("share-from-square")
-                                   )   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Solutions Trend",
+                  mod_plotviz_ui(ns("solution1"),
+                  thisPlot = "plot_ctr_solution" ) ) 
+      ) ## End Tabset
   )
 }
     
@@ -61,32 +31,9 @@ mod_solution_ui <- function(id){
 mod_solution_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-        output$plot_ctr_solution <- renderPlot({
-             p <-            plot_ctr_solution(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-              pop_type =  input$pop_type)
-          
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      reactiveParameters$p <- p
-      p
-      
-                             })
-    
-    output$dl <- downloadHandler(
-            filename = function() {
-              paste('plot_ctr_solution-', Sys.Date(), '.png', sep='')
-            },
-            content = function(con) {
-              ggsave(con,
-                     reactiveParameters$p, 
-                     device = "png", 
-                     width = 8, 
-                     height = 5)
-            }
-          )
+   mod_plotviz_server("solution1", 
+                      thisPlot = "plot_ctr_solution", 
+                      reactiveParameters ) 
  
   })
 }

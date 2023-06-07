@@ -215,20 +215,6 @@ Once the button "Position the annotation on the chart" is launched:
 
 
 
-
-
-## check_font awesome humanitarian
-
-    
-
-  
-
-```{r example-check_font}
-check_font()
-```
-
-  
-
   
 
 

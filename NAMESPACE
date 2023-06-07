@@ -3,7 +3,6 @@
 export("%>%")
 export(annotate_gadget)
 export(app_ui)
-export(check_font)
 export(plot_ctr_asylum)
 export(plot_ctr_destination)
 export(plot_ctr_diff_in_pop_groups)
