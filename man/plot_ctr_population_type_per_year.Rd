@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ctr_population_type_per_year.R
 \name{plot_ctr_population_type_per_year}
 \alias{plot_ctr_population_type_per_year}
-\title{Graph of population type per year}
+\title{Graph of Population Type Over Year}
 \usage{
 plot_ctr_population_type_per_year(
   year = 2022,
@@ -25,14 +25,14 @@ plot_ctr_population_type_per_year(
 a ggplot2 object
 }
 \description{
-Graph of population type per year
+Graph of Population Type Over Year
 }
 \examples{
 
 p <- plot_ctr_population_type_per_year(
                          year = 2022,
-                         lag = 5,
                          country_asylum_iso3c = "PAN",
+                         lag = 5,
                          pop_type = c("REF", 
                                        "ASY", 
                                        "OIP", 

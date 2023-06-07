@@ -14,7 +14,812 @@ library(testthat)
 pkgload::load_all(export_all = FALSE)
 ```
 
-# mod_input
+
+# mod_home
+
+this is a shared module that takes all the parameters to filter the data..
+https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
+
+```{r function-mod_home}
+#' Landing page UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+mod_home_ui <- function(id){
+  ns <- NS(id)
+  tagList( 
+        #Jumbotrons are pretty, they make nice headers
+                  tags$div(class = "jumbotron text-left", 
+                           style = "margin-bottom:15px;margin-top:15px;margin-left:15px",
+                          fluidRow(
+                            column( 10, 
+                                    tags$h1(style = 'color:#0072BC;',
+                                                style = 'margin-bottom:0px;margin-top:0px',
+                                                '7 Key Questions on Forced Displacement')),
+                            column( 2, 
+                                    tags$i(style = 'font-size: 12rem;color:#0072BC;',
+                                           class = "fa-solid fa-bullhorn")
+                                    )
+                          ) ,
+                          hr(),
+                          fluidRow(
+                            column( 4,  
+                                    tags$h3(class = 'jumbotron-heading', 
+                                                style = 'margin-left:25px',
+                                                ' "Numbers have an important story to TELL' ),
+                                    tags$h3(class = 'jumbotron-heading', 
+                                            style = 'margin-left:25px',
+                                            ' They rely on YOU to give them a voice!"')),
+                            column( 8, 
+                                    tags$p(class = 'jumbotron-heading', 
+                                            style = 'margin-left:25px',
+                                            ' Data Literacy describes the ability to read, interpret, and argue with data.' ),
+                                    tags$p(class = 'jumbotron-heading', 
+                                            style = 'margin-left:25px',
+                                            ' Data Storytelling is the art of presenting data
+                                  with a contextual narrative, or in other words, to put
+                                  data insights into context in order to inspire action and influence your audience.' )
+                                    )
+                          ) 
+                   ), ## end jumbotron..
+                  
+                  br(),
+                  br(),
+                    p(HTML("  1. How the different <a href='#shiny-tab-categories'>Categories</a> of Population of concern to UNHCR are evolving over time?")), 
+                    p(HTML("  2. What are the main countries of Origin of Forced Displacement across Borders?")),  
+                    p(HTML("  3. What are the main countries of Destination of Asylum of Forced Displacement across Borders?")),
+                    p(HTML("  4. What are the Demographics profiles of Forcibly Displaced People in relation with the host population?")),
+                    p(HTML("  5. Is the asylum Processing capacity in relation with the demand?")),
+                    p(HTML("  6. What are the trends in terms of Solutions?")),
+                    p(HTML("  7. What is the share of Forcibly Displaced People among total Migrants?")) ,
+                  br(),
+                  br(),
+                  p ('This app conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of',
+                  tags$a(href="https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html", "persuasive data stories") ,
+                  '. Each plot is created through a function that provides a recipe that creates a re-usable chart in line with a',
+                  tags$a(href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/", "Divisible Content Strategy"),
+                  '. You may',
+                  tags$a(href="https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html", "enhance the charts story-telling ability"),
+                  ' by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.')
+  )
+}
+    
+#' input Server Functions
+#'
+#' @noRd 
+mod_home_server <- function(id){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+    
+
+  
+
+  })
+}
+    
+## To be copied in the UI
+# mod_home_ui("home_1")
+    
+## To be copied in the server
+# mod_home_server("home_1")
+
+```
+
+```{r examples-mod_home}
+
+```
+
+```{r tests-mod_home}
+test_that("mod_home works", {
+
+})
+```
+
+## theme_shinydashboard_unhcr
+    
+```{r function-theme_shinydashboard_unhcr}
+#' Theme_shinydashboard_UNHCR 
+#'
+#' Theme for a shinydashboard application. 
+#' See also https://rstudio.github.io/shinydashboard/appearance.html
+#' 
+#' @return CSS code cutomised with UNHCR Brand
+#'
+#' @importFrom htmltools tags HTML
+#' @keywords internal
+#'
+#' @noRd
+theme_shinydashboard_unhcr <- function() {
+  
+  primary <- "#0072BC"
+  accent <- "#18375F"
+  secondary <- "#FAEB00"
+  
+  #general
+  appFontFamily = "Lato"
+  appFontColor = "#696969"
+  
+  primaryFontColor = "#696969"
+  infoFontColor = "#696969"
+  successFontColor = "#696969"
+  warningFontColor = "#696969"
+  dangerFontColor = "#696969"
+  bodyBackColor = "#F8F8F8"
+  
+ 
+
+  #header
+  logoBackColor = primary
+  headerButtonBackColor = primary
+  headerButtonIconColor = "white"
+  headerButtonBackColorHover = accent
+  headerButtonIconColorHover = "white"
+  headerBackColor = primary
+  headerBoxShadowColor = "#aaaaaa"
+  headerBoxShadowSize = "0px 0px 0px"
+
+  #sidebar
+  sidebarBackColor = "#EDEDED"
+  sidebarPadding = 0
+  sidebarMenuBackColor = "transparent"
+  sidebarMenuPadding = 0
+  sidebarMenuBorderRadius = 0
+  sidebarShadowRadius = "0px 0px 0px"
+  sidebarShadowColor = "#aaaaaa"
+
+  sidebarUserTextColor = "#696969"
+
+  sidebarSearchBackColor = "rgb(55,72,80)"
+  sidebarSearchIconColor = "rgb(153,153,153)"
+  sidebarSearchBorderColor = "rgb(55,72,80)"
+
+  sidebarTabTextColor = "#696969"
+  sidebarTabTextSize = 13
+  sidebarTabBorderStyle = "none none none solid"
+  sidebarTabBorderColor = "transparent"
+  sidebarTabBorderWidth = 5
+  sidebarTabBackColorSelected = "transparent"
+  sidebarTabTextColorSelected = primary
+  sidebarTabRadiusSelected = "0px 0px 0px 0px"
+  sidebarTabBackColorHover = "#EDEDED"
+  sidebarTabTextColorHover = accent
+  sidebarTabBorderStyleHover = "none none none solid"
+  sidebarTabBorderColorHover = secondary
+  sidebarTabBorderWidthHover = 5
+  sidebarTabRadiusHover = "0px 0px 0px 0px"
+
+    ### boxes
+  boxBackColor = "white"
+  boxBorderRadius = 5
+  boxShadowSize = "0px 0px 0px"
+  boxShadowColor = paste0(primary,"30")
+  boxTitleSize = 19
+  boxDefaultColor = "white"
+  boxPrimaryColor = "white"
+  boxInfoColor = "rgb(210,214,220)"
+  #boxInfoColor = "#0072BC"
+  #boxTitleFontColor = "#FAEB00"
+  #boxTitleFontColor = "white"
+  boxSuccessColor = "rgba(0,255,213,1)"
+  boxWarningColor = "rgb(244,156,104)"
+  boxDangerColor = "rgb(255,88,55)"
+
+  tabBoxTabColor = "white"
+  tabBoxTabTextSize = 14
+  tabBoxTabTextColor = "#696969"
+  tabBoxTabTextColorSelected = primary
+  tabBoxBackColor = "white"
+  tabBoxHighlightColor = primary
+  tabBoxBorderRadius = 0
+
+    ### inputs
+  buttonHeight = "auto"
+  buttonPadding = "6px 12px"
+  buttonBackColor = "rgb(245,245,245)"
+  buttonTextColor = "rgb(0,0,0)"
+  buttonBorderColor = "rgb(200,200,200)"
+  buttonBorderRadius = 5
+  buttonBackColorHover = "rgb(235,235,235)"
+  buttonTextColorHover = "rgb(100,100,100)"
+  buttonBorderColorHover = "rgb(200,200,200)"
+  
+  
+  textboxBackColor = "rgb(255,255,255)"
+  textboxBorderColor = "rgb(200,200,200)"
+  textboxBorderRadius = 5
+  textboxBackColorSelect = "rgb(245,245,245)"
+  textboxBorderColorSelect = "rgb(200,200,200)"
+  textboxHeight = "auto"
+  textboxPadding = "6px 12px"
+
+    ### tables
+  tableBackColor = NA
+  tableBorderColor = NA
+  tableBorderTopSize = 1
+  tableBorderRowSize = 1
+  
+  
+  cssCode <- paste0(
+    '
+    /* font */
+    body, label, input, button, select, box,
+    .h1, .h2, .h3, .h4, .h5, h1, h2, h3, h4, h5 {
+      font-family: "', appFontFamily, '";
+      color: ', appFontColor, ';
+    }
+
+    /* font: fix for h6 */
+    /* messes up sidebar user section if included above */
+    .h6, h6 {
+      font-family: "', appFontFamily, '";
+    }
+
+    /* sidebar: logo */
+    .skin-blue .main-header .logo {
+      background: ', logoBackColor, ';
+    }
+
+    /* sidebar: logo hover */
+    .skin-blue .main-header .logo:hover {
+      background: ', logoBackColor, ';
+    }
+
+    /* sidebar: collapse button  */
+    .skin-blue .main-header .navbar .sidebar-toggle {
+      background: ', headerButtonBackColor, ';
+      color:', headerButtonIconColor, ';
+    }
+
+    /* sidebar: collapse button hover */
+    .skin-blue .main-header .navbar .sidebar-toggle:hover {
+      background: ', headerButtonBackColorHover, ';
+      color:', headerButtonIconColorHover, ';
+    }
+
+    /* header */
+    .skin-blue .main-header .navbar {
+      background: ', headerBackColor, ';
+      box-shadow: ', headerBoxShadowSize, ' ', headerBoxShadowColor, ';
+    }
+
+    /* sidebar*/
+    .skin-blue .main-sidebar {
+      background: ', sidebarBackColor, ';
+      box-shadow: ', sidebarShadowRadius, " ", sidebarShadowColor, ';
+      padding-left: ', sidebarPadding, 'px;
+      padding-right: ', sidebarPadding, 'px;
+      /* padding-top: 60px; */
+    }
+
+    /* sidebar menu */
+    .main-sidebar .user-panel, .sidebar-menu, .sidebar-menu>li.header {
+      white-space: nowrap;
+      background: ', sidebarMenuBackColor, ';
+      padding: ', sidebarMenuPadding, 'px;
+      border-radius: ', sidebarMenuBorderRadius, 'px;
+    }
+
+    /* fix for user panel */
+    .user-panel>.info>p, .skin-blue .user-panel>.info {
+      color: ', sidebarUserTextColor, ';
+      font-size: 12px;
+      font-weight: normal;
+    }
+    section.sidebar .user-panel {
+      padding: 10px;
+    }
+
+    /* sidebar: tabs */
+    .skin-blue .main-sidebar .sidebar .sidebar-menu a {
+      color: ', sidebarTabTextColor, ';
+      font-size: ', sidebarTabTextSize, 'px;
+      border-style: ', sidebarTabBorderStyle, ';
+      border-color: ', sidebarTabBorderColor, ';
+      border-width: ', sidebarTabBorderWidth, 'px;
+    }
+
+    /* sidebar: tab selected */
+    .skin-blue .main-sidebar .sidebar .sidebar-menu .active > a {
+      color: ', sidebarTabTextColorSelected, ';
+      font-size: ', sidebarTabTextSize, 'px;
+      border-radius: ', sidebarTabRadiusSelected, ';
+      border-style: ', sidebarTabBorderStyleHover, ';
+      border-color: ', sidebarTabBorderColorHover, ';
+      border-width: ', sidebarTabBorderWidthHover, 'px;
+    }
+    .skin-blue .sidebar-menu > li:hover > a,
+    .skin-blue .sidebar-menu > li.active > a {
+      color: ', sidebarTabTextColorSelected, ';
+      background: ', sidebarTabBackColorSelected, ';
+      border-radius: ', sidebarTabRadiusHover, ';
+    }
+
+    /* sidebar: tab hovered */
+    .skin-blue .main-sidebar .sidebar .sidebar-menu a:hover {
+      background: ', sidebarTabBackColorHover, ';
+      color: ', sidebarTabTextColorHover, ';
+      font-size: ', sidebarTabTextSize, 'px;
+      border-style: ', sidebarTabBorderStyleHover, ';
+      border-color: ', sidebarTabBorderColorHover, ';
+      border-width: ', sidebarTabBorderWidthHover, 'px;
+      border-radius: ', sidebarTabRadiusHover, ';
+    }
+
+    /* sidebar: subtab */
+    .skin-blue .sidebar-menu > li > .treeview-menu {
+      margin: 0px;
+      background: ', sidebarMenuBackColor, ';
+    }
+    .skin-blue .treeview-menu > li > a {
+      background: ', sidebarMenuBackColor, ';
+    }
+    /* sidebar: subtab selected */
+    .skin-blue .treeview-menu > li.active > a,
+    .skin-blue .treeview-menu > li > a:hover {
+      background: ', sidebarTabBackColorSelected, ';
+    }
+
+    /* sidebar: search text area */
+    .skin-blue .sidebar-form input[type=text] {
+      background: ', sidebarSearchBackColor, ';
+      color: ', appFontColor, ';
+      border-radius: ', textboxBorderRadius, 'px 0px 0px ', textboxBorderRadius, 'px;
+      border-color: ', sidebarSearchBorderColor, ';
+      border-style: solid none solid solid;
+    }
+
+    /* sidebar: search button */
+    .skin-blue .input-group-btn > .btn {
+      background: ', sidebarSearchBackColor, ';
+      color: ', sidebarSearchIconColor, ';
+      border-radius: 0px ', textboxBorderRadius, 'px ', textboxBorderRadius, 'px 0px;
+      border-style: solid solid solid none;
+      border-color: ', sidebarSearchBorderColor, ';
+    }
+
+    /* sidebar form */
+    .skin-blue .sidebar-form {
+      border-radius: 0px;
+      border: 0px none rgb(255,255,255);
+      margin: 10px;
+    }
+
+    /* body */
+    .content-wrapper, .right-side {
+      background: ', bodyBackColor, ';
+    }
+
+    /* box 
+    .box {
+      background: ', boxBackColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+      box-shadow: ', boxShadowSize, ' ', boxShadowColor, ';
+    }
+
+    /* box: title */
+    .box-header .box-title {
+      font-size: ', boxTitleSize, 'px;
+    }
+
+    /* tabbox: title */
+    .nav-tabs-custom>.nav-tabs>li.header {
+      color: ', appFontColor, ';
+      font-size: ', boxTitleSize, 'px;
+    }
+
+    /* tabbox: tab color */
+    .nav-tabs-custom, .nav-tabs-custom .nav-tabs li.active:hover a,
+    .nav-tabs-custom .nav-tabs li.active a {
+      background: ', tabBoxTabColor, ';
+      color: ', appFontColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+
+    .nav-tabs-custom {
+      box-shadow: ', boxShadowSize, ' ', boxShadowColor, ';
+    }
+
+    /* tabbox: active tab bg */
+    .nav-tabs-custom>.nav-tabs>li.active {
+      border-radius: ', tabBoxBorderRadius, 'px;
+      border-top-color: ', tabBoxHighlightColor, ';
+      # box-shadow: ', boxShadowSize, ' ', boxShadowColor, ';
+    }
+
+    /* tabbox: font color */
+    .nav-tabs-custom>.nav-tabs>li.active:hover>a, .nav-tabs-custom>.nav-tabs>li.active>a {
+      border-bottom-color: ', tabBoxTabColor, ';
+      border-top-color: ', tabBoxHighlightColor, ';
+      border-right-color: ', tabBoxHighlightColor, ';
+      border-left-color: ', tabBoxHighlightColor, ';
+      color: ', tabBoxTabTextColorSelected, ';
+      font-size: ', tabBoxTabTextSize, 'px;
+      border-radius: ', tabBoxBorderRadius, 'px;
+    }
+
+    /* tabbox: inactive tabs background */
+    .nav-tabs-custom>.nav-tabs>li>a {
+      color: ', tabBoxTabTextColor, ';
+      font-size: ', tabBoxTabTextSize, 'px;
+    }
+
+    /* tabbox: top area back color */
+    .nav-tabs-custom, .nav-tabs-custom>.tab-content, .nav-tabs-custom>.nav-tabs {
+      border-bottom-color: ', tabBoxHighlightColor, ';
+      background: ', tabBoxBackColor, ';
+    }
+
+    /* tabbox: top area rounded corners */
+    .nav-tabs-custom>.nav-tabs {
+      margin: 0;
+      border-radius: ', tabBoxBorderRadius, 'px;
+    }
+
+    /* infobox */
+    .info-box {
+      background: ', boxBackColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+      box-shadow: ', boxShadowSize, ' ', boxShadowColor, ';
+    }
+
+    /* valuebox */
+    .small-box {
+      border-radius: ', boxBorderRadius, 'px;
+      box-shadow: ', boxShadowSize, ' ', boxShadowColor, ';
+    }
+
+    /* valuebox: main font color */
+    .small-box h3, .small-box p {
+      color: rgb(255,255,255)
+    }
+
+    /* box: default color */
+    .box.box-solid>.box-header, .box>.box-header {
+      color: ', appFontColor, ';
+    }
+    .box.box-solid>.box-header {
+      border-radius: ', boxBorderRadius, 'px;
+    }
+    .box.box-solid, .box {
+      border-radius: ', boxBorderRadius, 'px;
+      border-top-color: ', boxDefaultColor, ';
+    }
+
+    /* box: info color */
+    .box.box-solid.box-info>.box-header h3, .box.box-info>.box-header h3 {
+      color: ', infoFontColor, ';
+    }
+    .box.box-solid.box-info>.box-header {
+      background: ', boxInfoColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+    .box.box-solid.box-info, .box.box-info {
+      border-color: ', boxInfoColor, ';
+      border-left-color: ', boxInfoColor, ';
+      border-right-color: ', boxInfoColor, ';
+      border-top-color: ', boxInfoColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+
+    /* box: primary color */
+    .box.box-solid.box-primary>.box-header h3, .box.box-primary>.box-header h3 {
+      color: ', primaryFontColor, ';
+    }
+    .box.box-solid.box-primary>.box-header {
+      background: ', boxPrimaryColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+    .box.box-solid.box-primary, .box.box-primary {
+      border-color: ', boxPrimaryColor, ';
+      border-left-color: ', boxPrimaryColor, ';
+      border-right-color: ', boxPrimaryColor, ';
+      border-top-color: ', boxPrimaryColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+
+    /* box: success color */
+    .box.box-solid.box-success>.box-header h3, .box.box-success>.box-header h3 {
+      color: ', successFontColor, ';
+    }
+    .box.box-solid.box-success>.box-header {
+      background: ', boxSuccessColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+    .box.box-solid.box-success, .box.box-success {
+      border-color: ', boxSuccessColor, ';
+      border-left-color: ', boxSuccessColor, ';
+      border-right-color: ', boxSuccessColor, ';
+      border-top-color: ', boxSuccessColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+
+    /* box: warning color */
+    .box.box-solid.box-warning>.box-header h3, .box.box-warning>.box-header h3 {
+      color: ', warningFontColor, ';
+    }
+    .box.box-solid.box-warning>.box-header {
+      background: ', boxWarningColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+    .box.box-solid.box-warning, .box.box-warning {
+      border-color: ', boxWarningColor, ';
+      border-left-color: ', boxWarningColor, ';
+      border-right-color: ', boxWarningColor, ';
+      border-top-color: ', boxWarningColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+
+    /* box: danger color */
+    .box.box-solid.box-danger>.box-header h3, .box.box-danger>.box-header h3 {
+      color: ', dangerFontColor, ';
+    }
+    .box.box-solid.box-danger>.box-header {
+      background: ', boxDangerColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+    .box.box-solid.box-danger, .box.box-danger {
+      border-color: ', boxDangerColor, ';
+      border-left-color: ', boxDangerColor, ';
+      border-right-color: ', boxDangerColor, ';
+      border-top-color: ', boxDangerColor, ';
+      border-radius: ', boxBorderRadius, 'px;
+    }
+
+    /* button */
+    .btn-default {
+      background: ', buttonBackColor, ';
+      color: ', buttonTextColor, ';
+      border-color: ', buttonBorderColor, ';
+      border-radius: ', buttonBorderRadius, 'px;
+      height: ', buttonHeight, 'px;
+      padding: ', buttonPadding, ';
+    }
+
+    /* button: hover */
+    .btn-default:hover {
+      background: ', buttonBackColorHover, ';
+      color: ', buttonTextColorHover, ';
+      border-color: ', buttonBorderColorHover, ';
+    }
+
+    /* button: focus */
+    .btn-default:focus, .action-button:focus {
+      background: ', buttonBackColor, ';
+      color: ', buttonTextColor, ';
+      border-color: ', buttonBorderColor, ';
+    }
+
+    /* button: active */
+    .btn-default:active, .action-button:active {
+      background: ', buttonBackColor, ';
+      color: ', buttonTextColor, ';
+      border-color: ', buttonBorderColor, ';
+    }
+
+    /* button: visited */
+    .btn-default:visited {
+      background: ', buttonBackColor, ';
+      color: ', buttonTextColor, ';
+      border-color: ', buttonBorderColor, ';
+    }
+
+    /* textbox */
+    .form-control, .selectize-input, .selectize-control.single .selectize-input {
+      background: ', textboxBackColor, ';
+      color: ', appFontColor, ';
+      border-color: ', textboxBorderColor, ';
+      border-radius: ', textboxBorderRadius, 'px;
+      height: ', textboxHeight, 'px;
+      min-height: ', textboxHeight, 'px;
+      padding: ', textboxPadding, ';
+    }
+
+    /* textbox: selected */
+    .form-control:focus, .selectize-input.focus {
+      color: ', appFontColor, ';
+      background: ', textboxBackColorSelect, ';
+      border-color: ', textboxBorderColorSelect, ';
+      -webkit-box-shadow: inset 0px 0px 0px, 0px 0px 0px;
+      box-shadow: inset 0px 0px 0px, 0px 0px 0px;
+    }
+
+    /* multi-row selectize input */
+    .selectize-control.multi .selectize-input.has-items {
+      height: auto;
+    }
+
+    /* verbatim text output */
+    .qt pre, .qt code {
+      font-family: ', appFontFamily, ' !important;
+    }
+    pre {
+      color: ', appFontColor, ';
+      background-color: ', textboxBackColor, ';
+      border: 1px solid ', textboxBorderColor, ';
+      border-radius: ', textboxBorderRadius, 'px;
+    }
+
+    /* drop-down menu */
+    .selectize-dropdown, .selectize-dropdown.form-control {
+      background: ', textboxBackColor, ';
+      border-radius: 4px;
+    }
+
+    /* table */
+    .table {
+      background: ', tableBackColor, ';
+      border-radius: ', textboxBorderRadius, 'px;
+    }
+
+    /* table: row border color*/
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td,
+    .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+      border-top: ', tableBorderRowSize, 'px solid ', tableBorderColor, ';
+    }
+
+    /* table: top border color*/
+    .table>thead>tr>th {
+      border-bottom: ', tableBorderTopSize, 'px solid ', tableBorderColor, ';
+    }
+
+    /* table: hover row */
+    .table-hover>tbody>tr:hover {
+    background-color: ', tableBorderColor, ';
+    }
+
+    /* table: stripe row */
+    .table-striped>tbody>tr:nth-of-type(odd) {
+      background-color: ', tableBorderColor, ';
+    }
+
+    /* table: body colour */
+    table.dataTable tbody tr {
+      background-color: ', tableBackColor, ' !important;
+    }
+
+    /* table: text and footer border colour */
+    table.dataTable {
+      color: ', appFontColor, ' !important;
+      border: 0px !important;
+    }
+
+    /* datatable: selected row */
+    table.dataTable tr.selected td, table.dataTable td.selected {
+      background-color: ', boxSuccessColor, ' !important;
+      color: rgb(0,0,0) !important;
+    }
+
+    /* datatable: hover row */
+    table.dataTable tr.hover td, table.dataTable td.hover {
+      background-color: ', tableBorderColor, ' !important;
+    }
+    table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
+      background-color: ', tableBorderColor, ' !important;
+    }
+    table.dataTable.row-border tbody th, table.dataTable.row-border tbody td,
+    table.dataTable.display tbody th, table.dataTable.display tbody td {
+      border-top: 1px solid ', tableBorderColor, ' !important;
+    }
+
+    /* datatable: stripe row */
+    table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+      background-color: ', tableBorderColor, ' !important;
+    }
+
+    /* datatable: page control */
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      color: ', appFontColor, ' !important;
+    }
+
+    /* datatable: table info */
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+      color: ', appFontColor, ' !important;
+    }
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing,
+    .dataTables_wrapper .dataTables_paginate {
+      color: ', appFontColor, ' !important;
+    }
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing,
+    .dataTables_wrapper .dataTables_paginate {
+      color: ', appFontColor, ' !important;
+    }
+
+    /* datatable search box */
+    .dataTables_wrapper .dataTables_filter input {
+      background-color: ', textboxBackColor, ';
+      border: 1px solid ', textboxBorderColor, ';
+      border-radius: ', textboxBorderRadius, 'px;
+    }
+
+    /* notification and progress bar */
+    .progress-bar {
+      background-color: ', boxSuccessColor, ';
+    }
+    .shiny-notification {
+      height: 80px;
+      font-family: ', appFontFamily, ';
+      font-size: 15px;
+      border-radius: 10px;
+      margin-left: -450px !important;
+    }
+
+    /* horizontal divider line */
+    hr {
+      border-top: 1px solid rgb(215,215,215);
+    }
+
+    /* modal */
+    .modal-body {
+      background-color: ', boxBackColor, ';
+    }
+
+    .modal-footer {
+      background-color: ', boxBackColor, ';
+    }
+
+    .modal-header {
+      background-color: ', boxBackColor, ';
+    }
+
+    '
+  )
+  
+  # removing new line symbols and formatting spacing
+  cssCode <- gsub(pattern = "\n", replacement = "", x = cssCode)
+  cssCode <- gsub(pattern = "[[:space:]]{2,3}", replacement = "", x = cssCode)
+  
+  htmlCode <- htmltools::tags$head(
+    htmltools::tags$style(
+      htmltools::HTML(
+        text = cssCode
+      )
+    )
+  )
+  
+  return(htmlCode)
+}
+```
+  
+```{r example-theme_shinydashboard_unhcr}
+# Typically used within the app_ui of the shiny
+# app_ui <- function() {
+#   tagList(
+#     # Leave this function for adding external resources
+#     golem_add_external_resources(),
+#     ## Function to style the app
+#     theme_shinydashboard_unhcr())}
+```
+  
+```{r tests-theme_shinydashboard_unhcr}
+test_that("theme_shinydashboard_unhcr works", {
+  expect_true(inherits(theme_shinydashboard_unhcr, "function")) 
+})
+```
+  
+
+
+
+
+# Shared Modules
+
+The app includes 2 shared modules - 
+
+  * One for the selection of countries and year - that will be then passed on to all the plots
+  * One that takes the global reactive values - and the type of plot (form the library) as a parameter to output a ggplot2 charts
+
+
+
+
+## mod_input
 
 this is a shared module that takes all the parameters to filter the data..
 https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
@@ -69,7 +874,8 @@ mod_input_ui <- function(id){
   )
 }
     
-#' input Server Functions
+#' input Server Functions 
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
 mod_input_server <- function(id, reactiveParameters){
@@ -106,572 +912,710 @@ test_that("mod_input works", {
 ```
 
 
-# mod_annotate
 
-this is the story telling module - it takes the output of chart and allows to change the title and the subtitle - as well as to add annotation..
+## mod_plotviz
 
-Inspired from https://community.rstudio.com/t/graph-annotator-shiny-contest-submission/104687 
+This module take as an argument the plot based on the library and the reactive values from the app. 
 
-See how we could share the story then on twitter - https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
-
-```{r function-mod_annotate}
-# all possible UI widgets used here
-default_annotate_layer_widgets <- list(colourInput = function(inputId, label = 'Colour',
-                                                              showColour = "text",
-                                                              palette = "square",
-                                                              value = "#000000",
-                                                              ...) 
-  colourpicker::colourInput(inputId = inputId,
-                            label = label,
-                            showColour = showColour, 
-                            palette = palette,
-                            value = value, ...),
-   textInput = function(inputId, label, ...) textInput(inputId = inputId, label = label, ...),
-   selectInput = function(inputId, label, ...) shiny::selectInput(inputId = inputId, label = label, ...),
-   numericInput = function(inputId, label, ...) shiny::numericInput(inputId = inputId, label = label, ...),
-   radioButton = function(inputId, label, choices, ...) shiny::radioButtons(inputId = inputId, label = label, choices = choices, ...)
-)
-
-
-# list of possible arguments
-annotate_layer_args <- list(
-  text = list(
-    x = list(req = TRUE),
-    y = list(req = TRUE),
-    label = list(req = TRUE),
-    parse = list(req = TRUE),
-    color = list(req = FALSE),
-    size = list(req = FALSE),
-    alpha = list(req = FALSE),
-    fontface = list(req = FALSE),
-    # family = list(req = FALSE),
-    angle = list(req = FALSE),
-    hjust = list(req = FALSE), #"inward", # (“left”, “center”, “right”, “inward”, “outward”)
-    vjust = list(req = FALSE) # "inward", # (“bottom”, “middle”, “top”, “inward”, “outward”)
-    # check_overlap = list(req = FALSE) # TRUE # boolean
-  ),
-  hline = list(
-    yintercept = list(req = TRUE),
-    # y = list(req = TRUE),
-    linetype = list(req = FALSE),
-    color = list(req = FALSE),
-    alpha = list(req = FALSE),
-    size = list(req = FALSE)
-  ),
-  vline = list(
-    xintercept = list(req = TRUE),
-    # x = list(req = TRUE),
-    linetype = list(req = FALSE),
-    color = list(req = FALSE),
-    alpha = list(req = FALSE),
-    size = list(req = FALSE)
-  ),
-  rect = list(
-    xmin = list(req = TRUE),
-    xmax = list(req = TRUE),
-    ymin = list(req = TRUE),
-    ymax = list(req = TRUE),
-    alpha = list(req = TRUE),
-    color = list(req = FALSE),
-    fill = list(req = FALSE)
-  )
-)
-
-
-
-
-#' annotate UI Function
+```{r function-mod_plotviz}
+#' plotviz UI Function
 #'
 #' @description A shiny Module.
 #'
-#' @param id,annotate,output,session Internal parameters for {shiny}.
+#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param thisPlot identify which plot to output from the library
+#'   # 1. Category 
+#'    # ## Key Figures
+#'    "plot_ctr_keyfig", # year, country_asylum_iso3 
+#'    # ## Plot Tree Map of Categories
+#'    "plot_ctr_treemap", # year,  country_asylum_iso3c,   pop_type 
+#'    # ## Plot Population type per year
+#'    "plot_ctr_population_type_per_year", # year,   country_asylum_iso3c, lag,  pop_type  
+#'    
+#'    # # 2. Origin
+#'    # ## Plot Main country of origin  in one specific country - Absolute value
+#'    "plot_ctr_population_type_abs", # year , country_asylum_iso3c, top_n_countries,  pop_type = pop_filter, show_diff_label = FALSE   
+#'    # ## Plot Main country of origin in one specific country - Percentage
+#'    "plot_ctr_population_type_perc", # year , country_asylum_iso3c , top_n_countries, pop_type = "REF"- pop_filter    
+#'    # ## Plot Increases and Decreases in Population Groups
+#'    "plot_ctr_diff_in_pop_groups", # year,  country_asylum_iso3c,  pop_type  
+#'    # ## Plot Origin History
+#'    "plot_ctr_origin_history", # year , country_asylum_iso3c ,lag, ,   pop_type , otherprop 
+#'   
+#'    # # 3. Destination 
+#'    # ## Plot Main Destination from  one specific country 
+#'    "plot_ctr_destination", # year , country_origin_iso3c, pop_type   
+#'    # ## plot recognition rate for a nationality
+#'    "plot_ctr_origin_recognition", # year, country_origin_iso3c,  top_n_countries,  measure ,  order_by  
+#'     
+#'    # # 4. Profile
+#'    # ## Plot Age Pyramid
+#'    "plot_ctr_pyramid", # year , country_asylum_iso3c , pop_type  
+#'    # ## Plot locations within countries
+#'    "plot_ctr_location", # year , country_asylum_iso3c, pop_type 
+#' 
+#'    # # 5. Processing
+#'    # ## Plot Refugee Recognition rate in Country
+#'    "plot_ctr_recognition", # year,  country_asylum_iso3c, top_n_countries , measure , order_by  
+#'    # ## Asylum Applications & Decision over time
+#'    "plot_ctr_asylum", # year  country_asylum_iso3c,   lag 
+#'    # ## Asylum Processing
+#'    "plot_ctr_process", # year,   country_asylum_iso3c ,  otherprop 
+#'    # ## Average Asylum Processing Time
+#'    "plot_ctr_processing_time", # year =, country_asylum_iso3c ,  country_origin_iso3c ,  procedureType  
+#'    
+#'    # # 6. Solutions 
+#'    # ## Plot Solution Over time 
+#'    "plot_ctr_solution", # year , country_asylum_iso3c, pop_type  
+#' 
+#'    # # 7.Migrant 
+#'    # ## Plot Ratio Refugee Migrant 
+#'    "plot_ctr_disp_migrant" # year , country_asylum_iso3c ,   
 #'
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-mod_annotate_ui <- function(id){
+#' @keywords internal
+mod_plotviz_ui <- function(id, thisPlot){
   ns <- NS(id)
   tagList(
-    fluidRow(
-      column(width = 12, 
-             default_annotate_layer_widgets$selectInput(inputId = ns("geom_type"), 
-                                                       label = "Select Annotation type",
-                                                       choices = c(names(annotate_layer_args))) )),
-    fluidRow(
-      column(width = 3, tags$b("Read mouse")),
-      column(width = 6, offset = -1, 
-             style = 'padding-left: 5px; padding-right: 5px;',
-             shiny::radioButtons(inputId = ns("read_mouse"), 
-                                 label = NULL, 
-                                 choices = list('Off' = FALSE, 'On' = TRUE), 
-                                 selected = FALSE) )),
-    fluidRow(
-      column(width = 12, uiOutput(ns("multiple_args")))), # multiple select drop down
-    fluidRow(
-      column(width = 12, uiOutput(ns("widget"))))
+      ## Display the plot
+        plotOutput(ns("thisplot"),
+                     click="annotate_point",
+                     brush= shiny::brushOpts(id="annotate_box")),
+      ## Display the interface parameters...
+       fluidRow(
+         shinydashboard::box(
+           title = "Tell Your Story!",
+           status = "info",
+           solidHeader = TRUE,
+           collapsible = TRUE,
+           #background = "light-blue",
+           width = 12,
+           fluidRow(
+             
+             ## First column used to storytelling
+             column(
+               6,
+               textInput(
+                 inputId = ns("title"),
+                 label = "Title - Highlight your main message!",
+                 value = "",
+                 placeholder = "Keep it short!"
+               ),
+               textInput(
+                 inputId = ns("subtitle"),
+                 label = "SubTitle - Add Insights!",
+                 value = "",
+                 placeholder = "Help in reading the chart"
+               ),
+            
+            shiny::textAreaInput(inputId="annot",
+                 label= "Overlay an annotation",
+                 placeholder = "Once entered the text will appear as soon as the 
+                 box is drawn on the chart",
+                           width = '100%'),
+             tags$i("To position the annotation:"),
+            "One first single click on the plot to point what you would like
+      to highlight and then a long brush click to draw the box where the annotation
+      should be overlaid"
+             ),
+             
+             ## Second Columns used for chart parameters..
+             column(4, 
+               ## pop_type or pop_filter    
+               if (thisPlot %in% c( "plot_ctr_treemap",
+                                     "plot_ctr_population_type_per_year",
+                                     "plot_ctr_diff_in_pop_groups",
+                                     "plot_ctr_origin_history",
+                                     "plot_ctr_destination")  
+                    ){  checkboxGroupInput(  inputId = ns("pop_type"),
+                          label = "Population Types to include",
+                          choices = c("Refugee" ="REF", 
+                                    "Asylum Seeker"= "ASY", 
+                                    "Other in Need of International Protection"="OIP" ,
+                                    "Other of Concern"= "OOC",
+                                    "Stateless"="STA",
+                                    "Internally Displaced Persons"=     "IDP" ),
+                          selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) )
+                 
+                    } else if (thisPlot %in% c( "plot_ctr_population_type_abs" ,
+                                                  "plot_ctr_population_type_perc") 
+                     ){ selectInput(  inputId = ns("pop_type"),
+                          label = "Population Type to include",
+                          choices = c(   "Refugee" ="REF", 
+                                     "Asylum Seeker"= "ASY", 
+                                      "Other in Need of International Protection"="OIP"  ),
+                          selected =   "ASY" )
+                    } else {""},
+               
+               ## top_n_countries ,  numericInput
+               if (thisPlot %in% c( "plot_ctr_population_type_abs",
+                                    "plot_ctr_population_type_perc",
+                                    "plot_ctr_origin_recognition",
+                                    "plot_ctr_recognition")  
+                   ){  sliderInput( inputId =   ns("top_n_countries"), 
+                                label = "Top n countries", 
+                                value = 5,  min = 4 , max = 30, step = 1 ,
+                                width = '100%') } else {""},
+             
+               ## lag  # numericInput
+               if (thisPlot %in% c("plot_ctr_population_type_per_year",
+                                    "plot_ctr_origin_history",
+                                    "plot_ctr_asylum")  
+                   ){  sliderInput( inputId =   ns("lag"), 
+                                label = "Lag in years", 
+                                value = 3,  min = 3 , max = 10, step = 1 ,
+                                width = '100%') } else {""},
+             
+               ## otherprop   ## numeric input
+               if (thisPlot %in% c("plot_ctr_origin_history",
+                                    "plot_ctr_process")  
+                   ){  sliderInput( inputId =   ns("otherprop"), 
+                                label = "Percent  to bind as Other", 
+                                value = 0.02 ,  min = 0.01 , max = 0.10, step = 0.01 ,
+                                width = '100%') } else {""},
+             
+             ## show_diff_label  ## boolean
+               if (thisPlot %in% c("plot_ctr_population_type_abs" )  
+                   ){  selectInput(  inputId = ns("show_diff_label"),
+                          label = "Show_diff_label",
+                          choices = c(   "True" =TRUE, 
+                                     "False"= FALSE   ),
+                          selected =   TRUE) } else {""},
+             
+             ## country_origin_iso3c  ## selectise
+               if (thisPlot %in% c("ctr_processing_time")  
+                   ){   selectizeInput(inputId = ns("country_origin_iso3c"),
+                       label = " Filter by orgin...", 
+                      choices = ForcedDisplacementStat::end_year_population_totals |>
+              dplyr::arrange(CountryAsylumName) |>
+              dplyr::select(CountryAsylumCode) |>
+              dplyr::distinct()  |>
+              dplyr::pull(CountryAsylumCode) |>
+              purrr::set_names(
+                               ForcedDisplacementStat::end_year_population_totals |>
+                                 dplyr::arrange(CountryAsylumName) |>
+                                 dplyr::select(CountryAsylumName) |>
+                                 dplyr::distinct()|>
+                                 dplyr::pull(CountryAsylumName) ), 
+                       selected = NULL, 
+                       multiple = FALSE,
+                       options = NULL)
+                 
+                 } else {""},
+             ## procedureType ## slectone
+               if (thisPlot %in% c("plot_ctr_processing_time" )  
+                   ){  selectInput(  inputId = ns("procedureType"),
+                          label = "ProcedureType",
+                          choices = c( "Government"="G",
+                                        "Joint"= "J" ,
+                                        "UNHCR" = "U"),
+                          selected =   "G" )} else {""},
+             ##   measure ,  selectOne and 
+               if (thisPlot %in% c("plot_ctr_origin_recognition" ,
+                                    "plot_ctr_recognition")  
+                   ){  selectInput(  inputId = ns("measure"),
+                          label = "measure",
+                          choices = c(  
+                          "Refugee Recognition Rate" ="RefugeeRecognitionRate", 
+                           "Total Recognition Rate"= "TotalRecognitionRate"  ),
+                          selected =   "RefugeeRecognitionRate" ) } else {""},
+             #order_by  , selectOne
+               if (thisPlot %in% c("plot_ctr_origin_recognition" ,
+                                    "plot_ctr_recognition")  
+                   ){  selectInput(  inputId = ns("order_by"),
+                          label = "Order by",
+                         choices = c( "Recognized Refugee Status Decisions"= "Recognized", 
+                        "Complementary Protection"= "ComplementaryProtection", 
+                               "Total Decision (independently of the outcome)"= "TotalDecided" ),
+                          selected =   "Recognized" ) } else {""},
+                    ""),
+             
+             ## Last column used for the two buttons - download chart and reproducibility
+             column(
+               2,
+               downloadButton(
+                 outputId =  ns("dl"),
+                 label = "Share your story",
+                 class = "btn-success" ,
+                 icon = shiny::icon("share-from-square")
+               )
+             )  # End column
+           )  # End First Fluid Row...
+         ) #, #  shinydashboard::box
+         
+       ## Now render the plot... 
+       # shinydashboard::box(
+       #   width = 12,
+       #   plotOutput(ns("thisplot"),
+       #               click="annotate_point",
+       #               brush= shiny::brushOpts(id="annotate_box"))
+       #    ) ## end box
+       
+       
+       ) ## End Main fluid row
   )
 }
     
-#' annotate Server Functions
+#' plotviz Server Functions
 #'
+#' @param thisPlot reference to the plot  function from the chart library
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
-mod_annotate_server <- function(id){
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
+mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
+
   moduleServer( id, function(input, output, session){
-    ns <- session$ns
+    ns <- session$ns 
+     # Initialize reactive values
+     reactLocal <- reactiveValues(
+       x = 0, y = 0,
+       xmax = 0,  ymax = 0,  xmin = 0,  ymin = 0,
+       xbox = 0,   ybox = 0,  arrowcurve = 0.3,  arrowangle = 140,
+       annot = " ", xcentroid = 0,  ycentroid = 0,
+       thisPlot = "",
+       chart =   ggplot2::ggplot() +  
+          ggplot2::annotate("text", x = 1, y = 1, size = 11, 
+                            label = "There was a problem" ) +  
+          ggplot2::theme_void(), 
+       code = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" ,
+        syntax = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" )
     
+    ## Observe Point
+    observeEvent(input$annot,
+                       handlerExpr = {
+                         reactLocal$annot = input$annot }
+          )
+    ## Observe Brush
+    observeEvent(input$annotate_point,
+                       handlerExpr = {
+                         reactLocal$x = input$annotate_point$x
+                         reactLocal$y = input$annotate_point$y }
+          )
+    ## Observer Brush o define the attachment point
+    observeEvent(input$annotate_box,
+                       handlerExpr = {
+                         
+             reactLocal$xmax <- input$annotate_box$xmax  
+             reactLocal$xmin <- input$annotate_box$xmin  
+             reactLocal$ymax <- input$annotate_box$ymax  
+             reactLocal$ymin <- input$annotate_box$ymin 
+             ## Position based on centroid of the box
+             reactLocal$xcentroid = reactLocal$xmin #+ (reactLocal$xmax - reactLocal$xmin)/2
+             reactLocal$ycentroid = reactLocal$ymin + (reactLocal$ymax - reactLocal$ymin)/2
+             ## Now adjust the point to link the box to arrow
+             reactLocal$xbox = reactLocal$xmin - (reactLocal$xmax - reactLocal$xmin)*0.1
+             reactLocal$ybox = reactLocal$ycentroid 
+             if(reactLocal$ybox > reactLocal$ycentroid) {reactLocal$arrowcurve = -.3} else { reactLocal$arrowcurve = .3 }
+             if(reactLocal$ybox > reactLocal$ycentroid) {reactLocal$arrowangle = 240} else { reactLocal$arrowangle = 140 }
+                       }
+          )
+     
+     
+     
+    ### Plot rendering function
+    output$thisplot <- renderPlot({
+      ## Debugging.. 
+      #browser()
+      ## Output in console 
+      # cat(file=stderr(), "drawing plot type", thisPlot, "\n")
+      # cat(file=stderr(), " for year", reactiveParameters$year, "\n")
+      # cat(file=stderr(), " for country", reactiveParameters$country, "\n")
     
-      mrv <- reactiveValues()
-
-      # all possible value arguments
-      annotate_args <- list(label = list(initial = function(...) default_annotate_layer_widgets$textInput(inputId = ns('label'), label = NULL, value = "", ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$textInput(inputId = ns('label'), label = NULL, value = selected, ...)),
-
-                            parse = list(initial = function(...) default_annotate_layer_widgets$radioButton(inputId = ns('parse'), label = NULL, choices = list('FALSE' = FALSE, 'TRUE' = TRUE), selected = FALSE, ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$radioButton(inputId = ns('parse'), label = NULL, choices = list('FALSE' = FALSE, 'TRUE' = TRUE), selected = selected, ...)),
-
-                            x = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('x'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                     selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('x'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            y = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('y'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                     selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('y'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            xmin = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xmin'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xmin'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            xmax = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xmax'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xmax'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            ymin = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('ymin'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('ymin'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            ymax = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('ymax'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('ymax'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            color = list(initial = function(...) default_annotate_layer_widgets$colourInput(inputId = ns('color'), label = NULL, ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$colourInput(inputId = ns('color'), label = NULL, value = selected, ...)),
-
-                            fill = list(initial = function(...) default_annotate_layer_widgets$colourInput(inputId = ns('fill'), label = NULL, value = "#d8d8ff", ...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$colourInput(inputId = ns('fill'), label = NULL, value = selected, ...)),
-
-                            size = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('size'), label = NULL, value = NULL, min = 0, max = 20, step = 1,...),
-                                        selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('size'), label = NULL, value = selected, min = 0, max = 20, step = 1, ...)),
-
-                            fontface = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('fontface'), label = NULL, choices = c("", "plain", "bold", "italic"),...),
-                                            selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('fontface'), label = NULL, choices = c("", "plain", "bold", "italic"), selected = selected, ...)),
-
-                            family = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('family'), label = NULL, choices = c("","sans", "serif", "mono"),...),
-                                          selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('family'), label = NULL, choices = c("", "sans", "serif", "mono"), selected = selected, ...)),
-
-                            angle = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('angle'), label = NULL, value = NULL, min = 0, max = 360, step = 5,...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('angle'), label = NULL, value = selected, min = 0, max = 360, step = 5, ...)),
-
-                            alpha = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('alpha'), label = NULL, value = NULL, min = 0, max = 1, step = 0.1,...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('alpha'), label = NULL, value = selected, min = 0, max = 1, step = 0.1, ...)),
-
-                            vjust = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('vjust'), label = NULL, choices = c("", "middle", "inward", "outward", "bottom", "top"),...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('vjust'), label = NULL, choices = c("", "middle", "inward", "outward", "bottom", "top"), selected = selected, ...)),
-
-                            hjust = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('hjust'), label = NULL, choices = c("", "center", "inward", "outward", "left", "right"), ...),
-                                         selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('hjust'), label = NULL, choices = c("", "center", "inward", "outward", "left", "right"), selected = selected, ...)),
-
-                            yintercept = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('yintercept'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                              selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('yintercept'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            xintercept = list(initial = function(...) default_annotate_layer_widgets$numericInput(inputId = ns('xintercept'), label = NULL, value = NULL, min = 0, max = NA, step = 1,...),
-                                              selected = function(selected, ...) default_annotate_layer_widgets$numericInput(inputId = ns('xintercept'), label = NULL, value = selected, min = 0, max = NA, step = 1, ...)),
-
-                            linetype = list(initial = function(...) default_annotate_layer_widgets$selectInput(inputId = ns('linetype'), label = NULL, choices = c("", "twodash","blank", "solid", "dashed", "dotted", "dotdash", "longdash","11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff"), ...),
-                                            selected = function(selected, ...) default_annotate_layer_widgets$selectInput(inputId = ns('linetype'), label = NULL, choices = c("", "twodash","blank", "solid", "dashed", "dotted", "dotdash", "longdash","11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff"), selected = selected, ...))
-      )
-
-      if(isFALSE(is.null(selected[["geom"]]))){
-        updateSelectInput(session = session, inputId = "geom_type", selected = selected[["geom"]])
+    ## Rendering plot Based on type...
+    
+    # 1. Category 
+    # ## Key Figures
+      if( thisPlot == "plot_ctr_keyfig"){
+        p <-  plot_ctr_keyfig(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country)
+    # ## Plot Tree Map of Categories
+      } else  if( thisPlot == "plot_ctr_treemap"){
+        p <-  plot_ctr_treemap(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type)
+    # ## Plot Population type per year
+      } else if( thisPlot == "plot_ctr_population_type_per_year"){
+        p <-  plot_ctr_population_type_per_year(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type,
+                lag = input$lag)
+    # # 2. Origin
+    # ## Plot Main country of origin  in one specific country
+        #- Absolute value
+      } else if( thisPlot == "plot_ctr_population_type_abs"){
+        p <-  plot_ctr_population_type_abs(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type,
+                top_n_countries = input$top_n_countries,
+                show_diff_label = input$show_diff_label)
+    # ## Plot Main country of origin in one specific country 
+        #- Percentage
+      } else if( thisPlot == "plot_ctr_population_type_perc"){
+        p <-  plot_ctr_population_type_perc(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type,
+                top_n_countries = input$top_n_countries)
+    # ## Plot Increases and Decreases in Population Groups
+      } else if( thisPlot == "plot_ctr_diff_in_pop_groups"){
+        p <-  plot_ctr_diff_in_pop_groups(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type)
+    # ## Plot Origin History
+      } else if( thisPlot == "plot_ctr_origin_history"){
+        p <-  plot_ctr_origin_history(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type,
+                lag = input$lag,
+                otherprop = input$otherprop)
+    # # 3. Destination 
+    # ## Plot Main Destination from  one specific country 
+      } else if( thisPlot == "plot_ctr_destination"){
+        p <-  plot_ctr_destination(
+                year = as.numeric(reactiveParameters$year),
+                country_origin_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type )
+    # ## plot recognition rate for a nationality
+      } else if( thisPlot == "plot_ctr_origin_recognition"){
+        p <-  plot_ctr_origin_recognition(
+                year = as.numeric(reactiveParameters$year),
+                country_origin_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type, 
+                top_n_countries = input$top_n_countries,
+                measure  = input$measure ,
+                order_by = input$order_by)
+    # # 4. Profile
+    # ## Plot Age Pyramid
+      }  else if( thisPlot == "plot_ctr_pyramid"){
+        p <-  plot_ctr_pyramid(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type )
+    # ## Plot locations within countries
+      } else if( thisPlot == "plot_ctr_location"){
+        p <-  plot_ctr_location(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type,
+                mapbackground = "osm")
+    # # 5. Processing
+    # ## Plot Refugee Recognition rate in Country
+      } else if( thisPlot == "plot_ctr_recognition"){
+        p <-  plot_ctr_recognition(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                top_n_countries = input$top_n_countries,
+                measure  = input$measure ,
+                order_by = input$order_by)
+    # ## Asylum Applications & Decision over time
+      } else if( thisPlot == "plot_ctr_asylum"){
+        p <-  plot_ctr_asylum(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                lag = input$lag)
+    # ## Asylum Processing
+      } else if( thisPlot == "plot_ctr_process"){
+        p <-  plot_ctr_process(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                otherprop = input$otherprop)
+    # ## Average Asylum Processing Time
+      } else if( thisPlot == "plot_ctr_processing_time"){
+        p <-  plot_ctr_processing_time(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                country_origin_iso3c = NULL,
+                #input$country_origin_iso3c,
+                procedureType = input$procedureType)
+    # # 6. Solutions 
+    # ## Plot Solution Over time 
+      } else if( thisPlot == "plot_ctr_solution"){
+        p <-  plot_ctr_solution(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country,
+                pop_type = input$pop_type)
+    # # 7.Migrant 
+    # ## Plot Ratio Refugee Migrant 
+      } else if( thisPlot == "plot_ctr_disp_migrant"){
+        p <-  plot_ctr_disp_migrant(
+                year = as.numeric(reactiveParameters$year),
+                country_asylum_iso3c = reactiveParameters$country )
+        
+        ## Default in case...
+      } else {
+        p <- ggplot2::ggplot() +  
+          ggplot2::annotate("text", x = 1, y = 1, size = 11, 
+                            label = "There was a problem" ) +  
+          ggplot2::theme_void() 
       }
-
-      # update read mouse to off whenever user switches annotate type
-      observeEvent(input$geom_type,{
-        updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-      }, ignoreInit = TRUE)
-
-      # show/hide attributes based on multiple_args selection
-      output$multiple_args <- renderUI({
-        if (isTRUE(length(selected) == 0)) {
-          if(input$geom_type == ""){
-            return(NULL)
-          } else {
-            shiny::selectInput(
-              inputId = ns('geom_attr'),
-              label = "Attribute(s) Selector",
-              # width = '90%',
-              choices = names(annotate_layer_args[[input$geom_type]]),
-              multiple = TRUE,
-              selected = names(annotate_layer_args[[input$geom_type]])[sapply(annotate_layer_args[[input$geom_type]], function(element_i) {
-                if (isTRUE(element_i[["req"]] == TRUE))
-                  return(TRUE)
-                else
-                  return(FALSE)
-              })]
-            )
-          }
-        } else {
-          shiny::selectInput(
-            inputId = ns('geom_attr'),
-            label = "Attribute(s) Selector",
-            # width = '90%',
-            choices = names(annotate_layer_args[[input$geom_type]]),
-            multiple = TRUE,
-            selected = names(selected)
-          )
-        }
+      
+      ## Now adding title and subtitle...
+      if (input$title != "") { 
+        p <- p + labs(title = input$title)}
+      if (input$subtitle != "") {
+        p <- p + labs(subtitle = input$subtitle)}
+      
+      #reactLocal$chart <- p
+      p 
       })
-
-      output$widget <- renderUI({
-
-        if(isFALSE(input$geom_type == "")){
-
-          # building widgets for geom
-          annotate_widgets <- annotate_layer_args[[input$geom_type]]
-
-          for(arg_i in names(annotate_widgets)){
-
-            if(isTRUE(is.null(selected[[arg_i]]))){
-              annotate_widgets[[arg_i]]$widget$name <- arg_i
-              annotate_widgets[[arg_i]]$widget$ui <- annotate_args[[arg_i]]$initial()
-            } else {
-              annotate_widgets[[arg_i]]$widget$name <- arg_i
-              annotate_widgets[[arg_i]]$widget$ui <- annotate_args[[arg_i]]$selected(selected[[arg_i]])
-            }
-
-          } # close for loop
-
-          # return
-          tagList(
-            lapply(annotate_widgets, FUN = function(fun_i){
-              fluidRow(
-                class = ns(fun_i$widget$name), style = 'display:none;',
-                column(width = 3, style = 'padding-top: 5px;',
-                       fun_i$widget$name),
-                column(width = 6, offset = -1, style = 'padding-left: 5px; padding-right: 5px;',
-                       fun_i$widget$ui)
-              )
+    
+    ## Button to manage chart download
+    output$dl <- downloadHandler(
+            filename = function() {
+              paste(thisPlot, Sys.Date(), '.png', sep='')
+            },
+            content = function(con) {
+              ggsave(con,
+                     reactLocal$p, 
+                     device = "png", 
+                     width = 8, 
+                     height = 5)
             })
-          )
-
-        } # close of input$geom_type check
-      }) # close of widget renderUI
-
-
-      # read Attribute selector and force `req` attribute to always re-populate if user removes it
-      observeEvent(input[["geom_attr"]], {
-        # observe({
-        if (isFALSE(input$geom_type == "")) {
-
-          geom_req_attr <-
-            names(annotate_layer_args[[input$geom_type]])[sapply(annotate_layer_args[[input$geom_type]], function(element_i) {
-              if (isTRUE(element_i[["req"]] == TRUE))
-                return(TRUE)
-              else
-                return(FALSE)
-            })]
-
-          if (isFALSE(all(geom_req_attr %in% input[["geom_attr"]]))) {
-            shiny::updateSelectInput(
-              session = session,
-              inputId = 'geom_attr',
-              selected = base::union(geom_req_attr, input[["geom_attr"]])
+    
+    ## Button to display syntax for reproducibility...
+    # https://daattali.com/shiny/shinyalert-demo/
+    # ui
+    #       useShinyalert() 
+    # 
+    # server  
+    #   shinyalert(
+    #     title = "Analysis Reproducibility",
+    #     text = "Below is a the script you can use to reproduce this chart",
+    #     size = "l", 
+    #     closeOnEsc = TRUE,
+    #     closeOnClickOutside = FALSE,
+    #     html = FALSE,
+    #     type = "success",
+    #     showConfirmButton = TRUE,
+    #     showCancelButton = FALSE,
+    #     confirmButtonText = "OK",
+    #     confirmButtonCol = "#0072BC",
+    #     timer = 0,
+    #     imageUrl = "",
+    #     animation = FALSE
+    #   )
+    
+     # Modal displaying chart syntax when clicking inside the chart
+     mod <- function() {
+            modalDialog(
+              tagList(
+                tags$p("Reproducible Code in R Language" ),
+                tags$code(
+                  id = ns("codeinner"),
+                  tags$pre(
+                    #paste(style_text(output$syntax), collapse = "\n")
+                    paste(style_text("r$syntax"), collapse = "\n")
+                  )
+                )
+              ),
+              footer = tagList(
+                actionButton(ns("ok"), "Thanks!")
+              )
             )
           }
-
-        } # close of outer if to check null input$geom_type
-      }, ignoreInit = TRUE) # close of observe
-
-
-      ############################################################################################
-      ### geom text, hline, vline section - module server logic
-      ############################################################################################
-      ## Read mouse and update x and y inputs
-      observeEvent(input$read_mouse,{
-        if(input$geom_type != "rect"){
-
-          if(input$read_mouse){
-            if(input$geom_type == "text"){
-              sanofiJS$disable(id = ns('x'))
-              sanofiJS$disable(id = ns('y'))
-            }
-            else if(input$geom_type == "hline"){
-              # yintercept
-              sanofiJS$disable(id = ns('yintercept'))
-              sanofiJS$disable(id = ns('y'))
-            }
-            else if(input$geom_type == "vline"){
-              # xintercept
-              sanofiJS$disable(id = ns('xintercept'))
-              sanofiJS$disable(id = ns('x'))
-            }
-
-            mrv$x_hover <- NULL
-            mrv$x_click <- NULL
-            mrv$x_dynamic <- NULL
-
-            mrv$y_hover <- NULL
-            mrv$y_click <- NULL
-            mrv$y_dynamic <- NULL
-
-            mrv$click <- NULL
-
-          } else {
-            if(input$geom_type == "text"){
-              sanofiJS$enable(id = ns('x'))
-              sanofiJS$enable(id = ns('y'))
-            }
-            else if(input$geom_type == "hline"){
-              # yintercept
-              sanofiJS$enable(id = ns('yintercept'))
-              sanofiJS$enable(id = ns('y'))
-            }
-            else if(input$geom_type == "vline"){
-              # xintercept
-              sanofiJS$enable(id = ns('xintercept'))
-              sanofiJS$enable(id = ns('x'))
-            }
-          }
-
-        }
-      })
-
-
-      # if reading mouse, clicking will record and turn off reading mouse
-      observeEvent(plotClick(),{
-
-        if(input$geom_type != "rect"){
-          if(isFALSE(is.null(plotClick()$x)) && isFALSE(is.null(plotClick()$y))){
-            if(input$read_mouse) {
-
-              if(is.null(mrv$x_click)) {
-                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-                mrv$x_click <- plotClick()$x
-              } else {
-                mrv$x_click <- NULL
-                mrv$x_dynamic <- NULL
-              }
-
-              if(is.null(mrv$y_click)) {
-                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-                mrv$y_click <- plotClick()$y
-              } else {
-                mrv$y_click <- NULL
-                mrv$y_dynamic <- NULL
-              }
-
-            }
-          }
-        }
-      })
-
-      # current hover: as the plot updates, current hover is lost
-      observe({
-        # if(input$geom_type != "rect"){
-        if(!is.null(plotHover()$x)){
-          mrv$x_hover <- plotHover()$x
-        }
-        if(!is.null(plotHover()$y)){
-          mrv$y_hover <- plotHover()$y
-        }
-        # }
-      })
-
-      # selecting the appropriate coordinate
-      observeEvent(plotHover(),{
-        # if(input$geom_type != "rect"){
-        if(isFALSE(is.null(plotHover()$x)) && isFALSE(is.null(plotHover()$y))){
-
-          if(!is.null(mrv$x_click)) {
-            mrv$x_dynamic <- mrv$x_click
-          } else {
-            mrv$x_dynamic <- mrv$x_hover
-          }
-
-          if(!is.null(mrv$y_click)) {
-            mrv$y_dynamic <- mrv$y_click
-          } else {
-            mrv$y_dynamic <- mrv$y_hover
-          }
-
-        }
-        # }
-      })
-
-      # updating the input widgets
-      observeEvent(mrv$x_dynamic, ignoreNULL = FALSE,{
-        if(input$read_mouse){
-          if(input$geom_type == "text"){
-            updateNumericInput(inputId = ('x'), value = mrv$x_dynamic)
-            updateNumericInput(inputId = ('y'), value = mrv$y_dynamic)
-          }
-          else if(input$geom_type == "hline"){
-            #yintercept
-            updateNumericInput(inputId = ('yintercept'), value = mrv$y_dynamic)
-            updateNumericInput(inputId = ('y'), value = mrv$y_dynamic)
-          }
-          else if(input$geom_type == "vline"){
-            #xintercept
-            updateNumericInput(inputId = ('xintercept'), value = mrv$x_dynamic)
-            updateNumericInput(inputId = ('x'), value = mrv$x_dynamic)
-          }
-        }
-      })
-
-      ############################################################################################
-      ### geom Rectangle section - module server logic
-      ############################################################################################
-
-      observeEvent(input$read_mouse,{
-        if(input$geom_type == "rect"){
-          if(input$read_mouse){
-            # rect
-            sanofiJS$disable(id = ns('xmin'))
-            sanofiJS$disable(id = ns('xmax'))
-            sanofiJS$disable(id = ns('ymin'))
-            sanofiJS$disable(id = ns('ymax'))
-
-            mrv$x_min <- NULL
-            mrv$x_max <- NULL
-            mrv$y_min <- NULL
-            mrv$y_max <- NULL
-
-            mrv$dbl_x_click <- NULL
-            mrv$dbl_y_click <- NULL
-
-          } else {
-            # rect
-            sanofiJS$enable(id = ns('xmin'))
-            sanofiJS$enable(id = ns('xmax'))
-            sanofiJS$enable(id = ns('ymin'))
-            sanofiJS$enable(id = ns('ymax'))
-          }
-        }
-      })
-
-      # double click to confirm rectangle location and update read mouse to Off
-      observeEvent(plotDblClick(),{
-        if(input$geom_type == "rect"){
-          if(isFALSE(is.null(plotBrush()$xmin)) && isFALSE(is.null(plotBrush()$xmax))
-             && isFALSE(is.null(plotBrush()$ymin)) && isFALSE(is.null(plotBrush()$ymax))){
-            if(input$read_mouse) {
-              if(is.null(mrv$dbl_x_click) && is.null(mrv$dbl_y_click)){
-                updateRadioButtons(inputId = 'read_mouse', selected = FALSE)
-                mrv$dbl_x_click <- plotDblClick()$x
-                mrv$dbl_y_click <- plotDblClick()$y
-                # make plot hover height & width to 0 on double click
-                if(plotName != "")
-                  session$sendCustomMessage(type = 'plot_brush_minimize', message = list(id = paste0(plotName,"_brush")))
-              } else {
-                mrv$dbl_x_click <- NULL
-                mrv$dbl_y_click <- NULL
-              }
-            }
-          }
-        }
-      })
-
-      # current rect: as the plot updates, current rect points are lost
-      observe({
-        if(input$geom_type == "rect"){
-          if(!is.null(plotBrush()$xmin)){
-            mrv$x_min <- plotBrush()$xmin
-            mrv$dbl_x_click <- plotDblClick()$x
-          }
-          if(!is.null(plotBrush()$xmax)){
-            mrv$x_max <- plotBrush()$xmax
-          }
-          if(!is.null(plotBrush()$ymin)){
-            mrv$y_min <- plotBrush()$ymin
-            mrv$dbl_y_click <- plotDblClick()$y
-          }
-          if(!is.null(plotBrush()$ymax)){
-            mrv$y_max <- plotBrush()$ymax
-          }
-        }
-      })
-
-      # updating the input widgets
-      observeEvent(list(mrv$x_min,mrv$x_max,mrv$y_min,mrv$y_max), ignoreNULL = FALSE,{
-        if(input$read_mouse){
-          #rect
-          updateNumericInput(inputId = ('xmin'), value = mrv$x_min)
-          updateNumericInput(inputId = ('xmax'), value = mrv$x_max)
-          updateNumericInput(inputId = ('ymin'), value = mrv$y_min)
-          updateNumericInput(inputId = ('ymax'), value = mrv$y_max)
-        }
-      })
-
-
-      ############################################################################################
-      # return Module
-      ############################################################################################
-      return(reactive({
-        # ans <- list()
-        ans <- list(.fn = "annotate", geom = input$geom_type)
-
-        lapply(names(annotate_layer_args[[input$geom_type]]), FUN = function(arg_i) {
-          if(arg_i %in% input[["geom_attr"]])
-            sanofiJS$show(class = ns(arg_i), display = 'inherit', session = session)
-          else
-            sanofiJS$hide(class = ns(arg_i), session = session)
-        })
-
-
-        # for (arg_i in names(annotate_layer_args[[input$geom_type]])) {
-        for (arg_i in input[["geom_attr"]]) { # to Module return values selected in 'Attribute Selector'
-          if (isFALSE(input[[arg_i]] == "")) {
-
-            # capture user input
-            ans[[arg_i]] <- input[[arg_i]]
-
-          }
-        }
-
-        # force x & y values for vline and hline respectively for it to work
-        if(input$geom_type == 'hline'){
-          ans[['y']] <- ans[['yintercept']]
-        } else if(input$geom_type == 'vline'){
-          ans[['x']] <- ans[['xintercept']]
-        }
-
-        # return
-        ans
-
-      })) # close of module end reactive return
+  
+    observeEvent(input$show, {
+            showModal(mod())
+          })
+    observeEvent(input$ok, {
+            removeModal()
+          })
     
     
-    
-    
- 
   })
 }
     
 ## To be copied in the UI
-# mod_annotate_ui("annotate_1")
+# mod_plotviz_ui("migrants_1")
     
 ## To be copied in the server
-# mod_annotate_server("annotate_1")
+# mod_plotviz_server("migrants_1")
 
 ```
 
-```{r examples-mod_annotate}
+```{r examples-mod_plotviz}
 
 ```
 
-```{r tests-mod_annotate}
-test_that("mod_annotate works", {
+```{r tests-mod_plotviz}
+# test_that(" mod_plotviz works", {
+# 
+# })
+```
 
+
+
+## mod_share
+
+See how we could share the story then on twitter -
+
+This is a module that will work based on a specific module id.. 
+https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
+
+https://stackoverflow.com/questions/62052804/is-there-a-way-to-add-share-buttons-to-make-plots-shareable-in-shiny
+The way a Twitter Card could work would be if you were sharing a link to a static web page in the Tweet text, and if that page had some markup which included the image, so that the image would be shown as a preview for the link. 
+
+```{r function-mod_share}
+#' categories UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+#'
+#' @importFrom shiny NS tagList 
+#' @importFrom shinydashboard box 
+mod_share_ui <- function(id){
+  ns <- NS(id)
+
+  tagList( 
+     # actionButton(inputId="publish",
+     #     label="Share your story (not working yet)",
+     #     icon("share-from-square"))  ,
+     # Combine text with url variable
+      # Use the onclick parameter to open a new window to the twitter url
+     
+     # HTML("<div style='float:right'>
+     #         <a href='https://twitter.com/share' 
+     #         class='twitter-share-button' 
+     #         align='middle' 
+     #         data-url='https://rstudio.unhcr.org/Data_Literacy/' 
+     #         data-text='Insert text here!' 
+     #         data-size='large'>Tweet
+     #         </a>
+     #         <script>!function(d,s,id){
+     #         var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+     #         if(!d.getElementById(id)){
+     #         js=d.createElement(s);
+     #         js.id=id;
+     #         js.src=p+'://platform.twitter.com/widgets.js';
+     #         fjs.parentNode.insertBefore(js,fjs);
+     #         }
+     #         }(document, 'script', 'twitter-wjs');
+     #         </script>
+     #         </div>")
+     
+     # actionButton("twitter_share",
+     #               label = "Share your story!",
+     #               icon = icon("twitter"),
+     #               onclick = sprintf("window.open('%s')", output$url)) 
+     
+     
+     )
+}
+    
+#' categories Server Functions
+#'
+#' @noRd 
+mod_share_server <- function(id, tweetplot){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+  #   output$url <- renderText({ 
+  #      
+  #   ### Build and save the twitter card 
+  #   
+  #   ## Get the plot and save it as an image   on the disk  
+  #  # tweechart <-   ""
+  #   ## extract tweet message aka the plot tile
+  # #  tweetmessage <- ""
+  #   ## Now build the html tweetcard file to reference the image
+  #  # tweetcard <- 
+  #   # <meta name="twitter:card" content="summary_large_image">
+  #   # <meta name="twitter:site" content="@Refugees">
+  #   # <meta name="twitter:creator" content="@edouard_lgp">
+  #   # <meta name="twitter:title" content="">
+  #   # <meta name="twitter:description" content="Data Literacy on Forced Displacement">
+  #   # <meta name="twitter:image" content="https://rstudio.unhcr.org/Data_Literacy/image.jpg">
+  #   # <meta name="twitter:url" content="https://rstudio.unhcr.org/Data_Literacy/" />
+  #   
+  #   ### Save the twitter card on the disk 
+  #   
+  #   
+  #   ## Create the URL and append it to the twitter intend.. 
+  #    #  url <- paste0("https://twitter.com/intent/tweet?text=",
+  #    #                tweetmessage,
+  #    #               "&url=https://rstudio.unhcr.org/Data_Literacy/",
+  #    #               tweetchart,"\"")
+  #    # 
+  #    # ## Give back that URL 
+  #    # return(url)
+  #  ## For FB 'https://www.facebook.com/sharer/sharer.php?u='  
+  #     })
+  })
+}
+    
+## To be copied in the UI
+# mod_share_ui("categories_1")
+    
+## To be copied in the server
+# mod_share_server("categories_1")
+
+```
+
+```{r examples-mod_share}
+
+```
+
+```{r tests-mod_share}
+testServer(
+  mod_share_server,
+  # Add here your module params
+  args = list()
+  , {
+    ns <- session$ns
+    expect_true(
+      inherits(ns, "function")
+    )
+    expect_true(
+      grepl(id, ns(""))
+    )
+    expect_true(
+      grepl("test", ns("test"))
+    )
+    # Here are some examples of tests you can
+    # run on your module
+    # - Testing the setting of inputs
+    # session$setInputs(x = 1)
+    # expect_true(input$x == 1)
+    # - If ever your input updates a reactiveValues
+    # - Note that this reactiveValues must be passed
+    # - to the testServer function via args = list()
+    # expect_true(r$x == 1)
+    # - Testing output
+    # expect_true(inherits(output$tbl$html, "html"))
+})
+ 
+test_that("module share works", {
+  ui <- mod_share_ui(id = "test")
+  golem::expect_shinytaglist(ui)
+  # Check that formals have not been removed
+  fmls <- formals(mod_share_ui)
+  for (i in c("id")){
+    expect_true(i %in% names(fmls))
+  }
 })
 ```
 
 
+# Interface Componnnent
 
+The interface component allows to navigate within the library from home page 
+- typically each is behind  a series of shinydashboard::tabItem
 
-# mod_categories
+Then each module includes different [tabsets](https://shiny.posit.co/r/gallery/application-layout/tabsets/) for each of the pplotting functions presented
+
+## mod_categories
 
 ```{r function-mod_categories}
 #' categories UI Function
@@ -684,73 +1628,47 @@ test_that("mod_annotate works", {
 #'
 #' @importFrom shiny NS tagList 
 #' @importFrom shinydashboard box 
+#' @keywords internal
 mod_categories_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_population_type_per_year")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value="") ,
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)")
-            
-            ),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "Population Types to include",
-                        choices = c(  "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP" ,
-                                      "Other of Concern"=     "OOC",
-                                           "Stateless"="STA",
-                                       "Internally Displaced Persons"=     "IDP" ),
-                        selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-            
-            
-            
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Population Type Over Year",
+                  mod_plotviz_ui(ns("categories1"),
+                  thisPlot = "plot_ctr_population_type_per_year" ) ),
+         
+         tabPanel(title= "Tree Map",
+                  mod_plotviz_ui(ns("categories2"),
+                  thisPlot = "plot_ctr_treemap" ) ),
+         
+         tabPanel(title= "Key Figures",
+                  mod_plotviz_ui(ns("categories3"),
+                  thisPlot = "plot_ctr_keyfig" ) ) 
+      ) ## End Tabset 
     )
 }
     
 #' categories Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @importFrom styler style_text
+#' @import ggplot2
+#' @import shiny
+#' @importFrom stringr str_wrap
+#' @keywords internal
 mod_categories_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_population_type_per_year <- renderPlot({
-      p <- plot_ctr_population_type_per_year(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-                         lag = 5,
-                         pop_type = input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-      
-                             })
- 
+    mod_plotviz_server("categories1", 
+                       thisPlot = "plot_ctr_population_type_per_year", 
+                       reactiveParameters )
+    mod_plotviz_server("categories2", 
+                       thisPlot = "plot_ctr_treemap", 
+                       reactiveParameters )
+    mod_plotviz_server("categories3", 
+                       thisPlot = "plot_ctr_keyfig", 
+                       reactiveParameters )
   })
 }
     
@@ -807,7 +1725,7 @@ test_that("module categories works", {
 ```
 
 
-# mod_origin
+## mod_origin
 
 ```{r function-mod_origin}
 #' origin UI Function
@@ -819,64 +1737,53 @@ test_that("module categories works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_origin_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_population_type_abs")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, 
-            selectInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected =   "ASY" )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Main Country of Origin",
+                  mod_plotviz_ui(ns("origin1"),
+                  thisPlot = "plot_ctr_population_type_abs" ) ),
+         
+         tabPanel(title= "Main Country of Origin as %",
+                  mod_plotviz_ui(ns("origin2"),
+                  thisPlot = "plot_ctr_population_type_perc" ) ),
+         
+         tabPanel(title= "Increases and Decreases ",
+                  mod_plotviz_ui(ns("origin3"),
+                  thisPlot = "plot_ctr_diff_in_pop_groups" ) ),
+         
+         tabPanel(title= "Origin History",
+                  mod_plotviz_ui(ns("origin4"), 
+                  thisPlot = "plot_ctr_origin_history" ) ) 
+      ) ## End Tabset 
   )
 }
     
 #' origin Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_origin_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_population_type_abs <- renderPlot({
-                 p <- plot_ctr_population_type_abs(
-                        year = as.integer(reactiveParameters$year),
-                        country_asylum_iso3c = reactiveParameters$country,
-                        top_n_countries = 9,
-                        show_diff_label = TRUE,
-                        pop_type = input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+    mod_plotviz_server("origin1", 
+                       thisPlot = "plot_ctr_population_type_abs", 
+                       reactiveParameters )
+    mod_plotviz_server("origin2", 
+                       thisPlot = "plot_ctr_population_type_perc", 
+                       reactiveParameters )
+    mod_plotviz_server("origin3", 
+                       thisPlot = "plot_ctr_diff_in_pop_groups", 
+                       reactiveParameters )
+    mod_plotviz_server("origin4",
+                       thisPlot = "plot_ctr_origin_history", 
+                       reactiveParameters )
  
   })
 }
@@ -935,7 +1842,7 @@ test_that("module origin works", {
 ```
 
 
-# mod_destination
+## mod_destination
 
 ```{r function-mod_destination}
 #' destination UI Function
@@ -947,62 +1854,38 @@ test_that("module origin works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_destination_ui <- function(id){
   ns <- NS(id)
   tagList(
-            plotOutput(ns("plot_ctr_destination")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected = c(  "ASY"  ) )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Main Destination",
+                  mod_plotviz_ui(ns("destination1"),
+                  thisPlot = "plot_ctr_destination" ) ),
+         
+         tabPanel(title= "Recognition by Origin",
+                  mod_plotviz_ui(ns("destination2"),
+                  thisPlot = "plot_ctr_origin_recognition" ) )
+      ) ## End Tabset 
   )
 }
     
 #' destination Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_destination_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_destination <- renderPlot({
-              p <-          plot_ctr_destination(
-              year = as.numeric(reactiveParameters$year),
-              country_origin_iso3c = reactiveParameters$country,
-                     pop_type =   input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+      mod_plotviz_server("destination1", 
+                         thisPlot = "plot_ctr_destination",
+                         reactiveParameters )
+       mod_plotviz_server("destination2", 
+                          thisPlot = "plot_ctr_origin_recognition",
+                          reactiveParameters )
  
   })
 }
@@ -1026,7 +1909,7 @@ test_that("mod_destination works", {
 ```
 
 
-# mod_demographics
+## mod_demographics
 
 ```{r function-mod_demographics}
 #' demographics UI Function
@@ -1038,62 +1921,37 @@ test_that("mod_destination works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_demographics_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_pyramid")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected = c(  "REF"  ) )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Age and Gender",
+                  mod_plotviz_ui(ns("demographics1"),
+                  thisPlot = "plot_ctr_pyramid" ) ) #,
+         
+         # tabPanel(title= "Location",
+         #          mod_plotviz_ui(ns("demographics2"), 
+         #          thisPlot = "plot_ctr_location" ) )
+      ) ## End Tabset 
   )
 }
     
 #' demographics Server Functions
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_demographics_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
-        output$plot_ctr_pyramid <- renderPlot({
-               p <-          plot_ctr_pyramid(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-              pop_type =  input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+   mod_plotviz_server("demographics1", 
+                      thisPlot = "plot_ctr_pyramid", 
+                      reactiveParameters ) 
+   # mod_plotviz_server("demographics2", 
+   #                    thisPlot = "plot_ctr_location", 
+   #                    reactiveParameters ) 
  
   })
 }
@@ -1117,7 +1975,7 @@ test_that("mod_demographics works", {
 ```
 
 
-# mod_processing
+## mod_processing
 
 ```{r function-mod_processing}
 #' processing UI Function
@@ -1129,55 +1987,39 @@ test_that("mod_demographics works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_processing_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_process")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, ""),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Decision Flow",
+                  mod_plotviz_ui(ns("processing1"),
+                  thisPlot = "plot_ctr_process" ) ),
+         
+         tabPanel(title= "Recognition",
+                  mod_plotviz_ui(ns("processing2"), 
+                  thisPlot = "plot_ctr_recognition" ) ),
+         
+         tabPanel(title= "Processing Time",
+                  mod_plotviz_ui(ns("processing3"), 
+                  thisPlot = "plot_ctr_processing_time" ) )
+      ) ## End Tabset
   )
 }
     
 #' processing Server Functions
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_processing_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_process <- renderPlot({
-                  p <-      plot_ctr_process(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+       mod_plotviz_server("processing1", thisPlot = "plot_ctr_process", reactiveParameters )
+       mod_plotviz_server("processing2", thisPlot = "plot_ctr_recognition", reactiveParameters )
+       mod_plotviz_server("processing3", thisPlot = "plot_ctr_processing_time", reactiveParameters )
  
   })
 }
@@ -1201,7 +2043,7 @@ test_that("mod_processing works", {
 ```
 
 
-# mod_solution
+## mod_solution
 
 ```{r function-mod_solution}
 #' solution UI Function
@@ -1213,63 +2055,31 @@ test_that("mod_processing works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_solution_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_solution")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value="") ,
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)")),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected = c(  "ASY"  ) )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Solutions Trend",
+                  mod_plotviz_ui(ns("solution1"),
+                  thisPlot = "plot_ctr_solution" ) ) 
+      ) ## End Tabset
   )
 }
     
 #' solution Server Functions
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_solution_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-        output$plot_ctr_solution <- renderPlot({
-             p <-            plot_ctr_solution(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-              pop_type =  input$pop_type)
-          
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+   mod_plotviz_server("solution1", 
+                      thisPlot = "plot_ctr_solution", 
+                      reactiveParameters ) 
  
   })
 }
@@ -1293,7 +2103,11 @@ test_that("mod_solution works", {
 ```
 
 
-# mod_migrants
+ 
+
+
+
+## mod_migrants
 
 ```{r function-mod_migrants}
 #' migrants UI Function
@@ -1305,56 +2119,30 @@ test_that("mod_solution works", {
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_migrants_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_disp_migrant")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                          label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, ""),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )))
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Migration and Displacement",
+                  mod_plotviz_ui(ns("migrants1"),
+                  thisPlot = "plot_ctr_disp_migrant" ) ) 
+      ) ## End Tabset
   )
+  
 }
     
 #' migrants Server Functions
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_migrants_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
-    output$plot_ctr_disp_migrant <- renderPlot({
-                  p <-       plot_ctr_disp_migrant(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
- 
+       mod_plotviz_server("migrants1", thisPlot = "plot_ctr_disp_migrant", reactiveParameters ) 
   })
 }
     
@@ -1371,11 +2159,10 @@ mod_migrants_server <- function(id, reactiveParameters){
 ```
 
 ```{r tests-mod_migrants}
-test_that("mod_migrants works", {
-
-})
+# test_that("mod_migrants works", {
+# 
+# })
 ```
-
 
 
 
@@ -1384,10 +2171,6 @@ test_that("mod_migrants works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/dev_golem_module.Rmd", 
-               check = FALSE,
-               document = FALSE,
-               overwrite = TRUE,
-               vignette_name = "Golem Modules for ShinyApp")
+fusen::inflate(flat_file = "dev/dev_golem_module.Rmd", check = FALSE, document = FALSE,  overwrite = TRUE,vignette_name = "Golem Modules for ShinyApp")
 ```
 

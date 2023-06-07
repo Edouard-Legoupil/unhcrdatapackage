@@ -9,62 +9,37 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_demographics_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_pyramid")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected = c(  "REF"  ) )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Age and Gender",
+                  mod_plotviz_ui(ns("demographics1"),
+                  thisPlot = "plot_ctr_pyramid" ) ) #,
+         
+         # tabPanel(title= "Location",
+         #          mod_plotviz_ui(ns("demographics2"), 
+         #          thisPlot = "plot_ctr_location" ) )
+      ) ## End Tabset 
   )
 }
     
 #' demographics Server Functions
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_demographics_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
-        output$plot_ctr_pyramid <- renderPlot({
-               p <-          plot_ctr_pyramid(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-              pop_type =  input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+   mod_plotviz_server("demographics1", 
+                      thisPlot = "plot_ctr_pyramid", 
+                      reactiveParameters ) 
+   # mod_plotviz_server("demographics2", 
+   #                    thisPlot = "plot_ctr_location", 
+   #                    reactiveParameters ) 
  
   })
 }

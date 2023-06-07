@@ -11,7 +11,10 @@ golem::add_module( name = "analysis" ) # Name of the module
 golem::add_module( name = "input" ) # Name of the module
 
 ## 2.2 Add dependencies
-
+## Dependencies ----
+## Amend DESCRIPTION with dependencies read from package code parsing
+## install.packages('attachment') # if needed.
+attachment::att_amend_desc()
 usethis::use_package( "shiny" )
 usethis::use_package( "shinydashboard" )
 usethis::use_package( "shinydashboardPlus" )

@@ -10,73 +10,47 @@
 #'
 #' @importFrom shiny NS tagList 
 #' @importFrom shinydashboard box 
+#' @keywords internal
 mod_categories_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        plotOutput(ns("plot_ctr_population_type_per_year")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value="") ,
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)")
-            
-            ),
-                            column( 4, 
-            checkboxGroupInput(  inputId = ns("pop_type"),
-                        label = "Population Types to include",
-                        choices = c(  "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP" ,
-                                      "Other of Concern"=     "OOC",
-                                           "Stateless"="STA",
-                                       "Internally Displaced Persons"=     "IDP" ),
-                        selected = c("REF",  "ASY",  "OIP",  "OOC",  "STA",  "IDP" ) )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-            
-            
-            
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Population Type Over Year",
+                  mod_plotviz_ui(ns("categories1"),
+                  thisPlot = "plot_ctr_population_type_per_year" ) ),
+         
+         tabPanel(title= "Tree Map",
+                  mod_plotviz_ui(ns("categories2"),
+                  thisPlot = "plot_ctr_treemap" ) ),
+         
+         tabPanel(title= "Key Figures",
+                  mod_plotviz_ui(ns("categories3"),
+                  thisPlot = "plot_ctr_keyfig" ) ) 
+      ) ## End Tabset 
     )
 }
     
 #' categories Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @importFrom styler style_text
+#' @import ggplot2
+#' @import shiny
+#' @importFrom stringr str_wrap
+#' @keywords internal
 mod_categories_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_population_type_per_year <- renderPlot({
-      p <- plot_ctr_population_type_per_year(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country,
-                         lag = 5,
-                         pop_type = input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-      
-                             })
- 
+    mod_plotviz_server("categories1", 
+                       thisPlot = "plot_ctr_population_type_per_year", 
+                       reactiveParameters )
+    mod_plotviz_server("categories2", 
+                       thisPlot = "plot_ctr_treemap", 
+                       reactiveParameters )
+    mod_plotviz_server("categories3", 
+                       thisPlot = "plot_ctr_keyfig", 
+                       reactiveParameters )
   })
 }
     

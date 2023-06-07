@@ -9,55 +9,39 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_processing_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_process")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, ""),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Decision Flow",
+                  mod_plotviz_ui(ns("processing1"),
+                  thisPlot = "plot_ctr_process" ) ),
+         
+         tabPanel(title= "Recognition",
+                  mod_plotviz_ui(ns("processing2"), 
+                  thisPlot = "plot_ctr_recognition" ) ),
+         
+         tabPanel(title= "Processing Time",
+                  mod_plotviz_ui(ns("processing3"), 
+                  thisPlot = "plot_ctr_processing_time" ) )
+      ) ## End Tabset
   )
 }
     
 #' processing Server Functions
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_processing_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_process <- renderPlot({
-                  p <-      plot_ctr_process(
-              year = as.numeric(reactiveParameters$year),
-              country_asylum_iso3c = reactiveParameters$country)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+       mod_plotviz_server("processing1", thisPlot = "plot_ctr_process", reactiveParameters )
+       mod_plotviz_server("processing2", thisPlot = "plot_ctr_recognition", reactiveParameters )
+       mod_plotviz_server("processing3", thisPlot = "plot_ctr_processing_time", reactiveParameters )
  
   })
 }

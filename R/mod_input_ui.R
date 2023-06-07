@@ -49,7 +49,8 @@ mod_input_ui <- function(id){
   )
 }
     
-#' input Server Functions
+#' input Server Functions 
+#' @param reactiveParameters  Main app filters defined through mod_input
 #'
 #' @noRd 
 mod_input_server <- function(id, reactiveParameters){

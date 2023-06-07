@@ -9,64 +9,53 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @keywords internal
 mod_origin_ui <- function(id){
   ns <- NS(id)
   tagList(
-        plotOutput(ns("plot_ctr_population_type_abs")),
-       fluidRow(
-        shinydashboard::box( title = "Tell Your Story!",
-                              status = "info", 
-                              solidHeader = TRUE, 
-                              collapsible = TRUE,
-                              #background = "light-blue",
-                              width = 12, 
-                             fluidRow( 
-                            column( 6, 
-            textInput( inputId =ns( "title"),
-                   label ="Title -  Highlight your main message! Keep it short!",
-                   value=""),
-            textInput( inputId = ns( "subtitle"),
-                       label ="SubTitle -  Add Insights!",
-                       value=""),
-            textInput( inputId = ns( "annot"),
-                       label ="Annotate -  Add Interpretation!",
-                       value="") , 
-             actionButton(inputId="position",
-                                       label="Position the annotation on the chart (not working yet)") ),
-                            column( 4, 
-            selectInput(  inputId = ns("pop_type"),
-                        label = "What Population Type to include",
-                        choices = c(   "Refugee" ="REF", 
-                                     "Asylum Seeker"= "ASY", 
-                                      "Other in Need of International Protection"="OIP"  ),
-                        selected =   "ASY" )),
-                             column( 2, 
-                     actionButton(inputId="publish",
-                                       label="Share your story (not working yet)",
-                                       icon("share-from-square"))   )
-                             )  ) )
+   
+   tabsetPanel(type = "tabs",
+         tabPanel(title= "Main Country of Origin",
+                  mod_plotviz_ui(ns("origin1"),
+                  thisPlot = "plot_ctr_population_type_abs" ) ),
+         
+         tabPanel(title= "Main Country of Origin as %",
+                  mod_plotviz_ui(ns("origin2"),
+                  thisPlot = "plot_ctr_population_type_perc" ) ),
+         
+         tabPanel(title= "Increases and Decreases ",
+                  mod_plotviz_ui(ns("origin3"),
+                  thisPlot = "plot_ctr_diff_in_pop_groups" ) ),
+         
+         tabPanel(title= "Origin History",
+                  mod_plotviz_ui(ns("origin4"), 
+                  thisPlot = "plot_ctr_origin_history" ) ) 
+      ) ## End Tabset 
   )
 }
     
 #' origin Server Functions
 #'
+#' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
+#' @import ggplot2
+#' @import shiny
+#' @keywords internal
 mod_origin_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    output$plot_ctr_population_type_abs <- renderPlot({
-                 p <- plot_ctr_population_type_abs(
-                        year = as.integer(reactiveParameters$year),
-                        country_asylum_iso3c = reactiveParameters$country,
-                        top_n_countries = 9,
-                        show_diff_label = TRUE,
-                        pop_type = input$pop_type)
-      
-   if (input$title != "") { p<- p + labs(title = input$title)}
-   if (input$subtitle != "") { p <- p + labs(subtitle = input$subtitle)}
-      
-      p
-                             })
+    mod_plotviz_server("origin1", 
+                       thisPlot = "plot_ctr_population_type_abs", 
+                       reactiveParameters )
+    mod_plotviz_server("origin2", 
+                       thisPlot = "plot_ctr_population_type_perc", 
+                       reactiveParameters )
+    mod_plotviz_server("origin3", 
+                       thisPlot = "plot_ctr_diff_in_pop_groups", 
+                       reactiveParameters )
+    mod_plotviz_server("origin4",
+                       thisPlot = "plot_ctr_origin_history", 
+                       reactiveParameters )
  
   })
 }
