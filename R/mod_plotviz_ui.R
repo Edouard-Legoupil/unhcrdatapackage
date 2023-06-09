@@ -56,7 +56,7 @@
 #'
 #' @noRd 
 #'
-#' @importFrom shiny NS tagList 
+#' @import  shiny  
 #' @keywords internal
 mod_plotviz_ui <- function(id, thisPlot){
   ns <- NS(id)
@@ -222,7 +222,16 @@ mod_plotviz_ui <- function(id, thisPlot){
                  label = "Share your story",
                  class = "btn-success" ,
                  icon = shiny::icon("share-from-square")
-               )
+               ),
+               " ", 
+               br() ,
+               hr(),
+               #shiny::tag(br()),
+               actionButton(inputId= ns("reproducibility"), 
+                            label= "Reproducibility",
+                            class = "btn-success",
+                             icon =   icon('gears') )
+               
              )  # End column
            )  # End First Fluid Row...
          ) #, #  shinydashboard::box
@@ -263,8 +272,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
           ggplot2::annotate("text", x = 1, y = 1, size = 11, 
                             label = "There was a problem" ) +  
           ggplot2::theme_void(), 
-       code = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" ,
-        syntax = " # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\")" )
+       codeinit = "# install.packages(\"pak\") \n # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\") \n library(\"unhcrdatapackage\")"   )
     
     ## Observe Point
     observeEvent(input$annot,
@@ -296,23 +304,38 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                        }
           )
      
-     
+    ## Observe title
+    observeEvent( input$title,
+                 handlerExpr = {
+                  reactLocal$title <- input$title #|> 
+                             #debounce(1000) 
+                  }
+    )
+    
+    ## Observe title
+    observeEvent( input$subtitle,
+                 handlerExpr = {
+                  reactLocal$subtitle <- input$subtitle #|> 
+                             #debounce(1000) 
+                  }
+    )
      
     ### Plot rendering function
     output$thisplot <- renderPlot({
       ## Debugging.. 
-      #browser()
+      # browser()
       ## Output in console 
-      # cat(file=stderr(), "drawing plot type", thisPlot, "\n")
-      # cat(file=stderr(), " for year", reactiveParameters$year, "\n")
-      # cat(file=stderr(), " for country", reactiveParameters$country, "\n")
-    
-    ## Rendering plot Based on type...
+        cat(file=stderr(), 
+            "drawing plot type", 
+            thisPlot, " for year ", 
+            reactiveParameters$year,
+            " for country", 
+            reactiveParameters$country,"\n")
     
     # 1. Category 
     # ## Key Figures
       if( thisPlot == "plot_ctr_keyfig"){
-        p <-  plot_ctr_keyfig(
+        p  <-  plot_ctr_keyfig(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country)
     # ## Plot Tree Map of Categories
@@ -363,29 +386,28 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
     # # 3. Destination 
     # ## Plot Main Destination from  one specific country 
       } else if( thisPlot == "plot_ctr_destination"){
-        p <-  plot_ctr_destination(
+        p  <-  plot_ctr_destination(
                 year = as.numeric(reactiveParameters$year),
                 country_origin_iso3c = reactiveParameters$country,
                 pop_type = input$pop_type )
     # ## plot recognition rate for a nationality
       } else if( thisPlot == "plot_ctr_origin_recognition"){
-        p <-  plot_ctr_origin_recognition(
+        p  <-  plot_ctr_origin_recognition(
                 year = as.numeric(reactiveParameters$year),
                 country_origin_iso3c = reactiveParameters$country,
-                pop_type = input$pop_type, 
                 top_n_countries = input$top_n_countries,
                 measure  = input$measure ,
                 order_by = input$order_by)
     # # 4. Profile
     # ## Plot Age Pyramid
       }  else if( thisPlot == "plot_ctr_pyramid"){
-        p <-  plot_ctr_pyramid(
+        p  <-  plot_ctr_pyramid(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 pop_type = input$pop_type )
     # ## Plot locations within countries
       } else if( thisPlot == "plot_ctr_location"){
-        p <-  plot_ctr_location(
+        p  <-  plot_ctr_location(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 pop_type = input$pop_type,
@@ -393,7 +415,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
     # # 5. Processing
     # ## Plot Refugee Recognition rate in Country
       } else if( thisPlot == "plot_ctr_recognition"){
-        p <-  plot_ctr_recognition(
+        p  <-  plot_ctr_recognition(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 top_n_countries = input$top_n_countries,
@@ -401,19 +423,19 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                 order_by = input$order_by)
     # ## Asylum Applications & Decision over time
       } else if( thisPlot == "plot_ctr_asylum"){
-        p <-  plot_ctr_asylum(
+        p  <-  plot_ctr_asylum(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 lag = input$lag)
     # ## Asylum Processing
       } else if( thisPlot == "plot_ctr_process"){
-        p <-  plot_ctr_process(
+        p  <-  plot_ctr_process(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 otherprop = input$otherprop)
     # ## Average Asylum Processing Time
       } else if( thisPlot == "plot_ctr_processing_time"){
-        p <-  plot_ctr_processing_time(
+        p  <-  plot_ctr_processing_time(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 country_origin_iso3c = NULL,
@@ -422,94 +444,245 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
     # # 6. Solutions 
     # ## Plot Solution Over time 
       } else if( thisPlot == "plot_ctr_solution"){
-        p <-  plot_ctr_solution(
+        p  <-  plot_ctr_solution(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country,
                 pop_type = input$pop_type)
     # # 7.Migrant 
     # ## Plot Ratio Refugee Migrant 
       } else if( thisPlot == "plot_ctr_disp_migrant"){
-        p <-  plot_ctr_disp_migrant(
+        p  <-  plot_ctr_disp_migrant(
                 year = as.numeric(reactiveParameters$year),
                 country_asylum_iso3c = reactiveParameters$country )
-        
         ## Default in case...
       } else {
-        p <- ggplot2::ggplot() +  
-          ggplot2::annotate("text", x = 1, y = 1, size = 11, 
-                            label = "There was a problem" ) +  
-          ggplot2::theme_void() 
+        p  <- ggplot2::ggplot() +
+          ggplot2::annotate("text", x = 1, y = 1, size = 11,
+                  label = "A significant problem occured..." ) +
+          ggplot2::theme_void()
       }
-      
-      ## Now adding title and subtitle...
-      if (input$title != "") { 
-        p <- p + labs(title = input$title)}
-      if (input$subtitle != "") {
-        p <- p + labs(subtitle = input$subtitle)}
-      
-      #reactLocal$chart <- p
-      p 
+        
+         ## Now adding title and subtitle...
+          if (input$title != "") { 
+            p  <- p +   labs(title = input$title)
+            }
+          if (input$subtitle != "") {   
+            p  <- p +     labs(subtitle = input$subtitle)
+          }
+        ## Ready to add story telling... 
+        reactLocal$chart <- p
+        p  
       })
     
     ## Button to manage chart download
-    output$dl <- downloadHandler(
-            filename = function() {
-              paste(thisPlot, Sys.Date(), '.png', sep='')
-            },
+    output$dl <- downloadHandler(   
+          filename = function() {
+              paste(thisPlot,"_",
+                    reactiveParameters$year,"_",
+                    reactiveParameters$country,"_",
+                    format(Sys.time(), "%Y_%m_%d_%H_%M_%S"),  '.png', sep='')  },
             content = function(con) {
               ggsave(con,
-                     reactLocal$p, 
-                     device = "png", 
-                     width = 8, 
-                     height = 5)
-            })
-    
-    ## Button to display syntax for reproducibility...
-    # https://daattali.com/shiny/shinyalert-demo/
-    # ui
-    #       useShinyalert() 
-    # 
-    # server  
-    #   shinyalert(
-    #     title = "Analysis Reproducibility",
-    #     text = "Below is a the script you can use to reproduce this chart",
-    #     size = "l", 
-    #     closeOnEsc = TRUE,
-    #     closeOnClickOutside = FALSE,
-    #     html = FALSE,
-    #     type = "success",
-    #     showConfirmButton = TRUE,
-    #     showCancelButton = FALSE,
-    #     confirmButtonText = "OK",
-    #     confirmButtonCol = "#0072BC",
-    #     timer = 0,
-    #     imageUrl = "",
-    #     animation = FALSE
-    #   )
-    
-     # Modal displaying chart syntax when clicking inside the chart
+                     reactLocal$chart + 
+                       ## Increase font size for rendering on phone
+                      theme(text = element_text(size = 22)) , 
+                     device = "png",
+                     ## Square style for insta!
+                     width = 4,
+                     height = 4,
+                     units = "in",
+                     dpi = "retina"
+                     )
+            }
+          )
+
+     ## Modal displaying chart syntax 
      mod <- function() {
             modalDialog(
               tagList(
-                tags$p("Reproducible Code in R Language" ),
+                tags$p("Reproducible Script for this chart in R Language: " ),
                 tags$code(
                   id = ns("codeinner"),
                   tags$pre(
-                    #paste(style_text(output$syntax), collapse = "\n")
-                    paste(style_text("r$syntax"), collapse = "\n")
+                   # paste(style_text("reactLocal$code"), collapse = "\n")
+                    paste( dplyr::last(reactLocal$code) , collapse = "\n")
                   )
                 )
               ),
               footer = tagList(
-                actionButton(ns("ok"), "Thanks!")
+                actionButton(ns("ok"), "Got it!")
               )
             )
           }
-  
-    observeEvent(input$show, {
+     observeEvent(input$reproducibility, {
+       # 1. Category 
+    # ## Key Figures
+      if( thisPlot == "plot_ctr_keyfig"){
+        reactLocal$code <- sprintf(
+        " %s  \n   plot_ctr_keyfig( \n  year = as.numeric( %s ), \n  country_asylum_iso3c = \"%s\") \n",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country)
+        
+        
+    # ## Plot Tree Map of Categories
+      } else  if( thisPlot == "plot_ctr_treemap"){
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_treemap( \n   year = as.numeric( %s ),  \n country_asylum_iso3c = \"%s\" ,  \n pop_type =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type)
+        
+    # ## Plot Population type per year
+      } else if( thisPlot == "plot_ctr_population_type_per_year"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_population_type_per_year( \n  year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\" , \n  pop_type =  %s  ,  \n lag =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type,
+                        input$lag) 
+    # # 2. Origin
+    # ## Plot Main country of origin  in one specific country
+        #- Absolute value
+      } else if( thisPlot == "plot_ctr_population_type_abs"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_population_type_abs( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\" ,\n  pop_type =  %s, \n top_n_countries =  %s, \n show_diff_label =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type,
+                        input$top_n_countries,
+                        input$show_diff_label)
+    # ## Plot Main country of origin in one specific country 
+        #- Percentage
+      } else if( thisPlot == "plot_ctr_population_type_perc"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n plot_ctr_population_type_perc( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\"   ,  \n pop_type =  %s, \n top_n_countries =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type,
+                        input$top_n_countries)
+    # ## Plot Increases and Decreases in Population Groups
+      } else if( thisPlot == "plot_ctr_diff_in_pop_groups"){ 
+        reactLocal$code <- sprintf(
+       " %s  \n  plot_ctr_diff_in_pop_groups( \n year = as.numeric( %s ), \n  country_asylum_iso3c = \"%s\"  ,  \n pop_type =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type)
+    # ## Plot Origin History
+      } else if( thisPlot == "plot_ctr_origin_history"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_origin_history( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\",  \n pop_type =  %s, \n lag =  %s, \n otherprop =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type,
+                        input$lag,
+                        input$otherprop)
+    # # 3. Destination 
+    # ## Plot Main Destination from  one specific country 
+      } else if( thisPlot == "plot_ctr_destination"){ 
+        reactLocal$code <- sprintf(
+       " %s  \n  plot_ctr_destination( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\",  \n pop_type =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type )
+    # ## plot recognition rate for a nationality
+      } else if( thisPlot == "plot_ctr_origin_recognition"){ 
+        reactLocal$code <- sprintf(
+       " %s  \n  plot_ctr_origin_recognition( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\",  \n top_n_countries =  %s, \n measure =  %s, \n order_by =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$top_n_countries,
+                        input$measure ,
+                        input$order_by)
+    # # 4. Profile
+    # ## Plot Age Pyramid
+      }  else if( thisPlot == "plot_ctr_pyramid"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n plot_ctr_pyramid( \n  year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\"  ,  \n pop_type =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type)
+    # ## Plot locations within countries
+      } else if( thisPlot == "plot_ctr_location"){ 
+        reactLocal$code <- sprintf(
+         " %s  \n  plot_ctr_location( \n  year = as.numeric( %s ), \n  country_asylum_iso3c = \"%s\"   ,  \n pop_type =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type)
+    # # 5. Processing
+    # ## Plot Refugee Recognition rate in Country
+      } else if( thisPlot == "plot_ctr_recognition"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n   plot_ctr_recognition( \n  year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\", \n top_n_countries =  %s, \n measure =  %s, \n order_by =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$top_n_countries,
+                        input$measure ,
+                        input$order_by)
+    # ## Asylum Applications & Decision over time
+      } else if( thisPlot == "plot_ctr_asylum"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_asylum( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\", \n lag =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$lag)
+    # ## Asylum Processing
+      } else if( thisPlot == "plot_ctr_process"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_process( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\", \n otherprop =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$otherprop)
+    # ## Average Asylum Processing Time
+      } else if( thisPlot == "plot_ctr_processing_time"){ 
+        reactLocal$code <- sprintf(
+        " %s  \n  plot_ctr_processing_time( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\",\n country_origin_iso3c = NULL, \n procedureType =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$procedureType)
+    # # 6. Solutions 
+    # ## Plot Solution Over time 
+      } else if( thisPlot == "plot_ctr_solution"){ 
+        reactLocal$code <- sprintf(
+        " %s \n plot_ctr_solution( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\",  \n op_type =  %s)",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country,
+                        input$pop_type)
+    # # 7.Migrant 
+    # ## Plot Ratio Refugee Migrant 
+      } else if( thisPlot == "plot_ctr_disp_migrant"){ 
+        reactLocal$code <- sprintf(
+        "%s  \n plot_ctr_disp_migrant( \n year = as.numeric( %s ), \n country_asylum_iso3c = \"%s\") \n",
+                        reactLocal$codeinit,
+                        reactiveParameters$year,
+                        reactiveParameters$country)
+        
+        ## Default in case...
+      } else {     }  
+       
+        # reactLocal$syntax <- reactLocal$code
+        # reactLocal$syntax1 <- reactLocal$syntax   
+       
+            ## Display the syntax in a modal 
             showModal(mod())
+      ## get it saved on dropbox
           })
-    observeEvent(input$ok, {
+     observeEvent(input$ok, {
             removeModal()
           })
     

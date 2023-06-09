@@ -34,13 +34,6 @@ Make sure to have your __JAVA_HOME__ environment variable set up as it will be u
 
 ```{r}
 install.packages("pak")
-## First install UNHCR branding packages for R as showcased here: https://dataviz.unhcr.org/tools/r/
-pak::pkg_install("vidonne/unhcrdesign")
-pak::pkg_install("vidonne/unhcrthemes")
-pak::pkg_install("vidonne/unhcrdown")
-## Now the data 
-pak::pkg_install("edouard-legoupil/ForcedDisplacementStat")
-## Then the chart library
 pak::pkg_install("edouard-legoupil/unhcrdatapackage")
 ```
 

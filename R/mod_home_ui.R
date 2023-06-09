@@ -7,6 +7,7 @@
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd 
+#' @keywords internal
 #'
 #' @importFrom shiny NS tagList 
 mod_home_ui <- function(id){
@@ -71,6 +72,7 @@ mod_home_ui <- function(id){
 #' input Server Functions
 #'
 #' @noRd 
+#' @keywords internal
 mod_home_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns

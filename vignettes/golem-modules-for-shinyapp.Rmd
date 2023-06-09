@@ -51,7 +51,66 @@ https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/
   
 
 
+## strip_slashes
 
+    
+
+  
+
+## add_slashes
+
+    
+
+  
+  
+
+## pretty_lists
+
+    
+
+  
+
+```{r example-pretty_lists}
+pretty_lists()
+```
+
+  
+
+    
+
+## drop_upload
+
+    
+
+  
+
+```{r example-drop_upload}
+#' write.csv(mtcars, file = "mtt.csv")
+#' drop_upload(file="mtt.csv")
+```
+
+  
+
+  
+  
+
+## create_shared_link_with_settings
+
+    
+
+  
+
+```{r example-create_shared_link_with_settings}
+# write.csv(mtcars, file = "mtt.csv")
+# drop_upload(file="mtt.csv",
+#             path = "shiny/")
+# res <- create_shared_link_with_settings(path= "/shiny/mtt.csv")
+# httr::content(res)$url
+```
+
+  
+
+    
 
 
 # Shared Modules

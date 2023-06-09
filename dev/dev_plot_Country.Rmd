@@ -1,5 +1,5 @@
 ---
-title: "All Plotting functions"
+title: "Chart Library Country"
 output: html_document
 editor_options: 
   chunk_output_type: console
@@ -1122,7 +1122,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
 ```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_diff_in_pop_groups(year = 2022,
-                            country_asylum_iso3c = "ARG",
+                            country_asylum_iso3c = "ROM",
                             pop_type = c("REF", "ASY")
          )
 
