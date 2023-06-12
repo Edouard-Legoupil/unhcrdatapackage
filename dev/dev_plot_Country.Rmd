@@ -40,6 +40,7 @@ dict_pop_type_name <- c(
   'hst' = 'Host community'
 )
 
+
 dict_pop_type_label <- c(
   'refugees' = 'REF',
   'returned_refugees' = 'RETURNED_REF',
@@ -52,12 +53,21 @@ dict_pop_type_label <- c(
   'hst' = 'HST'
 )
 
-cols_poptype <- c("Asylum-seekers" = "#18375F",
+
+cols_poptype_name_name <- c("Asylum-seekers" = "#18375F",
                   "Refugees" = "#0072BC",
                   "Other people in need of international protection" = "#EF4A60", 
                   "Others of concern to UNHCR" = "#999999",
                   "Internally displaced persons" = "#00B398",
                   "Stateless people" = "#E1CC0D")
+
+
+cols_poptype_label <- c("ASY" = "#18375F",
+                  "REF" = "#0072BC",
+                  "OIP" = "#EF4A60", 
+                  "OOC" = "#999999",
+                  "IDP" = "#00B398",
+                  "STA" = "#E1CC0D")                  
 ```
 
 ```{r development-load}
@@ -599,54 +609,51 @@ plot_ctr_population_type_abs <- function(year = 2021,
                                          show_diff_label = TRUE
 ) {
   
-  
-  
-  cols_poptype <- list(ASY = c("Asylum seekers", "#18375F"),
-                       REF = c("Refugees", "#0072BC"),
-                       #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
-                       OIP = c("Other people in need of international protection", "#EF4A60"), 
-                       OOC = c("Others of Concern to UNHCR", "#999999"),
-                       IDP = c("Internally displaced persons", "#00B398"),
-                       STA = c("Stateless Persons", "#E1CC0D")
-  )
-  
-  
-  df <- 
-    ForcedDisplacementStat::end_year_population_totals  |>
-    filter(CountryAsylumCode != "UKN",
-           !is.na(CountryAsylumCode),
-           (year == year | year == year -1),  #### Parameter
-           CountryAsylumCode == country_asylum_iso3c, #### Parameter
-    )  |> 
-    select(year, CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
-    group_by(year, CountryAsylumName, CountryOriginName) |>
-    filter(!!sym(pop_type) != 0) |>
-    mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |>
-    ungroup() |>
-    group_by(CountryAsylumName, CountryOriginName) |>
+   df <- nansen::population  |>
+    dplyr::filter(
+           (year == !!year | year == !!year - 1),  #### Parameter
+           coa_iso == country_asylum_iso3c, #### Parameter
+  )  |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |> 
+   dplyr::mutate(
+   population_type_label = stringr::str_replace_all(population_type, pattern = dict_pop_type_label)
+  ) |> 
+  dplyr::filter(
+         population_type_label %in% pop_type, #### Parameter
+         value != 0 | is.na(value)) |>
+   dplyr::group_by(year, coa_name, coo_name, population_type, population_type_label) |>
+   dplyr::summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') |> 
+   dplyr::mutate(
+   population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+  ) |>
+    group_by(coa_name, coo_name) |>
     arrange(year) |>
     mutate(diff_pop_type_value = label_percent(accuracy = 0.1,
-                                                trim = FALSE) (((pop_type_value-lag(pop_type_value))/lag(pop_type_value)))  ) |>
+                                                trim = FALSE) (((value-lag(value))/lag(value)))  ) |>
     ungroup() |>
-    filter(year == year) |>
+    filter(year == !!year) |>
     mutate(
       origin_data_prot = forcats::fct_lump_n(
-        f = CountryOriginName,
+        f = coo_name,
         n = top_n_countries,  #### Parameter
-        w = pop_type_value,
+        w = value,
         other_level = 'Other nationalities',
         ties.method = "last"
       )
     ) |>
-    mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
+    mutate(origin_data_prot = forcats::fct_na_value_to_level(origin_data_prot,
                                                        'Other nationalities'),
            diff_pop_type_value = case_when(origin_data_prot == 'Other nationalities' ~ "",
                                            TRUE ~ diff_pop_type_value)) |>
-    group_by(CountryAsylumName, diff_pop_type_value, origin_data_prot) |>
-    summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
+    group_by(coa_name, diff_pop_type_value, origin_data_prot) |>
+    summarise(value = sum(value, na.rm = TRUE), .groups = 'drop') |>
     ungroup() |>
-    arrange(desc(pop_type_value)) |>
-    filter(pop_type_value != 0L) |>
+    arrange(desc(value)) |>
+    filter(value != 0L) |>
     mutate(
       origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
       origin_data_prot =  suppressWarnings(
@@ -660,27 +667,27 @@ plot_ctr_population_type_abs <- function(year = 2021,
       perc = label_percent(
         accuracy = 1,
         trim = TRUE
-      )(  pop_type_value / sum(pop_type_value))
+      )(value / sum(value))
     )
   
   country_name_text <- df |>
-    distinct(CountryAsylumName) |>
+    distinct(coa_name) |>
     pull()
   
   
   p <- ggplot() +
     geom_col(data = df, 
-             aes(x = pop_type_value, y = origin_data_prot),
-             fill = cols_poptype[[pop_type]][2],
+             aes(x = value, y = origin_data_prot),
+             fill = cols_poptype_label[[pop_type]][1],
              width = 0.8) +
     ## Position label differently in the bar in white - outside bar in black
     geom_text(
-      data = subset(df, pop_type_value < max(pop_type_value) / 1.5),
+      data = subset(df, value < max(value) / 1.5),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = label_number(accuracy = 1,
-                             scale_cut = cut_short_scale())(pop_type_value)
+                             scale_cut = cut_short_scale())(value)
       ),
       hjust = -0.1 ,
       vjust = 0.5,
@@ -688,12 +695,12 @@ plot_ctr_population_type_abs <- function(year = 2021,
       size = 6
     ) +
     geom_text(
-      data = subset(df, pop_type_value >= max(pop_type_value) / 1.5),
+      data = subset(df, value >= max(value) / 1.5),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = label_number(accuracy = 1,
-                             scale_cut = cut_short_scale())(pop_type_value)),
+                             scale_cut = cut_short_scale())(value)),
       hjust = 1.1 ,
       vjust = 0.5,
       colour = "white",
@@ -704,9 +711,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
   if(show_diff_label == TRUE) {
     # diff label positive general
     p <- p + geom_text( 
-      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (pop_type_value < max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (value < max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9650), diff_pop_type_value)
       ),
@@ -717,9 +724,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     ) +
     # diff label negative general
     geom_text(
-      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (pop_type_value < max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (value < max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9660), diff_pop_type_value)
       ),
@@ -730,9 +737,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     ) +
   # diff label positive max
     geom_text(
-      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (pop_type_value >= max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (value >= max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9650), diff_pop_type_value)
       ),
@@ -743,9 +750,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     ) +
   # diff label negative max
     geom_text(
-      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (pop_type_value >= max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (value >= max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9660), diff_pop_type_value)
       ),
@@ -754,8 +761,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
       colour = "#0472bc",
       size = 5
     )} 
+    
   p <- p + 
-    labs(title = paste0(country_name_text, ": ", cols_poptype[[pop_type]][1], " | ",  year),
+    labs(title = paste0(country_name_text, ": ", stringr::str_to_title(names(dict_pop_type_label[dict_pop_type_label==pop_type])) , " | ",  year),
          subtitle = paste0("Top ",  top_n_countries, " Countries of Origin"),
          x = "Number of People",
          caption = "Source: UNHCR.org/refugee-statistics") +
