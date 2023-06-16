@@ -654,12 +654,12 @@ annotate_gadget <- function(chart, viewer=paneViewer()) {
   
 ```{r example-annotate_gadget}
 # if (interactive())
-# thischart <- plot_ctr_population_type_abs(year = 2020,
-#                     country_asylum_iso3c = "USA",
-#                     top_n_countries = 4,
-#                     pop_type = "REF"
-#                     )
-# annotate_gadget(chart = thischart, viewer=paneViewer())
+thischart <- plot_ctr_population_type_abs(year = 2020,
+                    country_asylum_iso3c = "USA",
+                    top_n_countries = 4,
+                    pop_type = "REF"
+                    )
+annotate_gadget(chart = thischart, viewer=paneViewer())
 
 ```
   

@@ -8,67 +8,44 @@
 #'
 #' @noRd 
 #' @keywords internal
-#'
+#' @importFrom shinydashboardPlus carousel carouselItem
 #' @importFrom shiny NS tagList 
 mod_home_ui <- function(id){
   ns <- NS(id)
   tagList( 
-        #Jumbotrons are pretty, they make nice headers
-                  tags$div(class = "jumbotron text-left", 
-                           style = "margin-bottom:15px;margin-top:15px;margin-left:15px",
-                          fluidRow(
-                            column( 10, 
-                                    tags$h1(style = 'color:#0072BC;',
-                                                style = 'margin-bottom:0px;margin-top:0px',
-                                                '7 Key Questions on Forced Displacement')),
-                            column( 2, 
-                                    tags$i(style = 'font-size: 12rem;color:#0072BC;',
-                                           class = "fa-solid fa-bullhorn")
-                                    )
-                          ) ,
-                          hr(),
-                          fluidRow(
-                            column( 4,  
-                                    tags$h3(class = 'jumbotron-heading', 
-                                                style = 'margin-left:25px',
-                                                ' "Numbers have an important story to TELL' ),
-                                    tags$h3(class = 'jumbotron-heading', 
-                                            style = 'margin-left:25px',
-                                            ' They rely on YOU to give them a voice!"')),
-                            column( 8, 
-                                    tags$p(class = 'jumbotron-heading', 
-                                            style = 'margin-left:25px',
-                                            ' Data Literacy describes the ability to read, interpret, and argue with data.' ),
-                                    tags$p(class = 'jumbotron-heading', 
-                                            style = 'margin-left:25px',
-                                            ' Data Storytelling is the art of presenting data
-                                  with a contextual narrative, or in other words, to put
-                                  data insights into context in order to inspire action and influence your audience.' )
-                                    )
-                          ) 
-                   ), ## end jumbotron..
-                  
-                  br(),
-                  br(),
-                    p(HTML("  1. How the different <a href='#shiny-tab-categories'>Categories</a> of Population of concern to UNHCR are evolving over time?")), 
-                    p(HTML("  2. What are the main countries of Origin of Forced Displacement across Borders?")),  
-                    p(HTML("  3. What are the main countries of Destination of Asylum of Forced Displacement across Borders?")),
-                    p(HTML("  4. What are the Demographics profiles of Forcibly Displaced People in relation with the host population?")),
-                    p(HTML("  5. Is the asylum Processing capacity in relation with the demand?")),
-                    p(HTML("  6. What are the trends in terms of Solutions?")),
-                    p(HTML("  7. What is the share of Forcibly Displaced People among total Migrants?")) ,
-                  br(),
-                  br(),
-                  p ('This app conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of',
-                  tags$a(href="https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html", "persuasive data stories") ,
-                  '. Each plot is created through a function that provides a recipe that creates a re-usable chart in line with a',
-                  tags$a(href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/", "Divisible Content Strategy"),
-                  '. You may',
-                  tags$a(href="https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html", "enhance the charts story-telling ability"),
-                  ' by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.')
-  )
+
+             )
 }
-    
+                  
+                  #, #Doing so, users will: 
+                            #  tags$ul(
+                            #     tags$li("enhance basic data literacy"), 
+                            #     tags$li("further explore data through different filters"), 
+                            #     tags$li("be able to create persuasive data stories ") 
+                            # )   
+                                    # "This app allows Information Managers, Data Analyst and Data Journalist to quickly build data stories on Forced Displacement: Adjust the message in the title, highlight insights in the subtitle, overlay annotation to ease interpretation and filter the data",
+                  
+                  # for data story telling 
+
+                    # p(HTML("  1. How the different <a href='#shiny-tab-categories'>Categories</a> of Population of concern to UNHCR are evolving over time?")), 
+                    # p(HTML("  2. What are the main countries of Origin of Forced Displacement across Borders?")),  
+                    # p(HTML("  3. What are the main countries of Destination of Asylum of Forced Displacement across Borders?")),
+                    # p(HTML("  4. What are the Demographics profiles of Forcibly Displaced People in relation with the host population?")),
+                    # p(HTML("  5. Is the asylum Processing capacity in relation with the demand?")),
+                    # p(HTML("  6. What are the trends in terms of Solutions?")),
+                    # p(HTML("  7. What is the share of Forcibly Displaced People among total Migrants?")) ,
+                  #,
+                 # br(),
+                  # p ('This app conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of',
+                  # tags$a(href="https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html", "persuasive data stories") ,
+                  # '. Each plot is created through a function that provides a recipe that creates a re-usable chart in line with a',
+                  # tags$a(href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/", "Divisible Content Strategy"),
+                  # '. You may',
+                  # tags$a(href="https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html", "enhance the charts story-telling ability"),
+                  # ' by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.')
+
+
+
 #' input Server Functions
 #'
 #' @noRd 
@@ -76,7 +53,7 @@ mod_home_ui <- function(id){
 mod_home_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
+    ## used to get a link to the tabs...
 
   
 

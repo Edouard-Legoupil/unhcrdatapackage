@@ -30,27 +30,6 @@ https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/
 
 ```
 
-## theme_shinydashboard_unhcr
-
-    
-
-  
-
-```{r example-theme_shinydashboard_unhcr}
-# Typically used within the app_ui of the shiny
-# app_ui <- function() {
-#   tagList(
-#     # Leave this function for adding external resources
-#     golem_add_external_resources(),
-#     ## Function to style the app
-#     theme_shinydashboard_unhcr())}
-```
-
-  
-
-  
-
-
 ## strip_slashes
 
     

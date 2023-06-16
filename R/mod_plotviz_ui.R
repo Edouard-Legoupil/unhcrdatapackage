@@ -57,18 +57,25 @@
 #' @noRd 
 #'
 #' @import  shiny  
+#' @importFrom shinyjs  useShinyjs
 #' @keywords internal
 mod_plotviz_ui <- function(id, thisPlot){
   ns <- NS(id)
+  
+      
   tagList(
+      # Set up shinyjs
+      shinyjs::useShinyjs(),  
       ## Display the plot
-        plotOutput(ns("thisplot"),
-                     click="annotate_point",
-                     brush= shiny::brushOpts(id="annotate_box")),
+        plotOutput(outputId = ns("thisplot"),
+                   click= ns("annotate_point"),
+                   brush= shiny::brushOpts(id= ns("annotate_box")),
+                   height = "550px"),
       ## Display the interface parameters...
        fluidRow(
          shinydashboard::box(
            title = "Tell Your Story!",
+           #  status = "primary",
            status = "info",
            solidHeader = TRUE,
            collapsible = TRUE,
@@ -79,6 +86,7 @@ mod_plotviz_ui <- function(id, thisPlot){
              ## First column used to storytelling
              column(
                6,
+               h4("Interpret"),   
                textInput(
                  inputId = ns("title"),
                  label = "Title - Highlight your main message!",
@@ -97,14 +105,28 @@ mod_plotviz_ui <- function(id, thisPlot){
                  placeholder = "Once entered the text will appear as soon as the 
                  box is drawn on the chart",
                            width = '100%'),
-             tags$i("To position the annotation:"),
-            "One first single click on the plot to point what you would like
-      to highlight and then a long brush click to draw the box where the annotation
-      should be overlaid"
+            
+            
+            fluidRow(
+                   column(
+                     8,
+                     tags$i("To position the annotation:"),
+        "One first single click on the plot to point what you would like to highlight and then a long brush click to draw the box where the annotation should be overlaid", ),
+                   column(
+                     4,
+                     ## Capture coordinate for the annot...
+                 shiny::verbatimTextOutput(
+                   ns("annotinfo"), 
+                   placeholder = TRUE ))
+              )
+            
+               
+      
              ),
              
              ## Second Columns used for chart parameters..
              column(4, 
+                h4("Filter"),    
                ## pop_type or pop_filter    
                if (thisPlot %in% c( "plot_ctr_treemap",
                                      "plot_ctr_population_type_per_year",
@@ -217,20 +239,69 @@ mod_plotviz_ui <- function(id, thisPlot){
              ## Last column used for the two buttons - download chart and reproducibility
              column(
                2,
-               downloadButton(
-                 outputId =  ns("dl"),
-                 label = "Share your story",
-                 class = "btn-success" ,
-                 icon = shiny::icon("share-from-square")
-               ),
-               " ", 
-               br() ,
+               h4("Export"),
+                
+             fluidRow(
+                 column(
+                   4,
+                   numericInput(inputId = ns("width"),
+                              label ="Image width:", 
+                              value = 4,
+                              min = 3,
+                              max = 12,
+                              step = 0.5,
+                              width = '60px')),
+                 column(
+                   4,
+                   numericInput(inputId = ns("height"),
+                              label = "Image height:", 
+                              value = 4,
+                              min = 3,
+                              max = 8,
+                              step = 0.5,
+                              width = '60px' )),
+                 column(
+                   4,
+                   numericInput(inputId = ns("size"), 
+                              label ="Font Size:", 
+                              value = 22,
+                              min = 12,
+                              max = 32,
+                              step = 1,
+                              width = '60px' ) )
+             ),
+             selectInput(  inputId = ns("format"),
+                          label = "Format",
+                         choices = c( "Image file (png) "= "png", 
+                                      "Vector File (svg) for designers"= "svg", 
+                                      "Code Snippet (r) for reproducibility"= "r" ),
+                          selected =   "png" ) ,
+              
+               # always hide the download button
+               # conditionalPanel(
+               #      "false",
+               #      downloadButton(outputId =  ns("dl"))
+               #    ),
                hr(),
+              ## Depending on the export format - launch either download or modal
+               downloadButton(outputId = ns("dl"),
+                              label = "Fake",
+                              style = "visibility: hidden;"),
+               actionButton(inputId = ns("reproducibility"),
+                            label = "Fake", 
+                            style = "visibility: hidden;"),
+               actionButton( inputId =  ns("drop"),
+                                 label = "Share your story",
+                                 class = "btn-success" ,
+                                 icon = shiny::icon("share-from-square")
+               ),
+               br() #,
+              # "A code snippet to inject in your notebook: ", 
                #shiny::tag(br()),
-               actionButton(inputId= ns("reproducibility"), 
-                            label= "Reproducibility",
-                            class = "btn-success",
-                             icon =   icon('gears') )
+               # actionButton(inputId= ns("reproducibility"), 
+               #              label= "Reproducibility",
+               #              class = "btn-success",
+               #               icon =   icon('gears') )
                
              )  # End column
            )  # End First Fluid Row...
@@ -255,7 +326,10 @@ mod_plotviz_ui <- function(id, thisPlot){
 #' @param reactiveParameters  Main app filters defined through mod_input
 #' @noRd 
 #' @import ggplot2
+#' @import svglite 
+#' @importFrom stringr str_wrap
 #' @import shiny
+#' @importFrom shinyjs click
 #' @keywords internal
 mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
 
@@ -266,11 +340,11 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
        x = 0, y = 0,
        xmax = 0,  ymax = 0,  xmin = 0,  ymin = 0,
        xbox = 0,   ybox = 0,  arrowcurve = 0.3,  arrowangle = 140,
-       annot = " ", xcentroid = 0,  ycentroid = 0,
+       annot = "", xcentroid = 0,  ycentroid = 0,
        thisPlot = "",
        chart =   ggplot2::ggplot() +  
           ggplot2::annotate("text", x = 1, y = 1, size = 11, 
-                            label = "There was a problem" ) +  
+                            label = "There was a schmilblick..." ) +  
           ggplot2::theme_void(), 
        codeinit = "# install.packages(\"pak\") \n # pak::pkg_install(\"edouard-legoupil/unhcrdatapackage\") \n library(\"unhcrdatapackage\")"   )
     
@@ -283,12 +357,20 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
     observeEvent(input$annotate_point,
                        handlerExpr = {
                          reactLocal$x = input$annotate_point$x
-                         reactLocal$y = input$annotate_point$y }
+                         reactLocal$y = input$annotate_point$y 
+             # Get it in the consolde...
+    cat(file=stderr(), 
+               "\n Arrow pointer oordinates:",
+               "\n  - x: ", input$annotate_point$x, 
+               " / y: ", input$annotate_point$y , "\n"
+            #    "\n  - xbox: ", reactLocal$xbox, 
+            # " / ybox: ", reactLocal$ybox
+        )                 
+                         }
           )
     ## Observer Brush o define the attachment point
     observeEvent(input$annotate_box,
                        handlerExpr = {
-                         
              reactLocal$xmax <- input$annotate_box$xmax  
              reactLocal$xmin <- input$annotate_box$xmin  
              reactLocal$ymax <- input$annotate_box$ymax  
@@ -301,9 +383,36 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
              reactLocal$ybox = reactLocal$ycentroid 
              if(reactLocal$ybox > reactLocal$ycentroid) {reactLocal$arrowcurve = -.3} else { reactLocal$arrowcurve = .3 }
              if(reactLocal$ybox > reactLocal$ycentroid) {reactLocal$arrowangle = 240} else { reactLocal$arrowangle = 140 }
-                       }
-          )
-     
+             # Get it in the console...
+              cat(file=stderr(), 
+                      " Text box coordinates: ",
+                         "\n  - xmin: ",  input$annotate_box$xmin,
+                         " / ymin: ", input$annotate_box$ymin,
+                         "\n  - xmax: ", input$annotate_box$xmax,
+                         " / ymax: ", input$annotate_box$ymax ,"\n"
+                         # "\n  - xcentroid: ", reactLocal$xcentroid,
+                         # " / ycentroid: ", reactLocal$ycentroid ,
+                  ) 
+        })
+    
+    
+    ## Get it in UI through verbatim !
+    output$annotinfo <- shiny::renderText({
+        paste0(" Text box coordinates: ",
+             #  "\n  - xmin: ",  round(reactLocal$xmin),
+             #  " / ymin: ", round(reactLocal$ymin),
+             #  "\n  - xmax: ", round(reactLocal$xmax),
+             #  " / ymax: ", round(reactLocal$ymax) ,
+               "\n  - xcentroid: ", round(reactLocal$xcentroid),
+               " / ycentroid: ", round(reactLocal$ycentroid),
+               "\n Arrow pointer coordinates:",
+               "\n  - x: ", round(reactLocal$x), " / y: ", round(reactLocal$y),
+               "\n  - xbox: ", round(reactLocal$xbox),
+               " / ybox: ", round(reactLocal$ybox), "\n")
+     })
+    
+    
+    
     ## Observe title
     observeEvent( input$title,
                  handlerExpr = {
@@ -323,14 +432,15 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
     ### Plot rendering function
     output$thisplot <- renderPlot({
       ## Debugging.. 
-      # browser()
+        #browser()
       ## Output in console 
         cat(file=stderr(), 
             "drawing plot type", 
             thisPlot, " for year ", 
-            reactiveParameters$year,
-            " for country", 
-            reactiveParameters$country,"\n")
+            reactiveParameters$year,  "\n",
+           " annot", reactiveParameters$annot," \n", 
+            reactiveParameters$xmax,"->box \n", 
+            reactiveParameters$x,"-> point \n")
     
     # 1. Category 
     # ## Key Figures
@@ -464,11 +574,56 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
         
          ## Now adding title and subtitle...
           if (input$title != "") { 
-            p  <- p +   labs(title = input$title)
+            p  <- p +   labs(title = stringr::str_wrap(input$title, 80) )
             }
           if (input$subtitle != "") {   
-            p  <- p +     labs(subtitle = input$subtitle)
+            p  <- p +     labs(subtitle = stringr::str_wrap(input$subtitle, 1000 ))
           }
+      
+      
+       ## get everything ready - text, point and box -
+         if( 
+             # input$annot != "" &
+             # input$annotate_box$xmax > 0 &
+             # input$annotate_point$x > 0
+              reactLocal$annot != "" &
+              reactLocal$xmax > 0 &
+              reactLocal$x > 0
+             
+             ){
+            ## Then overlay Annotation
+          # browser()
+           p  <- p +  
+            
+            ggplot2::annotate(
+              geom = "text",
+              x = reactLocal$xcentroid,
+              y = reactLocal$ycentroid, 
+              #label =  reactLocal$annot  ,
+              label = stringr::str_wrap(reactLocal$annot, 20) ,
+              # hjust and vjust make the reference point 
+              # the lower left corner of your text
+              hjust = 0, vjust = 0.5,
+              color = "grey50",  
+              size = 4, 
+              #fontface = "bold",
+              lineheight = .9) +
+            ## and the connecting Arrow
+            ggplot2::annotate(
+              geom = "curve",
+              x = reactLocal$xbox,
+              y = reactLocal$ybox, 
+              xend = reactLocal$x, 
+              yend = reactLocal$y,
+              angle = reactLocal$arrowangle,
+              curvature = reactLocal$arrowcurve, 
+              color = "grey50",  
+              arrow = ggplot2::arrow(
+                length = ggplot2::unit(12, "pt"),
+                type = "closed", ends = "last")  )
+           }
+      
+      
         ## Ready to add story telling... 
         reactLocal$chart <- p
         p  
@@ -476,25 +631,76 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
     
     ## Button to manage chart download
     output$dl <- downloadHandler(   
+      
           filename = function() {
               paste(thisPlot,"_",
                     reactiveParameters$year,"_",
                     reactiveParameters$country,"_",
-                    format(Sys.time(), "%Y_%m_%d_%H_%M_%S"),  '.png', sep='')  },
+                    format(Sys.time(), "%Y_%m_%d_%H_%M_%S"),  '.',input$format, sep='')  },
             content = function(con) {
-              ggsave(con,
-                     reactLocal$chart + 
-                       ## Increase font size for rendering on phone
-                      theme(text = element_text(size = 22)) , 
-                     device = "png",
+              ggsave(filename= con,
+                     plot = reactLocal$chart + 
+                           ## Increase font size for rendering on phone
+                           # theme(text = element_text(size = 22)) , 
+                            theme(text = element_text(size = input$size),
+                                plot.title=  element_text(size = input$size + 4), 
+                                plot.subtitle=  element_text(size = input$size + 2)) , 
+                     #device = "svg",
+                     device = input$format,
                      ## Square style for insta!
-                     width = 4,
-                     height = 4,
+                    # width = 4,
+                    # height = 4,
+                     width = input$width,
+                     height = input$height,
                      units = "in",
-                     dpi = "retina"
-                     )
+                     dpi = "retina" )
             }
           )
+    
+    ## get it saved on dropbox 
+    # https://stackoverflow.com/questions/75675984/r-shiny-how-to-have-an-action-button-that-automatically-downloads-a-csv-file
+    observeEvent(input$drop, {
+      #downloadButton(ns("dl"),label = "Fake", style = "visibility: hidden;"),
+     # runjs("$('#dl')[0].click();")
+      if( input$format %in% c("png", "svg")) {
+       
+          ## Launch the download...   
+          shinyjs::click("dl")
+          plotfile = file.path(tempdir(),  paste( thisPlot,"_",
+                        reactiveParameters$year,"_",
+                        reactiveParameters$country,"_",
+                        format(Sys.time(), "%Y_%m_%d_%H_%M_%S"),
+                        '.', input$format,  sep=''))
+           ## Save plot in that file
+           ggsave( filename= plotfile,
+                   plot = reactLocal$chart +
+                           ## Increase font size for rendering on phone
+                         # theme(text = element_text(size = 22)) ,
+                          theme(text = element_text(size = input$size),
+                                plot.title=  element_text(size = input$size + 4), 
+                                plot.subtitle=  element_text(size = input$size + 2)) ,
+                   #device = "png",
+                   device = input$format,
+                   width = input$width,
+                   height = input$height,
+                   units = "in",
+                   dpi = "retina"  )
+    
+          ## Now upload the file
+           if( ! (is.null( Sys.getenv("DROPBOX"))) ){
+                  # drop_upload(file = plotfile,
+                  #             path = "shiny/",
+                  #             mode = "overwrite",
+                  #             autorename = TRUE,
+                  #             mute = FALSE,
+                  #             verbose = FALSE )
+           }
+           
+      } else {
+          shinyjs::click("reproducibility")
+      }
+       
+      })
 
      ## Modal displaying chart syntax 
      mod <- function() {
@@ -532,7 +738,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type)
+                        dput(input$pop_type)) 
         
     # ## Plot Population type per year
       } else if( thisPlot == "plot_ctr_population_type_per_year"){ 
@@ -541,7 +747,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type,
+                        dput(input$pop_type),
                         input$lag) 
     # # 2. Origin
     # ## Plot Main country of origin  in one specific country
@@ -552,7 +758,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type,
+                        dput(input$pop_type),
                         input$top_n_countries,
                         input$show_diff_label)
     # ## Plot Main country of origin in one specific country 
@@ -563,7 +769,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type,
+                        dput(input$pop_type),
                         input$top_n_countries)
     # ## Plot Increases and Decreases in Population Groups
       } else if( thisPlot == "plot_ctr_diff_in_pop_groups"){ 
@@ -572,7 +778,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type)
+                        dput(input$pop_type))
     # ## Plot Origin History
       } else if( thisPlot == "plot_ctr_origin_history"){ 
         reactLocal$code <- sprintf(
@@ -580,7 +786,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type,
+                        dput(input$pop_type),
                         input$lag,
                         input$otherprop)
     # # 3. Destination 
@@ -591,7 +797,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type )
+                        dput(input$pop_type) )
     # ## plot recognition rate for a nationality
       } else if( thisPlot == "plot_ctr_origin_recognition"){ 
         reactLocal$code <- sprintf(
@@ -610,7 +816,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type)
+                        dput(input$pop_type))
     # ## Plot locations within countries
       } else if( thisPlot == "plot_ctr_location"){ 
         reactLocal$code <- sprintf(
@@ -618,7 +824,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type)
+                        dput(input$pop_type))
     # # 5. Processing
     # ## Plot Refugee Recognition rate in Country
       } else if( thisPlot == "plot_ctr_recognition"){ 
@@ -662,7 +868,7 @@ mod_plotviz_server <- function(id, thisPlot, reactiveParameters){
                         reactLocal$codeinit,
                         reactiveParameters$year,
                         reactiveParameters$country,
-                        input$pop_type)
+                        dput(input$pop_type))
     # # 7.Migrant 
     # ## Plot Ratio Refugee Migrant 
       } else if( thisPlot == "plot_ctr_disp_migrant"){ 

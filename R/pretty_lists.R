@@ -4,7 +4,8 @@
 #' 
 #' A pretty list printer. Reduces extraneous space.
 #' 
-#' @return
+#' @param x a string
+#' @return another string
 #' 
 #' @importFrom assertive assert_is_list
 #' 
