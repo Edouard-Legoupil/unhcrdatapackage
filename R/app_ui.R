@@ -5,6 +5,7 @@
 #' @import shiny
 #' @import shinydashboard
 #' @import shinydashboardPlus
+#' @importFrom unhcrshiny theme_shinydashboard_unhcr
 #' @keywords internal
 #'
 #'
