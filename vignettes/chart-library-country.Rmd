@@ -135,7 +135,7 @@ plot_ctr_population_type_abs(year = 2020,
                     show_diff_label = FALSE
                     ) 
 
-## Same with 9 top countries and asylum seekers included
+## Same with 9 top countries and Asylum-seekers included
 plot_ctr_population_type_abs(year = 2020,
                     country_asylum_iso3c = "USA",
                     top_n_countries = 9,
@@ -165,7 +165,7 @@ plot_ctr_population_type_perc(year = 2021,
 ```{r examples-plot_ctr_diff_in_pop_groups, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_diff_in_pop_groups(year = 2022,
-                            country_asylum_iso3c = "ARG",
+                            country_asylum_iso3c = "ROU",
                             pop_type = c("REF", "ASY")
          )
 
@@ -244,21 +244,21 @@ plot_ctr_pyramid(year = 2022,
   
 
 ```{r example-plot_ctr_location}
-plot_ctr_location(year = 2022,
-                 country_asylum_iso3c = "COL",
-                 pop_type = c("ASY", "REF", "OIP"))
-
-plot_ctr_location(year = 2021,
-                 country_asylum_iso3c = "COL",
-                 pop_type = c("IDP"))
-
-plot_ctr_location(year = 2022,
-                 country_asylum_iso3c = "CAN",
-                 pop_type = c("ASY", "REF", "OIP"))
-
-plot_ctr_location(year = 2021,
-                 country_asylum_iso3c = "MEX",
-                 pop_type = c("ASY", "REF", "OIP"))
+# plot_ctr_location(year = 2022,
+#                  country_asylum_iso3c = "COL",
+#                  pop_type = c("ASY", "REF", "OIP"))
+# 
+# plot_ctr_location(year = 2021,
+#                  country_asylum_iso3c = "COL",
+#                  pop_type = c("IDP"))
+# 
+# plot_ctr_location(year = 2022,
+#                  country_asylum_iso3c = "CAN",
+#                  pop_type = c("ASY", "REF", "OIP"))
+# 
+# plot_ctr_location(year = 2021,
+#                  country_asylum_iso3c = "MEX",
+#                  pop_type = c("ASY", "REF", "OIP"))
 ```
 
   
@@ -368,12 +368,30 @@ plot_ctr_processing_time(year = 2022,
 ```{r example-plot_ctr_solution}
 plot_ctr_solution(year = 2021,
                   country_asylum_iso3c= "UGA",
-                  pop_type = c("REF", "ASY"))
+                  lag = 10,
+                  sol_type = c("NAT", "RST", "RET", "RDP"))
 ```
 
   
 
   
+
+## Plot Solution Over Recognition
+
+    
+
+  
+
+```{r example-plot_ctr_solution_recognition}
+plot_ctr_solution_recognition(year = 2022,
+                  country_asylum_iso3c= "UGA",
+                  lag = 10)
+```
+
+  
+
+  
+
 
 
 # 7.Migrant 
@@ -399,7 +417,8 @@ dumbel
 
 ```{r example-plot_ctr_disp_migrant}
 plot_ctr_disp_migrant(year = 2022,
-                    country_asylum_iso3c = "MEX" )
+                    country_asylum_iso3c = "MEX" ,
+                    top_n_countries = 10)
 # plot_ctr_disp_migrant(year = 2022,
 #                     country_asylum_iso3c = "FRA" )
 ```

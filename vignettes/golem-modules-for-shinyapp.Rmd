@@ -30,65 +30,6 @@ https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/
 
 ```
 
-## strip_slashes
-
-    
-
-  
-
-## add_slashes
-
-    
-
-  
-  
-
-## pretty_lists
-
-    
-
-  
-
-```{r example-pretty_lists}
-pretty_lists()
-```
-
-  
-
-    
-
-## drop_upload
-
-    
-
-  
-
-```{r example-drop_upload}
-#' write.csv(mtcars, file = "mtt.csv")
-#' drop_upload(file="mtt.csv")
-```
-
-  
-
-  
-  
-
-## create_shared_link_with_settings
-
-    
-
-  
-
-```{r example-create_shared_link_with_settings}
-# write.csv(mtcars, file = "mtt.csv")
-# drop_upload(file="mtt.csv",
-#             path = "shiny/")
-# res <- create_shared_link_with_settings(path= "/shiny/mtt.csv")
-# httr::content(res)$url
-```
-
-  
-
     
 
 
@@ -119,21 +60,6 @@ This module take as an argument the plot based on the library and the reactive v
 
 
 ```{r examples-mod_plotviz}
-
-```
-
-## mod_share
-
-See how we could share the story then on twitter -
-
-This is a module that will work based on a specific module id.. 
-https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
-
-https://stackoverflow.com/questions/62052804/is-there-a-way-to-add-share-buttons-to-make-plots-shareable-in-shiny
-The way a Twitter Card could work would be if you were sharing a link to a static web page in the Tweet text, and if that page had some markup which included the image, so that the image would be shown as a preview for the link. 
-
-
-```{r examples-mod_share}
 
 ```
 

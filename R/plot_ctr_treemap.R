@@ -80,7 +80,7 @@ plot_ctr_treemap <- function(year = 2021,
          theme(legend.position = "none") +
          ## and the chart labels
          labs(title = paste0("Population of Concern in ",  ctrylabel),
-              subtitle = paste0("As of ", year, ", a total of ", format(round(sum(datatree$Value), -3),  big.mark=","), " Individuals"),
+              subtitle = paste0(" As of ", year, ", a total of ", format(round(sum(datatree$Value), -3),  big.mark=","), " Individuals"),
               x = "",
               y = "",
               caption = "Source: UNHCR.org/refugee-statistics")  

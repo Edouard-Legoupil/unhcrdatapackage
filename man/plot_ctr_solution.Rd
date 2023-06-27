@@ -8,7 +8,7 @@ plot_ctr_solution(
   year = 2021,
   lag = 10,
   country_asylum_iso3c = country_asylum_iso3c,
-  pop_type = pop_type
+  sol_type
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ plot_ctr_solution(
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
+\item{sol_type}{Vector of character values. Possible population type (e.g.:"NAT" "RST" "RET" "RDP")}
 }
 \value{
 a ggplot2 object
@@ -32,5 +32,6 @@ As part of UNHCR standard approach, there are mostly 3 types of durable solution
 \examples{
 plot_ctr_solution(year = 2021,
                   country_asylum_iso3c= "UGA",
-                  pop_type = c("REF", "ASY"))
+                  lag = 10,
+                  sol_type = c("NAT", "RST", "RET", "RDP"))
 }

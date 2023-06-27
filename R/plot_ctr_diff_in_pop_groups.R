@@ -29,7 +29,7 @@
 #' @examples
 #' # 
 #' plot_ctr_diff_in_pop_groups(year = 2022,
-#'                             country_asylum_iso3c = "ARG",
+#'                             country_asylum_iso3c = "ROU",
 #'                             pop_type = c("REF", "ASY")
 #'          )
 #' 
@@ -40,11 +40,11 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   
   
   
-  diff_perc <- function(x){
-    x = as.numeric((x - lag(x))/lag(x)) + 0
-    
-  }
-  
+  # diff_perc <- function(x){
+  #   x = as.numeric((x - lag(x))/lag(x)) + 0
+  #   
+  # }
+#  \(x) as.numeric((x - lag(x))/lag(x)) + 0
   
   df <- ForcedDisplacementStat::end_year_population_totals  |> 
     filter(CountryAsylumCode != "UKN",
@@ -60,7 +60,9 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     group_by(CountryAsylumName) |> 
     summarise(across(where(is.numeric), 
                      list(diffabs = diff,
-                          diffperc = diff_perc),
+                         # diffperc = diff_perc),
+                          diffper = \(x) as.numeric((x - lag(x))/lag(x)) + 0 ),
+                     
                      .names = "{.col}_{.fn}")) |> 
     ungroup() |> 
     slice(2) 
@@ -68,13 +70,15 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   df <- replace(df, is.na(df), 0)
   
   df <- df |> 
-    tidyr::gather(v, value, REF_diffabs:OIP_diffperc) |> 
+    tidyr::gather(v, value, REF_diffabs:HCO_diffper) |> 
     tidyr::separate(v, c("population_type", "value_type"), sep = "\\_") |> 
     tidyr::spread(key = value_type, value = value) 
   
   
   df <- df |>         
-    mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (diffperc))
+ mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (diffper))
+   #    mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (\(x) as.numeric((x - lag(x))/lag(x)) + 0 ))
+  
   
   df <- df |> 
     filter(population_type %in% pop_type)
@@ -94,7 +98,7 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
                  "IDP" = "#00B398",
                  "STA" = "#E1CC0D"),
       drop= TRUE, limits = force, guide="none"    ) +
-    scale_x_discrete(labels= c("ASY" = "Asylum seekers",
+    scale_x_discrete(labels= c("ASY" = "Asylum-seekers",
                                "REF" = "Refugees",
                                #"VDA" = "Venezuelans Displaced\nAbroad", ,
                                "OIP" = "Other people in need\n of international protection", 

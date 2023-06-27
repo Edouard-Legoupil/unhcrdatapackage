@@ -32,7 +32,9 @@ mod_migrants_ui <- function(id){
 mod_migrants_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns 
-       mod_plotviz_server("migrants1", thisPlot = "plot_ctr_disp_migrant", reactiveParameters ) 
+       mod_plotviz_server("migrants1", 
+                          thisPlot = "plot_ctr_disp_migrant",
+                          reactiveParameters ) 
   })
 }
     

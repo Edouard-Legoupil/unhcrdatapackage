@@ -19,7 +19,6 @@ License: MIT + file LICENSE
 URL: https://edouard-legoupil.github.io/unhcrdatapackage/docs/
 BugReports: https://github.com/edouard-legoupil/unhcrdatapackage/issues
 Imports: 
-    assertive,
     bsplus,
     circlize,
     colourpicker,
@@ -30,6 +29,7 @@ Imports:
     ForcedDisplacementStat,
     ggalluvial,
     ggalt,
+    ggbraid,
     ggforce,
     ggplot2,
     ggrepel,
@@ -42,12 +42,9 @@ Imports:
     here,
     Hmisc,
     htmltools,
-    httr,
-    jsonlite,
     lubridate,
     magrittr,
     mapsf,
-    miniUI,
     OpenStreetMap,
     pak,
     patchwork,

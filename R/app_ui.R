@@ -134,6 +134,10 @@ app_ui <- function() {
                               width = '100%',
                               shinydashboardPlus::carouselItem(
                                 #caption = " Browse the library",
+                                tags$img(src = "www/slide0.png")
+                              ),
+                              shinydashboardPlus::carouselItem(
+                                #caption = " Browse the library",
                                 tags$img(src = "www/slide1.png")
                               ),
                               shinydashboardPlus::carouselItem(
