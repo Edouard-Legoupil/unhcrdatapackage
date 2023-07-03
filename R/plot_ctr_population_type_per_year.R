@@ -50,7 +50,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
 
 
 
-  cols_poptype <- c("Asylum seekers" = "#18375F",
+  cols_poptype <- c("Asylum-seekers" = "#18375F",
                     "Refugees" = "#0072BC",
                     #"Venezuelans Displaced Abroad" = "#EF4A60", 
                     "Other people in need of international protection" = "#EF4A60", 

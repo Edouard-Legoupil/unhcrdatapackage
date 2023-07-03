@@ -4,6 +4,7 @@
 
 
 globalVariables(unique(c(
+  "pop_type",
   # plot_ctr_keyfig
   "icon", "pal","fig",
   # plot_ctr_asylum: 
@@ -11,7 +12,7 @@ globalVariables(unique(c(
   # plot_ctr_destination: 
   "ctryname", "CountryAsylumName", "CountryOriginCode", "DisplacedAcrossBorders", "DisplacedAcrossBordersRound", "iso_3", "Population.type", "Value", "Year", 
   # plot_ctr_diff_in_pop_groups: 
-  "CountryAsylumCode", "CountryAsylumName", "diffabs", "diffper", "diffperc", "OIP_diffperc", "REF_diffabs", "v", "value", "value_type", "Year", 
+  "CountryAsylumCode", "CountryAsylumName", "diffabs", "diffper", "diffperc", "HCO_diffper", "REF_diffabs", "v", "value", "value_type", "Year", 
   # plot_ctr_disp_migrant: 
   "Asylum_Refugee_in", "CountryDestinationM49", "ctryname", "hcr_subregion", "Immigrant", "INCOME_GRP", "M49_code", "ratioAsylum_Immigrant", "shareOrgin", "SP.POP.TOTL", "population_type", "CountryAsylumCode", "CountryOriginCode", "CountryOriginName", "iso_3", "Population.type", "totImmigrant", "UNHCRBureau", "Value", "Year", 
   # plot_ctr_location: 

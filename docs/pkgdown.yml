@@ -1,10 +1,12 @@
-pandoc: 2.19.2
+pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   adding-new-charts: adding-new-charts.html
-  chart-library: chart-library.html
+  chart-library-country: chart-library-country.html
+  chart-library-region: chart-library-region.html
   golem-modules-for-shinyapp: golem-modules-for-shinyapp.html
   library: library.html
-last_built: 2023-05-16T23:22Z
+  report-template: report-template.html
+last_built: 2023-07-03T17:15Z
 

@@ -60,8 +60,10 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chart-library-approach">Chart Library Approach</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chart-library-approach">
     <a class="dropdown-item" href="articles/library.html">Why a chart library?</a>
-    <a class="dropdown-item" href="articles/chart-library.html">Chart library directory</a>
+    <a class="dropdown-item" href="articles/chart-library-country.html">Chart library Country</a>
+    <a class="dropdown-item" href="articles/chart-library-region.html">Chart library Region</a>
     <a class="dropdown-item" href="articles/adding-new-charts.html">Adding new Charts in the Library</a>
+    <a class="dropdown-item" href="articles/report-template.html">Template for factsheet</a>
   </div>
 </li>
 <li class="nav-item">
@@ -91,8 +93,8 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="unhcrdatapackage-unhcr-chart-library-package-">
-<a href="https://edouard-legoupil.github.io/unhcrdatapackage" class="external-link"><code>{UnhcrDataPackage}</code></a>: UNHCR Chart Library Package <img src="reference/figures/hex-UnhcrDataPackage.png" width="200" align="right"><a class="anchor" aria-label="anchor" href="#unhcrdatapackage-unhcr-chart-library-package-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="unhcrdatapackage-a-chart-library-on-forced-displacement-">
+<a href="https://edouard-legoupil.github.io/unhcrdatapackage" class="external-link"><code>{UnhcrDataPackage}</code></a>: A Chart Library on Forced Displacement <a class="anchor" aria-label="anchor" href="#unhcrdatapackage-a-chart-library-on-forced-displacement-"></a>
 </h1>
 </div>
 <blockquote>
@@ -101,7 +103,7 @@
 <blockquote>
 <p>– Stephen Few</p>
 </blockquote>
-<p>The package conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of <strong><a href="https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html" class="external-link">persuasive data stories</a></strong>. You can also consult directly the <a href="https://rstudio.unhcr.org/Data_Literacy/" class="external-link">Data Literacy App</a> created from this package.</p>
+<p>The package conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of <strong><a href="https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html" class="external-link">persuasive data stories</a></strong>. You can also consult directly the <a href="https://rstudio.unhcr.org/Data_Literacy/" class="external-link">Data Storytelling App</a> created from this package.</p>
 <p>Each plot is created through a function that provides a <strong>recipe</strong> that creates a re-usable chart in line with a <a href="https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/" class="external-link">Divisible Content Strategy</a>. Those functions are then rendered through predefined Report templates for Countries or Regions, generated either as html, PDF or PowerPoint presentations. You may <a href="https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html" class="external-link">enhance the charts story-telling ability</a> by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.</p>
 <p>You can consult the default <a href="https://edouard-legoupil.github.io/unhcrdatapackage/factsheet/factsheet.html" class="external-link">Factsheets for the Americas through that link</a>.</p>
 <p>Note, that if only need the data you can use directly <a href="https://edouard-legoupil.github.io/ForcedDisplacementStat/" class="external-link"><code>{ForcedDisplacementStat}</code></a>. You can also explore data through <a href="https://www.unhcr.org/refugee-statistics/" class="external-link">Refugee Data Finder</a>.</p>
@@ -115,18 +117,12 @@
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
-<p>Pending the creation of a shiny interface for the package, you will need to install the package to use it. If you are on Windows, you will first need to install <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> on the top of <a href="https://cran.r-project.org/bin/windows/base/" class="external-link">R</a> and <a href="https://posit.co/download/rstudio-desktop/" class="external-link">Rstudio</a> in order to install the package locally.</p>
+<p>The package comes with a shiny Interface available <a href="https://rstudio.unhcr.org/Data_Literacy/" class="external-link">Data Storytelling App</a></p>
+<p>You can also install the package locally to use it. If you are on Windows, you will first need to install <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> on the top of <a href="https://cran.r-project.org/bin/windows/base/" class="external-link">R</a> and <a href="https://posit.co/download/rstudio-desktop/" class="external-link">Rstudio</a> in order to install the package locally.</p>
 <p>Make sure to have your <strong>JAVA_HOME</strong> environment variable set up as it will be used for the map generation functions</p>
-<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span><span class="co">## First install UNHCR branding packages for R as showcased here: https://dataviz.unhcr.org/tools/r/</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdesign"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrthemes"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"vidonne/unhcrdown"</span><span class="op">)</span></span>
-<span><span class="co">## Now the data </span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"edouard-legoupil/ForcedDisplacementStat"</span><span class="op">)</span></span>
-<span><span class="co">## Then the chart library</span></span>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pkg_install.html" class="external-link">pkg_install</a></span><span class="op">(</span><span class="st">"edouard-legoupil/unhcrdatapackage"</span><span class="op">)</span></span></code></pre>
-<pre class="{r}"><code><span><span class="co">## you can then run the app locally with</span></span>
+<pre><code><span><span class="co">## you can then run the app locally with</span></span>
 <span><span class="fu">unhcrdatapackage</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
 </div>
 </div>

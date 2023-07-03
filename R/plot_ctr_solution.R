@@ -10,7 +10,7 @@
 #' @param year Numeric value of the year (for instance 2020)
 #' @param lag Number of year to used as comparison base
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @param sol_type Vector of character values. Possible population type (e.g.:"NAT" "RST" "RET" "RDP")
 #' 
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -35,11 +35,12 @@
 #' @examples
 #' plot_ctr_solution(year = 2021,
 #'                   country_asylum_iso3c= "UGA",
-#'                   pop_type = c("REF", "ASY"))
+#'                   lag = 10,
+#'                   sol_type = c("NAT", "RST", "RET", "RDP"))
 plot_ctr_solution <- function(year = 2021,
                               lag = 10,
                               country_asylum_iso3c = country_asylum_iso3c,
-                              pop_type = pop_type){
+                              sol_type ){
   
     ctrylabel <- ForcedDisplacementStat::reference |> 
                  filter(iso_3 == country_asylum_iso3c ) |> 
@@ -53,7 +54,9 @@ plot_ctr_solution <- function(year = 2021,
       
               filter(CountryAsylumCode  == country_asylum_iso3c & 
                       Year > (year - lag) &
-                      Solution.type.label != "IDP returns" ) |>
+                      Solution.type  %in% sol_type 
+                      #Solution.type.label != "IDP returns" 
+                      ) |>
               mutate(Year = as.factor(Year) ) |>
               group_by(Year, Solution.type.label ) |>
               summarise(Value2 = sum(Value) )  |>
@@ -108,7 +111,7 @@ p <- ggplot(Solution, aes(x = Year, y = Value2  )) +
        subtitle = paste0("Data for Forcibly Displaced People across Borders as of ", year, " filtered for ", ctrylabel ), 
        x = "",
        y = "",
-       caption = "Source: UNHCR.org/refugee-statistics.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection.")
+       caption = "Source: UNHCR.org/refugee-statistics.\n Resettlement – in this context this is the country of arrival – i.e. the country to which a refugee has been resettled \n Returns – in this context this is the country of departure – i.e. the country from which a refugee has voluntarily repatriated.")
 
 }
     

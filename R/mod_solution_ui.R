@@ -16,7 +16,13 @@ mod_solution_ui <- function(id){
    tabsetPanel(type = "tabs",
          tabPanel(title= "Solutions Trend",
                   mod_plotviz_ui(ns("solution1"),
-                  thisPlot = "plot_ctr_solution" ) ) 
+                  thisPlot = "plot_ctr_solution" ) ),
+         
+         tabPanel(title= "Solutions vs Recognition",
+                  mod_plotviz_ui(ns("solution2"),
+                  thisPlot = "plot_ctr_solution_recognition" ) )
+         
+         
       ) ## End Tabset
   )
 }
@@ -33,6 +39,9 @@ mod_solution_server <- function(id, reactiveParameters){
     ns <- session$ns
    mod_plotviz_server("solution1", 
                       thisPlot = "plot_ctr_solution", 
+                      reactiveParameters ) 
+   mod_plotviz_server("solution2", 
+                      thisPlot = "plot_ctr_solution_recognition", 
                       reactiveParameters ) 
  
   })
