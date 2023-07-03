@@ -28,8 +28,10 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chart-library-approach">Chart Library Approach</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chart-library-approach">
     <a class="dropdown-item" href="../articles/library.html">Why a chart library?</a>
-    <a class="dropdown-item" href="../articles/chart-library.html">Chart library directory</a>
+    <a class="dropdown-item" href="../articles/chart-library-country.html">Chart library Country</a>
+    <a class="dropdown-item" href="../articles/chart-library-region.html">Chart library Region</a>
     <a class="dropdown-item" href="../articles/adding-new-charts.html">Adding new Charts in the Library</a>
+    <a class="dropdown-item" href="../articles/report-template.html">Template for factsheet</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,7 +74,7 @@
 <span>  year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>  lag <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  country_asylum_iso3c <span class="op">=</span> <span class="va">country_asylum_iso3c</span>,</span>
-<span>  pop_type <span class="op">=</span> <span class="va">pop_type</span></span>
+<span>  <span class="va">sol_type</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -90,8 +92,8 @@
 <dd><p>Character value with the ISO-3 character code of the Country of Asylum</p></dd>
 
 
-<dt>pop_type</dt>
-<dd><p>Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)</p></dd>
+<dt>sol_type</dt>
+<dd><p>Vector of character values. Possible population type (e.g.:"NAT" "RST" "RET" "RDP")</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -105,16 +107,8 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">plot_ctr_solution</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span></span>
 <span class="r-in"><span>                  country_asylum_iso3c<span class="op">=</span> <span class="st">"UGA"</span>,</span></span>
-<span class="r-in"><span>                  pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REF"</span>, <span class="st">"ASY"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There was 1 warning in `mutate()`.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In argument: `valabel = ifelse(...)`.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In group 1: `Year = 2012`.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Caused by warning:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> `label_number_si()` was deprecated in scales 1.2.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `scale_cut` argument of `label_number()` instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">unhcrdatapackage</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue at</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/edouard-legoupil/unhcrdatapackage/issues&gt;</span>.</span>
+<span class="r-in"><span>                  lag <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                  sol_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NAT"</span>, <span class="st">"RST"</span>, <span class="st">"RET"</span>, <span class="st">"RDP"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_ctr_solution-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

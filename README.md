@@ -6,7 +6,7 @@
 > -- Stephen Few
 
 The package conveniently bring together a series of predefined plots in order to improve data literacy and facilitate the creation of __[persuasive data stories](https://edouard-legoupil.github.io/unhcrdatapackage/tuto/tutorial.html)__. 
-You can also consult directly the [Data Literacy App](https://rstudio.unhcr.org/Data_Literacy/) created from this package. 
+You can also consult directly the [Data Storytelling App](https://rstudio.unhcr.org/Data_Literacy/) created from this package. 
 
 Each plot is created through a function that provides a __recipe__ that creates a re-usable chart in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). Those functions are then rendered through predefined Report templates for Countries or Regions, generated either as html, PDF or PowerPoint presentations. You may [enhance the charts story-telling ability](https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html) by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.
 
@@ -28,16 +28,18 @@ __Contributions__, specifically creation of new functions for the chart library 
 
 ## Install
 
-Pending the creation of a shiny interface for the package, you will need to install the package to use it. If you are on Windows, you will first need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on the top of [R](https://cran.r-project.org/bin/windows/base/) and [Rstudio](https://posit.co/download/rstudio-desktop/) in order to install the package locally.
+The package comes with a shiny Interface available [Data Storytelling App](https://rstudio.unhcr.org/Data_Literacy/)
+
+You can also install the package locally to use it. If you are on Windows, you will first need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on the top of [R](https://cran.r-project.org/bin/windows/base/) and [Rstudio](https://posit.co/download/rstudio-desktop/) in order to install the package locally.
 
 Make sure to have your __JAVA_HOME__ environment variable set up as it will be used for the map generation functions
 
-```{r}
+```
 install.packages("pak")
 pak::pkg_install("edouard-legoupil/unhcrdatapackage")
 ```
 
-```{r}
+```
 ## you can then run the app locally with
 unhcrdatapackage::run_app()
 ```
