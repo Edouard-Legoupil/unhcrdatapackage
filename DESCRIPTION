@@ -81,6 +81,8 @@ VignetteBuilder:
     knitr
 Remotes: 
     edouard-legoupil/ForcedDisplacementStat,
+    edouard-legoupil/unhcrshiny,
+    nsgrantham/ggbraid,
     vidonne/unhcrdown,
     vidonne/unhcrthemes
 Encoding: UTF-8
