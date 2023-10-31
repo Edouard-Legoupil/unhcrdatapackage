@@ -46,7 +46,7 @@ plot_ctr_population_type_perc <- function(year = 2021,
 
 
 
-  cols_poptype <- list(ASY = c("Asylum seekers", "#18375F"),
+  cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                       # VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
                        OIP = c("Other people in need of international protection", "#EF4A60"), 

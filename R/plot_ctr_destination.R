@@ -151,7 +151,7 @@ plot_ctr_destination <- function(year = 2021,
         ),
         x = "",
         y = "",
-        caption = "Source: UNHCR Population Statistics Database.\n Forced Displacement includes Refugees, Asylum Seekers and Other in Need of International Protection."
+        caption = "Source: UNHCR Population Statistics Database.\n Forced Displacement includes Refugees, Asylum-seekers and Other in Need of International Protection."
       ) +
     theme_unhcr(font_size = 14,
                   grid = FALSE,

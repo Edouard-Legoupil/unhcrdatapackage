@@ -40,21 +40,21 @@
 #' @export
 #'
 #' @examples
-#' plot_ctr_location(year = 2022,
-#'                  country_asylum_iso3c = "COL",
-#'                  pop_type = c("ASY", "REF", "OIP"))
-#' 
-#' plot_ctr_location(year = 2021,
-#'                  country_asylum_iso3c = "COL",
-#'                  pop_type = c("IDP"))
-#' 
-#' plot_ctr_location(year = 2022,
-#'                  country_asylum_iso3c = "CAN",
-#'                  pop_type = c("ASY", "REF", "OIP"))
-#' 
-#' plot_ctr_location(year = 2021,
-#'                  country_asylum_iso3c = "MEX",
-#'                  pop_type = c("ASY", "REF", "OIP"))
+#' # plot_ctr_location(year = 2022,
+#' #                  country_asylum_iso3c = "COL",
+#' #                  pop_type = c("ASY", "REF", "OIP"))
+#' # 
+#' # plot_ctr_location(year = 2021,
+#' #                  country_asylum_iso3c = "COL",
+#' #                  pop_type = c("IDP"))
+#' # 
+#' # plot_ctr_location(year = 2022,
+#' #                  country_asylum_iso3c = "CAN",
+#' #                  pop_type = c("ASY", "REF", "OIP"))
+#' # 
+#' # plot_ctr_location(year = 2021,
+#' #                  country_asylum_iso3c = "MEX",
+#' #                  pop_type = c("ASY", "REF", "OIP"))
 plot_ctr_location <- function( year  ,
                              country_asylum_iso3c  ,
                              pop_type  ,

@@ -37,7 +37,7 @@ plot_ctr_population_type_abs(year = 2020,
                     show_diff_label = FALSE
                     ) 
 
-## Same with 9 top countries and asylum seekers included
+## Same with 9 top countries and Asylum-seekers included
 plot_ctr_population_type_abs(year = 2020,
                     country_asylum_iso3c = "USA",
                     top_n_countries = 9,

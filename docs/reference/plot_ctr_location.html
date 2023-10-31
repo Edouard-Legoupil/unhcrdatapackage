@@ -22,8 +22,10 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chart-library-approach">Chart Library Approach</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chart-library-approach">
     <a class="dropdown-item" href="../articles/library.html">Why a chart library?</a>
-    <a class="dropdown-item" href="../articles/chart-library.html">Chart library directory</a>
+    <a class="dropdown-item" href="../articles/chart-library-country.html">Chart library Country</a>
+    <a class="dropdown-item" href="../articles/chart-library-region.html">Chart library Region</a>
     <a class="dropdown-item" href="../articles/adding-new-charts.html">Adding new Charts in the Library</a>
+    <a class="dropdown-item" href="../articles/report-template.html">Template for factsheet</a>
   </div>
 </li>
 <li class="nav-item">
@@ -92,33 +94,22 @@ Other mapbackground requires an API key and were not considered</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">plot_ctr_location</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span></span>
-<span class="r-in"><span>                 country_asylum_iso3c <span class="op">=</span> <span class="st">"COL"</span>,</span></span>
-<span class="r-in"><span>                 pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASY"</span>, <span class="st">"REF"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Coordinate system already present. Adding new coordinate system, which will</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> replace the existing one.</span>
-<span class="r-plt img"><img src="plot_ctr_location-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plot_ctr_location</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span></span>
-<span class="r-in"><span>                 country_asylum_iso3c <span class="op">=</span> <span class="st">"COL"</span>,</span></span>
-<span class="r-in"><span>                 pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IDP"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Coordinate system already present. Adding new coordinate system, which will</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> replace the existing one.</span>
-<span class="r-plt img"><img src="plot_ctr_location-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plot_ctr_location</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2022</span>,</span></span>
-<span class="r-in"><span>                 country_asylum_iso3c <span class="op">=</span> <span class="st">"CAN"</span>,</span></span>
-<span class="r-in"><span>                 pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASY"</span>, <span class="st">"REF"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Coordinate system already present. Adding new coordinate system, which will</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> replace the existing one.</span>
-<span class="r-plt img"><img src="plot_ctr_location-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plot_ctr_location</span><span class="op">(</span>year <span class="op">=</span> <span class="fl">2021</span>,</span></span>
-<span class="r-in"><span>                 country_asylum_iso3c <span class="op">=</span> <span class="st">"MEX"</span>,</span></span>
-<span class="r-in"><span>                 pop_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASY"</span>, <span class="st">"REF"</span>, <span class="st">"OIP"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Coordinate system already present. Adding new coordinate system, which will</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> replace the existing one.</span>
-<span class="r-plt img"><img src="plot_ctr_location-4.png" alt="" width="700" height="433"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># plot_ctr_location(year = 2022,</span></span></span>
+<span class="r-in"><span><span class="co">#                  country_asylum_iso3c = "COL",</span></span></span>
+<span class="r-in"><span><span class="co">#                  pop_type = c("ASY", "REF", "OIP"))</span></span></span>
+<span class="r-in"><span><span class="co"># </span></span></span>
+<span class="r-in"><span><span class="co"># plot_ctr_location(year = 2021,</span></span></span>
+<span class="r-in"><span><span class="co">#                  country_asylum_iso3c = "COL",</span></span></span>
+<span class="r-in"><span><span class="co">#                  pop_type = c("IDP"))</span></span></span>
+<span class="r-in"><span><span class="co"># </span></span></span>
+<span class="r-in"><span><span class="co"># plot_ctr_location(year = 2022,</span></span></span>
+<span class="r-in"><span><span class="co">#                  country_asylum_iso3c = "CAN",</span></span></span>
+<span class="r-in"><span><span class="co">#                  pop_type = c("ASY", "REF", "OIP"))</span></span></span>
+<span class="r-in"><span><span class="co"># </span></span></span>
+<span class="r-in"><span><span class="co"># plot_ctr_location(year = 2021,</span></span></span>
+<span class="r-in"><span><span class="co">#                  country_asylum_iso3c = "MEX",</span></span></span>
+<span class="r-in"><span><span class="co">#                  pop_type = c("ASY", "REF", "OIP"))</span></span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -22,8 +22,12 @@ mod_processing_ui <- function(id){
                   mod_plotviz_ui(ns("processing2"), 
                   thisPlot = "plot_ctr_recognition" ) ),
          
-         tabPanel(title= "Processing Time",
+         tabPanel(title= "Applications & Decision",
                   mod_plotviz_ui(ns("processing3"), 
+                  thisPlot = "plot_ctr_asylum" ) ),
+         
+         tabPanel(title= "Processing Time",
+                  mod_plotviz_ui(ns("processing4"), 
                   thisPlot = "plot_ctr_processing_time" ) )
       ) ## End Tabset
   )
@@ -39,9 +43,18 @@ mod_processing_ui <- function(id){
 mod_processing_server <- function(id, reactiveParameters){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-       mod_plotviz_server("processing1", thisPlot = "plot_ctr_process", reactiveParameters )
-       mod_plotviz_server("processing2", thisPlot = "plot_ctr_recognition", reactiveParameters )
-       mod_plotviz_server("processing3", thisPlot = "plot_ctr_processing_time", reactiveParameters )
+       mod_plotviz_server("processing1", 
+                          thisPlot = "plot_ctr_process", 
+                          reactiveParameters )
+       mod_plotviz_server("processing2", 
+                          thisPlot = "plot_ctr_recognition",
+                          reactiveParameters )
+       mod_plotviz_server("processing3", 
+                          thisPlot = "plot_ctr_asylum", 
+                          reactiveParameters )
+       mod_plotviz_server("processing4",
+                          thisPlot = "plot_ctr_processing_time", 
+                          reactiveParameters )
  
   })
 }

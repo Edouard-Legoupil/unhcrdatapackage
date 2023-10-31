@@ -30,28 +30,7 @@ https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/
 
 ```
 
-## theme_shinydashboard_unhcr
-
     
-
-  
-
-```{r example-theme_shinydashboard_unhcr}
-# Typically used within the app_ui of the shiny
-# app_ui <- function() {
-#   tagList(
-#     # Leave this function for adding external resources
-#     golem_add_external_resources(),
-#     ## Function to style the app
-#     theme_shinydashboard_unhcr())}
-```
-
-  
-
-  
-
-
-
 
 
 # Shared Modules
@@ -81,21 +60,6 @@ This module take as an argument the plot based on the library and the reactive v
 
 
 ```{r examples-mod_plotviz}
-
-```
-
-## mod_share
-
-See how we could share the story then on twitter -
-
-This is a module that will work based on a specific module id.. 
-https://stackoverflow.com/questions/69172472/shiny-modules-inside-other-modules/69173076#69173076
-
-https://stackoverflow.com/questions/62052804/is-there-a-way-to-add-share-buttons-to-make-plots-shareable-in-shiny
-The way a Twitter Card could work would be if you were sharing a link to a static web page in the Tweet text, and if that page had some markup which included the image, so that the image would be shown as a preview for the link. 
-
-
-```{r examples-mod_share}
 
 ```
 

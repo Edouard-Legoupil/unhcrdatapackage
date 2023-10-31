@@ -41,7 +41,7 @@
 #'                     show_diff_label = FALSE
 #'                     ) 
 #' 
-#' ## Same with 9 top countries and asylum seekers included
+#' ## Same with 9 top countries and Asylum-seekers included
 #' plot_ctr_population_type_abs(year = 2020,
 #'                     country_asylum_iso3c = "USA",
 #'                     top_n_countries = 9,
@@ -58,7 +58,7 @@ plot_ctr_population_type_abs <- function(year = 2021,
   
   
   
-  cols_poptype <- list(ASY = c("Asylum seekers", "#18375F"),
+  cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
                        REF = c("Refugees", "#0072BC"),
                        #VDA = c("Venezuelans Displaced Abroad", "#EF4A60"), 
                        OIP = c("Other people in need of international protection", "#EF4A60"), 

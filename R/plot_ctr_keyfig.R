@@ -23,9 +23,6 @@
 #'                 country_asylum_iso3c = "COL")
 plot_ctr_keyfig <- function(country_asylum_iso3c, year){
 
-    ## FontAwesome6  includes humanitarian icon... 
-   # check_font()
- 
 CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
   dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
   dplyr::distinct(ctryname) |> 

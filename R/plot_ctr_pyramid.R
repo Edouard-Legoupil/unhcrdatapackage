@@ -38,12 +38,7 @@
 plot_ctr_pyramid <- function(year ,
                              country_asylum_iso3c = country_asylum_iso3c,
                              pop_type = pop_type) {
-  
-  
-    ## FontAwesome6  includes humanitarian icon... 
-    #check_font()
- 
-  
+
   ctrylabel <- ForcedDisplacementStat::reference |> 
     filter(iso_3 == country_asylum_iso3c ) |> 
     distinct(ctryname) |> 
@@ -95,7 +90,10 @@ plot_ctr_pyramid <- function(year ,
   
   
   if ( nrow(demographics1) ==  0 ){
-    info <-  paste0("There\'s no recorded Gender disaggregation \n for Forcibly Displaced People across Borders \n in ", ctrylabel, "as of", year )
+    info <-  paste0("No Gender disaggregation recorded\n for Forcibly Displaced People across Borders \n in ", 
+                    ctrylabel,
+                    " as of ", 
+                    year )
     p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                               label = info ) +  theme_void() 
     
@@ -208,7 +206,7 @@ plot_ctr_pyramid <- function(year ,
         labs(  title = paste0("Population Pyramid for ", 
                               sub(",\\s+([^,]+)$", " and \\1",  toString(poptype_label)), 
                               " | ", ctrylabel),
-          subtitle = paste0("As of ", year, 
+          subtitle = paste0(" As of ", year, 
                             ", gender disaggregation is available for ", totprop, "% of the ",tot,
                             " individuals in ", ctrylabel),
           caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: UNHCR.org/refugee-statistics."  ) +
