@@ -82,8 +82,8 @@ VignetteBuilder:
 Remotes: 
     edouard-legoupil/ForcedDisplacementStat,
     edouard-legoupil/unhcrshiny,
-    vidonne/unhcrdown,
-    vidonne/unhcrthemes
+    unhcr-dataviz/unhcrdown,
+    unhcr-dataviz/unhcrthemes
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.2.3
