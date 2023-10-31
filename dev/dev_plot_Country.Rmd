@@ -27,6 +27,47 @@ library(unhcrthemes)
 # font_import()
 # loadfonts()
 # font_install('fontcm')
+
+dict_pop_type_name <- c(
+  'refugees' = 'Refugees',
+  'returned_refugees' = 'Returned refugees',
+  'asylum_seekers' = 'Asylum-seekers',
+  'idps' = 'Internally displaced persons',
+  'returned_idps' = 'Returned idps',
+  'oip' = 'Other people in need of international protection',
+  'stateless' = 'Stateless people',
+  'ooc' = 'Others of concern to UNHCR',
+  'hst' = 'Host community'
+)
+
+
+dict_pop_type_label <- c(
+  'refugees' = 'REF',
+  'returned_refugees' = 'RETURNED_REF',
+  'asylum_seekers' = 'ASY',
+  'idps' = 'IDP',
+  'returned_idps' = 'RETURNED_IDP',
+  'oip' = 'OIP',
+  'stateless' = 'STA',
+  'ooc' = 'OOC',
+  'hst' = 'HST'
+)
+
+
+cols_poptype_name_name <- c("Asylum-seekers" = "#18375F",
+                  "Refugees" = "#0072BC",
+                  "Other people in need of international protection" = "#EF4A60", 
+                  "Others of concern to UNHCR" = "#999999",
+                  "Internally displaced persons" = "#00B398",
+                  "Stateless people" = "#E1CC0D")
+
+
+cols_poptype_label <- c("ASY" = "#18375F",
+                  "REF" = "#0072BC",
+                  "OIP" = "#EF4A60", 
+                  "OOC" = "#999999",
+                  "IDP" = "#00B398",
+                  "STA" = "#E1CC0D")                  
 ```
 
 ```{r development-load}
@@ -52,7 +93,8 @@ Below is the library with all Country Focused questions organised around the 7 k
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom ggtext geom_textbox
-#' @importFrom unhcrthemes theme_unhcr
+#' @importFrom unhcrthemes theme_unhcr countrycode
+#' @importFrom tidyr pivot_longer
 #' @importFrom extrafont fonttable font_import
 #' @importFrom sysfonts font_add
 #' @importFrom utils download.file
@@ -61,71 +103,70 @@ Below is the library with all Country Focused questions organised around the 7 k
 
 plot_ctr_keyfig <- function(country_asylum_iso3c, year){
 
-CountryAsylum_name_text <-  ForcedDisplacementStat::reference |> 
-  dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
-  dplyr::distinct(ctryname) |> 
+country_name_text <- nansen::countries  |> 
+  dplyr::filter(iso_code == country_asylum_iso3c) |>
+  dplyr::distinct(name) |>
   dplyr::pull()
 
-total_poc <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_poc <- nansen::population |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c) |>
+  dplyr::summarise(sum(value, na.rm = TRUE)) |>
   dplyr::pull()
 
-total_poc_last_year <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == as.numeric(year)-1,
-                CountryAsylumCode == country_asylum_iso3c) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_poc_last_year <- nansen::population |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |> 
+  dplyr::filter(year == as.numeric(year)-1,
+                coa_iso == country_asylum_iso3c) |>
+  dplyr::summarise(sum(value, na.rm = TRUE)) |>
   dplyr::pull()
 
 perc_change_poc <- ((total_poc - total_poc_last_year)/total_poc_last_year)*100
 
-total_ref <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c,
-                Population.type == "REF"
-  ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_ref  <- nansen::population |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c)|>
+  dplyr::summarise(sum(refugees, na.rm = TRUE)) |>
   dplyr::pull()
 
-total_asy <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c,
-                Population.type == "ASY"
-  ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+
+total_asy <- nansen::population |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c)|>
+  dplyr::summarise(sum(asylum_seekers, na.rm = TRUE)) |>
   dplyr::pull()
 
-total_oip <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c,
-                Population.type == "OIP"
-  ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_oip <- nansen::population |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c)|>
+  dplyr::summarise(sum(oip, na.rm = TRUE)) |>
   dplyr::pull()
 
-total_idp <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c,
-                Population.type == "IDP"
-  ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_idp <- nansen::population |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c)|>
+  dplyr::summarise(sum(idps, na.rm = TRUE)) |>
   dplyr::pull()
 
-total_sta <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c,
-                Population.type == "STA"
-  ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_sta <- nansen::population |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c)|>
+  dplyr::summarise(sum(stateless, na.rm = TRUE)) |>
   dplyr::pull()
 
-total_ooc <- ForcedDisplacementStat::end_year_population_totals_long |> 
-  dplyr::filter(Year == year,
-                CountryAsylumCode == country_asylum_iso3c,
-                Population.type == "OOC"
-  ) |> 
-  dplyr::summarise(sum(Value, na.rm = TRUE)) |> 
+total_ooc <- nansen::population |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c)|>
+  dplyr::summarise(sum(ooc, na.rm = TRUE)) |>
   dplyr::pull()
 
 ## Create the frame to be displayed with a facetted ggplot  
@@ -148,12 +189,12 @@ keyfig <- data.frame(
            "\ue539" #  "Others of Concerns"  fa-person-arrow-up-from-line
            ),
   label = c(
-  paste0( format(round(total_ref, 0), scientific = FALSE, big.mark=",") ),
-  paste0( format(round(total_asy, 0),scientific = FALSE,  big.mark=",") ),
-  paste0( format(round(total_oip, 0), scientific = FALSE, big.mark=",")), 
-  paste0( format(round(total_idp, 0), scientific = FALSE, big.mark=",")),
-  paste0( format(round(total_sta, 0),scientific = FALSE,  big.mark=",")), 
-  paste0( format(round(total_ooc, 0), scientific = FALSE, big.mark=",") ) ) 
+  paste0(format(round(total_ref, 0), scientific = FALSE, big.mark = ",")),
+  paste0(format(round(total_asy, 0), scientific = FALSE, big.mark = ",")),
+  paste0(format(round(total_oip, 0), scientific = FALSE, big.mark = ",")),
+  paste0(format(round(total_idp, 0), scientific = FALSE, big.mark = ",")),
+  paste0(format(round(total_sta, 0), scientific = FALSE, big.mark = ",")),
+  paste0(format(round(total_ooc, 0), scientific = FALSE, big.mark = ",")))
   )
   
  
@@ -177,16 +218,16 @@ keyfig <- data.frame(
                        size = 12,
                       # width = unit(25, "cm"), 
                        box.colour = NA) +
-  scale_color_manual( values = c(   "IDP" = "#00B398",
-                                   "OIP"="#EF4A60",
-                                   "ASY" = "#18375F",
-                                   "REF" = "#0072BC",
-                                   "OOC" ="#8395b9",
-                                   "STA"="#E1CC0D")) +
+  scale_color_manual( values = c("IDP" = "#00B398",
+                                 "OIP" = "#EF4A60",
+                                 "ASY" = "#18375F",
+                                 "REF" = "#0072BC",
+                                 "OOC" = "#8395b9",
+                                 "STA" = "#E1CC0D")) +
   xlim(c(0, 2)) +
   ylim(c(0, 3)) +
   facet_wrap(vars(fig), ncol = 2)  +
-  labs(title = paste0("Key Figures for ", CountryAsylum_name_text, " as of ", year), 
+  labs(title = paste0("Key Figures for ", country_name_text, " as of ", year), 
        subtitle = paste0("A total of ",
                          format(round(total_poc, 0), scientific = FALSE, big.mark=","),
                          " people, ",
@@ -194,7 +235,7 @@ keyfig <- data.frame(
                          " by ",  round(abs(perc_change_poc), 1), 
                          "% compared to the previous year"),
        caption = "Source: UNHCR.org/refugee-statistics") +
-  unhcrthemes::theme_unhcr_map(  ) +
+  unhcrthemes::theme_unhcr_map() +
   theme(strip.text.x = element_text(size = 14),
         legend.position = "none"
         )  
@@ -220,7 +261,6 @@ plot_ctr_keyfig(year = 2022,
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line 
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual 
@@ -242,52 +282,56 @@ plot_ctr_keyfig(year = 2022,
 #'
 
 plot_ctr_treemap <- function(year = 2021,
-                     country_asylum_iso3c = country_asylum_iso3c,
-                     pop_type = pop_type) {
+                             country_asylum_iso3c = country_asylum_iso3c) {
 
+  country_name_text <- nansen::countries  |> 
+    dplyr::filter(iso_code == country_asylum_iso3c) |>
+    dplyr::distinct(name) |>
+    dplyr::pull()
 
-   ctrylabel <- ForcedDisplacementStat::reference |> 
-                 filter(iso_3 == country_asylum_iso3c ) |> 
-               select(ctryname) |> 
-                pull()
-
-  datatree <-  ForcedDisplacementStat::end_year_population_totals_long  |> 
-    filter(Year == year,  #### Parameter
-                  CountryAsylumCode == country_asylum_iso3c #### Parameter
-    ) |> 
-    select(-c(Year)) |> 
-    group_by(CountryAsylumName,  Population.type, 
-                    Population.type.label, Population.type.label.short) |> 
-    summarise(across(where(is.numeric), sum)) |> 
-    ungroup() 
+  datatree <- nansen::population |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |> 
+  dplyr::filter(year == year,
+                coa_iso == country_asylum_iso3c) |>
+   dplyr::select(-c(year)) |>
+   dplyr::group_by(coa_name,  population_type) |>
+   dplyr::summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') |>
+   dplyr::mutate(
+   population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+  )
   
   p <- ggplot() +
-         treemapify::geom_treemap( data = datatree, 
-                 aes(area = Value, 
-                     fill = Population.type) ) +
+         treemapify::geom_treemap(data = datatree, 
+                 aes(area = value, 
+                     fill = population_type) ) +
          treemapify::geom_treemap_text(data = datatree, 
-                     aes(area = Value, 
-                         fill = Population.type,
-                         label = paste0(round(100 * Value / sum(Value),1), 
+                     aes(area = value, 
+                         fill = population_type,
+                         label = paste0(round(100 * value / sum(value),1), 
                           "%\n", 
-                          Population.type.label) ),
+                          population_type_name) ),
                      colour = "white",
                            place = "centre", size = 25) +
-         scale_fill_manual( values = c(   "IDP" = "#00B398",
-                                         # "VDA"="#EF4A60",
-                                          "OIP"="#EF4A60",
-                                          "ASY" = "#18375F",
-                                          "REF" = "#0072BC",
-                                          "OOC" ="#8395b9",
-                                          "STA"="#E1CC0D")) +
+         scale_fill_manual( values = c("idps" = "#00B398",
+                                       # "VDA"="#EF4A60",
+                                       "oip" = "#EF4A60",
+                                       "asylum_seekers" = "#18375F",
+                                       "refugees" = "#0072BC",
+                                       "ooc" = "#8395b9",
+                                       "stateless" = "#E1CC0D")) +
          
-      theme_unhcr(font_size = 14,
+      unhcrthemes::theme_unhcr(font_size = 14,
                   grid = "Y", 
                   axis = "x", 
                   axis_title = "y", 
                   legend = FALSE) +
          theme(legend.position = "none") +
          ## and the chart labels
+
          labs(title = paste0("Population of Concern in ",  ctrylabel),
               subtitle = paste0(" As of ", year, ", a total of ", format(round(sum(datatree$Value), -3),  big.mark=","), " Individuals"),
               x = "",
@@ -302,8 +346,7 @@ plot_ctr_treemap <- function(year = 2021,
 ```{r examples-plot_ctr_treemap, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 # 
 plot_ctr_treemap(year = 2021,
-                            country_asylum_iso3c = "USA",
-                            pop_type = c("REF", "ASY")
+                 country_asylum_iso3c = "USA"
          )
 
 ```    
@@ -311,7 +354,7 @@ plot_ctr_treemap(year = 2021,
 
 
 
-## Plot Population Type Over Year
+## Plot Population Type Over year
 
 <!--
 Create a chunk for the core of the function
@@ -328,7 +371,7 @@ After inflating the template
 -->
 
 ```{r function-plot_ctr_population_type_per_year}
-#' Graph of Population Type Over Year
+#' Graph of Population Type Over year
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param lag Number of year to used as comparison base
@@ -355,11 +398,10 @@ After inflating the template
 
 plot_ctr_population_type_per_year <- function(year = 2022,
                                               lag = 5, 
-                                     country_asylum_iso3c = country_asylum_iso3c,
-                                     pop_type = Population.type
+                                              country_asylum_iso3c = country_asylum_iso3c,
+                                              pop_type = pop_type
                                      ) {
   
-
 
 
   cols_poptype <- c("Asylum-seekers" = "#18375F",
@@ -369,61 +411,72 @@ plot_ctr_population_type_per_year <- function(year = 2022,
                     "Others of Concern to UNHCR" = "#999999",
                     "Internally displaced persons" = "#00B398",
                     "Stateless Persons" = "#E1CC0D")
+
   
+  df <- nansen::population  |>
+    dplyr::filter(year  >= (!!year - lag) & year  <= !!year,  #### Parameter
+         coa_iso == country_asylum_iso3c, #### Parameter
+  )  |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |>
+   dplyr::mutate(
+   population_type_label = stringr::str_replace_all(population_type, pattern = dict_pop_type_label)
+  ) |> 
+  dplyr::filter(
+         population_type_label %in% pop_type #### Parameter
+    )  |> 
+     dplyr::group_by(year, coa_name,  population_type, population_type_label) |>
+   dplyr::summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') |> 
+   dplyr::mutate(
+   population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+  ) 
   
-  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
-    filter(CountryAsylumCode != "UKN",
-                  !is.na(CountryAsylumCode),
-                  Year >= (year - lag),  #### Parameter
-                  CountryAsylumCode == country_asylum_iso3c, #### Parameter
-                  Population.type %in% pop_type #### Parameter
-    )  |>  
-    group_by(Year, CountryAsylumName, Population.type.label)  |> 
-    summarise(Value = sum(Value, na.rm = TRUE)) |> 
-    ungroup()
-  
+    
   ## need to sort with so that the small value are on the top for better legibility 
-  # levels(as.factor(df$Population.type.label)) is alpha... 
+  # levels(as.factor(df$population_type_label)) is alpha... 
   # let's sort based on value from this year
-  df$Population.type.label <- factor(df$Population.type.label,
-          levels =  unique(df$Population.type.label[order(df$Value)])
+  df$population_type_name <- factor(df$population_type_name,
+          levels =  unique(df$population_type_name[order(df$value)])
                                      )
   
   
   
-  CountryAsylum_name_text <- df |> 
-    distinct(CountryAsylumName) |> 
+  country_name_text <- df |>
+    distinct(coa_name) |>
     pull()
   
-  year_breaks <- diff(range(df$Year)) + 1 
-  
+  year_breaks <- diff(range(df$year)) + 1 
+ 
   p <- ggplot() +
     geom_col( data = df, 
-             aes(x = Year, 
-                 y = Value, 
-                 fill = Population.type.label),
+             aes(x = year, 
+                 y = value, 
+                 fill = population_type_name),
              width = 0.7) +
     
     ## Need some conditions to put labels or not o the chart - to avoid cluttered
     # chart.. 
     
-    geom_text(data = df |> filter(Value > mean(df$Value) *0.1), 
-             aes(x = Year, 
-                  y = Value, 
-                  color = Population.type.label, 
+    geom_text(data = df |>filter(value > mean(df$value) *0.1), 
+             aes(x = year, 
+                  y = value, 
+                  color = population_type_name, 
                   label = label_number(accuracy = .1,
-                                   scale_cut = cut_short_scale())(Value)),
+                                   scale_cut = cut_short_scale())(value)),
               position = position_stack(vjust = 0.5),
               show.legend = FALSE,
               size = 5) +
     ## This add the total on the top of the chart..
     stat_summary(data = df, 
                   fun = sum, 
-                 aes(x = Year,
-                     y = Value, 
+                 aes(x = year,
+                     y = value, 
                      label = scales::label_number(accuracy = .1,
                                           scale_cut = cut_short_scale())(after_stat(y)),
-                     group = Year), 
+                     group = year), 
                  geom = "text", size = 5,    vjust = -0.5) +
     scale_color_manual(values = c("#FFFFFF",
                                   "#FFFFFF",
@@ -436,7 +489,7 @@ plot_ctr_population_type_per_year <- function(year = 2022,
                       limits = force) +
     scale_x_continuous(breaks = scales::breaks_pretty(n = year_breaks)) +
     scale_y_continuous(expand = expansion(c(0, 0.1))) +
-    labs(title = paste0(CountryAsylum_name_text, ": Population Type per Year"), 
+    labs(title = paste0(country_name_text, ": Population Type per year"), 
          subtitle = "Number of people (thousand)",
          caption = "Source: UNHCR.org/refugee-statistics") +
     theme_unhcr(grid = FALSE, axis = "x", 
@@ -477,8 +530,8 @@ After inflating the template
 ```{r examples-plot_ctr_population_type_per_year, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
 
 p <- plot_ctr_population_type_per_year(
-                         year = 2022,
-                         country_asylum_iso3c = "PAN",
+                         year = 2018,
+                         country_asylum_iso3c = "BRA",
                          lag = 5,
                          pop_type = c("REF", 
                                        "ASY", 
@@ -567,6 +620,7 @@ plot_ctr_population_type_abs <- function(year = 2021,
                                          show_diff_label = TRUE
 ) {
   
+
   
   
   cols_poptype <- list(ASY = c("Asylum-seekers", "#18375F"),
@@ -579,42 +633,53 @@ plot_ctr_population_type_abs <- function(year = 2021,
   )
   
   
-  df <- 
-    ForcedDisplacementStat::end_year_population_totals  |> 
-    filter(CountryAsylumCode != "UKN",
-           !is.na(CountryAsylumCode),
-           (Year == year | Year == year -1),  #### Parameter
-           CountryAsylumCode == country_asylum_iso3c, #### Parameter
-    )  |>  
-    select(Year, CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
-    group_by(Year, CountryAsylumName, CountryOriginName) |>
-    filter(!!sym(pop_type) != 0) |>
-    mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
-    ungroup() |>
-    group_by(CountryAsylumName, CountryOriginName) |> 
-    arrange(Year) |>
+
+   df <- nansen::population  |>
+    dplyr::filter(
+           (year == !!year | year == !!year - 1),  #### Parameter
+           coa_iso == country_asylum_iso3c, #### Parameter
+  )  |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |> 
+   dplyr::mutate(
+   population_type_label = stringr::str_replace_all(population_type, pattern = dict_pop_type_label)
+  ) |> 
+  dplyr::filter(
+         population_type_label %in% pop_type, #### Parameter
+         value != 0 | is.na(value)) |>
+   dplyr::group_by(year, coa_name, coo_name, population_type, population_type_label) |>
+   dplyr::summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') |> 
+   dplyr::mutate(
+   population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+  ) |>
+    group_by(coa_name, coo_name) |>
+    arrange(year) |>
+
     mutate(diff_pop_type_value = label_percent(accuracy = 0.1,
-                                                trim = FALSE) (((pop_type_value-lag(pop_type_value))/lag(pop_type_value)))  ) |> 
+                                                trim = FALSE) (((value-lag(value))/lag(value)))  ) |>
     ungroup() |>
-    filter(Year == year) |> 
+    filter(year == !!year) |>
     mutate(
       origin_data_prot = forcats::fct_lump_n(
-        f = CountryOriginName,
+        f = coo_name,
         n = top_n_countries,  #### Parameter
-        w = pop_type_value,
+        w = value,
         other_level = 'Other nationalities',
         ties.method = "last"
       )
     ) |>
-    mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
+    mutate(origin_data_prot = forcats::fct_na_value_to_level(origin_data_prot,
                                                        'Other nationalities'),
            diff_pop_type_value = case_when(origin_data_prot == 'Other nationalities' ~ "",
                                            TRUE ~ diff_pop_type_value)) |>
-    group_by(CountryAsylumName, diff_pop_type_value, origin_data_prot) |>
-    summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
-    ungroup() |> 
-    arrange(desc(pop_type_value)) |>
-    filter(pop_type_value != 0L) |>
+    group_by(coa_name, diff_pop_type_value, origin_data_prot) |>
+    summarise(value = sum(value, na.rm = TRUE), .groups = 'drop') |>
+    ungroup() |>
+    arrange(desc(value)) |>
+    filter(value != 0L) |>
     mutate(
       origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
       origin_data_prot =  suppressWarnings(
@@ -628,27 +693,27 @@ plot_ctr_population_type_abs <- function(year = 2021,
       perc = label_percent(
         accuracy = 1,
         trim = TRUE
-      )(  pop_type_value / sum(pop_type_value))
+      )(value / sum(value))
     )
   
-  CountryAsylum_name_text <- df |> 
-    distinct(CountryAsylumName) |> 
+  country_name_text <- df |>
+    distinct(coa_name) |>
     pull()
   
   
   p <- ggplot() +
     geom_col(data = df, 
-             aes(x = pop_type_value, y = origin_data_prot),
-             fill = cols_poptype[[pop_type]][2],
+             aes(x = value, y = origin_data_prot),
+             fill = cols_poptype_label[[pop_type]][1],
              width = 0.8) +
     ## Position label differently in the bar in white - outside bar in black
     geom_text(
-      data = subset(df, pop_type_value < max(pop_type_value) / 1.5),
+      data = subset(df, value < max(value) / 1.5),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = label_number(accuracy = 1,
-                             scale_cut = cut_short_scale())(pop_type_value)
+                             scale_cut = cut_short_scale())(value)
       ),
       hjust = -0.1 ,
       vjust = 0.5,
@@ -656,12 +721,12 @@ plot_ctr_population_type_abs <- function(year = 2021,
       size = 6
     ) +
     geom_text(
-      data = subset(df, pop_type_value >= max(pop_type_value) / 1.5),
+      data = subset(df, value >= max(value) / 1.5),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = label_number(accuracy = 1,
-                             scale_cut = cut_short_scale())(pop_type_value)),
+                             scale_cut = cut_short_scale())(value)),
       hjust = 1.1 ,
       vjust = 0.5,
       colour = "white",
@@ -672,9 +737,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
   if(show_diff_label == TRUE) {
     # diff label positive general
     p <- p + geom_text( 
-      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (pop_type_value < max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (value < max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9650), diff_pop_type_value)
       ),
@@ -685,9 +750,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     ) +
     # diff label negative general
     geom_text(
-      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (pop_type_value < max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (value < max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9660), diff_pop_type_value)
       ),
@@ -698,9 +763,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     ) +
   # diff label positive max
     geom_text(
-      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (pop_type_value >= max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (value >= max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9650), diff_pop_type_value)
       ),
@@ -711,9 +776,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
     ) +
   # diff label negative max
     geom_text(
-      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (pop_type_value >= max(pop_type_value) / 1.5)),
+      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (value >= max(value) / 1.5)),
       aes(
-        x = pop_type_value,
+        x = value,
         y = origin_data_prot,
         label = paste(intToUtf8(9660), diff_pop_type_value)
       ),
@@ -722,8 +787,9 @@ plot_ctr_population_type_abs <- function(year = 2021,
       colour = "#0472bc",
       size = 5
     )} 
+    
   p <- p + 
-    labs(title = paste0(CountryAsylum_name_text, ": ", cols_poptype[[pop_type]][1], " | ",  year),
+    labs(title = paste0(country_name_text, ": ", stringr::str_to_title(names(dict_pop_type_label[dict_pop_type_label==pop_type])) , " | ",  year),
          subtitle = paste0("Top ",  top_n_countries, " Countries of Origin"),
          x = "Number of People",
          caption = "Source: UNHCR.org/refugee-statistics") +
@@ -798,6 +864,7 @@ plot_ctr_population_type_abs(year = 2020,
 #'
 
 plot_ctr_population_type_perc <- function(year = 2021,
+
                                 country_asylum_iso3c = country_asylum_iso3c,
                                 top_n_countries = 9,
                                 pop_type = "REF"
@@ -814,35 +881,53 @@ plot_ctr_population_type_perc <- function(year = 2021,
                        STA = c("Stateless Persons", "#E1CC0D")
   )
   
+
   
-  df <-  
-    ForcedDisplacementStat::end_year_population_totals  |> 
-    filter(CountryAsylumCode != "UKN",
-                  !is.na(CountryAsylumCode),
-                  Year == year,  #### Parameter
-                  CountryAsylumCode == country_asylum_iso3c, #### Parameter
-    )  |>  
-    select(CountryAsylumName, CountryOriginName,!!sym(pop_type)) |>
-    group_by(CountryAsylumName, CountryOriginName) |>
-    filter(!!sym(pop_type) != 0) |>
-    mutate(pop_type_value = sum(!!sym(pop_type), na.rm=TRUE)) |> 
+   df <- nansen::population  |>
+    dplyr::filter(
+           (year == !!year | year == !!year - 1),  #### Parameter
+           coa_iso == country_asylum_iso3c, #### Parameter
+  )  |> 
+  tidyr::pivot_longer(
+    cols = refugees:hst,
+    names_to = "population_type",
+    values_to = "value"
+  ) |> 
+   dplyr::mutate(
+   population_type_label = stringr::str_replace_all(population_type, pattern = dict_pop_type_label)
+  ) |> 
+  dplyr::filter(
+         population_type_label %in% pop_type, #### Parameter
+         value != 0 | is.na(value)) |>
+   dplyr::group_by(year, coa_name, coo_name, population_type, population_type_label) |>
+   dplyr::summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') |> 
+   dplyr::mutate(
+   population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+  ) |>
+    group_by(coa_name, coo_name) |>
+    arrange(year) |>
+    mutate(diff_pop_type_value = label_percent(accuracy = 0.1,
+                                                trim = FALSE) (((value-lag(value))/lag(value)))  ) |>
     ungroup() |>
+    filter(year == !!year) |>
     mutate(
       origin_data_prot = forcats::fct_lump_n(
-        f = CountryOriginName,
+        f = coo_name,
         n = top_n_countries,  #### Parameter
-        w = pop_type_value,
+        w = value,
         other_level = 'Other nationalities',
         ties.method = "last"
       )
     ) |>
-    mutate(origin_data_prot = forcats::fct_explicit_na(origin_data_prot,
-                                                              'Other nationalities')) |>
-    group_by(CountryAsylumName,origin_data_prot) |>
-    summarise(pop_type_value = sum(pop_type_value, na.rm = TRUE)) |>
-    ungroup() |> 
-    arrange(desc(pop_type_value)) |>
-    filter(pop_type_value != 0L) |>
+    mutate(origin_data_prot = forcats::fct_na_value_to_level(origin_data_prot,
+                                                       'Other nationalities'),
+           diff_pop_type_value = case_when(origin_data_prot == 'Other nationalities' ~ "",
+                                           TRUE ~ diff_pop_type_value)) |>
+    group_by(coa_name, diff_pop_type_value, origin_data_prot) |>
+    summarise(value = sum(value, na.rm = TRUE), .groups = 'drop') |>
+    ungroup() |>
+    arrange(desc(value)) |>
+    filter(value != 0L) |>
     mutate(
       origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
       origin_data_prot =  suppressWarnings(
@@ -855,62 +940,119 @@ plot_ctr_population_type_perc <- function(year = 2021,
       ),
       perc = label_percent(
         accuracy = 1,
-        trim = FALSE )( pop_type_value / sum(pop_type_value))
+        trim = FALSE
+      )(value / sum(value))
     )
   
-  CountryAsylum_name_text <- df |> 
-    distinct(CountryAsylumName) |> 
+  country_name_text <- df |>
+    distinct(coa_name) |>
     pull()
+  
+  
+  p <- ggplot() +
+    geom_col(data = df, 
+             aes(x = value, y = origin_data_prot),
+             fill = cols_poptype_label[[pop_type]][1],
+             width = 0.8) +
+    ## Position label differently in the bar in white - outside bar in black
+    geom_text(
+      data = subset(df, value < max(value) / 1.5),
+      aes(
+        x = value,
+        y = origin_data_prot,
+        label = perc
+      ),
+      hjust = -0.1 ,
+      vjust = 0.5,
+      colour = "black",
+      size = 6
+    ) +
+    geom_text(
+      data = subset(df, value >= max(value) / 1.5),
+      aes(
+        x = value,
+        y = origin_data_prot,
+        label = perc),
+      hjust = 1.1 ,
+      vjust = 0.5,
+      colour = "white",
+      size = 6
+    ) 
+  
+  # Add diff labels
+  if(show_diff_label == TRUE) {
+    # diff label positive general
+    p <- p + geom_text( 
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (value < max(value) / 1.5)),
+      aes(
+        x = value,
+        y = origin_data_prot,
+        label = paste(intToUtf8(9650), diff_pop_type_value)
+      ),
+      hjust = -1.2,
+      vjust = 0.5,
+      colour = "grey",
+      size = 5
+    ) +
+    # diff label negative general
+    geom_text(
+      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (value < max(value) / 1.5)),
+      aes(
+        x = value,
+        y = origin_data_prot,
+        label = paste(intToUtf8(9660), diff_pop_type_value)
+      ),
+      hjust = -1.2,
+      vjust = 0.5,
+      colour = "#0472bc",
+      size = 5
+    ) +
+  # diff label positive max
+    geom_text(
+      data = subset(df, with(df, grepl('^[0-9]', diff_pop_type_value)) & (value >= max(value) / 1.5)),
+      aes(
+        x = value,
+        y = origin_data_prot,
+        label = paste(intToUtf8(9650), diff_pop_type_value)
+      ),
+      hjust = -0.4,
+      vjust = 0.5,
+      colour = "grey",
+      size = 5
+    ) +
+  # diff label negative max
+    geom_text(
+      data = subset(df, with(df, grepl('-', diff_pop_type_value)) & (value >= max(value) / 1.5)),
+      aes(
+        x = value,
+        y = origin_data_prot,
+        label = paste(intToUtf8(9660), diff_pop_type_value)
+      ),
+      hjust = -0.4,
+      vjust = 0.5,
+      colour = "#0472bc",
+      size = 5
+    )} 
+    
+  p <- p + 
+    labs(title = paste0(country_name_text, ": ", stringr::str_to_title(names(dict_pop_type_label[dict_pop_type_label==pop_type])) , " | ",  year),
+         subtitle = paste0("Top ",  top_n_countries, " Countries of Origin"),
+         x = "Number of People",
+         caption = "Source: UNHCR.org/refugee-statistics") +
+    scale_x_continuous(expand = expansion(c(0, 0.1))) +
+    theme_unhcr(grid = FALSE, axis = "y", 
+                axis_title = FALSE, axis_text = "y",
+                font_size = 14) +
+    theme(legend.direction = "vertical",
+          legend.key.size = unit(0.8, 'cm'),
+          text = element_text(size = 20),
+          plot.subtitle=element_text(size=19),
+          plot.title = element_text(size=23),
+          plot.caption = element_text(size=13))
+  
+  return(p) 
+}
 
-
-
-p <- 
-  ggplot() +
-  geom_col(data = df, 
-           aes(x = pop_type_value, y = origin_data_prot),
-           fill = cols_poptype[[pop_type]][2],
-           width = 0.8) +
-  ## Position label differently in the bar in white - outside bar in black
-  geom_text(
-    data = subset(df, pop_type_value < max(pop_type_value) / 1.5),
-    aes(
-      x = pop_type_value,
-      y = origin_data_prot,
-      label = perc
-    ),
-    hjust = -0.1 ,
-    vjust = 0.5,
-    colour = "black",
-    size = 5
-  ) +
-  geom_text(
-    data = subset(df, pop_type_value >= max(pop_type_value) / 1.5),
-    aes(
-      x = pop_type_value,
-      y = origin_data_prot,
-      label = perc
-    ),
-    hjust = 1.1 ,
-    vjust = 0.5,
-    colour = "white",
-    size = 5
-  ) +
-  labs(title = paste0(CountryAsylum_name_text, ": (", cols_poptype[[pop_type]][1], ")", " | ",  year),
-       subtitle = paste0("Top",  top_n_countries, " Countries of Origin"),
-       x = "Percentage",
-       caption = "Source: UNHCR.org/refugee-statistics") +
-  scale_x_continuous(expand = expansion(c(0, 0.1))) +
- theme_unhcr(grid = FALSE, axis = "y", 
-             axis_title = FALSE, axis_text = "y",
-              font_size = 14) +
-  theme(legend.direction = "vertical",
-        legend.key.size = unit(0.8, 'cm'),
-        text = element_text(size = 20),
-        plot.subtitle=element_text(size=19),
-        plot.title = element_text(size=23),
-        plot.caption = element_text(size=13))
-  return(p)
-  }
 ```
 
 ```{r examples-plot_ctr_population_type_perc, fig.retina = 2, fig.width = 8, fig.asp = 0.618, fig.align = "center", dev = "ragg_png", out.width = "90%"}
@@ -918,12 +1060,14 @@ p <-
 plot_ctr_population_type_perc(year = 2021,
                     country_asylum_iso3c = "BRA",
                     top_n_countries = 9,
-                    pop_type = "REF"  ) 
+                    pop_type = "REF",
+                    show_diff_label = FALSE) 
 
 plot_ctr_population_type_perc(year = 2021,
                     country_asylum_iso3c = "BRA",
                     top_n_countries = 9,
-                    pop_type = "ASY"  ) 
+                    pop_type = "ASY",
+                    show_diff_label = TRUE) 
 ```
 
 ```{r tests-plot_ctr_population_type_perc}
@@ -974,29 +1118,30 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
   # }
 #  \(x) as.numeric((x - lag(x))/lag(x)) + 0
   
-  df <- ForcedDisplacementStat::end_year_population_totals  |> 
+  df <- ForcedDisplacementStat::end_year_population_totals  |>
     filter(CountryAsylumCode != "UKN",
            !is.na(CountryAsylumCode),
            (Year == year-1 | Year == year),  #### Parameter
            CountryAsylumCode == country_asylum_iso3c #### Parameter
-    ) |> 
-    group_by(Year, CountryAsylumName) |> 
-    summarise(across(where(is.numeric), sum)) |> 
-    ungroup() |> 
-    arrange(Year) |> 
-    select(-c(Year)) |> 
-    group_by(CountryAsylumName) |> 
+    ) |>
+    group_by(Year, CountryAsylumName) |>
+    summarise(across(where(is.numeric), sum)) |>
+    ungroup() |>
+    arrange(Year) |>
+    select(-c(Year)) |>
+    group_by(CountryAsylumName) |>
     summarise(across(where(is.numeric), 
                      list(diffabs = diff,
+ 
                          # diffperc = diff_perc),
                           diffper = \(x) as.numeric((x - lag(x))/lag(x)) + 0 ),
                      
                      .names = "{.col}_{.fn}")) |> 
-    ungroup() |> 
+    ungroup() |>  
     slice(2) 
   
   df <- replace(df, is.na(df), 0)
-  
+ 
   df <- df |> 
     tidyr::gather(v, value, REF_diffabs:HCO_diffper) |> 
     tidyr::separate(v, c("population_type", "value_type"), sep = "\\_") |> 
@@ -1007,8 +1152,9 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
  mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (diffper))
    #    mutate(diffper = label_percent(accuracy = 1,  trim = FALSE) (\(x) as.numeric((x - lag(x))/lag(x)) + 0 ))
   
+ 
   
-  df <- df |> 
+  df <- df |>
     filter(population_type %in% pop_type)
   
   p <- ggplot() +
@@ -1079,8 +1225,8 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     
     geom_hline(yintercept = 0, color = "black") +
     
-    labs(title = paste0(df |> 
-                          distinct(CountryAsylumName) |> 
+    labs(title = paste0(df |>
+                          distinct(CountryAsylumName) |>
                           pull(), 
                         ": Increases and Decreases in Population Groups | ",
                         year-1,
@@ -1178,26 +1324,26 @@ plot_ctr_origin_history <- function(year = 2022,
   
 
 
-  df <- ForcedDisplacementStat::end_year_population_totals_long  |> 
-          filter(       Year >= (year - lag),  #### Parameter
+  df <- ForcedDisplacementStat::end_year_population_totals_long  |>
+          filter(       year >= (year - lag),  #### Parameter
                         CountryAsylumCode == country_asylum_iso3c, #### Parameter
                         Population.type %in% pop_type #### Parameter
-          )  |>    
-          dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = otherprop, w = Value)) |> 
-          group_by(Year, CountryAsylumName, CountryOriginName)  |> 
-          summarise(Value = sum(Value, na.rm = TRUE)) |> 
+          )  |>   
+          dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = otherprop, w = value)) |>
+          group_by(year, CountryAsylumName, CountryOriginName)  |>
+          summarise(value = sum(value, na.rm = TRUE)) |>
           ungroup()
   
-  CountryAsylum_name_text <- df |> 
-    distinct(CountryAsylumName) |> 
+  country_name_text <- df |>
+    distinct(CountryAsylumName) |>
     pull()
   
-  year_breaks <- diff(range(df$Year)) + 1 
+  year_breaks <- diff(range(df$year)) + 1 
   
   p <- ggplot() +
   ggalluvial::geom_alluvium(data = df,
-       aes(x = Year, 
-           y = Value, 
+       aes(x = year, 
+           y = value, 
            alluvium = CountryOriginName,
            fill = CountryOriginName, 
            colour = CountryOriginName),
@@ -1213,7 +1359,7 @@ plot_ctr_origin_history <- function(year = 2022,
   scale_fill_brewer(type = "qual", palette = "Set3") +
   scale_colour_brewer(type = "qual", palette = "Set3") +
   # facet_wrap(~ region, scales = "fixed") ++
-  labs(title = paste0(CountryAsylum_name_text, ":  Evolution of Forcibly Displaced Population Origin"), 
+  labs(title = paste0(country_name_text, ":  Evolution of Forcibly Displaced Population Origin"), 
        subtitle = "Number of people (thousand)",
        x = "", y = "",
        caption = "Source: UNHCR.org/refugee-statistics")
@@ -1275,7 +1421,7 @@ plot_ctr_destination <- function(year = 2021,
                                  country_origin_iso3c = country_origin_iso3c,
                                  pop_type = pop_type) {
 
-  ctrylabel <- ForcedDisplacementStat::reference |>
+  country_name_text <- ForcedDisplacementStat::reference |>
     filter(iso_3 == country_origin_iso3c) |>
     select(ctryname) |>
     pull()
@@ -1288,7 +1434,7 @@ plot_ctr_destination <- function(year = 2021,
     )  |>
     filter(
       CountryOriginCode  == country_origin_iso3c  &
-        Year == year &
+        year == year &
         Population.type  %in% as.vector(pop_type)
     )  |>
     mutate(
@@ -1302,7 +1448,7 @@ plot_ctr_destination <- function(year = 2021,
       )
     ) |>
     group_by(CountryAsylumName) |>
-    summarise(DisplacedAcrossBorders = sum(Value))  |>
+    summarise(DisplacedAcrossBorders = sum(value))  |>
     mutate(DisplacedAcrossBordersRound =  ifelse(
       DisplacedAcrossBorders > 1000,
       paste(
@@ -1330,7 +1476,7 @@ plot_ctr_destination <- function(year = 2021,
           geom_col(data = Destination, 
                 aes(
                 x = reorder(CountryAsylumName, DisplacedAcrossBorders),
-                ## Reordering country by Value
+                ## Reordering country by value
                 y = DisplacedAcrossBorders),
                fill = unhcr_pal(n = 1, "pal_blue")) + # here we configure that it will be bar chart+
         ## Format axis number
@@ -1385,7 +1531,7 @@ plot_ctr_destination <- function(year = 2021,
           "Top Destination Countries | as of ",
           year,
           " for population from ",
-          ctrylabel
+          country_name_text
         ),
         x = "",
         y = "",
@@ -1474,9 +1620,9 @@ plot_ctr_origin_recognition <- function(year = 2022,
                                  measure = "RefugeeRecognitionRate",
                                  order_by = "TotalDecided" ){
    
-   ctrylabel <- ForcedDisplacementStat::reference |> 
-                 filter(iso_3 == country_origin_iso3c ) |> 
-               select(ctryname) |> 
+   country_name_text <- ForcedDisplacementStat::reference |>
+                 filter(iso_3 == country_origin_iso3c ) |>
+               select(ctryname) |>
                 pull()
    
   
@@ -1495,7 +1641,7 @@ plot_ctr_origin_recognition <- function(year = 2022,
    
    topAsylum <-  ForcedDisplacementStat::asylum_decisions |>
      filter(CountryOriginCode == country_origin_iso3c &
-              Year == year) |>
+              year == year) |>
      ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
      # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) |>
      mutate(DecisionsAveragePersonsPerCase = 1) |>
@@ -1534,7 +1680,7 @@ plot_ctr_origin_recognition <- function(year = 2022,
      #facet_grid(.~ ctry_asy) +
      #  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +
      labs(
-       title = paste0(measurelabel, " | ", year, " for Nationals from ", ctrylabel),
+       title = paste0(measurelabel, " | ", year, " for Nationals from ", country_name_text),
        caption = 'Source: UNHCR.org/refugee-statistics ',
        subtitle = paste0(
          "For top ",
@@ -1616,22 +1762,22 @@ plot_ctr_pyramid <- function(year ,
                              country_asylum_iso3c = country_asylum_iso3c,
                              pop_type = pop_type) {
 
-  ctrylabel <- ForcedDisplacementStat::reference |> 
-    filter(iso_3 == country_asylum_iso3c ) |> 
-    distinct(ctryname) |> 
+  country_name_text <- ForcedDisplacementStat::reference |>
+    filter(iso_3 == country_asylum_iso3c ) |>
+    distinct(ctryname) |>
     pull()
   
-  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |> 
-    filter(Population.type  %in% as.vector(pop_type)) |> 
-    distinct(Population.type.label.short) |> 
+  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |>
+    filter(Population.type  %in% as.vector(pop_type)) |>
+    distinct(population_type_label.short) |>
     pull()
   
   demographics1 <- ForcedDisplacementStat::demographics |>
-    left_join( ForcedDisplacementStat::reference |> 
+    left_join( ForcedDisplacementStat::reference |>
                  select(UNHCRBureau, iso_3),  
-               by = c("CountryAsylumCode" = "iso_3")) |> 
+               by = c("CountryAsylumCode" = "iso_3")) |>
     filter(CountryAsylumCode  == country_asylum_iso3c &
-             Year == year &
+             year == year &
              Population.type  %in% as.vector(pop_type)) |>
     
     mutate ( totGen = FemaleTotal +MaleTotal,
@@ -1646,11 +1792,11 @@ plot_ctr_pyramid <- function(year ,
   if(nrow(demographics1) == 0) { 
     year <- year -1 
     demographics1 <- ForcedDisplacementStat::demographics |>
-      left_join( ForcedDisplacementStat::reference |> 
+      left_join( ForcedDisplacementStat::reference |>
                    select(UNHCRBureau, iso_3),  
-                 by = c("CountryAsylumCode" = "iso_3")) |> 
+                 by = c("CountryAsylumCode" = "iso_3")) |>
       filter(CountryAsylumCode  == country_asylum_iso3c &
-               Year == year &
+               year == year &
                Population.type  %in% as.vector(pop_type)) |>
       
       mutate ( totGen = FemaleTotal +MaleTotal,
@@ -1667,10 +1813,12 @@ plot_ctr_pyramid <- function(year ,
   
   
   if ( nrow(demographics1) ==  0 ){
+ 
     info <-  paste0("No Gender disaggregation recorded\n for Forcibly Displaced People across Borders \n in ", 
                     ctrylabel,
                     " as of ", 
                     year )
+ 
     p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                               label = info ) +  theme_void() 
     
@@ -1682,14 +1830,14 @@ plot_ctr_pyramid <- function(year ,
                                   sum(demographics1$Total )  *100,1),  big.mark=",")  
     
     if (totprop == 0 ) {
-      info <- paste0("There\'s no recorded Gender disaggregation \n for  all of the ",tot, " persons \n in ", ctrylabel  )
+      info <- paste0("There\'s no recorded Gender disaggregation \n for  all of the ",tot, " persons \n in ", country_name_text  )
       p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                                 label = info ) +  theme_void() 
       
       
     } else {
       #names(demographics)
-      pyramid <-  demographics1[ demographics1$Year == max(demographics1$Year),
+      pyramid <-  demographics1[ demographics1$year == max(demographics1$year),
                                  c(
                                    "Female04",
                                    "Female511",
@@ -1722,9 +1870,9 @@ plot_ctr_pyramid <- function(year ,
       names(pyramid3)[1] <- "Class"
       names(pyramid3)[2] <- "Count"
       
-      pyramid3 <- pyramid3 |> 
+      pyramid3 <- pyramid3 |>
         mutate(gender = case_when(str_detect(Class, "Male") ~ "Male",
-                                  str_detect(Class, "Female") ~ "Female")) |> 
+                                  str_detect(Class, "Female") ~ "Female")) |>
         mutate(age = case_when(str_detect(Class, "04") ~ "0-4",
                                str_detect(Class, "511") ~ "5-11",
                                str_detect(Class, "1217") ~ "12-17",
@@ -1735,9 +1883,9 @@ plot_ctr_pyramid <- function(year ,
       pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count)
       pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11",  "12-17",  "18-59", "60+", "Unknown"))
       
-      pyramid4 <- pyramid3 |> 
-        select(gender,age, pc) |> 
-        mutate(gender = tolower(gender)) |> 
+      pyramid4 <- pyramid3 |>
+        select(gender,age, pc) |>
+        mutate(gender = tolower(gender)) |>
         pivot_wider(names_from = gender,
                     names_sort = TRUE,
                     values_from = pc
@@ -1782,10 +1930,12 @@ plot_ctr_pyramid <- function(year ,
                             c("Male" , "Female")  )) +
         labs(  title = paste0("Population Pyramid for ", 
                               sub(",\\s+([^,]+)$", " and \\1",  toString(poptype_label)), 
+ 
                               " | ", ctrylabel),
           subtitle = paste0(" As of ", year, 
+ 
                             ", gender disaggregation is available for ", totprop, "% of the ",tot,
-                            " individuals in ", ctrylabel),
+                            " individuals in ", country_name_text),
           caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: UNHCR.org/refugee-statistics."  ) +
         theme_unhcr(font_size = 14, grid = FALSE, axis = FALSE, axis_title = FALSE,  axis_text = "y") +
         theme(legend.position = "none")
@@ -1856,21 +2006,21 @@ plot_ctr_location <- function( year  ,
                              mapbackground = "osm" #  could be "stamen-toner" , "stamen-terrain","stamen-watercolor"
                              ) {
   
-  ctrylabel <- ForcedDisplacementStat::reference |> 
-    dplyr::filter(iso_3 == country_asylum_iso3c ) |> 
-    dplyr::distinct(ctryname) |> 
+  country_name_text <- ForcedDisplacementStat::reference |>
+    dplyr::filter(iso_3 == country_asylum_iso3c ) |>
+    dplyr::distinct(ctryname) |>
     dplyr::pull()
   
-  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |> 
-    dplyr::filter(Population.type  %in% as.vector(pop_type)) |> 
-    dplyr::distinct(Population.type.label.short) |> 
+  poptype_label <- ForcedDisplacementStat::end_year_population_totals_long |>
+    dplyr::filter(Population.type  %in% as.vector(pop_type)) |>
+    dplyr::distinct(population_type_label.short) |>
     dplyr::pull()
   
   # names(ForcedDisplacementStat::demographics)
   mapped1 <- ForcedDisplacementStat::demographics |>
-    dplyr::filter(Year == year,  #### Parameter
+    dplyr::filter(year == year,  #### Parameter
            CountryAsylumCode == country_asylum_iso3c, #### Parameter
-           Population.type %in% pop_type  ) |> 
+           Population.type %in% pop_type  ) |>
     dplyr::group_by ( CountryAsylumCode, location) |>
     dplyr::summarise( Total = sum(Total, na.rm = TRUE)) |>
     dplyr::ungroup() |>
@@ -1882,9 +2032,9 @@ plot_ctr_location <- function( year  ,
   if(nrow(mapped1) == 0) { 
     year <- year -1 
     mapped1 <- ForcedDisplacementStat::demographics |>
-    dplyr::filter(Year == year,  #### Parameter
+    dplyr::filter(year == year,  #### Parameter
            CountryAsylumCode == country_asylum_iso3c, #### Parameter
-           Population.type %in% pop_type  ) |> 
+           Population.type %in% pop_type  ) |>
     dplyr::group_by ( CountryAsylumCode, location) |>
     dplyr::summarise( Total = sum(Total, na.rm = TRUE)) |>
     dplyr::ungroup() |>
@@ -1910,10 +2060,10 @@ plot_ctr_location <- function( year  ,
     
     
     # Get Bounding box
-    # plot(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |>  dplyr::filter(iso_a3 == country_asylum_iso3c) |> dplyr::pull(geometry))
+    # plot(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |> dplyr::filter(iso_a3 == country_asylum_iso3c) |>dplyr::pull(geometry))
     # ctr <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
     requireNamespace("rnaturalearthdata")
-    box <- sf::st_bbox(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |>  
+    box <- sf::st_bbox(rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")  |> 
                          dplyr::filter(iso_a3 == country_asylum_iso3c))
     LON1 <- as.numeric( box[1] - 0.1* (box[3]-box[1])) 
     LON2 <- as.numeric(box[3] + 0.1* (box[3]-box[1]))
@@ -1953,7 +2103,7 @@ plot_ctr_location <- function( year  ,
        ggplot2::scale_fill_manual(values = pal,
                     drop = FALSE,
                     na.value = "grey80") +
-      ggrepel::geom_label_repel(   data = mapped |> head(5)  ,
+      ggrepel::geom_label_repel(   data = mapped |>head(5)  ,
                 mapping = ggplot2::aes(x= longitude, y= latitude,
                           label = stringr::str_glue(  "{stringr::str_wrap(location,15)}\n{ scales::label_number(scale_cut = scales::cut_short_scale())(Total)} ")  # how label displays
                                ),
@@ -1965,7 +2115,7 @@ plot_ctr_location <- function( year  ,
                                  format(round(sum(mapped1$Total), 0), scientific = FALSE, big.mark=","), " ",
                                 # scales::label_number(scale_cut = scales::cut_short_scale())(sum(mapped1$Total)), 
                                  sub(",\\s+([^,]+)$", " and \\1",  toString(poptype_label)), 
-                                " in ", ctrylabel, " as of ", year),
+                                " in ", country_name_text, " as of ", year),
              subtitle = paste0( "This is disaggregated through ",
                                  nrow(mapped),
                                  " locations at different geographic levels, \n representing a total of ",
@@ -2067,9 +2217,9 @@ plot_ctr_recognition <- function(year = 2022,
                                  measure = "RefugeeRecognitionRate",
                                  order_by = "TotalDecided" ){
    
-   ctrylabel <- ForcedDisplacementStat::reference |> 
-                 filter(iso_3 == country_asylum_iso3c ) |> 
-               select(ctryname) |> 
+   country_name_text <- ForcedDisplacementStat::reference |>
+                 filter(iso_3 == country_asylum_iso3c ) |>
+               select(ctryname) |>
                 pull()
    
   
@@ -2088,7 +2238,7 @@ plot_ctr_recognition <- function(year = 2022,
    
    topOrigin <-  ForcedDisplacementStat::asylum_decisions |>
      filter(CountryAsylumCode == country_asylum_iso3c &
-              Year == year) |>
+              year == year) |>
      ## the below is change - DecisionsAveragePersonsPerCase- is just indicative... so no need to use it to m
      # mutate(DecisionsAveragePersonsPerCase = map_dbl(DecisionsAveragePersonsPerCase, ~replace_na(max(as.numeric(.), 1), 1))) |>
      mutate(DecisionsAveragePersonsPerCase = 1) |>
@@ -2130,7 +2280,7 @@ plot_ctr_recognition <- function(year = 2022,
      #facet_grid(.~ ctry_asy) +
      #  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +
      labs(
-       title = paste0(measurelabel, " | ", year, " in ", ctrylabel),
+       title = paste0(measurelabel, " | ", year, " in ", country_name_text),
        caption = 'Source: UNHCR.org/refugee-statistics ',
        subtitle = paste0(
          "For top ",
@@ -2205,19 +2355,19 @@ plot_ctr_asylum <- function(year = 2022,
                             country_asylum_iso3c = country_asylum_iso3, 
                             lag = 10){
     
-     ctrylabel <- ForcedDisplacementStat::reference |> 
-                 filter(iso_3 == country_asylum_iso3c ) |> 
-               select(ctryname) |> 
+     country_name_text <- ForcedDisplacementStat::reference |>
+                 filter(iso_3 == country_asylum_iso3c ) |>
+               select(ctryname) |>
                 pull()
   
     apps <- ForcedDisplacementStat::asylum_applications|>
           filter(CountryAsylumCode == country_asylum_iso3c )|>
-          group_by(Year, CountryAsylumCode) |>
+          group_by(year, CountryAsylumCode) |>
          summarize (NumberApplications = sum(NumberApplications , na.rm= TRUE) )
 
     decs <- ForcedDisplacementStat::asylum_decisions |>
           filter(CountryAsylumCode == country_asylum_iso3c ) |>
-          group_by(Year, CountryAsylumCode) |>
+          group_by(year, CountryAsylumCode) |>
          summarize (Recognized = sum(Recognized , na.rm= TRUE),
                   ComplementaryProtection = sum( ComplementaryProtection , na.rm= TRUE),
                   OtherwiseClosed = sum(OtherwiseClosed , na.rm= TRUE),
@@ -2225,9 +2375,9 @@ plot_ctr_asylum <- function(year = 2022,
                   TotalDecided = sum(TotalDecided , na.rm= TRUE))
 
     
- data <- dplyr::inner_join(apps, decs) |>   # names(data)
-         dplyr::filter( Year >= (year - lag)) |>
-         dplyr::select( Year,  NumberApplications, Recognized, TotalDecided ) |>
+ data <- dplyr::inner_join(apps, decs) |>  # names(data)
+         dplyr::filter( year >= (year - lag)) |>
+         dplyr::select( year,  NumberApplications, Recognized, TotalDecided ) |>
          tidyr::pivot_longer( 
               cols = NumberApplications:TotalDecided,
               names_to = "AsylumStage",
@@ -2244,14 +2394,14 @@ plot_ctr_asylum <- function(year = 2022,
  
  p <- ggplot() +
      geom_bar(data = data,
-             aes(x= Year, y = Total, fill = AsylumStage),
+             aes(x= year, y = Total, fill = AsylumStage),
              stat = "identity", position = "dodge", width = 0.8 ) + 
      scale_fill_unhcr_d(palette = "pal_unhcr") +
     # scale_fill_manual(values = c( "#FAAB18", "#0072bc", "#FEEB18")) +  
      scale_x_continuous(breaks = pretty_breaks(10)) +
     # scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
      scale_y_continuous( labels = scales::label_number(accuracy = 1, scale_cut = cut_short_scale()))+ ## Format axis number
-     labs(title = paste0( " Asylum Applications & Decisions | ", ctrylabel, " " ,  (year-lag) ," - ", year),
+     labs(title = paste0( " Asylum Applications & Decisions | ", country_name_text, " " ,  (year-lag) ," - ", year),
        subtitle = paste0( "Note that under certain circumstance, one person may have more than one applications "), 
        x="",
        y ="",
@@ -2325,14 +2475,14 @@ plot_ctr_process <- function(year = 2022,
   #table(as.factor(ForcedDisplacementStat::asylum_decisions_long$CountryAsylumCode))
   
   links <- ForcedDisplacementStat::asylum_decisions_long |>
-    filter(Year == year   & CountryAsylumCode  == country_asylum_iso3c ) |> 
+    filter(year == year   & CountryAsylumCode  == country_asylum_iso3c ) |>
     dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName,
                                                              prop = otherprop, 
-                                                             w = Value)) |>
+                                                             w = value)) |>
     ## Group small records under other
     ## Calculate grouped value for Origin to procedure..
     group_by(CountryOriginName, ProcedureName, DecisionTypeName,Decision.output ) |>
-    summarise(n = sum(Value, na.rm = TRUE) )  
+    summarise(n = sum(value, na.rm = TRUE) )  
   # levels(links$Decision.output)
   
   ## Case no record outut a ggplot2 object with anotation
@@ -2523,7 +2673,7 @@ plot_ctr_processing_time <- function(year = 2022,
              #  (ApplicationTypeCode == "V" & 
              #    DecisionType %in% c("FI", "FA", "NA", "TR", "CA")) ) ~ "FI",
             TRUE ~ "Other"   )) |>
-          group_by(Year, CountryAsylumCode,
+          group_by(year, CountryAsylumCode,
                    CountryAsylumName, 
                    #ProcedureType,  ProcedureName,  ApplicationTypeCode, ApplicationType
                    DecisionTypeCode ) |>
@@ -2533,7 +2683,7 @@ plot_ctr_processing_time <- function(year = 2022,
 #   # coa <-   "CHL"
 #     
 #   ## Equivalent to this API - call 
-# # apps1 <- jsonlite::fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-applications/?limit=100&dataset=asylum-applications&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=app_type&columns%5B%5D=app_pc&columns%5B%5D=app_size&columns%5B%5D=dec_level&columns%5B%5D=applied"))$items |>  as_tibble()
+# # apps1 <- jsonlite::fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-applications/?limit=100&dataset=asylum-applications&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=app_type&columns%5B%5D=app_pc&columns%5B%5D=app_size&columns%5B%5D=dec_level&columns%5B%5D=applied"))$items |> as_tibble()
     
   if( is.null(country_origin_iso3c)) {
         originfilter <-     c(ForcedDisplacementStat::asylum_decisions |>
@@ -2554,7 +2704,7 @@ plot_ctr_processing_time <- function(year = 2022,
           filter(CountryOriginCode %in% c(originfilter)  ) |>
           filter(ProcedureType %in% c(procedurefilter)  ) |>
     
-          group_by(Year, CountryAsylumCode,
+          group_by(year, CountryAsylumCode,
                    CountryAsylumName, 
                    #ProcedureType,  ProcedureName,, DecisionTypeName
                    DecisionTypeCode) |>
@@ -2566,39 +2716,39 @@ plot_ctr_processing_time <- function(year = 2022,
           dplyr::ungroup()
   
   ## Equivalent to this API - call 
- # decs1 <- jsonlite::fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-decisions/?limit=100&dataset=asylum-decisions&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=dec_level&columns%5B%5D=dec_pc&columns%5B%5D=dec_recognized&columns%5B%5D=dec_other&columns%5B%5D=dec_rejected&columns%5B%5D=dec_closed&columns%5B%5D=dec_total"))$items |> as_tibble() 
+ # decs1 <- jsonlite::fromJSON(glue::glue("https://api.unhcr.org/population/v1/asylum-decisions/?limit=100&dataset=asylum-decisions&displayType=totals&yearFrom=1951&yearTo=2022&coa={coa}&columns%5B%5D=procedure_type&columns%5B%5D=dec_level&columns%5B%5D=dec_pc&columns%5B%5D=dec_recognized&columns%5B%5D=dec_other&columns%5B%5D=dec_rejected&columns%5B%5D=dec_closed&columns%5B%5D=dec_total"))$items |>as_tibble() 
 
 data <-
-  left_join(apps |> filter(DecisionTypeCode  == "FI") |> select(Year, CountryAsylumCode, NumberApplications),
-            decs |> filter(DecisionTypeCode == "FI") |> select(Year, CountryAsylumCode, TotalDecided) ) |>
-  arrange(Year) |>
+  left_join(apps |>filter(DecisionTypeCode  == "FI") |>select(year, CountryAsylumCode, NumberApplications),
+            decs |>filter(DecisionTypeCode == "FI") |>select(year, CountryAsylumCode, TotalDecided) ) |>
+  arrange(year) |>
   mutate(across(c(NumberApplications,
                   TotalDecided),
                 replace_na, 0)) |>
-  dplyr::transmute(Year = if_else(Year == last(Year),
-                           Year+.5,
-                           Year+1), # MYSR correction
+  dplyr::transmute(year = if_else(year == last(year),
+                           year+.5,
+                           year+1), # MYSR correction
             apps = cumsum(NumberApplications),
             decs = cumsum(TotalDecided))  
   
   idx <- purrr::detect_index(data$apps, ~.< dplyr::last(data$decs),
                                            .dir = "backward")
   
-  t <- lubridate::date_decimal(data$Year[idx] + 
+  t <- lubridate::date_decimal(data$year[idx] + 
                                  (dplyr::last(data$decs) - data$apps[idx]) / 
                                  (data$apps[idx+1] - data$apps[idx]))
   
   stat <- lubridate::interval(t, lubridate::make_date(2022, 6, 30)) / lubridate::days()
   
   data2 <- data |>
-      tidyr::pivot_longer(- Year, 
+      tidyr::pivot_longer(- year, 
                           names_to = "flow",
                           values_to = "n")
   
   
   
   p <- data2 |>
-    ggplot(aes(Year,
+    ggplot(aes(year,
                n, 
                fill = flow)) +
     geom_area(position = "identity") +
@@ -2606,7 +2756,7 @@ data <-
     annotate("segment",
              x = lubridate::decimal_date(t),
              y = dplyr::last(data$decs),
-             xend = dplyr::last(data$Year),
+             xend = dplyr::last(data$year),
              yend = dplyr::last(data$decs)) +
     annotate("text",
              x = 2020,
@@ -2699,9 +2849,9 @@ plot_ctr_solution <- function(year = 2021,
                               country_asylum_iso3c = country_asylum_iso3c,
                               sol_type ){
   
-    ctrylabel <- ForcedDisplacementStat::reference |> 
-                 filter(iso_3 == country_asylum_iso3c ) |> 
-               select(ctryname) |> 
+    country_name_text <- ForcedDisplacementStat::reference |>
+                 filter(iso_3 == country_asylum_iso3c ) |>
+               select(ctryname) |>
                 pull()
   
   
@@ -2710,6 +2860,7 @@ plot_ctr_solution <- function(year = 2021,
                                by = c("CountryAsylumCode" = "iso_3")) |>
       
               filter(CountryAsylumCode  == country_asylum_iso3c & 
+ 
                       Year > (year - lag) &
                       Solution.type  %in% sol_type 
                       #Solution.type.label != "IDP returns" 
@@ -2717,6 +2868,7 @@ plot_ctr_solution <- function(year = 2021,
               mutate(Year = as.factor(Year) ) |>
               group_by(Year, Solution.type.label ) |>
               summarise(Value2 = sum(Value) )  |>
+ 
               mutate( valabel =  ifelse(Value2 > 1000, 
                                        paste(scales::label_number(accuracy = 0.1,
                                                       scale_cut = cut_short_scale())(Value2)),
@@ -2747,7 +2899,7 @@ if( nrow(Solution) ==  0 ){
   
 
 #Make plot
-p <- ggplot(Solution, aes(x = Year, y = Value2  )) + 
+p <- ggplot(Solution, aes(x = year, y = Value2  )) + 
   geom_bar(stat = "identity", 
            position = "identity", 
            fill = "#0072bc" ) + # here we configure that it will be bar chart
@@ -2765,7 +2917,7 @@ p <- ggplot(Solution, aes(x = Year, y = Value2  )) +
         panel.grid.minor = element_blank()) + ### changing grid line that should appear
   ## and the chart labels
   labs(title = "What are the trends in terms of Solutions?",
-       subtitle = paste0("Data for Forcibly Displaced People across Borders as of ", year, " filtered for ", ctrylabel ), 
+       subtitle = paste0("Data for Forcibly Displaced People across Borders as of ", year, " filtered for ", country_name_text ), 
        x = "",
        y = "",
        caption = "Source: UNHCR.org/refugee-statistics.\n Resettlement – in this context this is the country of arrival – i.e. the country to which a refugee has been resettled \n Returns – in this context this is the country of departure – i.e. the country from which a refugee has voluntarily repatriated.")
@@ -2977,9 +3129,9 @@ plot_ctr_disp_migrant <- function(year = 2021,
                               country_asylum_iso3c ,
                               top_n_countries = 10){
   
-  ctrylabel <- ForcedDisplacementStat::reference |> 
-                 filter(iso_3 == country_asylum_iso3c ) |> 
-               select(ctryname) |> 
+  country_name_text <- ForcedDisplacementStat::reference |>
+                 filter(iso_3 == country_asylum_iso3c ) |>
+               select(ctryname) |>
                 pull()
   
   thiscodeM49 <- ForcedDisplacementStat::reference |>
@@ -2999,7 +3151,7 @@ plot_ctr_disp_migrant <- function(year = 2021,
   # 
   # # Renaming variables for further matching
   # names(wb_data)[1] <- "iso_3"
-  # names(wb_data)[2] <- "Year"
+  # names(wb_data)[2] <- "year"
   
     
     
@@ -3010,8 +3162,8 @@ plot_ctr_disp_migrant <- function(year = 2021,
   #                     extra = TRUE)   
   # # Renaming variables for further matching
   # names(wb_data)[3] <- "iso_3"
-  # names(wb_data)[4] <- "Year"
-  # wb_data$Year <- as.numeric(wb_data$Year)
+  # names(wb_data)[4] <- "year"
+  # wb_data$year <- as.numeric(wb_data$year)
 
   ## Getting summary of forcibly displaced   ##############
   displaced <- left_join( x= ForcedDisplacementStat::end_year_population_totals_long, 
@@ -3019,10 +3171,10 @@ plot_ctr_disp_migrant <- function(year = 2021,
                                by = c("CountryAsylumCode" = "iso_3")) |>
               filter(Population.type  %in% c("REF", "ASY", "OIP")) |>
               filter(CountryAsylumCode == country_asylum_iso3c) |>
-              filter( Year == max(Year) ) |>
-              mutate( iso_3 = CountryOriginCode) |> 
-              group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) |>
-              summarise(Asylum_Refugee_in = sum(Value, na.rm = TRUE) )  |>
+              filter( year == max(year) ) |>
+              mutate( iso_3 = CountryOriginCode) |>
+              group_by(year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) |>
+              summarise(Asylum_Refugee_in = sum(value, na.rm = TRUE) )  |>
               filter( iso_3 != "UKN") |>
               arrange( desc(Asylum_Refugee_in)) |>
              # head(10)|>
@@ -3034,20 +3186,20 @@ plot_ctr_disp_migrant <- function(year = 2021,
                                y= ForcedDisplacementStat::reference, 
                                by = c("CountryOriginM49" = "M49_code")) |>
               filter(CountryDestinationM49 == thiscodeM49) |>
-              filter( Year == 2020 ) |>
+              filter( year == 2020 ) |>
               as.data.frame() |>
-              group_by(Year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) |>
-              summarise(Immigrant = sum(Value) ) |>
+              group_by(year, iso_3,CountryOriginName, UNHCRBureau, hcr_subregion, INCOME_GRP) |>
+              summarise(Immigrant = sum(value) ) |>
               ungroup()#|>
               #mutate( shareOrgin = (Immigrant / sum(Immigrant, na.rm = TRUE))*100 ) |>
-              #mutate( Year = as.numeric(Year) ) |>
+              #mutate( year = as.numeric(year) ) |>
               #mutate(  )
 
 
   ## Now merge everyting   #########
   thismigProfile <-  migrant  |>
-    dplyr::full_join( displaced |> select(Asylum_Refugee_in, iso_3), by = c("iso_3")) |>
-    dplyr::mutate(  SP.POP.TOTL = as.integer(wb_data |> filter( Year == 2020) |> pull(SP.POP.TOTL) ) ) |>
+    dplyr::full_join( displaced |>select(Asylum_Refugee_in, iso_3), by = c("iso_3")) |>
+    dplyr::mutate(  SP.POP.TOTL = as.integer(wb_data |>filter( year == 2020) |>pull(SP.POP.TOTL) ) ) |>
      #mutate_each(funs(replace(., which(is.na(.)), 0))) |>
         mutate(across( where(is.numeric), ~replace_na(.,0)))|>
     ## Calculate a few ration
@@ -3064,7 +3216,9 @@ plot_ctr_disp_migrant <- function(year = 2021,
 
 
 if( nrow(displaced) ==  0 ){
+ 
      info  <- paste0("No records of \n Forcibly Displaced People across Borders \n in ",ctrylabel )
+ 
      p <- ggplot() +  annotate("text",  x = 1, y = 1, size = 12,  
                                         label = info ) +  theme_void() 
   
@@ -3087,7 +3241,7 @@ p <- ggplot(thismigProfile,
                      expand = expansion(mult = c(0.1, .2))) +
   scale_y_continuous(labels = scales::label_percent(accuracy = .1),
                      expand = expansion(mult = c(0.1, .2))) +
-  # facet_wrap( vars(Year ), ncol = 2) +
+  # facet_wrap( vars(year ), ncol = 2) +
   #coord_cartesian(clip = "off") +
   ggrepel::geom_label_repel(box.padding = 0.5,
                             size = 3,
@@ -3095,7 +3249,7 @@ p <- ggplot(thismigProfile,
                             fill = "white", 
                             xlim = c(-Inf, Inf), 
                             ylim = c(-Inf, Inf)) + 
-  labs(title = stringr::str_wrap( paste0("Share of Forcibly Displaced People within all Migrants in ", ctrylabel  ),90) ,
+  labs(title = stringr::str_wrap( paste0("Share of Forcibly Displaced People within all Migrants in ", country_name_text  ),90) ,
        subtitle = stringr::str_wrap("This chart provides insights on the relative weight of Forced Displacement for countries generating such type of displacement.
        First, the size of the circle represents the number of Refugees, Asylum-seekers and other in need of International Protection for the main origin of displacement.
        The vertical axis represent the Share of immigrants from each country in relation with all immigrants within the country. 
