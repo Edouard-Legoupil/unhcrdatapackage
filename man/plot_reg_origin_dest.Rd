@@ -4,7 +4,7 @@
 \alias{plot_reg_origin_dest}
 \title{Plot Population Origin-Destination within the region}
 \usage{
-plot_reg_origin_dest(year = 2022, region = "Americas")
+plot_reg_origin_dest(year = 2024, region = "The Americas")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -18,5 +18,5 @@ plot a ggplot2 object
 Chord diagram showing Origin destination see - https://jokergoo.github.io/circlize_book/book/
 }
 \examples{
-plot_reg_origin_dest(year = 2022,  region = "Asia")
+plot_reg_origin_dest(year = 2024, region = "Asia")
 }

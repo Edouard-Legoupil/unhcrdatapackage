@@ -4,7 +4,7 @@
 \alias{plot_reg_prop_origin}
 \title{Proportion of the population who are refugees, by country of origin}
 \usage{
-plot_reg_prop_origin(year = 2022, region = "Americas")
+plot_reg_prop_origin(year = 2024, region = "The Americas")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -15,9 +15,9 @@ plot_reg_prop_origin(year = 2022, region = "Americas")
 a ggplot2 object
 }
 \description{
-The proportion of a country???s population who become refugees is SDG indicator 10.7.4 
+The proportion of a country???s population who become refugees is SDG indicator 10.7.4
 it consistutes is a useful way to identify the countries of origin producing the most refugees relative to their number of inhabitants.
 }
 \examples{
-plot_reg_prop_origin(year = 2022,  region = "Americas")
+plot_reg_prop_origin(year = 2024, region = "The Americas")
 }

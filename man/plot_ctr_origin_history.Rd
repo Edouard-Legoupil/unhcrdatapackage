@@ -5,10 +5,10 @@
 \title{Plot Origin History}
 \usage{
 plot_ctr_origin_history(
-  year = 2022,
+  year = 2024,
   lag = 5,
-  country_asylum_iso3c = country_asylum_iso3c,
-  pop_type = Population.type,
+  country_asylum_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
   otherprop = 0.02
 )
 }
@@ -30,12 +30,16 @@ a ggplot2 object
 The functions gives a quick overview of the main source of displacement in terms of origin in the country
 }
 \examples{
-plot_ctr_origin_history(year = 2022,
-                        lag = 5,
-                        country_asylum_iso3c = "MEX",
-                          pop_type = c("REF", 
-                                       "ASY", 
-                                       "OIP", 
-                                       "IDP" ),
-                        otherprop = .02)
+plot_ctr_origin_history(
+  year = 2024,
+  lag = 5,
+  country_asylum_iso3c = "MEX",
+  pop_type = c(
+    "REF",
+    "ASY",
+    "OIP",
+    "IDP"
+  ),
+  otherprop = .02
+)
 }

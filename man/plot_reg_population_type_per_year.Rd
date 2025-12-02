@@ -2,33 +2,36 @@
 % Please edit documentation in R/plot_reg_population_type_per_year.R
 \name{plot_reg_population_type_per_year}
 \alias{plot_reg_population_type_per_year}
-\title{Display evolution of different population type over years}
+\title{Evolution over time}
 \usage{
 plot_reg_population_type_per_year(
-  year = 2022,
+  year = 2024,
+  region = "The Americas",
   lag = 5,
-  region,
   pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
 )
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{lag}{Number of year to used as comparison base}
-
 \item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)}
+\item{lag}{Number of year to used as comparison base}
+
+\item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)}
 }
 \value{
 a ggplot2 object
 }
 \description{
-Summary of Evolution
+Display evoluation over time for specific population group (one or many) and 
+defined number of years (lag)
 }
 \examples{
-plot_reg_population_type_per_year(year = 2022,
-                                              lag = 5,
-                                     region  = "Americas",
-                                     pop_type =   c("REF", "ASY", "IDP", "OIP", "STA", "OOC") )
+plot_reg_population_type_per_year(
+  year = 2024,
+  lag = 5,
+  region = "The Americas",
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
+)
 }

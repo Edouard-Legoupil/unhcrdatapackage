@@ -24,7 +24,9 @@ a ggplot2 object
 Description
 }
 \examples{
-plot_ctr_solution_recognition(year = 2022,
-                  country_asylum_iso3c= "UGA",
-                  lag = 10)
+plot_ctr_solution_recognition(
+  year = 2024,
+  country_asylum_iso3c = "UGA",
+  lag = 10
+)
 }

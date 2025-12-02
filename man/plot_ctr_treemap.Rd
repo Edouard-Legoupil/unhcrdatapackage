@@ -4,18 +4,12 @@
 \alias{plot_ctr_treemap}
 \title{Tree map of Population Groups within a country}
 \usage{
-plot_ctr_treemap(
-  year = 2021,
-  country_asylum_iso3c = country_asylum_iso3c,
-  pop_type = pop_type
-)
+plot_ctr_treemap(year = 2021, country_asylum_iso3c = country_asylum_iso3c)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
-
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \value{
 a ggplot2 object
@@ -24,10 +18,9 @@ a ggplot2 object
 Tree map of Population Groups within a country
 }
 \examples{
-# 
-plot_ctr_treemap(year = 2021,
-                            country_asylum_iso3c = "USA",
-                            pop_type = c("REF", "ASY")
-         )
-
+#
+plot_ctr_treemap(
+  year = 2021,
+  country_asylum_iso3c = "USA"
+)
 }

@@ -4,7 +4,7 @@
 \alias{plot_reg_share}
 \title{A simple chart to compare a population group between the Region and the rest of the world}
 \usage{
-plot_reg_share(year = 2022, region = "Americas", pop_type = "REF")
+plot_reg_share(year = 2024, region = "The Americas", pop_type = "REF")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -20,19 +20,29 @@ plot a ggplot2 object
 Simple treemap charts to do the comparison
 }
 \examples{
-plot_reg_share(year = 2022,  
-                             region = "Americas",
-                             pop_type = "REF")
-plot_reg_share(year = 2022,  
-                             region = "Americas",
-                             pop_type = "ASY")
-plot_reg_share(year = 2022,  
-                             region = "Americas",
-                             pop_type = "OIP")
-plot_reg_share(year = 2022,  
-                             region = "Americas",
-                             pop_type = "IDP")
-plot_reg_share(year = 2022,  
-                             region = "Americas",
-                             pop_type = "STA")
+plot_reg_share(
+  year = 2024,
+  region = "The Americas",
+  pop_type = "REF"
+)
+plot_reg_share(
+  year = 2024,
+  region = "The Americas",
+  pop_type = "ASY"
+)
+plot_reg_share(
+  year = 2024,
+  region = "The Americas",
+  pop_type = "OIP"
+)
+plot_reg_share(
+  year = 2024,
+  region = "The Americas",
+  pop_type = "IDP"
+)
+plot_reg_share(
+  year = 2024,
+  region = "The Americas",
+  pop_type = "STA"
+)
 }

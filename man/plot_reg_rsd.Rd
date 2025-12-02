@@ -4,7 +4,7 @@
 \alias{plot_reg_rsd}
 \title{Plot Chart on Refugee Status Determination}
 \usage{
-plot_reg_rsd(year = 2022, region, top_n_countries = 10, measure = "Recognized")
+plot_reg_rsd(year = 2024, region, top_n_countries = 10, measure = "Recognized")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -14,10 +14,10 @@ plot_reg_rsd(year = 2022, region, top_n_countries = 10, measure = "Recognized")
 \item{top_n_countries}{Numeric value of number of main countries that the graph should display}
 
 \item{measure}{this can be either:
-* Recognized  
-* ComplementaryProtection  
-* TotalDecided 
-* RefugeeRecognitionRate 
+* Recognized
+* ComplementaryProtection
+* TotalDecided
+* RefugeeRecognitionRate
 * TotalRecognitionRate}
 }
 \value{
@@ -27,38 +27,48 @@ a ggplot2 object
 Show the main host and origin countries based on number of decisions
 }
 \examples{
-plot_reg_rsd(year = 2022,
-             region = "Americas" ,
-                        top_n_countries = 10, 
-                        measure = "Recognized")
+plot_reg_rsd(
+  year = 2024,
+  region = "The Americas",
+  top_n_countries = 10,
+  measure = "Recognized"
+)
 
 
-plot_reg_rsd(year = 2022,
-             region = "Americas" ,
-                        top_n_countries = 5, 
-                        measure = "ComplementaryProtection")
+plot_reg_rsd(
+  year = 2024,
+  region = "The Americas",
+  top_n_countries = 5,
+  measure = "ComplementaryProtection"
+)
 
 
-plot_reg_rsd(year = 2022,
-             region = "Americas" ,
-                        top_n_countries = 10, 
-                        measure = "TotalDecided")
+plot_reg_rsd(
+  year = 2024,
+  region = "The Americas",
+  top_n_countries = 10,
+  measure = "TotalDecided"
+)
 
 
-plot_reg_rsd(year = 2022,
-             region = "Americas" ,
-                        top_n_countries = 10, 
-                        measure = "RefugeeRecognitionRate")
+plot_reg_rsd(
+  year = 2024,
+  region = "The Americas",
+  top_n_countries = 10,
+  measure = "RefugeeRecognitionRate"
+)
 
 
-plot_reg_rsd(year = 2022,
-             region = "Americas" ,
-                        top_n_countries = 10, 
-                        measure = "TotalRecognitionRate")
+plot_reg_rsd(
+  year = 2024,
+  region = "The Americas",
+  top_n_countries = 10,
+  measure = "TotalRecognitionRate"
+)
 
 
-# plot_reg_rsd(year = 2022,
-#              region = "Europe", 
-#                         top_n_countries = 10, 
+# plot_reg_rsd(year = 2024,
+#              region = "Europe",
+#                         top_n_countries = 10,
 #                         measure = "Recognized")
 }

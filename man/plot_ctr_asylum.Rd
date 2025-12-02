@@ -2,13 +2,10 @@
 % Please edit documentation in R/plot_ctr_asylum.R
 \name{plot_ctr_asylum}
 \alias{plot_ctr_asylum}
-\title{Asylum Applications & Decision over time}
+\title{Asylum Applications & Decision over time
+This charts allow to visualize trends in terms of asylum applications, decision and refugee status recognition}
 \usage{
-plot_ctr_asylum(
-  year = 2022,
-  country_asylum_iso3c = country_asylum_iso3,
-  lag = 10
-)
+plot_ctr_asylum(year = 2024, country_asylum_iso3c, lag = 10)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -21,10 +18,13 @@ plot_ctr_asylum(
 a ggplot2 object
 }
 \description{
+Asylum Applications & Decision over time
 This charts allow to visualize trends in terms of asylum applications, decision and refugee status recognition
 }
 \examples{
-plot_ctr_asylum(year = 2022,
-                country_asylum_iso3c = "ECU", 
-                            lag = 10)
+plot_ctr_asylum(
+  year = 2024,
+  country_asylum_iso3c = "ECU",
+  lag = 10
+)
 }

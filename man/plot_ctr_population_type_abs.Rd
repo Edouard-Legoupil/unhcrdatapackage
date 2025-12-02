@@ -6,7 +6,7 @@
 \usage{
 plot_ctr_population_type_abs(
   year = 2021,
-  country_asylum_iso3c = country_asylum_iso3c,
+  country_asylum_iso3c,
   top_n_countries = 9,
   pop_type = "REF",
   show_diff_label = TRUE
@@ -30,19 +30,20 @@ a ggplot2 object
 Main country of origin - Absolute value
 }
 \examples{
-plot_ctr_population_type_abs(year = 2020,
-                    country_asylum_iso3c = "USA",
-                    top_n_countries = 4,
-                    pop_type = "REF",
-                    show_diff_label = FALSE
-                    ) 
+plot_ctr_population_type_abs(
+  year = 2020,
+  country_asylum_iso3c = "USA",
+  top_n_countries = 4,
+  pop_type = "REF",
+  show_diff_label = FALSE
+)
 
 ## Same with 9 top countries and Asylum-seekers included
-plot_ctr_population_type_abs(year = 2020,
-                    country_asylum_iso3c = "USA",
-                    top_n_countries = 9,
-                    pop_type = "ASY",
-                    show_diff_label = TRUE
-                    ) 
-
+plot_ctr_population_type_abs(
+  year = 2020,
+  country_asylum_iso3c = "USA",
+  top_n_countries = 9,
+  pop_type = "ASY",
+  show_diff_label = TRUE
+)
 }

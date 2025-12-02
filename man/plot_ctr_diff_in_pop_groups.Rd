@@ -24,10 +24,10 @@ a ggplot2 object
 Increases and Decreases in Population Groups
 }
 \examples{
-# 
-plot_ctr_diff_in_pop_groups(year = 2022,
-                            country_asylum_iso3c = "ROU",
-                            pop_type = c("REF", "ASY")
-         )
-
+#
+plot_ctr_diff_in_pop_groups(
+  year = 2024,
+  country_asylum_iso3c = "ROU",
+  pop_type = c("REF", "ASY")
+)
 }

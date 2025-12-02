@@ -4,7 +4,7 @@
 \alias{plot_ctr_process}
 \title{Asylum Processing}
 \usage{
-plot_ctr_process(year = 2022, country_asylum_iso3c, otherprop = 0.02)
+plot_ctr_process(year = 2024, country_asylum_iso3c, otherprop = 0.02)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -20,16 +20,18 @@ a ggplot2 object
 Displaying Asylum processing
 }
 \examples{
-plot_ctr_process(year = 2022,   country_asylum_iso3c = "BOL")
+plot_ctr_process(year = 2024, country_asylum_iso3c = "BOL")
 
-plot_ctr_process(year = 2022,   country_asylum_iso3c = "CHL")
-
-
-plot_ctr_process(year = 2022,   country_asylum_iso3c = "USA",
-                              otherprop = .02)
-
-plot_ctr_process(year = 2022,   country_asylum_iso3c = "USA",
-                              otherprop = .04)
+plot_ctr_process(year = 2024, country_asylum_iso3c = "CHL")
 
 
+plot_ctr_process(
+  year = 2024, country_asylum_iso3c = "USA",
+  otherprop = .02
+)
+
+plot_ctr_process(
+  year = 2024, country_asylum_iso3c = "USA",
+  otherprop = .04
+)
 }

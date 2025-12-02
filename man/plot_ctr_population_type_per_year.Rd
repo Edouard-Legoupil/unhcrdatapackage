@@ -2,13 +2,13 @@
 % Please edit documentation in R/plot_ctr_population_type_per_year.R
 \name{plot_ctr_population_type_per_year}
 \alias{plot_ctr_population_type_per_year}
-\title{Graph of Population Type Over Year}
+\title{Graph of Population Type Over year}
 \usage{
 plot_ctr_population_type_per_year(
-  year = 2022,
+  year = 2024,
   lag = 5,
-  country_asylum_iso3c = country_asylum_iso3c,
-  pop_type = Population.type
+  country_asylum_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
 )
 }
 \arguments{
@@ -18,29 +18,30 @@ plot_ctr_population_type_per_year(
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
-\item{pop_type}{Vector of character values. Possible population type 
+\item{pop_type}{Vector of character values. Possible population type
 (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)}
 }
 \value{
 a ggplot2 object
 }
 \description{
-Graph of Population Type Over Year
+Graph of Population Type Over year
 }
 \examples{
-
 p <- plot_ctr_population_type_per_year(
-                         year = 2022,
-                         country_asylum_iso3c = "PAN",
-                         lag = 5,
-                         pop_type = c("REF", 
-                                       "ASY", 
-                                       "OIP", 
-                                       "OOC",
-                                       "STA",
-                                       "IDP" )
-                  )
+  year = 2018,
+  country_asylum_iso3c = "BRA",
+  lag = 5,
+  pop_type = c(
+    "REF",
+    "ASY",
+    "OIP",
+    "OOC",
+    "STA",
+    "IDP"
+  )
+)
 p
-## Raw data can always be accessed with 
-#knitr::kable(ggplot2::ggplot_build(p)$plot$data )
+## Raw data can always be accessed with
+# knitr::kable(ggplot2::ggplot_build(p)$plot$data )
 }

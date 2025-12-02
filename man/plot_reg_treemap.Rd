@@ -5,9 +5,9 @@
 \title{Population group in the region}
 \usage{
 plot_reg_treemap(
-  year = 2022,
-  region = "Americas",
-  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
+  year = 2024,
+  region = "The Americas",
+  pop_type = c("REF", "ASY", "IDP", "OIP", "OOC", "STA")
 )
 }
 \arguments{
@@ -24,5 +24,5 @@ plot a ggplot2 object
 Population group in the region
 }
 \examples{
-plot_reg_treemap(year = 2022,  region = "Americas")
+plot_reg_treemap(year = 2024, region = "The Americas")
 }

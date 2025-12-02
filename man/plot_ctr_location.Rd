@@ -7,7 +7,7 @@
 plot_ctr_location(year, country_asylum_iso3c, pop_type, mapbackground = "osm")
 }
 \arguments{
-\item{year}{Numeric value of the year  (for instance 2022). 
+\item{year}{Numeric value of the year  (for instance 2022).
 If the data is not yet available for that year (aka still in the mid year reporting stage),
  it will automatically fall back on the previous year}
 
@@ -15,7 +15,7 @@ If the data is not yet available for that year (aka still in the mid year report
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 
-\item{mapbackground}{can be "osm" (default), "stamen-toner" , "stamen-terrain","stamen-watercolor". 
+\item{mapbackground}{can be "osm" (default), "stamen-toner" , "stamen-terrain","stamen-watercolor".
 Other mapbackground requires an API key and were not considered}
 }
 \value{
@@ -25,18 +25,18 @@ a ggplot2 object
 Create a map with symbol proportional to population data by location within country
 }
 \examples{
-# plot_ctr_location(year = 2022,
+# plot_ctr_location(year = 2024,
 #                  country_asylum_iso3c = "COL",
 #                  pop_type = c("ASY", "REF", "OIP"))
-# 
+#
 # plot_ctr_location(year = 2021,
 #                  country_asylum_iso3c = "COL",
 #                  pop_type = c("IDP"))
-# 
-# plot_ctr_location(year = 2022,
+#
+# plot_ctr_location(year = 2024,
 #                  country_asylum_iso3c = "CAN",
 #                  pop_type = c("ASY", "REF", "OIP"))
-# 
+#
 # plot_ctr_location(year = 2021,
 #                  country_asylum_iso3c = "MEX",
 #                  pop_type = c("ASY", "REF", "OIP"))

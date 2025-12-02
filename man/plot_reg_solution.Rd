@@ -4,7 +4,7 @@
 \alias{plot_reg_solution}
 \title{Plot Solution over time in the region}
 \usage{
-plot_reg_solution(year = 2022, region = "Americas", lag = 10)
+plot_reg_solution(year = 2024, region = "The Americas", lag = 10)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -20,7 +20,9 @@ a ggplot2 object
 Description
 }
 \examples{
-plot_reg_solution(year = 2022, 
-                            region = "Americas",
-                            lag = 10)
+plot_reg_solution(
+  year = 2024,
+  region = "The Americas",
+  lag = 10
+)
 }

@@ -1,3 +1,9 @@
+## unhcrdatapackage 0.1.9
+
+ * Full reliance on  [`{refugees}`](https://github.com/PopulationStatistics/refugees)  
+ * Updated all examples to 2024
+ 
+
 ## unhcrdatapackage 0.1.8
 
  * Now separating clearly the data source through  [`{ForcedDisplacementStat}`](https://unhcr.github.io/ForcedDisplacementStat/) - make it a lot easier for the set up as it avoids the rjava installed with JAVA_HOME env variable required set up.

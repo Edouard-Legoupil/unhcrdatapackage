@@ -2,23 +2,28 @@
 % Please edit documentation in R/plot_ctr_keyfig.R
 \name{plot_ctr_keyfig}
 \alias{plot_ctr_keyfig}
-\title{Summary Key Figures}
+\title{Summary Key Figures
+ Key figures can be highlighted with humanitarian icons
+  https://fontawesome.com/icons/categories/humanitarian}
 \usage{
-plot_ctr_keyfig(country_asylum_iso3c, year)
+plot_ctr_keyfig(year = 2021, country_asylum_iso3c)
 }
 \arguments{
-\item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
-
 \item{year}{Numeric value of the year (for instance 2020)}
+
+\item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 }
 \value{
 ggplot2
 }
 \description{
-Key figures can be highlighted with humanitarian icons
+Summary Key Figures
+ Key figures can be highlighted with humanitarian icons
   https://fontawesome.com/icons/categories/humanitarian
 }
 \examples{
-plot_ctr_keyfig(year = 2022,
-                country_asylum_iso3c = "COL")
+plot_ctr_keyfig(
+  year = 2024,
+  country_asylum_iso3c = "COL"
+)
 }

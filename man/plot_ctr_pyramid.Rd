@@ -11,7 +11,7 @@ plot_ctr_pyramid(
 )
 }
 \arguments{
-\item{year}{Numeric value of the year (for instance 2022). 
+\item{year}{Numeric value of the year (for instance 2022).
 If the data is not yet available for that year (aka still in the mid year reporting stage),
  it will automatically fall back on the previous year}
 
@@ -26,10 +26,10 @@ a ggplot2 object
 Population Pyramid
 }
 \examples{
-# 
-plot_ctr_pyramid(year = 2022,
-                 country_asylum_iso3c = "COL",
-                 pop_type = c("ASY", "REF")
-                 )
-
+#
+plot_ctr_pyramid(
+  year = 2024,
+  country_asylum_iso3c = "COL",
+  pop_type = c("ASY", "REF")
+)
 }

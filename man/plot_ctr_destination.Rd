@@ -6,8 +6,8 @@
 \usage{
 plot_ctr_destination(
   year = 2021,
-  country_origin_iso3c = country_origin_iso3c,
-  pop_type = pop_type
+  country_origin_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
 )
 }
 \arguments{
@@ -24,10 +24,10 @@ a ggplot2 object
 Main Destination from  one specific countr
 }
 \examples{
-# 
-plot_ctr_destination(year = 2021,
-                     country_origin_iso3c = "COL",
-                     pop_type = c("REF", "ASY")
-         )
-
+#
+plot_ctr_destination(
+  year = 2021,
+  country_origin_iso3c = "COL",
+  pop_type = c("REF", "ASY")
+)
 }

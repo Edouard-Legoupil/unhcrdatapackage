@@ -5,8 +5,8 @@
 \title{Plot a regional map}
 \usage{
 plot_reg_map(
-  year = 2022,
-  region = "Americas",
+  year = 2024,
+  region = "The Americas",
   topn = 5,
   pop_type = c("REF", "ASY", "OIP"),
   projection = "Mercator",
@@ -21,11 +21,11 @@ null, it will display the whole world}
 
 \item{topn}{how many top countries to show..}
 
-\item{pop_type}{Vector of character values. Possible population type 
+\item{pop_type}{Vector of character values. Possible population type
 (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 
 \item{projection}{use a projection system - default is "Mercator"
- for instance this can be Bertin 1953 projection - 
+ for instance this can be Bertin 1953 projection -
 https://visionscarto.net/bertin-projection-1953)}
 
 \item{maxSymbolsize}{size in point to adjust for the maximum value
@@ -38,19 +38,20 @@ a base plot
 Plot a regional map
 }
 \examples{
-plot_reg_map(  year = 2022,
-                            region = "Asia",
-                            topn = 5,
-                            pop_type =  c("REF", "ASY", "OIP"),
-                            projection = "Mercator",
-                            maxSymbolsize = .25)
+plot_reg_map(
+  year = 2024,
+  region = "The Americas",
+  topn = 5,
+  pop_type = c("REF", "ASY", "OIP"),
+  projection = "Mercator",
+  maxSymbolsize = .25
+)
 
 
-# plot_reg_map(  year = 2022,
+# plot_reg_map(  year = 2024,
 #                             region = "WestAfrica",
 #                             topn = 5,
 #                             pop_type =  c("REF", "ASY", "OIP"),
 #                             projection = "Mercator",
 #                             maxSymbolsize = .25)
-
 }

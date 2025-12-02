@@ -25,13 +25,15 @@ a ggplot2 object
 }
 \description{
 As part of UNHCR standard approach, there are mostly 3 types of durable solutions for Refugees:
- - Voluntary Repatriation in origin country 
+ - Voluntary Repatriation in origin country
  - Naturalization in the host country
  - Resettlement in a third country
 }
 \examples{
-plot_ctr_solution(year = 2021,
-                  country_asylum_iso3c= "UGA",
-                  lag = 10,
-                  sol_type = c("NAT", "RST", "RET", "RDP"))
+plot_ctr_solution(
+  year = 2021,
+  country_asylum_iso3c = "UGA",
+  lag = 10,
+  sol_type = c("NAT", "RST", "RET", "RDP")
+)
 }

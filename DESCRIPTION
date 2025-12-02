@@ -2,7 +2,7 @@ Type: Package
 Package: unhcrdatapackage
 Title: UNHCR Population Statistics Database with Chart Library and
     Factsheet Template
-Version: 0.1.8
+Version: 0.1.9
 Authors@R: c(
     person("Edouard", "Legoupil", , "legoupil@unhcr.org", role = c("aut", "cre")),
     person("Matheus", "Soldi Hardt", , "matheus@unhcr.org", role = "aut"),
@@ -23,19 +23,17 @@ Imports:
     circlize,
     colourpicker,
     config,
+    countrycode,
     dplyr,
-    extrafont,
     forcats,
     ForcedDisplacementStat,
     ggalluvial,
-    ggalt,
     ggbraid,
     ggforce,
     ggplot2,
     ggrepel,
     ggspatial,
     ggtext,
-    glue,
     golem,
     graphics,
     grDevices,
@@ -49,6 +47,7 @@ Imports:
     pak,
     patchwork,
     purrr,
+    refugees,
     rmarkdown,
     rnaturalearth,
     rnaturalearthdata,
@@ -82,8 +81,8 @@ VignetteBuilder:
 Remotes: 
     edouard-legoupil/ForcedDisplacementStat,
     edouard-legoupil/unhcrshiny,
-    unhcr-dataviz/unhcrdown,
-    unhcr-dataviz/unhcrthemes
+    nsgrantham/ggbraid
+Config/fusen/version: 0.7.2
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3

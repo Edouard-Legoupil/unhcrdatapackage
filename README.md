@@ -10,6 +10,8 @@ You can also consult directly the [Data Storytelling App](https://rstudio.unhcr.
 
 Each plot is created through a function that provides a __recipe__ that creates a re-usable chart in line with a [Divisible Content Strategy](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/). Those functions are then rendered through predefined Report templates for Countries or Regions, generated either as html, PDF or PowerPoint presentations. You may [enhance the charts story-telling ability](https://edouard-legoupil.github.io/unhcrdatapackage/articles/library.html) by adjusting the message in the title, highlighting specific parts of the data or adding annotation to ease interpretation or provide more contextual background.
 
+You can consult [{unhcrreports}](https://matheus-hardt.github.io/unhcrreports/) to benefit from AI automated analysis reports.
+
 You can consult the default [Factsheets for the Americas through that link](https://edouard-legoupil.github.io/unhcrdatapackage/factsheet/factsheet.html). 
 
 Note, that if only need the data you can use directly [`{ForcedDisplacementStat}`](https://edouard-legoupil.github.io/ForcedDisplacementStat/). You can also explore data through  [Refugee Data Finder](https://www.unhcr.org/refugee-statistics/).

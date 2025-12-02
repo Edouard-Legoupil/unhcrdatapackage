@@ -8,7 +8,7 @@ plot_reg_decrease(
   year = 2021,
   lag = 5,
   topn = 5,
-  region = "Americas",
+  region = "The Americas",
   pop_type = c("REF", "ASY", "OIP")
 )
 }
@@ -22,7 +22,7 @@ plot_reg_decrease(
 \item{region}{Character value with the related UNHCR bureau - when left null,
 it will display the whole world}
 
-\item{pop_type}{Vector of character values. Possible population type 
+\item{pop_type}{Vector of character values. Possible population type
 (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 }
 \value{
@@ -32,9 +32,11 @@ a ggplot2 object
 Plot Biggest decrease in Refugee Population
 }
 \examples{
-plot_reg_decrease(year = 2021,
-                  lag = 5,
-                  topn = 5,
-                  region = "Americas",
-                  pop_type = c("REF", "ASY", "OIP"))
+plot_reg_decrease(
+  year = 2021,
+  lag = 5,
+  topn = 5,
+  region = "The Americas",
+  pop_type = c("REF", "ASY", "OIP")
+)
 }

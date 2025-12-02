@@ -1,0 +1,81 @@
+dev_plot_Country.Rmd:
+  path: dev/dev_plot_Country.Rmd
+  state: active
+  R:
+  - R/plot_ctr_asylum.R
+  - R/plot_ctr_destination.R
+  - R/plot_ctr_diff_in_pop_groups.R
+  - R/plot_ctr_disp_migrant.R
+  - R/plot_ctr_keyfig.R
+  - R/plot_ctr_location.R
+  - R/plot_ctr_origin_history.R
+  - R/plot_ctr_origin_recognition.R
+  - R/plot_ctr_population_type_abs.R
+  - R/plot_ctr_population_type_per_year.R
+  - R/plot_ctr_population_type_perc.R
+  - R/plot_ctr_process.R
+  - R/plot_ctr_processing_time.R
+  - R/plot_ctr_pyramid.R
+  - R/plot_ctr_recognition.R
+  - R/plot_ctr_solution.R
+  - R/plot_ctr_solution_recognition.R
+  - R/plot_ctr_treemap.R
+  tests:
+  - tests/testthat/test-plot_ctr_keyfig.R
+  - tests/testthat/test-plot_ctr_population_type_per_year.R
+  - tests/testthat/test-plot_ctr_origin_history.R
+  - tests/testthat/test-plot_ctr_origin_recognition.R
+  - tests/testthat/test-plot_ctr_location.R
+  - tests/testthat/test-plot_ctr_recognition.R
+  - tests/testthat/test-plot_ctr_asylum.R
+  - tests/testthat/test-plot_ctr_process.R
+  - tests/testthat/test-plot_ctr_processing_time.R
+  - tests/testthat/test-plot_ctr_solution.R
+  - tests/testthat/test-plot_ctr_solution_recognition.R
+  - tests/testthat/test-plot_ctr_disp_migrant.R
+  vignettes: vignettes/chart-library-country.Rmd
+  inflate:
+    flat_file: dev/dev_plot_Country.Rmd
+    vignette_name: Chart Library Country
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
+dev_plot_Region.Rmd:
+  path: dev/dev_plot_Region.Rmd
+  state: active
+  R:
+  - R/plot_reg_decrease.R
+  - R/plot_reg_increase.R
+  - R/plot_reg_map.R
+  - R/plot_reg_origin_dest.R
+  - R/plot_reg_population_type_abs.R
+  - R/plot_reg_population_type_per_year.R
+  - R/plot_reg_prop_origin.R
+  - R/plot_reg_rsd.R
+  - R/plot_reg_share.R
+  - R/plot_reg_solution.R
+  - R/plot_reg_treemap.R
+  tests:
+  - tests/testthat/test-plot_reg_treemap.R
+  - tests/testthat/test-plot_reg_share.R
+  - tests/testthat/test-plot_reg_population_type_per_year.R
+  - tests/testthat/test-plot_reg_origin_dest.R
+  - tests/testthat/test-plot_reg_decrease.R
+  - tests/testthat/test-plot_reg_increase.R
+  - tests/testthat/test-plot_reg_prop_origin.R
+  - tests/testthat/test-plot_reg_rsd.R
+  - tests/testthat/test-plot_reg_solution.R
+  - tests/testthat/test-plot_reg_map.R
+  vignettes: vignettes/chart-library-region.Rmd
+  inflate:
+    flat_file: dev/dev_plot_Region.Rmd
+    vignette_name: Chart Library Region
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
