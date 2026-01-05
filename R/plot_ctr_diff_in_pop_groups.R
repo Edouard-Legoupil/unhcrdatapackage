@@ -6,6 +6,9 @@
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #'
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual
@@ -18,7 +21,7 @@
 #' @importFrom stats  reorder aggregate
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
-#' @importFrom tidyr pivot_longer  gather separate spread
+#' @importFrom tidyr pivot_longer  gather separate spread pivot_wider
 #' @importFrom unhcrthemes theme_unhcr
 #'
 #' @return a ggplot2 object
@@ -30,12 +33,23 @@
 #' plot_ctr_diff_in_pop_groups(
 #'   year = 2024,
 #'   country_asylum_iso3c = "ROU",
+#'   pop_type = c("REF", "ASY"),
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#' #
+#' plot_ctr_diff_in_pop_groups(
+#'   year = 2024,
+#'   country_asylum_iso3c = "ROU",
 #'   pop_type = c("REF", "ASY")
 #' )
-
-plot_ctr_diff_in_pop_groups <- function(year = 2021,
-                                        country_asylum_iso3c = country_asylum_iso3c,
-                                        pop_type = pop_type) {
+plot_ctr_diff_in_pop_groups <- function(
+  year = 2024,
+  country_asylum_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  label_font_size = 4,
+  category_font_size = 10
+) {
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::distinct(coa_name) |>
@@ -50,26 +64,37 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       names_to = "population_type",
       values_to = "value"
     ) |>
-    dplyr::mutate(population_type = dplyr::case_when(
-      population_type == "refugees" ~ "REF",
-      population_type == "asylum_seekers" ~ "ASY",
-      population_type == "idps" ~ "IDP",
-      population_type == "oip" ~ "OIP",
-      population_type == "stateless" ~ "STA",
-      population_type == "ooc" ~ "OOC",
-      TRUE ~ population_type
-    )) |>
+    dplyr::mutate(
+      population_type = dplyr::case_when(
+        population_type == "refugees" ~ "REF",
+        population_type == "asylum_seekers" ~ "ASY",
+        population_type == "idps" ~ "IDP",
+        population_type == "oip" ~ "OIP",
+        population_type == "stateless" ~ "STA",
+        population_type == "ooc" ~ "OOC",
+        TRUE ~ population_type
+      )
+    ) |>
     dplyr::group_by(year, population_type) |>
-    dplyr::summarise(value = sum(value, na.rm = TRUE)) |>
+    dplyr::summarise(value = sum(value, na.rm = TRUE), .groups = "drop") |>
     dplyr::ungroup()
 
   df <- pop_data |>
-    tidyr::pivot_wider(names_from = year, values_from = value, names_prefix = "year_") |>
-    dplyr::mutate(
-      diffabs = .data[[paste0("year_", year)]] - .data[[paste0("year_", year - 1)]],
-      diffper = (.data[[paste0("year_", year)]] - .data[[paste0("year_", year - 1)]]) / .data[[paste0("year_", year - 1)]]
+    tidyr::pivot_wider(
+      names_from = year,
+      values_from = value,
+      names_prefix = "year_"
     ) |>
-    dplyr::mutate(diffper = scales::label_percent(accuracy = 1, trim = FALSE)(diffper)) |>
+    dplyr::mutate(
+      diffabs = .data[[paste0("year_", year)]] -
+        .data[[paste0("year_", year - 1)]],
+      diffper = (.data[[paste0("year_", year)]] -
+        .data[[paste0("year_", year - 1)]]) /
+        .data[[paste0("year_", year - 1)]]
+    ) |>
+    dplyr::mutate(
+      diffper = scales::label_percent(accuracy = 1, trim = FALSE)(diffper)
+    ) |>
     dplyr::filter(population_type %in% pop_type)
 
   p <- ggplot() +
@@ -84,16 +109,19 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
     ) +
     scale_fill_manual(
       values = c(
-        "ASY" = "#18375F",
+        "ASY" = "#6CD8FD",
         "REF" = "#0072BC",
-        "OIP" = "#EF4A60",
+        "OIP" = "#D25A45",
         # "VDA" = "#EF4A60",
-        "OOC" = "#999999",
-        "IDP" = "#00B398",
-        "STA" = "#E1CC0D"
+        "OOC" = "#bfbfbf",
+        "IDP" = "#32C189",
+        "STA" = "#FFC740"
       ),
-      drop = TRUE, limits = force, guide = "none"
+      drop = TRUE,
+      limits = force,
+      guide = "none"
     ) +
+    scale_y_continuous(expand = expansion(mult = c(0.15, 0.15))) +
     scale_x_discrete(
       labels = c(
         "ASY" = "Asylum-seekers",
@@ -120,16 +148,20 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
           scale_cut = cut_short_scale()
         )(diffabs)
       ),
-      vjust = -0.5, colour = "black", size = 5
+      vjust = -0.5,
+      colour = "black",
+      size = label_font_size
     ) +
     geom_text(
       data = subset(df, diffabs >= 0 & diffabs < max(diffabs) / 1.5),
       aes(
         x = population_type,
         y = diffabs,
-        label = paste(intToUtf8(9650), diffper)
+        label = paste("\u2191", diffper)
       ),
-      vjust = -2.0, colour = "black", size = 5
+      vjust = -2.0,
+      colour = "black",
+      size = label_font_size
     ) +
     geom_text(
       data = subset(df, diffabs >= 0 & diffabs >= max(diffabs) / 1.5),
@@ -141,16 +173,20 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
           scale_cut = cut_short_scale()
         )(diffabs)
       ),
-      vjust = 2.7, colour = "white", size = 5
+      vjust = 2.7,
+      colour = "white",
+      size = label_font_size
     ) +
     geom_text(
       data = subset(df, diffabs >= 0 & diffabs >= max(diffabs) / 1.5),
       aes(
         x = population_type,
         y = diffabs,
-        label = paste(intToUtf8(9650), diffper)
+        label = paste("\u2191", diffper)
       ),
-      vjust = 1.2, colour = "white", size = 5
+      vjust = 1.2,
+      colour = "white",
+      size = label_font_size
     ) +
     geom_text(
       data = subset(df, diffabs < 0 / 1.5),
@@ -162,16 +198,20 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
           scale_cut = cut_short_scale()
         )(diffabs)
       ),
-      vjust = 1.2, colour = "black", size = 5
+      vjust = 1.2,
+      colour = "black",
+      size = label_font_size
     ) +
     geom_text(
       data = subset(df, diffabs < 0 / 1.5),
       aes(
         x = population_type,
         y = diffabs,
-        label = paste(intToUtf8(9660), diffper)
+        label = paste("\u2193", diffper)
       ),
-      vjust = 2.7, colour = "black", size = 5
+      vjust = 2.7,
+      colour = "black",
+      size = label_font_size
     ) +
     geom_hline(yintercept = 0, color = "black") +
     labs(
@@ -186,39 +226,14 @@ plot_ctr_diff_in_pop_groups <- function(year = 2021,
       caption = "Source: UNHCR.org/refugee-statistics"
     ) +
     theme_unhcr(
-      grid = FALSE, axis = "x",
-      axis_title = FALSE, axis_text = "x",
+      grid = FALSE,
+      axis = "x",
+      axis_title = FALSE,
+      axis_text = "x",
       font_size = 14
     ) +
     theme(
-      axis.line.x = element_line(color = "white"),
-      axis.text.x = element_text(size = 10)
+      axis.line.x = element_line(color = "white")
     )
-
-  # geom_text(
-  #   data = subset(df, diffabs < 0 & diffabs <= min(diffabs) / 1.5),
-  #   aes(
-  #     x = population_type,
-  #     y = diffabs,
-  #     label = label_number(accuracy = 1,
-  #                                  scale_cut = cut_short_scale())(diffabs)
-  #   ),
-  #   vjust = -2.0 ,
-  #   colour = "white",
-  #   size = 5
-  # )  +
-  #   geom_text(
-  #     data = subset(df, diffabs < 0 & diffabs <= min(diffabs) / 1.5),
-  #     aes(
-  #       x = population_type,
-  #       y = diffabs,
-  #       label = diffper
-  #     ),
-  #     vjust = -0.5 ,
-  #     colour = "white",
-  #     size = 5
-  #   ) +
-
-
-  return(p) # print(p)
+  p
 }

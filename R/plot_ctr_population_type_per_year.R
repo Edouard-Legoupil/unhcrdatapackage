@@ -7,6 +7,9 @@
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type
 #'                  (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#' @param legend_font_size Numeric value for legend font size, default to 10
 #'
 #' @import ggplot2
 #' @importFrom utils  head
@@ -26,7 +29,7 @@
 #'
 #' @examples
 #' p <- plot_ctr_population_type_per_year(
-#'   year = 2018,
+#'   year = 2024,
 #'   country_asylum_iso3c = "BRA",
 #'   lag = 5,
 #'   pop_type = c(
@@ -41,11 +44,31 @@
 #' p
 #' ## Raw data can always be accessed with
 #' # knitr::kable(ggplot2::ggplot_build(p)$plot$data )
-
-plot_ctr_population_type_per_year <- function(year = 2024,
-                                              lag = 5,
-                                              country_asylum_iso3c,
-                                              pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")) {
+#' p <- plot_ctr_population_type_per_year(
+#'   year = 2024,
+#'   country_asylum_iso3c = "BRA",
+#'   lag = 5,
+#'   pop_type = c(
+#'     "REF",
+#'     "ASY",
+#'     "OIP",
+#'     "OOC",
+#'     "STA",
+#'     "IDP"
+#'   )
+#' )
+#' p
+#' ## Raw data can always be accessed with
+#' # knitr::kable(ggplot2::ggplot_build(p)$plot$data )
+plot_ctr_population_type_per_year <- function(
+  year = 2024,
+  lag = 5,
+  country_asylum_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
+) {
   dict_pop_type_name <- c(
     "refugees" = "Refugees",
     "returned_refugees" = "Returned refugees",
@@ -70,14 +93,16 @@ plot_ctr_population_type_per_year <- function(year = 2024,
     "hst" = "HST"
   )
 
-  cols_poptype <- c(
-    "Asylum-seekers" = "#18375F",
+  cols <- c(
     "Refugees" = "#0072BC",
-    # "Venezuelans Displaced Abroad" = "#EF4A60",
-    "Other people in need of international protection" = "#EF4A60",
-    "Others of Concern to UNHCR" = "#999999",
-    "Internally displaced persons" = "#00B398",
-    "Stateless Persons" = "#E1CC0D"
+    "Asylum-seekers" = "#6CD8FD",
+    "Internally displaced persons" = "#32C189",
+    "Stateless people" = "#FFC740",
+    "Others of concern to UNHCR" = "#A097E3",
+    "Returned refugees" = "#00B398",
+    "Returned idps" = "#00B398",
+    "Host community" = "#BFBFBF",
+    "Other people in need of international protection" = "#D25A45"
   )
 
 
@@ -92,22 +117,32 @@ plot_ctr_population_type_per_year <- function(year = 2024,
       values_to = "value"
     ) |>
     dplyr::mutate(
-      population_type_label = stringr::str_replace_all(population_type, pattern = dict_pop_type_label)
+      population_type_label = stringr::str_replace_all(
+        population_type,
+        pattern = dict_pop_type_label
+      )
     ) |>
     dplyr::filter(
       population_type_label %in% pop_type #### Parameter
     ) |>
     dplyr::group_by(year, coa_name, population_type, population_type_label) |>
-    dplyr::summarise(dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") |>
+    dplyr::summarise(
+      dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE)),
+      .groups = "drop"
+    ) |>
     dplyr::mutate(
-      population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+      population_type_name = stringr::str_replace_all(
+        population_type,
+        pattern = dict_pop_type_name
+      )
     )
 
 
   ## need to sort with so that the small value are on the top for better legibility
   # levels(as.factor(df$population_type_label)) is alpha...
   # let's sort based on value from this year
-  df$population_type_name <- factor(df$population_type_name,
+  df$population_type_name <- factor(
+    df$population_type_name,
     levels = unique(df$population_type_name[order(df$value)])
   )
 
@@ -145,7 +180,7 @@ plot_ctr_population_type_per_year <- function(year = 2024,
       ),
       position = ggplot2::position_stack(vjust = 0.5),
       show.legend = FALSE,
-      size = 5
+      size = label_font_size
     ) +
     ## This add the total on the top of the chart..
     ggplot2::stat_summary(
@@ -160,22 +195,27 @@ plot_ctr_population_type_per_year <- function(year = 2024,
         )(ggplot2::after_stat(y)),
         group = year
       ),
-      geom = "text", size = 5, vjust = -0.5
+      geom = "text",
+      size = label_font_size,
+      vjust = -0.5
     ) +
-    ggplot2::scale_color_manual(values = c(
-      "#FFFFFF",
-      "#FFFFFF",
-      "#FFFFFF",
-      "#FFFFFF",
-      "#FFFFFF",
-      "#FFFFFF"
-    )) +
+    ggplot2::scale_color_manual(
+      values = c(
+        "#FFFFFF",
+        "#FFFFFF",
+        "#FFFFFF",
+        "#FFFFFF",
+        "#FFFFFF",
+        "#FFFFFF"
+      )
+    ) +
     ggplot2::scale_fill_manual(
-      values = cols_poptype,
+      values = cols,
       drop = TRUE,
-      limits = force
+      labels = scales::label_wrap(20)
     ) +
-    ggplot2::scale_x_continuous(breaks = scales::breaks_pretty(n = year_breaks)) +
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 2, byrow = TRUE)) +
+    ggplot2::scale_x_continuous(breaks = scales::breaks_width(1)) +
     ggplot2::scale_y_continuous(expand = ggplot2::expansion(c(0, 0.1))) +
     ggplot2::labs(
       title = paste0(country_name_text, ": Population Type per year"),
@@ -183,17 +223,22 @@ plot_ctr_population_type_per_year <- function(year = 2024,
       caption = "Source: UNHCR.org/refugee-statistics"
     ) +
     unhcrthemes::theme_unhcr(
-      grid = FALSE, axis = "x",
-      axis_title = FALSE, axis_text = "x",
+      grid = FALSE,
+      axis = "x",
+      axis_title = FALSE,
+      axis_text = "x",
       font_size = 14
     ) +
+    ggplot2::theme(legend.title = ggplot2::element_blank()) +
     ggplot2::theme(
       legend.direction = "horizontal",
       legend.position = "bottom",
-      legend.text = ggplot2::element_text(size = ggplot2::rel(0.5)),
       legend.key.size = ggplot2::unit(0.8, "cm"),
-      text = ggplot2::element_text(size = 20)
+      text = ggplot2::element_text(size = 20),
+      axis.text.x = element_text(size = category_font_size),
+      legend.text = element_text(size = legend_font_size),
+      legend.title = element_blank()
     )
 
-  return(p) # print(p)
+  return(p)
 }

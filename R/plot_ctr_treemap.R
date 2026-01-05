@@ -4,6 +4,9 @@
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @param label_font_size Numeric value for label font size, default to 12
+#'
+#'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual
@@ -26,14 +29,21 @@
 #' @examples
 #' #
 #' plot_ctr_treemap(
-#'   year = 2021,
+#'   year = 2024,
+#'   country_asylum_iso3c = "USA",
+#'   label_font_size = 12
+#' )
+#' #
+#' plot_ctr_treemap(
+#'   year = 2024,
 #'   country_asylum_iso3c = "USA"
 #' )
-
-plot_ctr_treemap <- function(year = 2021,
-                             country_asylum_iso3c = country_asylum_iso3c) {
-  
-    dict_pop_type_name <- c(
+plot_ctr_treemap <- function(
+  year = 2024,
+  country_asylum_iso3c = country_asylum_iso3c,
+  label_font_size = 12
+) {
+  dict_pop_type_name <- c(
     "refugees" = "Refugees",
     "returned_refugees" = "Returned refugees",
     "asylum_seekers" = "Asylum-seekers",
@@ -44,7 +54,7 @@ plot_ctr_treemap <- function(year = 2021,
     "ooc" = "Others of concern to UNHCR",
     "hst" = "Host community"
   )
-  
+
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::slice(1) |>
@@ -62,9 +72,15 @@ plot_ctr_treemap <- function(year = 2021,
     ) |>
     dplyr::select(-c(year)) |>
     dplyr::group_by(coa_name, population_type) |>
-    dplyr::summarise(dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") |>
+    dplyr::summarise(
+      dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE)),
+      .groups = "drop"
+    ) |>
     dplyr::mutate(
-      population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+      population_type_name = stringr::str_replace_all(
+        population_type,
+        pattern = dict_pop_type_name
+      )
     )
 
   p <- ggplot2::ggplot() +
@@ -83,21 +99,14 @@ plot_ctr_treemap <- function(year = 2021,
         label = paste0(
           round(100 * value / sum(value), 1),
           "%\n",
-          population_type_name
+          stringr::str_wrap(population_type_name, 20)
         )
       ),
       colour = "white",
-      place = "centre", size = 25
+      place = "centre",
+      size = label_font_size
     ) +
-    ggplot2::scale_fill_manual(values = c(
-      "idps" = "#00B398",
-      # "VDA"="#EF4A60",
-      "oip" = "#EF4A60",
-      "asylum_seekers" = "#18375F",
-      "refugees" = "#0072BC",
-      "ooc" = "#8395b9",
-      "stateless" = "#E1CC0D"
-    )) +
+    unhcrthemes::scale_fill_unhcr_d(palette = "pal_unhcr_poc") +
     unhcrthemes::theme_unhcr(
       font_size = 14,
       grid = "Y",
@@ -110,7 +119,13 @@ plot_ctr_treemap <- function(year = 2021,
 
     ggplot2::labs(
       title = paste0("Population of Concern in ", country_name_text),
-      subtitle = paste0(" As of ", year, ", a total of ", format(round(sum(datatree$value), -3), big.mark = ","), " Individuals"),
+      subtitle = paste0(
+        " As of ",
+        year,
+        ", a total of ",
+        format(round(sum(datatree$value), -3), big.mark = ","),
+        " Individuals"
+      ),
       x = "",
       y = "",
       caption = "Source: UNHCR.org/refugee-statistics"

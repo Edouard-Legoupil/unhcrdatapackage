@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_reg_map.R
 \name{plot_reg_map}
 \alias{plot_reg_map}
-\title{Plot a regional map}
+\title{Plot Regional Map}
 \usage{
 plot_reg_map(
   year = 2024,
@@ -16,42 +16,22 @@ plot_reg_map(
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{region}{Character value with the related UNHCR bureau - when left
-null, it will display the whole world}
+\item{region}{Character value including the UNHCR region}
 
-\item{topn}{how many top countries to show..}
+\item{topn}{Numeric value for number of top items}
 
-\item{pop_type}{Vector of character values. Possible population type
-(e.g.: REF, IDP, ASY, OIP, OOC, STA)}
+\item{pop_type}{Vector of character values. Possible population type}
 
-\item{projection}{use a projection system - default is "Mercator"
- for instance this can be Bertin 1953 projection -
-https://visionscarto.net/bertin-projection-1953)}
+\item{projection}{Character value for map projection}
 
-\item{maxSymbolsize}{size in point to adjust for the maximum value
-to display on the map}
-}
-\value{
-a base plot
+\item{maxSymbolsize}{Numeric value for maximum symbol size}
 }
 \description{
-Plot a regional map
+Plot Regional Map
 }
 \examples{
 plot_reg_map(
-  year = 2024,
-  region = "The Americas",
-  topn = 5,
-  pop_type = c("REF", "ASY", "OIP"),
-  projection = "Mercator",
-  maxSymbolsize = .25
+    year = 2024,
+    region = "The Americas"
 )
-
-
-# plot_reg_map(  year = 2024,
-#                             region = "WestAfrica",
-#                             topn = 5,
-#                             pop_type =  c("REF", "ASY", "OIP"),
-#                             projection = "Mercator",
-#                             maxSymbolsize = .25)
 }

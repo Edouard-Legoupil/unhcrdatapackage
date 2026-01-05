@@ -4,12 +4,18 @@
 \alias{plot_ctr_treemap}
 \title{Tree map of Population Groups within a country}
 \usage{
-plot_ctr_treemap(year = 2021, country_asylum_iso3c = country_asylum_iso3c)
+plot_ctr_treemap(
+  year = 2024,
+  country_asylum_iso3c = country_asylum_iso3c,
+  label_font_size = 12
+)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
+
+\item{label_font_size}{Numeric value for label font size, default to 12}
 }
 \value{
 a ggplot2 object
@@ -20,7 +26,13 @@ Tree map of Population Groups within a country
 \examples{
 #
 plot_ctr_treemap(
-  year = 2021,
+  year = 2024,
+  country_asylum_iso3c = "USA",
+  label_font_size = 12
+)
+#
+plot_ctr_treemap(
+  year = 2024,
   country_asylum_iso3c = "USA"
 )
 }

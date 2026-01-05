@@ -5,10 +5,13 @@
 \title{Plotting solutions within a country}
 \usage{
 plot_ctr_solution(
-  year = 2021,
+  year = 2024,
   lag = 10,
   country_asylum_iso3c = country_asylum_iso3c,
-  sol_type
+  sol_type,
+  category_font_size = 10,
+  facet_title_size = 12,
+  y_axis_text_size = 10
 )
 }
 \arguments{
@@ -19,6 +22,12 @@ plot_ctr_solution(
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
 \item{sol_type}{Vector of character values. Possible population type (e.g.:"NAT" "RST" "RET" "RDP")}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
+
+\item{facet_title_size}{Numeric value for facet title font size, default to 12}
+
+\item{y_axis_text_size}{Numeric value for y axis text font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -31,7 +40,16 @@ As part of UNHCR standard approach, there are mostly 3 types of durable solution
 }
 \examples{
 plot_ctr_solution(
-  year = 2021,
+  year = 2024,
+  country_asylum_iso3c = "UGA",
+  lag = 10,
+  sol_type = c("NAT", "RST", "RET", "RDP"),
+  category_font_size = 10,
+  facet_title_size = 12,
+  y_axis_text_size = 10
+)
+plot_ctr_solution(
+  year = 2024,
   country_asylum_iso3c = "UGA",
   lag = 10,
   sol_type = c("NAT", "RST", "RET", "RDP")

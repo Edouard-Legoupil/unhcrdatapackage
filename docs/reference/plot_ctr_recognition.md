@@ -1,0 +1,96 @@
+# Display a Chart with Refugee Recognition Rates
+
+In the absence of an internationally agreed methodology for calculating
+recognition rates, UNHCR uses two rates to compute the proportion of
+refugee claims accepted during the year:
+
+## Usage
+
+``` r
+plot_ctr_recognition(
+  year = 2024,
+  country_asylum_iso3c,
+  top_n_countries = 10,
+  measure = "RefugeeRecognitionRate",
+  order_by = "TotalDecided",
+  label_font_size = 4,
+  category_font_size = 10
+)
+```
+
+## Arguments
+
+- year:
+
+  Numeric value of the year
+
+- country_asylum_iso3c:
+
+  Character value with the ISO-3 character code of the Country of Asylum
+
+- top_n_countries:
+
+  Numeric value of number of main countries that the graph should
+  display
+
+- measure:
+
+  this can be either: \* RefugeeRecognitionRate \* TotalRecognitionRate
+
+- order_by:
+
+  this can be either: \* Recognized \* ComplementaryProtection \*
+  TotalDecided
+
+- label_font_size:
+
+  Numeric value for label font size, default to 4
+
+- category_font_size:
+
+  Numeric value for axis text font size, default to 10
+
+## Value
+
+a ggplot2 object
+
+## Details
+
+\* The Refugee Recognition Rate divides the number of asylum-seekers
+granted Convention refugee status by the total number of accepted
+(Convention and, where relevant, complementary protection) and rejected
+cases (aka substantive decision).
+
+\* The Total Recognition Rate divides the number of asylum-seekers
+granted Convention refugee status and / or complementary form of
+protection by the total number of accepted (Convention and, where
+relevant, complementary protection) and rejected cases.
+
+Non-substantive decisions are, to the extent possible, excluded from
+both calculations. For the purpose of international comparability, UNHCR
+only uses these two recognition rates and does not report nationally
+calculated rates.
+
+See https://www.unhcr.org/4ce531e09.pdf
+
+## Examples
+
+``` r
+plot_ctr_recognition(
+  year = 2024,
+  country_asylum_iso3c = "USA",
+  top_n_countries = 10,
+  measure = "RefugeeRecognitionRate",
+  order_by = "TotalDecided",
+  label_font_size = 4,
+  category_font_size = 10
+)
+
+plot_ctr_recognition(
+  year = 2024,
+  country_asylum_iso3c = "USA",
+  top_n_countries = 10,
+  measure = "RefugeeRecognitionRate",
+  order_by = "TotalDecided"
+)
+```

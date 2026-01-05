@@ -21,8 +21,10 @@
 #'      See https://www.unhcr.org/4ce531e09.pdf
 #'
 #' @param year Numeric value of the year (for instance 2020)
-#' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Origin
-#' @param top_n_countries Numeric value of number of main countries that the graph should display
+#' @param country_origin_iso3c Character value with the ISO-3 character code
+#'                             of the Country of Origin
+#' @param top_n_countries Numeric value of number of main countries that the graph
+#'                        should display
 #' @param measure this can be either:
 #'            * RefugeeRecognitionRate
 #'            * TotalRecognitionRate
@@ -30,6 +32,9 @@
 #'            * Recognized
 #'            * ComplementaryProtection
 #'            * TotalDecided
+#'
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
 #'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -55,19 +60,31 @@
 #'   country_origin_iso3c = "VEN",
 #'   top_n_countries = 10,
 #'   measure = "RefugeeRecognitionRate",
+#'   order_by = "TotalDecided",
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#' plot_ctr_origin_recognition(
+#'   year = 2024,
+#'   country_origin_iso3c = "VEN",
+#'   top_n_countries = 10,
+#'   measure = "RefugeeRecognitionRate",
 #'   order_by = "TotalDecided"
 #' )
-plot_ctr_origin_recognition <- function(year = 2024,
-                                        country_origin_iso3c,
-                                        top_n_countries = 10,
-                                        measure = "RefugeeRecognitionRate",
-                                        order_by = "TotalDecided") {
+plot_ctr_origin_recognition <- function(
+  year = 2024,
+  country_origin_iso3c,
+  top_n_countries = 10,
+  measure = "RefugeeRecognitionRate",
+  order_by = "TotalDecided",
+  label_font_size = 4,
+  category_font_size = 10
+) {
   country_name_text <- refugees::population |>
     dplyr::filter(coo_iso == country_origin_iso3c) |>
     dplyr::distinct(coo_name) |>
     dplyr::pull() |>
     head(1)
-
 
   measurelabel <-
     dplyr::case_when(
@@ -78,8 +95,10 @@ plot_ctr_origin_recognition <- function(year = 2024,
   order_bylabel <-
     dplyr::case_when(
       order_by == "Recognized" ~ "Recognized Refugee Status Decisions",
-      order_by == "ComplementaryProtection" ~ "Complementary Protection Decisions",
-      order_by == "TotalDecided" ~ "Total Decision (independently of the outcome)"
+      order_by ==
+        "ComplementaryProtection" ~ "Complementary Protection Decisions",
+      order_by ==
+        "TotalDecided" ~ "Total Decision (independently of the outcome)"
     )
 
   topAsylum <- refugees::asylum_decisions |>
@@ -94,54 +113,97 @@ plot_ctr_origin_recognition <- function(year = 2024,
     ) |>
     dplyr::mutate(
       RefugeeRecognitionRate = (Recognized) / TotalDecided,
-      TotalRecognitionRate = (Recognized + ComplementaryProtection) / TotalDecided
+      TotalRecognitionRate = (Recognized + ComplementaryProtection) /
+        TotalDecided
     )
 
   topAsylum1 <- topAsylum |>
-    mutate(measured = .data[[measure]]) |>
-    mutate(order_by = .data[[order_by]]) |>
-    arrange(desc(order_by)) |>
-    head(top_n_countries)
+    dplyr::mutate(measured = .data[[measure]]) |>
+    dplyr::mutate(order_by = .data[[order_by]]) |>
+    dplyr::arrange(dplyr::desc(order_by)) |>
+    head(top_n_countries) |>
+    dplyr::mutate(
+      measuredRound = scales::label_percent(accuracy = 0.1, suffix = "%")(
+        measured
+      )
+    )
 
-
-  rsdAsylum <- ggplot() +
-    geom_bar(
+  rsdAsylum <- ggplot2::ggplot() +
+    ggplot2::geom_col(
       data = topAsylum1,
-      aes(
+      ggplot2::aes(
         y = measured,
-        x = reorder(CountryAsylumName, measured)
+        x = stats::reorder(CountryAsylumName, measured)
       ),
-      stat = "identity", fill = "#0072bc"
+      fill = unhcrthemes::unhcr_pal(n = 1, "pal_blue")
     ) +
-    coord_flip() +
-    # scale_y_continuous( labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
-    scale_y_continuous(labels = scales::label_percent(accuracy = 0.1, suffix = "%")) +
-
-    # facet_grid(.~ ctry_asy) +
-    #  geom_hline(yintercept = 0, size = 1.1, colour = "#333333")   +
-    labs(
-      title = paste0(measurelabel, " | ", year, " for Nationals from ", country_name_text),
-      caption = "Source: UNHCR.org/refugee-statistics ",
+    ## Position label differently in the bar in white - outside bar in black
+    ggplot2::geom_text(
+      data = subset(
+        topAsylum1,
+        measured < max(measured) / 1.5
+      ),
+      ggplot2::aes(
+        y = measured,
+        x = stats::reorder(CountryAsylumName, measured),
+        label = measuredRound
+      ),
+      hjust = -0.1,
+      vjust = 0.5,
+      colour = "black",
+      size = label_font_size
+    ) +
+    ggplot2::geom_text(
+      data = subset(
+        topAsylum1,
+        measured >= max(measured) / 1.5
+      ),
+      ggplot2::aes(
+        y = measured,
+        x = stats::reorder(CountryAsylumName, measured),
+        label = measuredRound
+      ),
+      hjust = 1.1,
+      vjust = 0.5,
+      colour = "white",
+      size = label_font_size
+    ) +
+    ggplot2::coord_flip() +
+    ggplot2::scale_y_continuous(
+      expand = ggplot2::expansion(c(0, 0.1)),
+      labels = scales::label_percent(accuracy = 0.1, suffix = "%")
+    ) +
+    ggplot2::labs(
+      title = paste0(
+        measurelabel,
+        " | ",
+        year,
+        " for Nationals from ",
+        country_name_text
+      ),
       subtitle = paste0(
         "For top ",
         top_n_countries,
         " Countries of Asylum ordered by ",
         order_bylabel
       ),
-      x = " ", y = " "
+      x = "",
+      y = "",
+      caption = "Source: UNHCR.org/refugee-statistics "
     ) +
-    theme_unhcr(
-      grid = "Y",
-      axis = "x",
-      axis_title = "",
-      font_size = 14
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(20)) +
+    unhcrthemes::theme_unhcr(
+      font_size = 14,
+      grid = FALSE,
+      axis = "y",
+      axis_title = FALSE,
+      axis_text = "y"
     ) +
-    theme( # axis.text.x = element_blank(),
-      # legend.position = "none",
-      panel.grid.major.x = element_line(color = "#cbcbcb"),
-      panel.grid.major.y = element_blank()
-    ) ### changing grid line that should appear)
-
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_text(size = category_font_size),
+      panel.grid.major.y = ggplot2::element_blank(),
+      plot.margin = ggplot2::margin(5, 5, 5, 30)
+    )
 
   return(rsdAsylum)
 }

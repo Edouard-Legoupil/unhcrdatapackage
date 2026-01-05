@@ -9,7 +9,9 @@ plot_ctr_origin_history(
   lag = 5,
   country_asylum_iso3c,
   pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
-  otherprop = 0.02
+  otherprop = 0.02,
+  category_font_size = 10,
+  legend_font_size = 10
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ plot_ctr_origin_history(
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)}
 
 \item{otherprop}{value set by default to .02 - used to merge origin as "Other"}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
+
+\item{legend_font_size}{Numeric value for legend font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -30,6 +36,20 @@ a ggplot2 object
 The functions gives a quick overview of the main source of displacement in terms of origin in the country
 }
 \examples{
+plot_ctr_origin_history(
+  year = 2024,
+  lag = 5,
+  country_asylum_iso3c = "MEX",
+  pop_type = c(
+    "REF",
+    "ASY",
+    "OIP",
+    "IDP"
+  ),
+  otherprop = .02,
+  category_font_size = 10,
+  legend_font_size = 10
+)
 plot_ctr_origin_history(
   year = 2024,
   lag = 5,

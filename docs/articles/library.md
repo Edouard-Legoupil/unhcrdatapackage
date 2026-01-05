@@ -1,0 +1,120 @@
+# Why a chart Library?
+
+## Divisible Content Strategy Gives You More Content With Less Work
+
+As explained in this [blog post from Column Five
+Media](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/),
+a divisible content strategy is an approach to content creation where
+you use a single asset to create multiple pieces. For example, you might
+break an e-book into a few articles, an infographic, social
+**microcontent**, or even a brand video.
+
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrviz/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png)
+
+The chart library is therefore designed to speed up the creation of
+**microcontent** that can be then re-embedded wherever needed:
+
+- Social Media
+
+- Donor Presentation
+
+- Talking points
+
+- Situation Analysis or Protection Monitoring Reports
+
+With this approach, the effort spent on polishing content can benefit a
+series of product -
+
+> More Content With Less Work!
+
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrviz/master/inst/microcontent.png)
+
+## Do not waste time with charts creation, focus on the message and on the story
+
+Impactful charts with are characterized by their [story
+telling](https://medium.economist.com/charting-new-territory-7f5afb293270)
+ability. Using the default plots from the package, the chart
+effectiveness can be improved by:
+
+1.  Changing charts existing default **title and subtitle** to replace
+    it with a key message or call to Action
+
+2.  **Annotating** the chart to provide interpretation hint around the
+    context: See [tutorial
+    here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-annotate)
+
+3.  **Highlighting** specific parts in the chart to reinforce the main
+    message and ease legibility: See [tutorial
+    here](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/materials/05_annotations.html#/annotations-with-geom)\_
+
+4.  **Adding background information**
+
+## How to get started: Start building your country or regional/situational factsheet now
+
+If you just want to explore the package, you can for instance create an
+account on [Rstudio Cloud](https://posit.cloud)
+
+### First install the package
+
+``` r
+remotes::install_github("vidonne/unhcrdesign")
+remotes::install_github("vidonne/unhcrthemes")
+remotes::install_github("vidonne/unhcrdown")
+remotes::install_github("edouard-legoupil/unhcrviz")
+```
+
+### Report Template
+
+Then just create a new markdown file using one of the template included
+in the package - this can be either a powepoint or an html/PDF.
+
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrviz/master/inst/template.png)
+
+In an RMD report, the top part of the file, the header is called
+[YAML](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html).
+
+A YAML header contains YAML arguments, such as “title”, “author”, and
+“output”, demarcated by three dashes (—) on either end.
+
+From here you can adjust the notebook parameters for your country for
+instance and then knit your report.
+
+### Adjust charts within the template
+
+Each of the notebook chunk includes one plotting function
+
+``` r
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) 
+```
+
+Note that if you want to change the title to an existing chart just add:
+`labs` with a new `title`
+
+``` r
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year)) 
+```
+
+In case you use the PowerPoint template, you will need to append 2
+instructions so that the output becomes an editable obejct within the
+resuting powerpoint.
+
+`-> p` `dml(ggobj = p, fonts = list(serif = 'Lato'))`
+
+``` r
+plot_ctr_population_type_abs(year = params$year,
+                    country_asylum_iso3c = params$country,
+                    top_n_countries = 9,
+                    pop_type = "REF"
+                    ) +
+  labs(title = paste0("Refugees: Main Countries of origin | ", params$year)) -> p
+dml(ggobj = p, fonts = list(serif = 'Lato'))
+```

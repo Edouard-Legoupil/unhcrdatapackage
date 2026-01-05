@@ -5,9 +5,10 @@
 \title{Title}
 \usage{
 plot_ctr_solution_recognition(
-  year = 2021,
+  year = 2024,
   lag = 10,
-  country_asylum_iso3c = country_asylum_iso3c
+  country_asylum_iso3c = country_asylum_iso3c,
+  category_font_size = 10
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ plot_ctr_solution_recognition(
 \item{lag}{Number of year to used as comparison base}
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -24,6 +27,12 @@ a ggplot2 object
 Description
 }
 \examples{
+plot_ctr_solution_recognition(
+  year = 2024,
+  country_asylum_iso3c = "UGA",
+  lag = 10,
+  category_font_size = 10
+)
 plot_ctr_solution_recognition(
   year = 2024,
   country_asylum_iso3c = "UGA",

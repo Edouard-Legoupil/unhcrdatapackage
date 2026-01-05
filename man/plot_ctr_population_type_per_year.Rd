@@ -8,7 +8,10 @@ plot_ctr_population_type_per_year(
   year = 2024,
   lag = 5,
   country_asylum_iso3c,
-  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
 )
 }
 \arguments{
@@ -20,6 +23,12 @@ plot_ctr_population_type_per_year(
 
 \item{pop_type}{Vector of character values. Possible population type
 (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)}
+
+\item{label_font_size}{Numeric value for label font size, default to 4}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
+
+\item{legend_font_size}{Numeric value for legend font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -29,7 +38,23 @@ Graph of Population Type Over year
 }
 \examples{
 p <- plot_ctr_population_type_per_year(
-  year = 2018,
+  year = 2024,
+  country_asylum_iso3c = "BRA",
+  lag = 5,
+  pop_type = c(
+    "REF",
+    "ASY",
+    "OIP",
+    "OOC",
+    "STA",
+    "IDP"
+  )
+)
+p
+## Raw data can always be accessed with
+# knitr::kable(ggplot2::ggplot_build(p)$plot$data )
+p <- plot_ctr_population_type_per_year(
+  year = 2024,
   country_asylum_iso3c = "BRA",
   lag = 5,
   pop_type = c(

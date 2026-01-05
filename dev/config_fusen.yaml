@@ -1,3 +1,38 @@
+dev_golem_module.Rmd:
+  path: dev/dev_golem_module.Rmd
+  state: active
+  R:
+  - R/mod_categories_ui.R
+  - R/mod_demographics_ui.R
+  - R/mod_destination_ui.R
+  - R/mod_home_ui.R
+  - R/mod_input_ui.R
+  - R/mod_migrants_ui.R
+  - R/mod_origin_ui.R
+  - R/mod_plotviz_ui.R
+  - R/mod_processing_ui.R
+  - R/mod_solution_ui.R
+  tests:
+  - tests/testthat/test-mod_home_ui.R
+  - tests/testthat/test-mod_input_ui.R
+  - tests/testthat/test-mod_plotviz_ui.R
+  - tests/testthat/test-mod_categories_ui.R
+  - tests/testthat/test-mod_origin_ui.R
+  - tests/testthat/test-mod_destination_ui.R
+  - tests/testthat/test-mod_demographics_ui.R
+  - tests/testthat/test-mod_processing_ui.R
+  - tests/testthat/test-mod_solution_ui.R
+  - tests/testthat/test-mod_migrants_ui.R
+  vignettes: vignettes/get-started.Rmd
+  inflate:
+    flat_file: dev/dev_golem_module.Rmd
+    vignette_name: Get started
+    open_vignette: true
+    check: false
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
 dev_plot_Country.Rmd:
   path: dev/dev_plot_Country.Rmd
   state: active
@@ -36,9 +71,9 @@ dev_plot_Country.Rmd:
   vignettes: vignettes/chart-library-country.Rmd
   inflate:
     flat_file: dev/dev_plot_Country.Rmd
-    vignette_name: Chart Library Country
+    vignette_name: chart-library-country
     open_vignette: true
-    check: true
+    check: false
     document: true
     overwrite: 'yes'
     clean: ask
@@ -58,11 +93,13 @@ dev_plot_Region.Rmd:
   - R/plot_reg_share.R
   - R/plot_reg_solution.R
   - R/plot_reg_treemap.R
+  - R/fake-section-title.R
   tests:
   - tests/testthat/test-plot_reg_treemap.R
   - tests/testthat/test-plot_reg_share.R
   - tests/testthat/test-plot_reg_population_type_per_year.R
   - tests/testthat/test-plot_reg_origin_dest.R
+  - tests/testthat/test-plot_reg_population_type_abs.R
   - tests/testthat/test-plot_reg_decrease.R
   - tests/testthat/test-plot_reg_increase.R
   - tests/testthat/test-plot_reg_prop_origin.R
@@ -72,9 +109,29 @@ dev_plot_Region.Rmd:
   vignettes: vignettes/chart-library-region.Rmd
   inflate:
     flat_file: dev/dev_plot_Region.Rmd
-    vignette_name: Chart Library Region
+    vignette_name: chart-library-region
     open_vignette: true
-    check: true
+    check: false
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
+dev_template.Rmd:
+  path: dev/dev_template.Rmd
+  state: active
+  R:
+  - R/template_ctryfactsheet.R
+  - R/template_ctryprez.R
+  - R/template_ctryslides.R
+  - R/template_regfactsheet.R
+  - R/template_regprez.R
+  tests: []
+  vignettes: vignettes/report-template.Rmd
+  inflate:
+    flat_file: dev/dev_template.Rmd
+    vignette_name: Report Template
+    open_vignette: true
+    check: false
     document: true
     overwrite: 'yes'
     clean: ask

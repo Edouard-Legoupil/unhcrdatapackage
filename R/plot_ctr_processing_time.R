@@ -16,6 +16,11 @@
 #' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Asylum - if NUL then all countries are included
 #'
 #' @param procedureType indicates whether "G" (Government) "J" (Joint) "U" (UNHCR)
+#' @param lag Numeric value for the time window to display, default to 10 years
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#' @param legend_font_size Numeric value for legend font size, default to 10
+#'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual guides guide_legend
@@ -38,6 +43,33 @@
 #' @examples
 #' plot_ctr_processing_time(
 #'   year = 2024,
+#'   country_asylum_iso3c = "ARG",
+#'   label_font_size = 4,
+#'   category_font_size = 10,
+#'   legend_font_size = 10
+#' )
+#'
+#'
+#' plot_ctr_processing_time(
+#'   year = 2024,
+#'   country_asylum_iso3c = "USA",
+#'   label_font_size = 4,
+#'   category_font_size = 10,
+#'   legend_font_size = 10
+#' )
+#'
+#' ## Display a filtered version of the chart for a specific country and procedure
+#' plot_ctr_processing_time(
+#'   year = 2024,
+#'   country_asylum_iso3c = "EGY",
+#'   country_origin_iso3c = "ERI",
+#'   procedureType = "U",
+#'   label_font_size = 4,
+#'   category_font_size = 10,
+#'   legend_font_size = 10
+#' )
+#' plot_ctr_processing_time(
+#'   year = 2024,
 #'   country_asylum_iso3c = "ARG"
 #' )
 #'
@@ -54,10 +86,16 @@
 #'   country_origin_iso3c = "ERI",
 #'   procedureType = "U"
 #' )
-plot_ctr_processing_time <- function(year = 2024,
-                                     country_asylum_iso3c = country_asylum_iso3,
-                                     country_origin_iso3c = NULL,
-                                     procedureType = NULL) {
+plot_ctr_processing_time <- function(
+  year = 2024,
+  country_asylum_iso3c = country_asylum_iso3,
+  country_origin_iso3c = NULL,
+  procedureType = NULL,
+  lag = 10,
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
+) {
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::distinct(coa_name) |>
@@ -78,14 +116,18 @@ plot_ctr_processing_time <- function(year = 2024,
   procedurefilterlab <- ""
 
   filterlab <- paste0(
-    dplyr::if_else(originfilterlab == "",
+    dplyr::if_else(
+      originfilterlab == "",
       "",
       paste0(", filtered for nationals from ", originfilterlab)
     )
   )
 
   apps <- refugees::asylum_applications |>
-    dplyr::filter(coa_iso == country_asylum_iso3c)
+    dplyr::filter(
+      coa_iso == country_asylum_iso3c,
+      year >= (!!year - lag)
+    )
 
   if (!is.null(country_origin_iso3c)) {
     apps <- apps |> dplyr::filter(coo_iso == country_origin_iso3c)
@@ -99,7 +141,10 @@ plot_ctr_processing_time <- function(year = 2024,
     dplyr::ungroup()
 
   decs <- refugees::asylum_decisions |>
-    dplyr::filter(coa_iso == country_asylum_iso3c)
+    dplyr::filter(
+      coa_iso == country_asylum_iso3c,
+      year >= (!!year - lag)
+    )
 
   if (!is.null(country_origin_iso3c)) {
     decs <- decs |> dplyr::filter(coo_iso == country_origin_iso3c)
@@ -124,50 +169,49 @@ plot_ctr_processing_time <- function(year = 2024,
       ~ tidyr::replace_na(., 0)
     )) |>
     dplyr::transmute(
-      year = dplyr::if_else(year == dplyr::last(year),
-        year + .5,
-        year + 1
-      ),
+      year = dplyr::if_else(year == dplyr::last(year), year + .5, year + 1),
       apps = cumsum(NumberApplications),
       decs = cumsum(TotalDecided)
     )
 
-  idx <- purrr::detect_index(data$apps, ~ . < dplyr::last(data$decs),
+  idx <- purrr::detect_index(
+    data$apps,
+    ~ . < dplyr::last(data$decs),
     .dir = "backward"
   )
 
-  t <- lubridate::date_decimal(data$year[idx] +
-    (dplyr::last(data$decs) - data$apps[idx]) /
-      (data$apps[idx + 1] - data$apps[idx]))
+  t <- lubridate::date_decimal(
+    data$year[idx] +
+      (dplyr::last(data$decs) - data$apps[idx]) /
+        (data$apps[idx + 1] - data$apps[idx])
+  )
 
-  stat <- lubridate::interval(t, lubridate::make_date(2022, 6, 30)) / lubridate::days()
+  stat <- lubridate::interval(t, lubridate::make_date(2022, 6, 30)) /
+    lubridate::days()
 
   data2 <- data |>
-    tidyr::pivot_longer(-year,
-      names_to = "flow",
-      values_to = "n"
-    )
-
+    tidyr::pivot_longer(-year, names_to = "flow", values_to = "n")
 
   p <- data2 |>
-    ggplot2::ggplot(ggplot2::aes(year,
-      n,
-      fill = flow
-    )) +
+    ggplot2::ggplot(ggplot2::aes(year, n, fill = flow)) +
     ggplot2::geom_area(position = "identity") +
     ## highlight the main indicator!
-    ggplot2::annotate("segment",
+    ggplot2::annotate(
+      "segment",
       x = lubridate::decimal_date(t),
       y = dplyr::last(data$decs),
       xend = dplyr::last(data$year),
       yend = dplyr::last(data$decs)
     ) +
-    ggplot2::annotate("text",
+    ggplot2::annotate(
+      "text",
       x = 2020,
       y = dplyr::last(data$decs),
       vjust = -.5,
-      label = paste0(round(stat), " days")
+      label = paste0(round(stat), " days"),
+      size = label_font_size
     ) +
+    ggplot2::scale_x_continuous(breaks = scales::breaks_width(1)) +
     ggplot2::scale_y_continuous(labels = scales::label_comma()) +
     ggplot2::scale_fill_manual(
       labels = c(
@@ -181,8 +225,17 @@ plot_ctr_processing_time <- function(year = 2024,
       name = NULL
     ) +
     ggplot2::labs(
-      title = stringr::str_wrap("Average Processing Time from Asylum Registration to First Instance Decision", 100),
-      subtitle = paste0("In ", country_name_text, ", comparative cumulative applications and decisions with gap measured in days as of ", year, filterlab),
+      title = stringr::str_wrap(
+        "Average Processing Time from Asylum Registration to First Instance Decision",
+        100
+      ),
+      subtitle = paste0(
+        "In ",
+        country_name_text,
+        ", comparative cumulative applications and decisions with gap measured in days as of ",
+        year,
+        filterlab
+      ),
       x = NULL,
       y = "Cumulative total",
       caption = "Source: UNHCR.org/refugee-statistics"
@@ -192,7 +245,12 @@ plot_ctr_processing_time <- function(year = 2024,
       font_size = 14,
       grid = "Y"
     ) +
-    ggplot2::theme(legend.position = "top")
+    ggplot2::theme(
+      legend.position = "top",
+      axis.text = element_text(size = category_font_size),
+      legend.text = element_text(size = legend_font_size),
+      legend.title = element_blank()
+    )
 
   return(p)
 }

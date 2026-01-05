@@ -4,8 +4,13 @@
 #'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param top_n_countries Numeric value of number of main countries that the graph should display
-#' @param pop_type Character value. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @param top_n_countries Numeric value of number of main countries that the graph
+#'                        should display
+#' @param pop_type Character value. Possible population type
+#'                 (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @param show_diff_label Logical value to show the difference label or not
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
 #'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -21,6 +26,10 @@
 #'               pull distinct n arrange across slice left_join
 #' @importFrom tidyr pivot_longer
 #' @importFrom unhcrthemes theme_unhcr
+#' @importFrom forcats fct_lump_n fct_na_value_to_level fct_rev fct_inorder fct_relevel
+#' @importFrom purrr map2
+#' @importFrom fontawesome fa
+#' @importFrom ggsvg geom_point_svg
 #'
 #' @return a ggplot2 object
 #'
@@ -28,7 +37,26 @@
 #'
 #' @examples
 #' plot_ctr_population_type_perc(
-#'   year = 2021,
+#'   year = 2024,
+#'   country_asylum_iso3c = "BRA",
+#'   top_n_countries = 9,
+#'   pop_type = "REF",
+#'   show_diff_label = FALSE,
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#'
+#' plot_ctr_population_type_perc(
+#'   year = 2024,
+#'   country_asylum_iso3c = "BRA",
+#'   top_n_countries = 9,
+#'   pop_type = "ASY",
+#'   show_diff_label = TRUE,
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#' plot_ctr_population_type_perc(
+#'   year = 2024,
 #'   country_asylum_iso3c = "BRA",
 #'   top_n_countries = 9,
 #'   pop_type = "REF",
@@ -36,18 +64,21 @@
 #' )
 #'
 #' plot_ctr_population_type_perc(
-#'   year = 2021,
+#'   year = 2024,
 #'   country_asylum_iso3c = "BRA",
 #'   top_n_countries = 9,
 #'   pop_type = "ASY",
 #'   show_diff_label = TRUE
 #' )
-
-plot_ctr_population_type_perc <- function(year = 2021,
-                                          country_asylum_iso3c,
-                                          top_n_countries = 9,
-                                          pop_type = "REF",
-                                          show_diff_label = TRUE) {
+plot_ctr_population_type_perc <- function(
+  year = 2024,
+  country_asylum_iso3c,
+  top_n_countries = 9,
+  pop_type = "REF",
+  show_diff_label = TRUE,
+  label_font_size = 4,
+  category_font_size = 10
+) {
   dict_pop_type_name <- c(
     "refugees" = "Refugees",
     "returned_refugees" = "Returned refugees",
@@ -81,38 +112,54 @@ plot_ctr_population_type_perc <- function(year = 2021,
     STA = c("Stateless Persons", "#E1CC0D")
   )
 
-
   df <- refugees::population |>
     dplyr::filter(
       (year == !!year | year == !!year - 1), #### Parameter
       coa_iso == country_asylum_iso3c, #### Parameter
     ) |>
     tidyr::pivot_longer(
-      cols = refugees:hst,
+      cols = c(refugees, asylum_seekers, idps, oip, stateless, ooc, hst),
       names_to = "population_type",
       values_to = "value"
     ) |>
     dplyr::mutate(
-      population_type_label = stringr::str_replace_all(population_type, pattern = dict_pop_type_label)
+      population_type_label = stringr::str_replace_all(
+        population_type,
+        pattern = dict_pop_type_label
+      )
     ) |>
     dplyr::filter(
       population_type_label %in% pop_type, #### Parameter
       value != 0 | is.na(value)
     ) |>
-    dplyr::group_by(year, coa_name, coo_name, population_type, population_type_label) |>
-    dplyr::summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") |>
-    dplyr::mutate(
-      population_type_name = stringr::str_replace_all(population_type, pattern = dict_pop_type_name)
+    dplyr::group_by(
+      year,
+      coa_name,
+      coo_name,
+      population_type,
+      population_type_label
     ) |>
-    group_by(coa_name, coo_name) |>
-    arrange(year) |>
-    mutate(diff_pop_type_value = scales::label_percent(
-      accuracy = 0.1,
-      trim = FALSE
-    )(((value - lag(value)) / lag(value)))) |>
-    ungroup() |>
-    filter(year == !!year) |>
-    mutate(
+    dplyr::summarise(
+      dplyr::across(tidyselect::where(is.numeric), ~ sum(.x, na.rm = TRUE)),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      population_type_name = stringr::str_replace_all(
+        population_type,
+        pattern = dict_pop_type_name
+      )
+    ) |>
+    dplyr::group_by(coa_name, coo_name) |>
+    dplyr::arrange(year) |>
+    dplyr::mutate(
+      diff_pop_type_value = scales::label_percent(
+        accuracy = 0.1,
+        trim = FALSE
+      )(((value - dplyr::lag(value)) / dplyr::lag(value)))
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::filter(year == !!year) |>
+    dplyr::mutate(
       origin_data_prot = forcats::fct_lump_n(
         f = coo_name,
         n = top_n_countries, #### Parameter
@@ -121,26 +168,29 @@ plot_ctr_population_type_perc <- function(year = 2021,
         ties.method = "last"
       )
     ) |>
-    mutate(
+    dplyr::mutate(
       origin_data_prot = forcats::fct_na_value_to_level(
         origin_data_prot,
         "Other nationalities"
       ),
-      diff_pop_type_value = case_when(
+      diff_pop_type_value = dplyr::case_when(
         origin_data_prot == "Other nationalities" ~ "",
         TRUE ~ diff_pop_type_value
       )
     ) |>
-    group_by(coa_name, diff_pop_type_value, origin_data_prot) |>
-    summarise(value = sum(value, na.rm = TRUE), .groups = "drop") |>
-    ungroup() |>
-    arrange(desc(value)) |>
-    filter(value != 0L) |>
-    mutate(
-      origin_data_prot = forcats::fct_rev(forcats::fct_inorder(origin_data_prot)),
+    dplyr::group_by(coa_name, diff_pop_type_value, origin_data_prot) |>
+    dplyr::summarise(value = sum(value, na.rm = TRUE), .groups = "drop") |>
+    dplyr::ungroup() |>
+    dplyr::arrange(dplyr::desc(value)) |>
+    dplyr::filter(value != 0L) |>
+    dplyr::mutate(
+      origin_data_prot = forcats::fct_rev(forcats::fct_inorder(
+        origin_data_prot
+      )),
       origin_data_prot = suppressWarnings(
-        case_when(
-          origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(origin_data_prot,
+        dplyr::case_when(
+          origin_data_prot == "Other nationalities" ~ forcats::fct_relevel(
+            origin_data_prot,
             "Other nationalities",
             after = 0
           ),
@@ -149,26 +199,25 @@ plot_ctr_population_type_perc <- function(year = 2021,
       ),
       perc = scales::label_percent(
         accuracy = 1,
-        trim = FALSE
+        trim = TRUE
       )(value / sum(value))
     )
 
   country_name_text <- df |>
-    distinct(coa_name) |>
-    pull()
+    dplyr::distinct(coa_name) |>
+    dplyr::pull()
 
-
-  p <- ggplot() +
-    geom_col(
+  p <- ggplot2::ggplot() +
+    ggplot2::geom_col(
       data = df,
-      aes(x = value, y = origin_data_prot),
+      ggplot2::aes(x = value, y = origin_data_prot),
       fill = cols_poptype_label[[pop_type]][2],
       width = 0.8
     ) +
     ## Position label differently in the bar in white - outside bar in black
-    geom_text(
+    ggplot2::geom_text(
       data = subset(df, value < max(value) / 1.5),
-      aes(
+      ggplot2::aes(
         x = value,
         y = origin_data_prot,
         label = perc
@@ -176,11 +225,11 @@ plot_ctr_population_type_perc <- function(year = 2021,
       hjust = -0.1,
       vjust = 0.5,
       colour = "black",
-      size = 6
+      size = label_font_size
     ) +
-    geom_text(
+    ggplot2::geom_text(
       data = subset(df, value >= max(value) / 1.5),
-      aes(
+      ggplot2::aes(
         x = value,
         y = origin_data_prot,
         label = perc
@@ -188,82 +237,123 @@ plot_ctr_population_type_perc <- function(year = 2021,
       hjust = 1.1,
       vjust = 0.5,
       colour = "white",
-      size = 6
+      size = label_font_size
     )
 
   # Add diff labels
   if (show_diff_label == TRUE) {
-    # diff label positive general
-    p <- p + geom_text(
-      data = subset(df, with(df, grepl("^[0-9]", diff_pop_type_value)) & (value < max(value) / 1.5)),
-      aes(
-        x = value,
-        y = origin_data_prot,
-        label = paste(intToUtf8(9650), diff_pop_type_value)
-      ),
-      hjust = -1.2,
-      vjust = 0.5,
-      colour = "grey",
-      size = 5
-    ) +
-      # diff label negative general
-      geom_text(
-        data = subset(df, with(df, grepl("-", diff_pop_type_value)) & (value < max(value) / 1.5)),
-        aes(
-          x = value,
-          y = origin_data_prot,
-          label = paste(intToUtf8(9660), diff_pop_type_value)
+    # Prepare data for diff labels
+    df_diff <- df |>
+      dplyr::filter(
+        !is.na(diff_pop_type_value),
+        diff_pop_type_value != "",
+        diff_pop_type_value != "0.0%"
+      ) |>
+      dplyr::mutate(
+        # Determine change direction
+        direction = dplyr::case_when(
+          grepl("-", diff_pop_type_value) ~ "negative",
+          TRUE ~ "positive"
         ),
-        hjust = -1.2,
-        vjust = 0.5,
-        colour = "#0472bc",
-        size = 5
+        # Determine position type (near bar end vs further out)
+        # Matches strict logic from previous geom_text subsets
+        pos_type = dplyr::case_when(
+          value < max(value) / 1.5 ~ "far",
+          TRUE ~ "near"
+        ),
+        # Assign colors
+        icon_color = dplyr::case_when(
+          direction == "negative" ~ "#EF4A60", # Red
+          TRUE ~ "#589BE5" # Blue
+        ),
+        # Assign icons
+        icon_name = dplyr::case_when(
+          direction == "negative" ~ "arrow-down",
+          TRUE ~ "arrow-up"
+        ),
+        # Generate SVG
+        svg_icon = as.character(purrr::map2(
+          icon_name,
+          icon_color,
+          ~ fontawesome::fa(.x, fill = .y)
+        ))
+      )
+
+    # Calculate x-offsets for alignment
+    # Main label is at hjust -0.1 (far) or 1.1 (near/inside)
+    # We need to position diff labels to the right of the bar tip
+    # For 'far': main label is outside, so diff label needs to be further right
+    # For 'near': main label is inside, so diff label can be just outside
+
+    # We using offsets relative to max value to simulate 'lines of text' spacing
+    max_val <- max(df$value, na.rm = TRUE)
+    offset_base <- max_val * 0.02 # Base spacing unit
+
+    # Define Nudge for Icon
+    df_diff <- df_diff |>
+      dplyr::mutate(
+        x_icon = value +
+          dplyr::case_when(
+            pos_type == "far" ~ offset_base * 4, # Further out to clear main label
+            TRUE ~ offset_base * 1 # Just outside
+          ),
+        x_text = x_icon + offset_base * 2 # Text follows icon
+      )
+
+    p <- p +
+      ggsvg::geom_point_svg(
+        data = df_diff,
+        ggplot2::aes(
+          x = x_icon,
+          y = origin_data_prot,
+          svg = svg_icon
+        ),
+        size = 5.44 # Adjust size as needed
       ) +
-      # diff label positive max
-      geom_text(
-        data = subset(df, with(df, grepl("^[0-9]", diff_pop_type_value)) & (value >= max(value) / 1.5)),
-        aes(
-          x = value,
+      ggplot2::geom_text(
+        data = df_diff,
+        ggplot2::aes(
+          x = x_text,
           y = origin_data_prot,
-          label = paste(intToUtf8(9650), diff_pop_type_value)
+          label = diff_pop_type_value,
+          colour = I(icon_color)
         ),
-        hjust = -0.4,
+        hjust = 0, # Left align text starting from x_text
         vjust = 0.5,
-        colour = "grey",
-        size = 5
-      ) +
-      # diff label negative max
-      geom_text(
-        data = subset(df, with(df, grepl("-", diff_pop_type_value)) & (value >= max(value) / 1.5)),
-        aes(
-          x = value,
-          y = origin_data_prot,
-          label = paste(intToUtf8(9660), diff_pop_type_value)
-        ),
-        hjust = -0.4,
-        vjust = 0.5,
-        colour = "#0472bc",
-        size = 5
+        size = label_font_size
       )
   }
 
   p <- p +
-    labs(
-      title = paste0(country_name_text, ": ", stringr::str_to_title(names(dict_pop_type_label[dict_pop_type_label == pop_type])), " | ", year),
+    ggplot2::labs(
+      title = paste0(
+        country_name_text,
+        ": ",
+        stringr::str_to_title(names(dict_pop_type_label[
+          dict_pop_type_label == pop_type
+        ])),
+        " | ",
+        year
+      ),
       subtitle = paste0("Top ", top_n_countries, " Countries of Origin"),
       x = "Number of People",
-      caption = "Source: UNHCR.org/refugee-statistics"
+      caption = "Source: UNHCR.org/refugee-statistics. If the percentage change is 0%, the change is not displayed"
     ) +
-    scale_x_continuous(expand = expansion(c(0, 0.1))) +
-    theme_unhcr(
-      grid = FALSE, axis = "y",
-      axis_title = FALSE, axis_text = "y",
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(45)) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(c(0, 0.1))) +
+    unhcrthemes::theme_unhcr(
+      grid = FALSE,
+      axis = "y",
+      axis_title = FALSE,
+      axis_text = "y",
       font_size = 14
     ) +
-    theme(
+    ggplot2::theme(
       legend.direction = "vertical",
       legend.key.size = unit(0.8, "cm"),
-      text = element_text(size = 20)
+      legend.title = ggplot2::element_blank(),
+      text = element_text(size = 20),
+      axis.text.y = element_text(size = category_font_size)
     )
 
   return(p)

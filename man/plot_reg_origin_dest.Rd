@@ -2,21 +2,21 @@
 % Please edit documentation in R/plot_reg_origin_dest.R
 \name{plot_reg_origin_dest}
 \alias{plot_reg_origin_dest}
-\title{Plot Population Origin-Destination within the region}
+\title{Plot Regional Origin Destination}
 \usage{
 plot_reg_origin_dest(year = 2024, region = "The Americas")
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
-}
-\value{
-plot a ggplot2 object
+\item{region}{Character value including the UNHCR region}
 }
 \description{
-Chord diagram showing Origin destination see - https://jokergoo.github.io/circlize_book/book/
+Plot Regional Origin Destination
 }
 \examples{
-plot_reg_origin_dest(year = 2024, region = "Asia")
+plot_reg_origin_dest(
+    year = 2024,
+    region = "The Americas"
+)
 }

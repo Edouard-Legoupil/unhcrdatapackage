@@ -1,0 +1,40 @@
+# Adding new Charts in the Librabry
+
+If you want to add new Charts in the Library please follow the steps
+below:
+
+1.  Start from an High level question
+
+2.  Check that the plot is not there already or check if it is not
+    logged already within [existing
+    issue](https://github.com/Edouard-Legoupil/unhcrviz/issues)
+
+3.  Create a [new
+    issue](https://github.com/Edouard-Legoupil/unhcrviz/issues/new) in
+    the package to discuss it
+
+4.  [Fork](https://github.com/Edouard-Legoupil/unhcrviz) the package
+
+5.  Check the dev folder for the dedicated
+    [devnotebook](https://github.com/Edouard-Legoupil/unhcrviz/blob/master/dev/flat_full.Rmd).
+    , develop within the
+    [fusen](https://thinkr-open.github.io/fusen/index.html)
+
+6.  Insert a new series of chunk with Fusen Addin
+
+7.  First write your chart as a script and Use the unhcrthemes
+
+8.  Convert it as function with predefined input parameters
+
+9.  Set up an example and Test everything
+
+``` r
+# Keep eval=FALSE to avoid infinite loop in case you hit the knit button
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_full.Rmd", vignette_name = "Chart Library")
+pkgdown::build_site()
+```
+
+10. Add the new chart in the parameterised notebooktemplate
+
+11. Submit pull request

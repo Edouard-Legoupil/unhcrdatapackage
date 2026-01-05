@@ -8,6 +8,9 @@
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
 #'
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual
@@ -16,7 +19,7 @@
 #' @importFrom utils  head download.file
 #' @importFrom tidyselect where
 #' @importFrom stringr  str_replace str_detect
-#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty
+#' @importFrom scales cut_short_scale label_percent label_number breaks_pretty percent
 #' @importFrom stats  reorder aggregate  setNames
 #' @importFrom dplyr  desc select  case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
@@ -32,18 +35,29 @@
 #' plot_ctr_pyramid(
 #'   year = 2024,
 #'   country_asylum_iso3c = "COL",
+#'   pop_type = c("ASY", "REF"),
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#' #
+#' plot_ctr_pyramid(
+#'   year = 2024,
+#'   country_asylum_iso3c = "COL",
 #'   pop_type = c("ASY", "REF")
 #' )
-
-plot_ctr_pyramid <- function(year,
-                             country_asylum_iso3c = country_asylum_iso3c,
-                             pop_type = pop_type) {
+plot_ctr_pyramid <- function(
+  year = 2024,
+  country_asylum_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  label_font_size = 4,
+  category_font_size = 10
+) {
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::distinct(coa_name) |>
     dplyr::pull() |>
     head(1)
-  
+
   ctrylabel <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::distinct(coa_name) |>
@@ -60,8 +74,18 @@ plot_ctr_pyramid <- function(year,
     dplyr::mutate(
       Total = f_total + m_total,
       totGen = f_total + m_total,
-      totbreak = f_0_4 + f_5_11 + f_12_17 + f_18_59 + f_60 + f_other +
-        m_0_4 + m_5_11 + m_12_17 + m_18_59 + m_60 + m_other,
+      totbreak = f_0_4 +
+        f_5_11 +
+        f_12_17 +
+        f_18_59 +
+        f_60 +
+        f_other +
+        m_0_4 +
+        m_5_11 +
+        m_12_17 +
+        m_18_59 +
+        m_60 +
+        m_other,
       hasbreak = ifelse(Total - totGen == 0, "yes", "no")
     )
 
@@ -77,8 +101,18 @@ plot_ctr_pyramid <- function(year,
       dplyr::mutate(
         Total = f_total + m_total,
         totGen = f_total + m_total,
-        totbreak = f_0_4 + f_5_11 + f_12_17 + f_18_59 + f_60 + f_other +
-          m_0_4 + m_5_11 + m_12_17 + m_18_59 + m_60 + m_other,
+        totbreak = f_0_4 +
+          f_5_11 +
+          f_12_17 +
+          f_18_59 +
+          f_60 +
+          f_other +
+          m_0_4 +
+          m_5_11 +
+          m_12_17 +
+          m_18_59 +
+          m_60 +
+          m_other,
         hasbreak = ifelse(Total - totGen == 0, "yes", "no")
       )
   }
@@ -93,23 +127,29 @@ plot_ctr_pyramid <- function(year,
     )
 
     p <- ggplot() +
-      annotate("text",
-        x = 1, y = 1, size = 12,
-        label = info
-      ) +
+      annotate("text", x = 1, y = 1, size = 12, label = info) +
       theme_void()
   } else {
     tot <- format(sum(demographics1$Total), big.mark = ",")
-    totprop <- format(round(sum(demographics1$totGen) /
-      sum(demographics1$Total) * 100, 1), big.mark = ",")
+    totprop <- format(
+      round(
+        sum(demographics1$totGen) /
+          sum(demographics1$Total) *
+          100,
+        1
+      ),
+      big.mark = ","
+    )
 
     if (totprop == 0) {
-      info <- paste0("There\'s no recorded Gender disaggregation \n for  all of the ", tot, " persons \n in ", country_name_text)
+      info <- paste0(
+        "There's no recorded Gender disaggregation \n for  all of the ",
+        tot,
+        " persons \n in ",
+        country_name_text
+      )
       p <- ggplot() +
-        annotate("text",
-          x = 1, y = 1, size = 12,
-          label = info
-        ) +
+        annotate("text", x = 1, y = 1, size = 12, label = info) +
         theme_void()
     } else {
       # names(demographics)
@@ -141,7 +181,8 @@ plot_ctr_pyramid <- function(year,
           values_drop_na = TRUE
         )
 
-      pyramid3 <- as.data.frame(aggregate(pyramid2$Sum,
+      pyramid3 <- as.data.frame(aggregate(
+        pyramid2$Sum,
         by = list(
           pyramid2$Class # , pyramid2$REGION_UN
         ),
@@ -151,21 +192,30 @@ plot_ctr_pyramid <- function(year,
       names(pyramid3)[2] <- "Count"
 
       pyramid3 <- pyramid3 |>
-        mutate(gender = case_when(
-          str_detect(Class, "^m_") ~ "Male",
-          str_detect(Class, "^f_") ~ "Female"
-        )) |>
-        mutate(age = case_when(
-          str_detect(Class, "0_4") ~ "0-4",
-          str_detect(Class, "5_11") ~ "5-11",
-          str_detect(Class, "12_17") ~ "12-17",
-          str_detect(Class, "18_59") ~ "18-59",
-          str_detect(Class, "60") ~ "60+",
-          str_detect(Class, "unknown") ~ "Unknown"
-        ))
+        mutate(
+          gender = case_when(
+            str_detect(Class, "^m_") ~ "Male",
+            str_detect(Class, "^f_") ~ "Female"
+          )
+        ) |>
+        mutate(
+          age = case_when(
+            str_detect(Class, "0_4") ~ "0-4",
+            str_detect(Class, "5_11") ~ "5-11",
+            str_detect(Class, "12_17") ~ "12-17",
+            str_detect(Class, "18_59") ~ "18-59",
+            str_detect(Class, "60") ~ "60+",
+            str_detect(Class, "other") ~ "Unknown"
+          )
+        ) |>
+        # Filter out Unknown if count is 0
+        dplyr::filter(!(age == "Unknown" & Count == 0))
 
       pyramid3$pc <- pyramid3$Count / sum(pyramid3$Count)
-      pyramid3$age <- factor(pyramid3$age, levels = c("0-4", "5-11", "12-17", "18-59", "60+", "Unknown"))
+      pyramid3$age <- factor(
+        pyramid3$age,
+        levels = c("0-4", "5-11", "12-17", "18-59", "60+", "Unknown")
+      )
 
       pyramid4 <- pyramid3 |>
         select(gender, age, pc) |>
@@ -179,29 +229,25 @@ plot_ctr_pyramid <- function(year,
       p <- ggplot() +
         geom_col(
           data = pyramid4,
-          aes(-male, age,
-            fill = "Male"
-          ), width = 0.7
+          aes(-male, age, fill = "Male"),
+          width = 0.7
         ) +
         geom_col(
           data = pyramid4,
-          aes(female, age,
-            fill = "Female"
-          ), width = 0.7
+          aes(female, age, fill = "Female"),
+          width = 0.7
         ) +
         geom_text(
           data = pyramid4,
-          aes(-male, age,
-            label = percent(abs(male), accuracy = 1)
-          ),
-          hjust = 1.25, size = 11.5 / ggplot2::.pt
+          aes(-male, age, label = percent(abs(male), accuracy = 1)),
+          hjust = 1.25,
+          size = label_font_size
         ) +
         geom_text(
           data = pyramid4,
-          aes(female, age,
-            label = percent(abs(female), accuracy = 1)
-          ),
-          hjust = -0.25, size = 11.5 / ggplot2::.pt
+          aes(female, age, label = percent(abs(female), accuracy = 1)),
+          hjust = -0.25,
+          size = label_font_size
         ) +
         ## Now get the icon for male and female
         # ggtext::geom_textbox(aes(x = 0.25,
@@ -223,28 +269,41 @@ plot_ctr_pyramid <- function(year,
         scale_x_continuous(expand = expansion(c(0.2, 0.2))) +
         scale_fill_manual(
           breaks = c("Male", "Female"),
-          values = setNames(
-            unhcrthemes::unhcr_pal(n = 3, "pal_unhcr")[c(2, 1)],
-            c("Male", "Female")
-          )
+          values = c("Male" = "#999999", "Female" = "#0072BC")
         ) +
         labs(
           title = paste0(
             "Population Pyramid for ",
             sub(",\\s+([^,]+)$", " and \\1", toString(poptype_label)),
-            " | ", ctrylabel
+            " | ",
+            ctrylabel
           ),
           subtitle = paste0(
-            " As of ", year,
-            ", gender disaggregation is available for ", totprop, "% of the ", tot,
-            " individuals in ", country_name_text
+            " As of ",
+            year,
+            ", gender disaggregation is available for ",
+            totprop,
+            "% of the ",
+            tot,
+            " individuals in ",
+            country_name_text
           ),
           caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: UNHCR.org/refugee-statistics."
         ) +
-        theme_unhcr(font_size = 14, grid = FALSE, axis = FALSE, axis_title = FALSE, axis_text = "y") +
-        theme(legend.position = "none")
+        theme_unhcr(
+          font_size = 14,
+          grid = FALSE,
+          axis = FALSE,
+          axis_title = FALSE,
+          axis_text = "y"
+        ) +
+        theme(
+          legend.position = "bottom",
+          legend.title = ggplot2::element_blank(),
+          axis.text = element_text(size = category_font_size)
+        )
     }
   }
 
-  return(p)
+  p
 }

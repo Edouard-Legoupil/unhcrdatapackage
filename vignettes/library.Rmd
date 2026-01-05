@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 As explained in this [blog post from Column Five Media](https://www.columnfivemedia.com/divisible-content-strategy-gives-brand-less/), a divisible content strategy is an approach to content creation where you use a single asset to create multiple pieces. For example, you might break an e-book into a few articles, an infographic, social __microcontent__, or even a brand video. 
 
-![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png)
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrviz/master/docs/reference/figures/How-to-create-a-divisible-content-strategy.png)
 
 
 The chart library is therefore designed to speed up the creation of __microcontent__ that can be then re-embedded wherever needed:
@@ -42,7 +42,7 @@ With this approach, the effort spent on polishing content can benefit a series o
 
 > More Content With Less Work!
  
-![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/microcontent.png)
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrviz/master/inst/microcontent.png)
 
 
  
@@ -71,7 +71,7 @@ If you just want to explore the package, you can for instance create an account 
 remotes::install_github("vidonne/unhcrdesign")
 remotes::install_github("vidonne/unhcrthemes")
 remotes::install_github("vidonne/unhcrdown")
-remotes::install_github("edouard-legoupil/unhcrdatapackage")
+remotes::install_github("edouard-legoupil/unhcrviz")
 ```
 
 
@@ -80,7 +80,7 @@ remotes::install_github("edouard-legoupil/unhcrdatapackage")
 Then just create a new markdown file using one of the template included in the package - this can be either a powepoint or an html/PDF.
 
 
-![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrdatapackage/master/inst/template.png)
+![](https://raw.githubusercontent.com/Edouard-Legoupil/unhcrviz/master/inst/template.png)
 
 In an RMD report, the top part of the file, the header is called [YAML](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html).
 

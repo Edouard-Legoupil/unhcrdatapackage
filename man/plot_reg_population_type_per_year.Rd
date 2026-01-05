@@ -2,36 +2,42 @@
 % Please edit documentation in R/plot_reg_population_type_per_year.R
 \name{plot_reg_population_type_per_year}
 \alias{plot_reg_population_type_per_year}
-\title{Evolution over time}
+\title{Plot Regional Population Type per Year}
 \usage{
 plot_reg_population_type_per_year(
   year = 2024,
   region = "The Americas",
   lag = 5,
-  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
 )
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
+\item{region}{Character value including the UNHCR region}
 
 \item{lag}{Number of year to used as comparison base}
 
-\item{pop_type}{Character value. Possible population type (e.g.: REF, IDP, ASY,   OIP, OOC, STA)}
-}
-\value{
-a ggplot2 object
+\item{pop_type}{Vector of character values. Possible population type}
+
+\item{label_font_size}{Numeric value for label font size}
+
+\item{category_font_size}{Numeric value for axis text font size}
+
+\item{legend_font_size}{Numeric value for legend font size}
 }
 \description{
-Display evoluation over time for specific population group (one or many) and 
-defined number of years (lag)
+Plot Regional Population Type per Year
 }
 \examples{
 plot_reg_population_type_per_year(
-  year = 2024,
-  lag = 5,
-  region = "The Americas",
-  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
+    year = 2024,
+    region = "The Americas",
+    label_font_size = 4,
+    category_font_size = 10,
+    legend_font_size = 10
 )
 }

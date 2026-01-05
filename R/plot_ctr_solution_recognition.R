@@ -3,12 +3,14 @@
 #' Title
 #'
 #' Description
-
+#'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param lag Number of year to used as comparison base
+#' @param category_font_size Numeric value for axis text font size, default to 10
 #'
-#' @import ForcedDisplacementStat
+#'
+
 #' @importFrom unhcrthemes theme_unhcr
 #' @importFrom ggtext element_markdown
 #' @importFrom dplyr  desc select  filter mutate group_by filter summarise ungroup
@@ -25,12 +27,19 @@
 #' plot_ctr_solution_recognition(
 #'   year = 2024,
 #'   country_asylum_iso3c = "UGA",
+#'   lag = 10,
+#'   category_font_size = 10
+#' )
+#' plot_ctr_solution_recognition(
+#'   year = 2024,
+#'   country_asylum_iso3c = "UGA",
 #'   lag = 10
 #' )
 plot_ctr_solution_recognition <- function(
-  year = 2021,
+  year = 2024,
   lag = 10,
-  country_asylum_iso3c = country_asylum_iso3c
+  country_asylum_iso3c = country_asylum_iso3c,
+  category_font_size = 10
 ) {
   ctrylabel <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
@@ -40,7 +49,7 @@ plot_ctr_solution_recognition <- function(
 
   new_refugee_recognitions_and_refugee_like_increases <-
     refugees::asylum_decisions |>
-    dplyr::filter(coa_iso == country_asylum_iso3c & year > (year - lag)) |>
+    dplyr::filter(coa_iso == country_asylum_iso3c & year >= (!!year - lag)) |>
     dplyr::mutate(Year = as.factor(year)) |>
     dplyr::group_by(Year, coa_iso) |>
     dplyr::summarize(
@@ -53,7 +62,7 @@ plot_ctr_solution_recognition <- function(
 
   refugee_solutions_naturalisation_resettlement_and_returns <-
     refugees::solutions |>
-    dplyr::filter(coa_iso == country_asylum_iso3c & year > (year - lag)) |>
+    dplyr::filter(coa_iso == country_asylum_iso3c & year >= (!!year - lag)) |>
     tidyr::pivot_longer(
       cols = c(naturalisation, resettlement, returned_refugees),
       names_to = "Solution.type",
@@ -89,18 +98,18 @@ plot_ctr_solution_recognition <- function(
         stringr::str_wrap("text", 80),
         x = 1,
         y = 1,
-        size = 11,
+        size = 4,
         label = info
       ) +
       theme_void()
   } else {
     df_long <- df_raw |>
       dplyr::rename(
-        new = new_refugee_recognitions_and_refugee_like_increases,
-        sol = refugee_solutions_naturalisation_resettlement_and_returns
+        Recognitions = new_refugee_recognitions_and_refugee_like_increases,
+        Solutions = refugee_solutions_naturalisation_resettlement_and_returns
       ) |>
       dplyr::mutate(year = lubridate::ymd(Year, truncated = 2L)) |>
-      tidyr::pivot_longer(cols = new:sol)
+      tidyr::pivot_longer(cols = Recognitions:Solutions)
 
     df_wide <-
       tidyr::pivot_wider(df_long, names_from = name, values_from = value)
@@ -111,9 +120,9 @@ plot_ctr_solution_recognition <- function(
         data = df_wide,
         aes(
           x = year,
-          ymin = pmin(new, sol),
-          ymax = pmax(new, sol),
-          fill = new < sol
+          ymin = pmin(Recognitions, Solutions),
+          ymax = pmax(Recognitions, Solutions),
+          fill = Recognitions < Solutions
         ),
         alpha = 0.3
       ) +
@@ -122,14 +131,14 @@ plot_ctr_solution_recognition <- function(
         aes(x = year, y = value, color = name),
         linewidth = .75
       ) +
-      scale_x_date() +
+      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
       scale_y_continuous(
         labels = scales::label_number(scale_cut = scales::cut_short_scale()),
         limits = c(0, NA),
         expand = expansion(c(0, 0.02))
       ) +
-      scale_color_manual(values = c("#0072bc", "#00B398")) +
-      scale_fill_manual(values = c("#0072bc", "#00B398")) +
+      unhcrthemes::scale_color_unhcr_d(palette = "pal_unhcr") +
+      unhcrthemes::scale_fill_unhcr_d(palette = "pal_unhcr") +
       labs(
         title = stringr::str_wrap(
           "How do <span style='color:#0072bc;'>refugee recognitions<sup>a</sup></span> compare with available <span style='color:#00B398;'>solutions<sup>b</sup></span>?",
@@ -140,13 +149,16 @@ plot_ctr_solution_recognition <- function(
       ) +
       unhcrthemes::theme_unhcr(
         font_size = 14,
-        legend = FALSE,
+        legend = TRUE,
         axis_title = FALSE,
         grid = "Yy"
       ) +
+      guides(fill = "none", color = guide_legend(title = NULL)) +
       theme(
         ## used to display part of the title in different colors
-        plot.title = ggtext::element_markdown()
+        ## used to display part of the title in different colors
+        plot.title = ggtext::element_markdown(),
+        axis.text = element_text(size = category_font_size)
       )
   }
 

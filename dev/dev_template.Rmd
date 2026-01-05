@@ -7,15 +7,15 @@ editor_options:
 
 ```{r development, include=FALSE}
 knitr::opts_chunk$set(
-                      comment = "#>",
-                      message=FALSE, 
-                      warning=FALSE,
-                      #fig.retina = 2, 
-                      fig.width = 8,
-                      fig.asp = 0.718,
-                     # fig.align = "center",
-                     # dev = "ragg_png",
-                      out.width = "90%"
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  # fig.retina = 2,
+  fig.width = 8,
+  fig.asp = 0.718,
+  # fig.align = "center",
+  # dev = "ragg_png",
+  out.width = "90%"
 )
 unlink(".RData")
 library(testthat)
@@ -23,7 +23,7 @@ library(ggplot2)
 library(tidyverse)
 library(scales)
 library(unhcrthemes)
-# library(extrafont) 
+# library(extrafont)
 # font_import()
 # loadfonts()
 # font_install('fontcm')
@@ -50,75 +50,76 @@ Templates are re-built notebook that includes all the plotting functions above a
 #   template_description = "Key Statistical Facts for each Country",
 #   template_create_dir = TRUE
 # )
-#' Generate an html / pdf country factsheet 
-#' 
-#' This functions provides a quick access to a basic Statistical Fact sheet 
+#' Generate an html / pdf country factsheet
+#'
+#' This functions provides a quick access to a basic Statistical Fact sheet
 #' template that can be customised according to the needs
-#' 
+#'
 #' @param year Numeric value of the year (for instance 2022)
-#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
-#' @param folder folder within your project where to put the generated report. 
+#' @param country_asylum_iso3c Character value with the ISO-3 character code
+#'                             of the Country of Asylum
+#' @param folder folder within your project where to put the generated report.
 #' Folder will be created if it does not exist
-#' 
+#'
 #' @importFrom unhcrdown paged_simple
 #' @importFrom dplyr filter select pull
 #' @importFrom rmarkdown render
 #' @importFrom here here
-#' 
+#'
 #' @return nothing the file for the report is generated
-#' 
-#' @export 
+#'
+#' @export
 #'
 
-template_CtryFactsheet <- function(year = 2022,
+template_CtryFactsheet <- function(year = 2024,
                                    country_asylum_iso3c,
                                    folder = "Report") {
-  
   ## Create the outfolder if it does not exist
-  output_dir <- paste0(getwd(),"/",folder)
-  if (!dir.exists(output_dir)) {dir.create(output_dir)}
-  
-  ctrname <- ForcedDisplacementStat::reference |>
-             dplyr::filter( iso_3 == country_asylum_iso3c) |>
-             dplyr::select(ctryname) |>
-             dplyr::pull()
-  
-  rmarkdown::render(
-    system.file("rmarkdown/templates/country_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheetCtr-', country_asylum_iso3c, '-', year, '.html') ),
-    params = list(countryname= ctrname,
-                  country = country_asylum_iso3c, 
-                  year = year)  )
-}
-  
+  output_dir <- paste0(getwd(), "/", folder)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
 
+  ctrname <- refugees::population |>
+    dplyr::filter(coa_iso == country_asylum_iso3c) |>
+    dplyr::distinct(coa_name) |>
+    dplyr::pull()
+
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_factsheet/skeleton/skeleton.Rmd", package = "unhcrviz"),
+    output_file = here::here(folder, paste0("StatFactsheetCtr-", country_asylum_iso3c, "-", year, ".html")),
+    params = list(
+      countryname = ctrname,
+      country = country_asylum_iso3c,
+      year = year
+    )
+  )
+}
 ```
 
 ```{r example-template_CtryFactsheet}
 ## generate for one country
-# template_CtryFactsheet(year = 2022, country_asylum_iso3c = "USA",   folder = "Report")
+# template_CtryFactsheet(year = 2024, country_asylum_iso3c = "USA",   folder = "Report")
 
 # ## Generate for a specific region
 # region <- "Americas"
-# year <- 2022
+# year <- 2024
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
-#                                 y= ForcedDisplacementStat::reference,
-#                                 by = c("CountryAsylumCode" = "iso_3")) |>
-#         filter(Year == year &
-#                 UNHCRBureau == region ) |>
-#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
-#         summarise(Value = sum(Value) ) |>
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
 #         ungroup() |>
 #         filter( Value  > 1000 )
-# 
+#
 # for ( i in (1:nrow(ctr))) {
 #     # i <- 1
 #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #     cat(paste0(country_asylum_iso3ci, "\n"))
-#     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
-#               country_asylum_iso3c = country_asylum_iso3ci,  
+#     unhcrviz::template_CtryFactsheet(year = 2024,
+#               country_asylum_iso3c = country_asylum_iso3ci,
 #                folder = "Report")  }
 ```
 
@@ -132,49 +133,53 @@ template_CtryFactsheet <- function(year = 2022,
 #   template_description = "Key Statistical Facts for each Country",
 #   template_create_dir = TRUE
 # )
-#' Generate all country factsheet 
-#' 
+#' Generate all country factsheet
+#'
 #' @param year Numeric value of the year (for instance 2022)
-#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country 
-#' @param folder folder within your project where to put the generated report. 
+#' @param country_asylum_iso3c Character value with the ISO-3 character code
+#'                             of the Country
+#' @param folder folder within your project where to put the generated report.
 #'              Folder will be created if it does not exist
-#' 
+#'
 #' @importFrom unhcrdown pptx_slides
 #' @importFrom dplyr filter select pull
 #' @importFrom rmarkdown render
 #' @importFrom here here
-#' 
+#'
 #' @return nothing the file for the report is generated
-#' 
-#' @export 
+#'
+#' @export
 #'
 
-template_CtryPrez <- function(year = 2022,
-                                   country_asylum_iso3c,   
+template_CtryPrez <- function(year = 2024,
+                              country_asylum_iso3c,
                               folder = "Report") {
-  
   ## Create the outfolder if it does not exist
-  output_dir <- paste0(getwd(),"/",folder)
-  if (!dir.exists(output_dir)) {dir.create(output_dir)}
-  
-  ctrname <- ForcedDisplacementStat::reference |>
-             dplyr::filter( iso_3 == country_asylum_iso3c) |>
-             dplyr::select(ctryname) |>
-             dplyr::pull()
-  
-  rmarkdown::render(
-    system.file("rmarkdown/templates/country_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.pptx') ),
-    params = list(countryname= ctrname,
-                  country = country_asylum_iso3c, 
-                  year = year)  )
-}
+  output_dir <- paste0(getwd(), "/", folder)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
 
+  ctrname <- refugees::population |>
+    dplyr::filter(coa_iso == country_asylum_iso3c) |>
+    dplyr::distinct(coa_name) |>
+    dplyr::pull()
+
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_prez/skeleton/skeleton.Rmd", package = "unhcrviz"),
+    output_file = here::here(folder, paste0("StatFactsheet-", country_asylum_iso3c, "-", year, ".pptx")),
+    params = list(
+      countryname = ctrname,
+      country = country_asylum_iso3c,
+      year = year
+    )
+  )
+}
 ```
 
 ```{r example-template_CtryPrez} 
 ## generate for one country
-# unhcrdatapackage::template_CtryPrez(year = 2022, 
+# unhcrviz::template_CtryPrez(year = 2024,
 #                             country_asylum_iso3c = "CHL",
 #                             folder = "Report")
 
@@ -183,21 +188,19 @@ template_CtryPrez <- function(year = 2022,
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
-#                                 y= ForcedDisplacementStat::reference,
-#                                 by = c("CountryAsylumCode" = "iso_3")) |>
-#         filter(Year == year &
-#                 UNHCRBureau == region ) |>
-#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
-#         summarise(Value = sum(Value) ) |>
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
 #         ungroup() |>
 #         filter( Value  > 1000 )
-# 
+#
 # for ( i in (1:nrow(ctr))) {
 #     # i <- 1
 #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #     cat(paste0(country_asylum_iso3ci, "\n"))
-#     unhcrdatapackage::template_CtryFactsheet(year = 2022, 
+#     unhcrviz::template_CtryFactsheet(year = 2024,
 #                                 country_asylum_iso3c = country_asylum_iso3ci,
 #                                folder = "Report")  }
 ```
@@ -212,51 +215,54 @@ template_CtryPrez <- function(year = 2022,
 #   template_description = "Slide Deck - Statistical Facts",
 #   template_create_dir = TRUE
 # )
-#' Generate all country factsheet 
-#' 
+#' Generate all country factsheet
+#'
 #' Output is PDF slide deck that preserves well the humanitarian icons
-#' 
+#'
 #' @param year Numeric value of the year (for instance 2022)
-#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country 
-#' @param folder folder within your project where to put the generated report. 
+#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country
+#' @param folder folder within your project where to put the generated report.
 #'              Folder will be created if it does not exist
-#' 
+#'
 #' @importFrom unhcrdown html_slides
 #' @importFrom dplyr filter select pull
 #' @importFrom rmarkdown render
 #' @importFrom here here
-#' 
+#'
 #' @return nothing the file for the report is generated
-#' 
-#' @export 
+#'
+#' @export
 #'
 
-template_Ctryslides <- function(year = 2022,
-                                   country_asylum_iso3c,   
-                              folder = "Report") {
-  
+template_Ctryslides <- function(year = 2024,
+                                country_asylum_iso3c,
+                                folder = "Report") {
   ## Create the outfolder if it does not exist
-  output_dir <- paste0(getwd(),"/",folder)
-  if (!dir.exists(output_dir)) {dir.create(output_dir)}
-  
-  ctrname <- ForcedDisplacementStat::reference |>
-             dplyr::filter( iso_3 == country_asylum_iso3c) |>
-             dplyr::select(ctryname) |>
-             dplyr::pull()
-  
-  rmarkdown::render(
-    system.file("rmarkdown/templates/country_slides/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-', country_asylum_iso3c, '-', year, '.html') ),
-    params = list(countryname= ctrname,
-                  country = country_asylum_iso3c, 
-                  year = year)  )
-}
+  output_dir <- paste0(getwd(), "/", folder)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
 
+  ctrname <- refugees::population |>
+    dplyr::filter(coa_iso == country_asylum_iso3c) |>
+    dplyr::distinct(coa_name) |>
+    dplyr::pull()
+
+  rmarkdown::render(
+    system.file("rmarkdown/templates/country_slides/skeleton/skeleton.Rmd", package = "unhcrviz"),
+    output_file = here::here(folder, paste0("StatFactsheet-", country_asylum_iso3c, "-", year, ".html")),
+    params = list(
+      countryname = ctrname,
+      country = country_asylum_iso3c,
+      year = year
+    )
+  )
+}
 ```
 
 ```{r example-template_Ctryslides} 
 ## generate for one country
-# unhcrdatapackage::template_Ctryslides(year = 2022, 
+# unhcrviz::template_Ctryslides(year = 2024,
 #                             country_asylum_iso3c = "CHL",
 #                             folder = "Report")
 
@@ -265,21 +271,19 @@ template_Ctryslides <- function(year = 2022,
 # year <- 2022
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
-#                                 y= ForcedDisplacementStat::reference,
-#                                 by = c("CountryAsylumCode" = "iso_3")) |>
-#         filter(Year == year &
-#                 UNHCRBureau == region ) |>
-#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
-#         summarise(Value = sum(Value) ) |>
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
 #         ungroup() |>
 #         filter( Value  > 1000 )
-# 
+#
 # for ( i in (1:nrow(ctr))) {
 #     # i <- 1
 #     country_asylum_iso3ci = as.character(ctr[i ,2 ])
 #     cat(paste0(country_asylum_iso3ci, "\n"))
-#     unhcrdatapackage::template_CtryFactsheet(year = 2022,
+#     unhcrviz::template_CtryFactsheet(year = 2024,
 #                                 country_asylum_iso3c = country_asylum_iso3ci,
 #                                folder = "docs/factsheet")  }
 ```
@@ -295,73 +299,74 @@ template_Ctryslides <- function(year = 2022,
 #   template_description = "Key Statistical Facts for each Country",
 #   template_create_dir = TRUE
 # )
-#' Generate all country factsheet 
-#' 
+#' Generate all country factsheet
+#'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param region Bureau that covers all the countrie factsheet to generate
 #' @param lag Number of year to used as comparison base
-#' @param folder folder within your project where to put the generated report. 
+#' @param folder folder within your project where to put the generated report.
 #'           Folder will be created if it does not exist
-#'           
+#'
 #' @importFrom unhcrdown paged_simple
 #' @importFrom dplyr filter select pull
 #' @importFrom rmarkdown render
 #' @importFrom here here
-#' 
+#'
 #' @return nothing the file for the report is generated
-#' 
-#' @export 
+#'
+#' @export
 #'
 
-template_RegFactsheet <- function(year = 2022,
-                                 region = "Americas",
-                                 lag = 10,   
-                                 folder = "Report") {
-  
+template_RegFactsheet <- function(year = 2024,
+                                  region = "Americas",
+                                  lag = 10,
+                                  folder = "Report") {
   ## Create the outfolder if it does not exist
-  output_dir <- paste0(getwd(),"/",folder)
-  if (!dir.exists(output_dir)) {dir.create(output_dir)}
-  
-  regionname <- dplyr::case_when( region == "Americas"  ~  "Americas",
-                                  region == "Asia"  ~  "Asia & the Pacific",
-                                  region == "EastAfrica"  ~  "Eastern Africa",
-                                  region =="Europe"  ~  "Europe",
-                                  region == "MENA"  ~  "Middle East & North Africa",
-                                  region == "SouthAfrica"  ~  "Southern Africa",
-                                  region == "WestAfrica"  ~  "Western Africa")
-  
-  rmarkdown::render(
-    system.file("rmarkdown/templates/regional_factsheet/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-',  region, '-', year, '.html') ),
-    params = list(region=region,
-                  regionname = regionname,
-                  year = year,
-                  lag = lag)  )
-}
+  output_dir <- paste0(getwd(), "/", folder)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
 
+  regionname <- dplyr::case_when(
+    region == "Americas" ~ "Americas",
+    region == "Asia" ~ "Asia & the Pacific",
+    region == "EastAfrica" ~ "Eastern Africa",
+    region == "Europe" ~ "Europe",
+    region == "MENA" ~ "Middle East & North Africa",
+    region == "SouthAfrica" ~ "Southern Africa",
+    region == "WestAfrica" ~ "Western Africa"
+  )
+
+  rmarkdown::render(
+    system.file("rmarkdown/templates/regional_factsheet/skeleton/skeleton.Rmd", package = "unhcrviz"),
+    output_file = here::here(folder, paste0("StatFactsheet-", region, "-", year, ".html")),
+    params = list(
+      region = region,
+      regionname = regionname,
+      year = year,
+      lag = lag
+    )
+  )
+}
 ```
 
 ```{r example-template_RegFactsheet}
-
-# template_RegFactsheet(year = 2022, 
-#                       region = "Europe", lag = 10,  
+# template_RegFactsheet(year = 2024,
+#                       region = "Europe", lag = 10,
 #                       folder = "Report")
 
 ## We can also generate all factsheets in a loop for 2022
 
-# region <-  ForcedDisplacementStat::reference |>
-#   dplyr::distinct(UNHCRBureau) |>
-#   dplyr::filter(!(is.na(UNHCRBureau))) |>
+# region <-  refugees::population |>
+#   dplyr::distinct(coa_region) |>
+#   dplyr::filter(!(is.na(coa_region))) |>
 #   dplyr::pull()
-# 
+#
 # for( reg in region) {
-#   unhcrdatapackage::template_RegFactsheet(year = 2022, 
-#                         region = reg, lag = 10, 
+#   unhcrviz::template_RegFactsheet(year = 2024,
+#                         region = reg, lag = 10,
 #                         folder = "Report")
 # }
-
-
-
 ```
 
 ## Regional Presentation
@@ -373,78 +378,80 @@ template_RegFactsheet <- function(year = 2022,
 #   template_description = "Key Statistical Facts for each Region",
 #   template_create_dir = TRUE
 # )
-#' Generate all country factsheet 
-#' 
+#' Generate all country factsheet
+#'
 #' @param year Numeric value of the year (for instance 2020)
 #' @param region Bureau that covers all the countrie factsheet to generate
 #' @param lag Number of year to used as comparison base
-#' 
-#' @param folder folder within your project where to put the generated report. 
+#'
+#' @param folder folder within your project where to put the generated report.
 #' Folder will be created if it does not exist
-#' 
+#'
 #' @importFrom unhcrdown pptx_slides
 #' @importFrom dplyr filter select pull
 #' @importFrom rmarkdown render
 #' @importFrom here here
-#' 
-#' 
+#'
+#'
 #' @return nothing the file for the report is generated
-#' 
-#' @export 
+#'
+#' @export
 #'
 
-template_RegPrez <- function(year = 2022,
+template_RegPrez <- function(year = 2024,
                              region = "Americas",
                              lag = 10,
                              folder = "Report") {
-  
   ## Create the outfolder if it does not exist
-  output_dir <- paste0(getwd(),"/",folder)
-  if (!dir.exists(output_dir)) {dir.create(output_dir)}
-  
-  regionname <- dplyr::case_when( region == "Americas"  ~  "Americas",
-                                  region == "Asia"  ~  "Asia & the Pacific",
-                                  region == "EastAfrica"  ~  "Eastern Africa",
-                                  region =="Europe"  ~  "Europe",
-                                  region == "MENA"  ~  "Middle East & North Africa",
-                                  region == "SouthAfrica"  ~  "Southern Africa",
-                                  region == "WestAfrica"  ~  "Western Africa")
-  rmarkdown::render(
-    system.file("rmarkdown/templates/regional_prez/skeleton/skeleton.Rmd", package = "unhcrdatapackage"),
-    output_file = here::here(folder, paste0('StatFactsheet-', region, '-', year, '.pptx') ),
-    params = list(region=region, 
-                  regionname = regionname,
-                  year = year,
-                  lag = lag)  )
- 
-}
+  output_dir <- paste0(getwd(), "/", folder)
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir)
+  }
 
+  regionname <- dplyr::case_when(
+    region == "Americas" ~ "Americas",
+    region == "Asia" ~ "Asia & the Pacific",
+    region == "EastAfrica" ~ "Eastern Africa",
+    region == "Europe" ~ "Europe",
+    region == "MENA" ~ "Middle East & North Africa",
+    region == "SouthAfrica" ~ "Southern Africa",
+    region == "WestAfrica" ~ "Western Africa"
+  )
+  rmarkdown::render(
+    system.file("rmarkdown/templates/regional_prez/skeleton/skeleton.Rmd", package = "unhcrviz"),
+    output_file = here::here(folder, paste0("StatFactsheet-", region, "-", year, ".pptx")),
+    params = list(
+      region = region,
+      regionname = regionname,
+      year = year,
+      lag = lag
+    )
+  )
+}
 ```
 
 ```{r example-template_RegPrez}
-# template_RegPrez(year = 2022, region = "Americas", lag = 10,   folder = "Report")
+# template_RegPrez(year = 2024, region = "Americas", lag = 10,   folder = "Report")
 
 # # Generate for a specific region
 # region <- "Americas"
-# year <- 2022
+# year <- 2024
 # library(tidyverse)
 # ## get all countries with more than 1000 Reported individuals
-# ctr <- dplyr::left_join( x= ForcedDisplacementStat::end_year_population_totals_long,
-#                                 y= ForcedDisplacementStat::reference,
-#                                 by = c("CountryAsylumCode" = "iso_3")) |>
-#         filter(Year == year &
-#                 UNHCRBureau == region ) |>
-#         group_by( CountryAsylumName, CountryAsylumCode   ) |>
-#         summarise(Value = sum(Value) ) |>
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
 #         ungroup() |>
 #         filter( Value  > 1000 )
-# 
+#
 #   for ( i in (1:nrow(ctr))) {
 #     # i <- 1
 #     country_asylum_iso3c = as.character(ctr[i ,2 ])
 #     cat(paste0(country_asylum_iso3c, "\n"))
-#     unhcrdatapackage::template_CtryPrez(year = 2022, 
-#                                   country_asylum_iso3c = country_asylum_iso3c,  
+#     unhcrviz::template_CtryPrez(year = 2024,
+#                                   country_asylum_iso3c = country_asylum_iso3c,
 #                                   folder = "Report")
 #   }
 ```
@@ -462,7 +469,7 @@ template_RegPrez <- function(year = 2022,
 ```{r development-inflate, eval=FALSE}
 # Keep eval=FALSE to avoid infinite loop in case you hit the knit button
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/dev_template.Rmd", vignette_name = "Report Template", overwrite = 'yes')
-
+fusen::inflate(flat_file = "dev/dev_template.Rmd", vignette_name = "Report Template", overwrite = "yes")
 ```
+
 

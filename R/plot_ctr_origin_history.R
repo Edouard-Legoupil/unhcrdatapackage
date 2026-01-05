@@ -10,6 +10,9 @@
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OIP, OOC, STA)
 #' @param otherprop value set by default to .02 - used to merge origin as "Other"
 #'
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#' @param legend_font_size Numeric value for legend font size, default to 10
+#'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual
@@ -39,14 +42,31 @@
 #'     "OIP",
 #'     "IDP"
 #'   ),
+#'   otherprop = .02,
+#'   category_font_size = 10,
+#'   legend_font_size = 10
+#' )
+#' plot_ctr_origin_history(
+#'   year = 2024,
+#'   lag = 5,
+#'   country_asylum_iso3c = "MEX",
+#'   pop_type = c(
+#'     "REF",
+#'     "ASY",
+#'     "OIP",
+#'     "IDP"
+#'   ),
 #'   otherprop = .02
 #' )
-
-plot_ctr_origin_history <- function(year = 2024,
-                                    lag = 5,
-                                    country_asylum_iso3c,
-                                    pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
-                                    otherprop = .02) {
+plot_ctr_origin_history <- function(
+  year = 2024,
+  lag = 5,
+  country_asylum_iso3c,
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  otherprop = .02,
+  category_font_size = 10,
+  legend_font_size = 10
+) {
   dict_pop_type_name <- c(
     "refugees" = "Refugees",
     "returned_refugees" = "Returned refugees",
@@ -72,7 +92,7 @@ plot_ctr_origin_history <- function(year = 2024,
   )
   df <- refugees::population |>
     dplyr::filter(
-      year >= (year - lag), #### Parameter
+      year >= (!!year - lag), #### Parameter
       coa_iso == country_asylum_iso3c #### Parameter
     ) |>
     tidyr::pivot_longer(
@@ -81,7 +101,10 @@ plot_ctr_origin_history <- function(year = 2024,
       values_to = "value"
     ) |>
     dplyr::mutate(
-      Population.type = stringr::str_replace_all(Population.type, pattern = dict_pop_type_label)
+      Population.type = stringr::str_replace_all(
+        Population.type,
+        pattern = dict_pop_type_label
+      )
     ) |>
     dplyr::filter(Population.type %in% pop_type) |>
     dplyr::rename(
@@ -90,22 +113,47 @@ plot_ctr_origin_history <- function(year = 2024,
     ) |>
     dplyr::mutate(
       value = tidyr::replace_na(value, 0),
-      CountryOriginName = forcats::fct_lump_prop(CountryOriginName, prop = otherprop, w = value)
+      CountryOriginName = forcats::fct_lump_prop(
+        CountryOriginName,
+        prop = otherprop,
+        w = value
+      )
     ) |>
-    group_by(year, CountryAsylumName, CountryOriginName) |>
-    summarise(value = sum(value, na.rm = TRUE)) |>
-    ungroup()
+    dplyr::group_by(year, CountryAsylumName, CountryOriginName) |>
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) |>
+    dplyr::ungroup()
 
   country_name_text <- df |>
-    distinct(CountryAsylumName) |>
-    pull()
+    dplyr::distinct(CountryAsylumName) |>
+    dplyr::pull()
 
   year_breaks <- diff(range(df$year)) + 1
 
-  p <- ggplot() +
+  # Generate Palette
+  # 1. Get unique levels of CountryOriginName from the data
+  #    Ensure they match the factor levels (if it is a factor) or unique values
+  origin_levels <- levels(df$CountryOriginName)
+  if (is.null(origin_levels)) {
+    origin_levels <- unique(df$CountryOriginName)
+  }
+
+  # 2. Generate generic palette
+  # Use a qualitative palette from unhcrthemes, e.g. "pal_unhcr" (primary) or "pal_unhcr_qual" (if available/preferred)
+  # Falling back to "pal_unhcr" or manually picking colors
+  poly_cols <- unhcrthemes::unhcr_pal(n = length(origin_levels), "pal_unhcr")
+
+  # 3. Name the vector
+  names(poly_cols) <- origin_levels
+
+  # 4. Overwrite "Other" if present
+  if ("Other" %in% names(poly_cols)) {
+    poly_cols["Other"] <- "#999999" # Grey
+  }
+
+  p <- ggplot2::ggplot() +
     ggalluvial::geom_alluvium(
       data = df,
-      aes(
+      ggplot2::aes(
         x = year,
         y = value,
         alluvium = CountryOriginName,
@@ -115,26 +163,50 @@ plot_ctr_origin_history <- function(year = 2024,
       alpha = .75,
       decreasing = FALSE
     ) +
-    scale_x_continuous(breaks = seq(year - lag, year, 2)) +
-    scale_y_continuous(
-      expand = expansion(c(0, 0.1)),
+    ggplot2::scale_x_continuous(breaks = scales::breaks_width(1)) +
+    ggplot2::scale_y_continuous(
+      expand = ggplot2::expansion(c(0, 0.1)),
       labels = scales::label_number(scale_cut = scales::cut_short_scale())
     ) +
-    theme_unhcr(
-      grid = TRUE, axis = "x",
+    unhcrthemes::theme_unhcr(
+      grid = "Y",
+      axis = "x",
       axis_title = TRUE, # axis_text = "x",
       font_size = 14
     ) +
-    theme(axis.text.x = element_text(angle = -30, hjust = 0)) +
-    scale_fill_brewer(type = "qual", palette = "Set3") +
-    scale_colour_brewer(type = "qual", palette = "Set3") +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = -30,
+        hjust = 0,
+        size = category_font_size
+      ),
+      legend.text = ggplot2::element_text(size = legend_font_size),
+      legend.title = ggplot2::element_blank()
+    ) +
+    ggplot2::scale_fill_manual(
+      values = poly_cols,
+      labels = scales::label_wrap(20)
+    ) +
+    ggplot2::scale_colour_manual(
+      values = poly_cols,
+      labels = scales::label_wrap(20)
+    ) +
+    ggplot2::guides(
+      fill = ggplot2::guide_legend(nrow = 2, byrow = TRUE),
+      colour = ggplot2::guide_legend(nrow = 2, byrow = TRUE)
+    ) +
     # facet_wrap(~ region, scales = "fixed") ++
-    labs(
-      title = paste0(country_name_text, ":  Evolution of Forcibly Displaced Population Origin"),
+    ggplot2::labs(
+      title = paste0(
+        country_name_text,
+        ":  Evolution of Forcibly Displaced Population Origin"
+      ),
       subtitle = "Number of people (thousand)",
-      x = "", y = "",
+      x = "",
+      y = "",
       caption = "Source: UNHCR.org/refugee-statistics"
-    )
+    ) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 0, hjust = 0.5))
 
-  return(p) # print(p)
+  return(p)
 }

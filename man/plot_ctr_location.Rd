@@ -2,34 +2,63 @@
 % Please edit documentation in R/plot_ctr_location.R
 \name{plot_ctr_location}
 \alias{plot_ctr_location}
-\title{Create a map with symbol proportional to population data by location within country}
+\title{Map of Destination Countries}
 \usage{
-plot_ctr_location(year, country_asylum_iso3c, pop_type, mapbackground = "osm")
+plot_ctr_location(
+  year,
+  country_origin_iso3c,
+  pop_type,
+  mapbackground = "osm",
+  label_font_size = 4,
+  category_font_size = 10
+)
 }
 \arguments{
 \item{year}{Numeric value of the year  (for instance 2022).
 If the data is not yet available for that year (aka still in the mid year reporting stage),
  it will automatically fall back on the previous year}
 
-\item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
+\item{country_origin_iso3c}{Character value with the ISO-3 character code
+of the Country of Origin}
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
 
 \item{mapbackground}{can be "osm" (default), "stamen-toner" , "stamen-terrain","stamen-watercolor".
 Other mapbackground requires an API key and were not considered}
+
+\item{label_font_size}{Numeric value for label font size, default to 4}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
 }
 \value{
 a ggplot2 object
 }
 \description{
-Create a map with symbol proportional to population data by location within country
+Map of Destination Countries
 }
 \examples{
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "COL",
+#                  pop_type = c("ASY", "REF", "OIP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "COL",
+#                  pop_type = c("IDP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "CAN",
+#                  pop_type = c("ASY", "REF", "OIP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "MEX",
+#                  pop_type = c("ASY", "REF", "OIP"),
+#                  label_font_size = 4,
+#                  category_font_size = 10)
 # plot_ctr_location(year = 2024,
 #                  country_asylum_iso3c = "COL",
 #                  pop_type = c("ASY", "REF", "OIP"))
 #
-# plot_ctr_location(year = 2021,
+# plot_ctr_location(year = 2024,
 #                  country_asylum_iso3c = "COL",
 #                  pop_type = c("IDP"))
 #
@@ -37,7 +66,7 @@ Create a map with symbol proportional to population data by location within coun
 #                  country_asylum_iso3c = "CAN",
 #                  pop_type = c("ASY", "REF", "OIP"))
 #
-# plot_ctr_location(year = 2021,
+# plot_ctr_location(year = 2024,
 #                  country_asylum_iso3c = "MEX",
 #                  pop_type = c("ASY", "REF", "OIP"))
 }

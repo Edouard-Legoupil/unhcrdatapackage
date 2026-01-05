@@ -11,6 +11,9 @@
 #' @param lag Number of year to used as comparison base
 #' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
 #' @param sol_type Vector of character values. Possible population type (e.g.:"NAT" "RST" "RET" "RDP")
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#' @param facet_title_size Numeric value for facet title font size, default to 12
+#' @param y_axis_text_size Numeric value for y axis text font size, default to 10
 #'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -30,20 +33,30 @@
 #' @return a ggplot2 object
 #'
 #' @export
-#'
 #' @examples
 #' plot_ctr_solution(
-#'   year = 2021,
+#'   year = 2024,
+#'   country_asylum_iso3c = "UGA",
+#'   lag = 10,
+#'   sol_type = c("NAT", "RST", "RET", "RDP"),
+#'   category_font_size = 10,
+#'   facet_title_size = 12,
+#'   y_axis_text_size = 10
+#' )
+#' plot_ctr_solution(
+#'   year = 2024,
 #'   country_asylum_iso3c = "UGA",
 #'   lag = 10,
 #'   sol_type = c("NAT", "RST", "RET", "RDP")
 #' )
-
 plot_ctr_solution <- function(
-  year = 2021,
+  year = 2024,
   lag = 10,
   country_asylum_iso3c = country_asylum_iso3c,
-  sol_type
+  sol_type,
+  category_font_size = 10,
+  facet_title_size = 12,
+  y_axis_text_size = 10
 ) {
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
@@ -52,7 +65,7 @@ plot_ctr_solution <- function(
     head(1)
 
   Solution <- refugees::solutions |>
-    dplyr::filter(coa_iso == country_asylum_iso3c & year > (year - lag)) |>
+    dplyr::filter(coa_iso == country_asylum_iso3c & year >= (!!year - lag)) |>
     tidyr::pivot_longer(
       cols = c(naturalisation, resettlement, returned_refugees, returned_idps),
       names_to = "Solution.type",
@@ -118,17 +131,17 @@ plot_ctr_solution <- function(
         stringr::str_wrap("text", 80),
         x = 1,
         y = 1,
-        size = 11,
+        size = 4,
         label = info
       ) +
       theme_void()
   } else {
     # Make plot
-    p <- ggplot(Solution, aes(x = year, y = Value2)) +
-      geom_bar(
-        stat = "identity",
+    p <- ggplot(Solution, aes(x = Year, y = Value2)) +
+      geom_col(
         position = "identity",
-        fill = "#0072bc"
+        fill = unhcrthemes::unhcr_pal(n = 1, "pal_blue"),
+        width = 0.7
       ) + # here we configure that it will be bar chart
       # scale_y_continuous( labels = scales::label_number(accuracy = 1,   scale_cut = cut_short_scale())) + ## Format axis number
 
@@ -136,17 +149,25 @@ plot_ctr_solution <- function(
         labels = scales::label_number(
           accuracy = 1,
           scale_cut = cut_short_scale()
-        )
+        ),
+        expand = expansion(mult = c(0, 0.1))
       ) +
       scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
       # xlim(c(year-lag, year +1)) +
-      facet_wrap(vars(Solution.type.label), ncol = ncat) +
+      facet_wrap(
+        vars(Solution.type.label),
+        ncol = ncat,
+        labeller = labeller(Solution.type.label = label_wrap_gen(20))
+      ) +
       # geom_hline(yintercept = 0, size = 1.1, colour = "#333333") +
       theme_unhcr(font_size = 14) + ## Insert UNHCR Style
       theme(
         panel.grid.major.y = element_line(color = "#cbcbcb"),
         panel.grid.major.x = element_blank(),
-        panel.grid.minor = element_blank()
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(size = category_font_size),
+        axis.text.y = element_text(size = y_axis_text_size),
+        strip.text = element_text(size = facet_title_size)
       ) + ### changing grid line that should appear
       ## and the chart labels
       labs(
@@ -159,7 +180,7 @@ plot_ctr_solution <- function(
         ),
         x = "",
         y = "",
-        caption = "Source: UNHCR.org/refugee-statistics.\n Resettlement – in this context this is the country of arrival – i.e. the country to which a refugee has been resettled \n Returns – in this context this is the country of departure – i.e. the country from which a refugee has voluntarily repatriated."
+        caption = "Source: UNHCR.org/refugee-statistics.\n Resettlement - in this context this is the country of arrival - i.e. the country to which a refugee has been resettled \n Returns - in this context this is the country of departure - i.e. the country from which a refugee has voluntarily repatriated."
       )
   }
 

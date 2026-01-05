@@ -9,7 +9,9 @@ plot_ctr_recognition(
   country_asylum_iso3c,
   top_n_countries = 10,
   measure = "RefugeeRecognitionRate",
-  order_by = "TotalDecided"
+  order_by = "TotalDecided",
+  label_font_size = 4,
+  category_font_size = 10
 )
 }
 \arguments{
@@ -17,7 +19,8 @@ plot_ctr_recognition(
 
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
-\item{top_n_countries}{Numeric value of number of main countries that the graph should display}
+\item{top_n_countries}{Numeric value of number of main countries that the graph
+should display}
 
 \item{measure}{this can be either:
 * RefugeeRecognitionRate
@@ -27,6 +30,10 @@ plot_ctr_recognition(
 * Recognized
 * ComplementaryProtection
 * TotalDecided}
+
+\item{label_font_size}{Numeric value for label font size, default to 4}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -52,6 +59,15 @@ uses these two recognition rates and does not report nationally calculated rates
      See https://www.unhcr.org/4ce531e09.pdf
 }
 \examples{
+plot_ctr_recognition(
+  year = 2024,
+  country_asylum_iso3c = "USA",
+  top_n_countries = 10,
+  measure = "RefugeeRecognitionRate",
+  order_by = "TotalDecided",
+  label_font_size = 4,
+  category_font_size = 10
+)
 plot_ctr_recognition(
   year = 2024,
   country_asylum_iso3c = "USA",

@@ -1,0 +1,88 @@
+# Map of Destination Countries
+
+Map of Destination Countries
+
+## Usage
+
+``` r
+plot_ctr_location(
+  year,
+  country_origin_iso3c,
+  pop_type,
+  mapbackground = "osm",
+  label_font_size = 4,
+  category_font_size = 10
+)
+```
+
+## Arguments
+
+- year:
+
+  Numeric value of the year (for instance 2022). If the data is not yet
+  available for that year (aka still in the mid year reporting stage),
+  it will automatically fall back on the previous year
+
+- country_origin_iso3c:
+
+  Character value with the ISO-3 character code of the Country of Origin
+
+- pop_type:
+
+  Vector of character values. Possible population type (e.g.: REF, IDP,
+  ASY, OIP, OOC, STA)
+
+- mapbackground:
+
+  can be "osm" (default), "stamen-toner" ,
+  "stamen-terrain","stamen-watercolor". Other mapbackground requires an
+  API key and were not considered
+
+- label_font_size:
+
+  Numeric value for label font size, default to 4
+
+- category_font_size:
+
+  Numeric value for axis text font size, default to 10
+
+## Value
+
+a ggplot2 object
+
+## Examples
+
+``` r
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "COL",
+#                  pop_type = c("ASY", "REF", "OIP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "COL",
+#                  pop_type = c("IDP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "CAN",
+#                  pop_type = c("ASY", "REF", "OIP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_origin_iso3c = "MEX",
+#                  pop_type = c("ASY", "REF", "OIP"),
+#                  label_font_size = 4,
+#                  category_font_size = 10)
+# plot_ctr_location(year = 2024,
+#                  country_asylum_iso3c = "COL",
+#                  pop_type = c("ASY", "REF", "OIP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_asylum_iso3c = "COL",
+#                  pop_type = c("IDP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_asylum_iso3c = "CAN",
+#                  pop_type = c("ASY", "REF", "OIP"))
+#
+# plot_ctr_location(year = 2024,
+#                  country_asylum_iso3c = "MEX",
+#                  pop_type = c("ASY", "REF", "OIP"))
+```

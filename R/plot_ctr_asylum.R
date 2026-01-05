@@ -30,21 +30,20 @@
 plot_ctr_asylum <- function(year = 2024,
                             country_asylum_iso3c,
                             lag = 10) {
-  
   # 1. Get Country Name
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::distinct(coa_name) |>
     dplyr::pull() |>
     utils::head(1)
-  
+
   # 2. Prepare Applications Data
   apps <- refugees::asylum_applications |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::group_by(year, coa_iso) |>
     dplyr::summarize(NumberApplications = sum(applied, na.rm = TRUE), .groups = "drop") |>
     dplyr::rename(CountryAsylumCode = coa_iso)
-  
+
   # 3. Prepare Decisions Data (FIXED SECTION)
   decs <- refugees::asylum_decisions |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
@@ -54,11 +53,11 @@ plot_ctr_asylum <- function(year = 2024,
       ComplementaryProtection = sum(dec_other, na.rm = TRUE),
       OtherwiseClosed = sum(dec_closed, na.rm = TRUE),
       Rejected = sum(dec_rejected, na.rm = TRUE),
-      TotalDecided = sum(dec_total, na.rm = TRUE), 
+      TotalDecided = sum(dec_total, na.rm = TRUE),
       .groups = "drop"
     ) |>
     dplyr::rename(CountryAsylumCode = coa_iso)
-  
+
   # 4. Join and Reshape
   data <- dplyr::inner_join(apps, decs, by = c("year", "CountryAsylumCode")) |>
     dplyr::filter(year >= (!!year - lag)) |> # Use !! to unquote the function argument
@@ -69,20 +68,20 @@ plot_ctr_asylum <- function(year = 2024,
       values_to = "Total",
       values_drop_na = TRUE
     )
-  
+
   # 5. Factor Management
   data$AsylumStage <- dplyr::recode(data$AsylumStage,
-                                    "NumberApplications" = "Total Number of Applications",
-                                    "TotalDecided" = "Total Number of Decisions",
-                                    "Recognized" = "Number of Refugee Status Recognition Decisions"
+    "NumberApplications" = "Total Number of Applications",
+    "TotalDecided" = "Total Number of Decisions",
+    "Recognized" = "Number of Refugee Status Recognition Decisions"
   )
-  
+
   data$AsylumStage <- factor(data$AsylumStage, levels = c(
     "Total Number of Applications",
     "Total Number of Decisions",
     "Number of Refugee Status Recognition Decisions"
   ))
-  
+
   # 6. Plotting
   p <- ggplot2::ggplot() +
     ggplot2::geom_bar(
@@ -109,7 +108,6 @@ plot_ctr_asylum <- function(year = 2024,
       panel.grid.major.x = ggplot2::element_blank(),
       legend.position = "bottom" # Usually better for long legends
     )
-  
+
   return(p)
 }
-

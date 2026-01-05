@@ -4,7 +4,13 @@
 \alias{plot_ctr_process}
 \title{Asylum Processing}
 \usage{
-plot_ctr_process(year = 2024, country_asylum_iso3c, otherprop = 0.02)
+plot_ctr_process(
+  year = 2024,
+  country_asylum_iso3c,
+  otherprop = 0.02,
+  label_font_size = 4,
+  category_font_size = 10
+)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
@@ -12,6 +18,10 @@ plot_ctr_process(year = 2024, country_asylum_iso3c, otherprop = 0.02)
 \item{country_asylum_iso3c}{Character value with the ISO-3 character code of the Country of Asylum}
 
 \item{otherprop}{value set by default to .02 - used to merge origin as "Other"}
+
+\item{label_font_size}{Numeric value for label font size, default to 4}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -20,6 +30,34 @@ a ggplot2 object
 Displaying Asylum processing
 }
 \examples{
+plot_ctr_process(
+  year = 2024,
+  country_asylum_iso3c = "BOL",
+  label_font_size = 4,
+  category_font_size = 10
+)
+
+plot_ctr_process(
+  year = 2024,
+  country_asylum_iso3c = "CHL",
+  label_font_size = 4,
+  category_font_size = 10
+)
+
+
+plot_ctr_process(
+  year = 2024, country_asylum_iso3c = "USA",
+  otherprop = .02,
+  label_font_size = 4,
+  category_font_size = 10
+)
+
+plot_ctr_process(
+  year = 2024, country_asylum_iso3c = "USA",
+  otherprop = .04,
+  label_font_size = 4,
+  category_font_size = 10
+)
 plot_ctr_process(year = 2024, country_asylum_iso3c = "BOL")
 
 plot_ctr_process(year = 2024, country_asylum_iso3c = "CHL")

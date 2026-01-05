@@ -1,15 +1,15 @@
-## unhcrdatapackage 0.1.9
+## unhcrviz 0.1.9
 
  * Full reliance on  [`{refugees}`](https://github.com/PopulationStatistics/refugees)  
  * Updated all examples to 2024
  
 
-## unhcrdatapackage 0.1.8
+## unhcrviz 0.1.8
 
  * Now separating clearly the data source through  [`{ForcedDisplacementStat}`](https://unhcr.github.io/ForcedDisplacementStat/) - make it a lot easier for the set up as it avoids the rjava installed with JAVA_HOME env variable required set up.
 
 
-## unhcrdatapackage 0.1.7
+## unhcrviz 0.1.7
 
  * Revised the reference to add the new Operation to Country mapping
  
@@ -18,7 +18,7 @@
  * Fixing some importFrom and global variales with checkhelper::print_globals()
 
 
-## unhcrdatapackage 0.1.6
+## unhcrviz 0.1.6
 
  * Added new plots with Humanitarian font (key figures - and disp vs host)
  
@@ -36,16 +36,16 @@
 
 
 
-## unhcrdatapackage 0.1.5
+## unhcrviz 0.1.5
 
  * Update dataset with mid-year 2022 data release (28 Oct 2022)
  
- * Created a dedicated function for update_dataset() - see  https://github.com/Edouard-Legoupil/unhcrdatapackage/blob/master/dev/flat_full.Rmd
+ * Created a dedicated function for update_dataset() - see  https://github.com/Edouard-Legoupil/unhcrviz/blob/master/dev/flat_full.Rmd
  
  * Adjusted new statistical categories - and all related functions - "Host community" = "HCO" - "Other people in need of international protection"="OIP"
 
 
-## unhcrdatapackage 0.1.4
+## unhcrviz 0.1.4
 
  * Update dataset with end-year 2021 data release (16 June 2022)
  
@@ -58,19 +58,20 @@
  * added Rmd Template to create on the fly Statistical Fact-sheet
 
 
-## unhcrdatapackage 0.1.3
+## unhcrviz 0.1.3
 
  * Update dataset with mid-year data release (11 Nov 2021)
 
  * Re-organised Chart Library
 
-## unhcrdatapackage 0.1.2
+## unhcrviz 0.1.2
 
  * Update dataset
  
  * corrected and add vignettes - using the unhcRstyle package
 
-## unhcrdatapackage 0.1.1
+## unhcrviz 0.1.1
 
   *  initial version
+
 

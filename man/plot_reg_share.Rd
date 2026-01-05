@@ -2,47 +2,31 @@
 % Please edit documentation in R/plot_reg_share.R
 \name{plot_reg_share}
 \alias{plot_reg_share}
-\title{A simple chart to compare a population group between the Region and the rest of the world}
+\title{Plot Regional Share}
 \usage{
-plot_reg_share(year = 2024, region = "The Americas", pop_type = "REF")
+plot_reg_share(
+  year = 2024,
+  region = "The Americas",
+  pop_type = "REF",
+  label_font_size = 15
+)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
+\item{region}{Character value including the UNHCR region}
 
-\item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
-}
-\value{
-plot a ggplot2 object
+\item{pop_type}{Vector of character values. Possible population type}
+
+\item{label_font_size}{Numeric value for label font size}
 }
 \description{
-Simple treemap charts to do the comparison
+Plot Regional Share
 }
 \examples{
 plot_reg_share(
-  year = 2024,
-  region = "The Americas",
-  pop_type = "REF"
-)
-plot_reg_share(
-  year = 2024,
-  region = "The Americas",
-  pop_type = "ASY"
-)
-plot_reg_share(
-  year = 2024,
-  region = "The Americas",
-  pop_type = "OIP"
-)
-plot_reg_share(
-  year = 2024,
-  region = "The Americas",
-  pop_type = "IDP"
-)
-plot_reg_share(
-  year = 2024,
-  region = "The Americas",
-  pop_type = "STA"
+    year = 2024,
+    region = "The Americas",
+    label_font_size = 15
 )
 }

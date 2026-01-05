@@ -4,7 +4,7 @@ template:
   bootstrap: 5
 
 navbar:
-  title: unhcrdatapackage
+  title: unhcrviz
   left:
   - text: "Chart Library Approach"
     menu:
@@ -40,3 +40,4 @@ reference:
   desc: Data Story Telling App
   contents:
   - starts_with("run_")    
+

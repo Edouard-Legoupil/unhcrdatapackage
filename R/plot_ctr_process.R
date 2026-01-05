@@ -9,6 +9,9 @@
 #' @param otherprop value set by default to .02 - used to merge origin as "Other"
 #'
 #'
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
+#'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
 #'             geom_label geom_text labs  position_stack  scale_color_manual scale_colour_manual
@@ -31,6 +34,34 @@
 #'
 #' @export
 #' @examples
+#' plot_ctr_process(
+#'   year = 2024,
+#'   country_asylum_iso3c = "BOL",
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#'
+#' plot_ctr_process(
+#'   year = 2024,
+#'   country_asylum_iso3c = "CHL",
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#'
+#'
+#' plot_ctr_process(
+#'   year = 2024, country_asylum_iso3c = "USA",
+#'   otherprop = .02,
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
+#'
+#' plot_ctr_process(
+#'   year = 2024, country_asylum_iso3c = "USA",
+#'   otherprop = .04,
+#'   label_font_size = 4,
+#'   category_font_size = 10
+#' )
 #' plot_ctr_process(year = 2024, country_asylum_iso3c = "BOL")
 #'
 #' plot_ctr_process(year = 2024, country_asylum_iso3c = "CHL")
@@ -45,9 +76,13 @@
 #'   year = 2024, country_asylum_iso3c = "USA",
 #'   otherprop = .04
 #' )
-plot_ctr_process <- function(year = 2024,
-                             country_asylum_iso3c,
-                             otherprop = .02) {
+plot_ctr_process <- function(
+  year = 2024,
+  country_asylum_iso3c,
+  otherprop = .02,
+  label_font_size = 4,
+  category_font_size = 10
+) {
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::distinct(coa_name) |>
@@ -57,10 +92,13 @@ plot_ctr_process <- function(year = 2024,
   links <- refugees::asylum_decisions |>
     dplyr::filter(year == year & coa_iso == country_asylum_iso3c) |>
     dplyr::rename(CountryOriginName = coo_name) |>
-    dplyr::mutate(CountryOriginName = forcats::fct_lump_prop(CountryOriginName,
-      prop = otherprop,
-      w = dec_total
-    )) |>
+    dplyr::mutate(
+      CountryOriginName = forcats::fct_lump_prop(
+        CountryOriginName,
+        prop = otherprop,
+        w = dec_total
+      )
+    ) |>
     tidyr::pivot_longer(
       cols = c(dec_recognized, dec_other, dec_rejected, dec_closed),
       names_to = "Decision.output",
@@ -69,9 +107,9 @@ plot_ctr_process <- function(year = 2024,
     dplyr::mutate(
       Decision.output = dplyr::case_when(
         Decision.output == "dec_recognized" ~ "Recognized",
-        Decision.output == "dec_other" ~ "ComplementaryProtection",
+        Decision.output == "dec_other" ~ "Complementary\nProtection",
         Decision.output == "dec_rejected" ~ "Rejected",
-        Decision.output == "dec_closed" ~ "OtherwiseClosed"
+        Decision.output == "dec_closed" ~ "Otherwise\nClosed"
       ),
       ProcedureName = dplyr::case_when(
         dec_level == "G" ~ "Government",
@@ -86,25 +124,46 @@ plot_ctr_process <- function(year = 2024,
 
   ## Case no record outut a ggplot2 object with anotation
   if (nrow(links) == 0) {
-    info <- paste0("There's no recorded Asylum Decisions \n in ", country_name_text, " for ", year)
+    info <- paste0(
+      "There's no recorded Asylum Decisions \n in ",
+      country_name_text,
+      " for ",
+      year
+    )
     p <- ggplot() +
-      annotate(stringr::str_wrap("text", 80),
-        x = 1, y = 1, size = 11,
+      annotate(
+        stringr::str_wrap("text", 80),
+        x = 1,
+        y = 1,
+        size = 11,
         label = info
       ) +
       theme_void()
   } else {
     ## summarize data
-    flow_table <- links |>
-      ggforce::gather_set_data(x = c("CountryOriginName", "ProcedureName", "Decision.output"))
+    # Rename columns for better display
+    links_renamed <- links |>
+      dplyr::rename(
+        `Country of Origin` = CountryOriginName,
+        `Procedure` = ProcedureName,
+        `Decision output` = Decision.output
+      ) |>
+      dplyr::mutate(
+        `Country of Origin` = stringr::str_wrap(`Country of Origin`, width = 20)
+      )
 
+    flow_table <- links_renamed |>
+      ggforce::gather_set_data(
+        x = c("Country of Origin", "Procedure", "Decision output")
+      )
 
-    flow_table$Decision.output <- factor(flow_table$Decision.output,
+    flow_table[["Decision output"]] <- factor(
+      flow_table[["Decision output"]],
       levels = c(
         "Rejected",
-        "ComplementaryProtection",
+        "Complementary\nProtection",
         "Recognized",
-        "OtherwiseClosed"
+        "Otherwise\nClosed"
       )
     )
     ## plot your dataset
@@ -114,14 +173,11 @@ plot_ctr_process <- function(year = 2024,
     ## value as n gives it as counts (could also be changed to proportion)
     p <- ggplot(
       flow_table,
-      aes(x,
-        id = id,
-        split = y,
-        value = n
-      )
+      aes(x, id = id, split = y, value = n)
     ) +
       ## colour lines by sex
-      ggforce::geom_parallel_sets(aes(fill = Decision.output),
+      ggforce::geom_parallel_sets(
+        aes(fill = `Decision output`),
         alpha = 0.5,
         axis.width = 0.2
       ) +
@@ -135,10 +191,11 @@ plot_ctr_process <- function(year = 2024,
       ggforce::geom_parallel_sets_labels(
         color = "black",
         angle = 0,
-        size = 5
+        size = label_font_size
       ) +
       ## adjusted y and x axes (probably needs more vertical space)
       scale_x_discrete(
+        labels = scales::label_wrap(25),
         name = NULL,
         expand = c(0, 0.2)
       ) +
@@ -154,10 +211,17 @@ plot_ctr_process <- function(year = 2024,
         panel.background = element_blank(),
         legend.position = "none", # move legend to bottom
         legend.title = element_blank(), # remove title
+        axis.text.x = element_text(size = category_font_size)
       ) +
       labs(
         title = "Refugee Status Determination Decisions",
-        subtitle = paste0(country_name_text, ", ", format(sum(links$n), big.mark = ","), " decisions recorded in ", year),
+        subtitle = paste0(
+          country_name_text,
+          ", ",
+          format(sum(links$n), big.mark = ","),
+          " decisions recorded in ",
+          year
+        ),
         x = NULL,
         y = NULL,
         caption = "Source: UNHCR.org/refugee-statistics"

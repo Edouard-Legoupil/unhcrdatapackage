@@ -4,14 +4,20 @@
 #'  Key figures can be highlighted with humanitarian icons
 #'   https://fontawesome.com/icons/categories/humanitarian
 #' @param year Numeric value of the year (for instance 2020)
-#' @param country_asylum_iso3c Character value with the ISO-3 character code of the Country of Asylum
+#' @param country_asylum_iso3c Character value with the ISO-3 character code
+#'                             of the Country of Asylum
+#' @param population_type_font_size Numeric value for population type font size,
+#'                                  default to 4
+#' @param population_size_font_size Numeric value for population size number font size,
+#'                                  default to 5
+#' @param icon_size Numeric value for icon size, default to 5
 #' @return ggplot2
 #'
 #' @importFrom dplyr desc select case_when lag mutate group_by filter summarise ungroup
 #'               pull distinct n arrange across slice left_join
 #' @importFrom ggplot2 ggplot geom_text scale_color_manual xlim ylim facet_wrap labs theme_void theme element_text aes vars
 #' @importFrom tidyr pivot_longer
-#' @importFrom refugees population
+
 #'
 #' @export
 #' @examples
@@ -19,36 +25,98 @@
 #'   year = 2024,
 #'   country_asylum_iso3c = "COL"
 #' )
-plot_ctr_keyfig <- function(year = 2021, 
-                            country_asylum_iso3c) {
-  
+#' plot_ctr_keyfig(
+#'   year = 2024,
+#'   country_asylum_iso3c = "COL"
+#' )
+plot_ctr_keyfig <- function(
+  year = 2024,
+  country_asylum_iso3c,
+  population_type_font_size = 4,
+  population_size_font_size = 5,
+  icon_size = 5
+) {
   # Get country name
   country_name_text <- refugees::population |>
     dplyr::filter(coa_iso == country_asylum_iso3c) |>
     dplyr::slice(1) |>
     dplyr::pull(coa_name)
-  
+
   # Calculate Total POC for current year
   total_poc <- refugees::population |>
     dplyr::filter(
       year == !!year,
       coa_iso == country_asylum_iso3c
     ) |>
-    dplyr::summarise(total = sum(refugees, asylum_seekers, idps, oip, stateless, ooc, hst, na.rm = TRUE)) |>
+    dplyr::summarise(
+      total = sum(
+        refugees,
+        asylum_seekers,
+        idps,
+        oip,
+        stateless,
+        ooc,
+        hst,
+        na.rm = TRUE
+      )
+    ) |>
     dplyr::pull()
-  
+
   # Calculate Total POC for previous year
   total_poc_prev <- refugees::population |>
     dplyr::filter(
       year == (!!year - 1),
       coa_iso == country_asylum_iso3c
     ) |>
-    dplyr::summarise(total = sum(refugees, asylum_seekers, idps, oip, stateless, ooc, hst, na.rm = TRUE)) |>
+    dplyr::summarise(
+      total = sum(
+        refugees,
+        asylum_seekers,
+        idps,
+        oip,
+        stateless,
+        ooc,
+        hst,
+        na.rm = TRUE
+      )
+    ) |>
     dplyr::pull()
-  
+
   # Calculate percentage change
   perc_change_poc <- (total_poc - total_poc_prev) / total_poc_prev * 100
-  
+
+  # Define specific colors
+  # Define specific colors
+  # Pal unhcr_poc
+  # Ref: #0072BC
+  # Asy: #6CD8FD
+  # IDP: #32C189
+  # Sta: #FFC740
+  # OIP: #D25A45
+  # OOC: #A097E3
+  # Hst: #BFBFBF
+  cols <- c(
+    "Refugees" = "#0072BC",
+    "Asylum-seekers" = "#6CD8FD",
+    "Internally displaced\npersons" = "#32C189",
+    "Other people in need\nof international protection" = "#D25A45",
+    "Stateless people" = "#FFC740",
+    "Others of concern\nto UNHCR" = "#A097E3",
+    "Host community" = "#BFBFBF",
+    "Other" = "#BFBFBF"
+  )
+
+  # Define icon mapping
+  icon_map <- c(
+    "refugees" = "person-walking-luggage",
+    "asylum_seekers" = "scale-balanced",
+    "idps" = "house-chimney-crack",
+    "oip" = "hand-holding-heart",
+    "stateless" = "globe",
+    "ooc" = "users",
+    "hst" = "handshake"
+  )
+
   # Prepare data for plotting
   keyfig <- refugees::population |>
     dplyr::filter(
@@ -64,60 +132,93 @@ plot_ctr_keyfig <- function(year = 2021,
     dplyr::summarise(value = sum(value, na.rm = TRUE)) |>
     dplyr::mutate(
       population_type_label = dplyr::case_when(
-        population_type == "refugees" ~ "REF",
-        population_type == "asylum_seekers" ~ "ASY",
-        population_type == "idps" ~ "IDP",
-        population_type == "oip" ~ "OIP",
-        population_type == "stateless" ~ "STA",
-        population_type == "ooc" ~ "OOC",
-        population_type == "hst" ~ "HST",
+        population_type == "refugees" ~ "Refugees",
+        population_type == "asylum_seekers" ~ "Asylum-seekers",
+        population_type == "idps" ~ "Internally displaced\npersons",
+        population_type ==
+          "oip" ~ "Other people in need\nof international protection",
+        population_type == "stateless" ~ "Stateless people",
+        population_type == "ooc" ~ "Others of concern\nto UNHCR",
+        population_type == "hst" ~ "Host community",
         TRUE ~ "Other"
+      ),
+      population_type_label = factor(
+        population_type_label,
+        levels = c(
+          "Refugees",
+          "Asylum-seekers",
+          "Internally displaced\npersons",
+          "Other people in need\nof international protection",
+          "Host community",
+          "Others of concern\nto UNHCR",
+          "Stateless people"
+        )
       )
     ) |>
     dplyr::filter(value > 0) |>
+    dplyr::rowwise() |>
     dplyr::mutate(
-      icon = "\uf0c0", # Unicode for FontAwesome icon
-      label = paste0(format(round(value, 0), big.mark = ","), " ", population_type_label),
-      pal = population_type_label,
-      fig = population_type_label
-    )
-  
+      label = paste0(
+        format(round(value, 0), big.mark = ","),
+        " ",
+        population_type_label
+      ),
+      pop_size_label = format(round(value, 0), big.mark = ","),
+      # Use specific color if available, else gray
+      color_hex = ifelse(
+        as.character(population_type_label) %in% names(cols),
+        cols[as.character(population_type_label)],
+        "#333333"
+      ),
+      # Map icon name, fallback to circle-question
+      icon_name = ifelse(
+        population_type %in% names(icon_map),
+        icon_map[population_type],
+        "circle-question"
+      ),
+      # Generate SVG string with correct fill color
+      svg_text = as.character(fontawesome::fa(icon_name, fill = color_hex))
+    ) |>
+    dplyr::ungroup()
+
   # Plotting
   p <- ggplot2::ggplot(keyfig) +
-    # LAYER 1: ICONS (Switched to geom_text)
-    ggplot2::geom_text(
+    # LAYER 1: ICONS using ggsvg
+    ggsvg::geom_point_svg(
       ggplot2::aes(
-        x = 0.5,       # Centered horizontally in the facet
-        y = 1.8,       # Positioned in upper half
-        label = icon,
-        color = pal
+        x = 0.5,
+        y = 1.8,
+        svg = svg_text
       ),
-      family = "Font Awesome 6 Solid", # Ensure this font is loaded via sysfonts/showtext
-      size = 10        # Adjusted size for geom_text (unit is mm, not pt)
+      size = icon_size
     ) +
-    # LAYER 2: LABELS (Switched to geom_text)
+    # LAYER 2: LABELS
     ggplot2::geom_text(
       ggplot2::aes(
-        x = 0.5,       # Centered horizontally
-        y = 0.8,       # Positioned below icon
-        label = label,
-        color = pal
+        x = 0.5,
+        y = 1.1,
+        label = pop_size_label,
+        color = population_type_label
       ),
-      family = "Lato", # Ensure Lato is loaded
-      size = 5,        # Adjusted size
+      family = "Lato",
+      size = population_size_font_size,
       fontface = "bold"
     ) +
-    ggplot2::scale_color_manual(values = c(
-      "IDP" = "#00B398",
-      "OIP" = "#EF4A60",
-      "ASY" = "#18375F",
-      "REF" = "#0072BC",
-      "OOC" = "#8395b9",
-      "STA" = "#E1CC0D"
-    )) +
-    ggplot2::xlim(c(0, 1)) + # Normalized limits 0-1 for easier centering
+    ggplot2::geom_text(
+      ggplot2::aes(
+        x = 0.5,
+        y = 0.4,
+        label = population_type_label,
+        color = population_type_label
+      ),
+      family = "Lato",
+      size = population_type_font_size,
+      fontface = "bold"
+    ) +
+    ggplot2::scale_color_manual(values = cols) +
+    ggplot2::xlim(c(0, 1)) +
     ggplot2::ylim(c(0, 3)) +
-    ggplot2::facet_wrap(ggplot2::vars(fig), ncol = 2) +
+    ggplot2::facet_wrap(ggplot2::vars(population_type_label), ncol = 2) +
     ggplot2::labs(
       title = paste0("Key Figures for ", country_name_text, " as of ", year),
       subtitle = paste0(
@@ -125,18 +226,29 @@ plot_ctr_keyfig <- function(year = 2021,
         format(round(total_poc, 0), scientific = FALSE, big.mark = ","),
         " people, ",
         ifelse(perc_change_poc > 0, "increasing", "decreasing"),
-        " by ", round(abs(perc_change_poc), 1),
+        " by ",
+        round(abs(perc_change_poc), 1),
         "% compared to the previous year"
       ),
       caption = "Source: UNHCR.org refugee-statistics"
     ) +
     ggplot2::theme_void() +
     ggplot2::theme(
-      strip.text = ggplot2::element_blank(), # Hide strip text as the icon/label explains it
+      strip.text = ggplot2::element_blank(),
       legend.position = "none",
-      plot.title = ggplot2::element_text(family = "Lato", face = "bold", size = 18, hjust = 0.5),
-      plot.subtitle = ggplot2::element_text(family = "Lato", size = 12, hjust = 0.5, margin = ggplot2::margin(b = 20))
+      plot.title = ggplot2::element_text(
+        family = "Lato",
+        face = "bold",
+        size = 18,
+        hjust = 0.5
+      ),
+      plot.subtitle = ggplot2::element_text(
+        family = "Lato",
+        size = 12,
+        hjust = 0.5,
+        margin = ggplot2::margin(b = 20)
+      )
     )
-  
+
   return(p)
 }

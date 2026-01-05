@@ -2,14 +2,15 @@
 % Please edit documentation in R/plot_reg_increase.R
 \name{plot_reg_increase}
 \alias{plot_reg_increase}
-\title{Plot Biggest Increase in Refugee Population}
+\title{Plot Regional Increase}
 \usage{
 plot_reg_increase(
-  year = 2021,
+  year = 2024,
   lag = 5,
   topn = 5,
   region = "The Americas",
-  pop_type = c("REF", "ASY", "OIP")
+  pop_type = c("REF", "ASY", "OIP"),
+  category_font_size = 10
 )
 }
 \arguments{
@@ -17,34 +18,21 @@ plot_reg_increase(
 
 \item{lag}{Number of year to used as comparison base}
 
-\item{topn}{how many top countries to show..}
+\item{topn}{Numeric value for number of top countries to show}
 
-\item{region}{Character value with the related UNHCR bureau - when left null,
-it will display the whole world}
+\item{region}{Character value including the UNHCR region}
 
-\item{pop_type}{Vector of character values. Possible population type
-(e.g.: REF, IDP, ASY, OIP, OOC, STA)}
-}
-\value{
-a ggplot2 object
+\item{pop_type}{Vector of character values. Possible population type}
+
+\item{category_font_size}{Numeric value for axis text font size}
 }
 \description{
-Plot Biggest Increase in Refugee Population
+Plot Regional Increase
 }
 \examples{
 plot_reg_increase(
-  year = 2024,
-  lag = 5,
-  topn = 5,
-  region = "The Americas",
-  pop_type = c("REF", "ASY", "OIP")
+    year = 2024,
+    region = "The Americas",
+    category_font_size = 10
 )
-
-# plot_reg_increase(
-#   year = 2021,
-#   lag = 5,
-#   topn = 5,
-#   region = "Asia",
-#   pop_type = c("REF", "ASY", "OIP")
-# )
 }

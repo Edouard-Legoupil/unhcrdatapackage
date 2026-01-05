@@ -1,5 +1,5 @@
 default:
-  golem_name: unhcrdatapackage
+  golem_name: unhcrviz
   golem_version: 0.1.8
   app_prod: no
 production:

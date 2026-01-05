@@ -1,0 +1,153 @@
+# Report Template
+
+``` r
+library(unhcrviz)
+```
+
+Templates are re-built notebook that includes all the plotting functions
+above and are integrated with report parameters. Templates are available
+both as html report (that can be converted to PDF) and as PowerPoint
+presentations, all defined from UNHCR standard brand (cf
+[unhcrdown](https://github.com/vidonne/unhcrdown). The templates are
+available either for countries or regions.
+
+## Template
+
+### Country Factsheet
+
+``` r
+## generate for one country
+# template_CtryFactsheet(year = 2024, country_asylum_iso3c = "USA",   folder = "Report")
+
+# ## Generate for a specific region
+# region <- "Americas"
+# year <- 2024
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+#
+# for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3ci, "\n"))
+#     unhcrviz::template_CtryFactsheet(year = 2024,
+#               country_asylum_iso3c = country_asylum_iso3ci,
+#                folder = "Report")  }
+```
+
+### Country Presentation
+
+``` r
+## generate for one country
+# unhcrviz::template_CtryPrez(year = 2024,
+#                             country_asylum_iso3c = "CHL",
+#                             folder = "Report")
+
+# ## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+#
+# for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3ci, "\n"))
+#     unhcrviz::template_CtryFactsheet(year = 2024,
+#                                 country_asylum_iso3c = country_asylum_iso3ci,
+#                                folder = "Report")  }
+```
+
+### Country Slides
+
+``` r
+## generate for one country
+# unhcrviz::template_Ctryslides(year = 2024,
+#                             country_asylum_iso3c = "CHL",
+#                             folder = "Report")
+
+# ## Generate for a specific region
+# region <- "Americas"
+# year <- 2022
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+#
+# for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3ci = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3ci, "\n"))
+#     unhcrviz::template_CtryFactsheet(year = 2024,
+#                                 country_asylum_iso3c = country_asylum_iso3ci,
+#                                folder = "docs/factsheet")  }
+```
+
+### Regional Factsheet
+
+``` r
+# template_RegFactsheet(year = 2024,
+#                       region = "Europe", lag = 10,
+#                       folder = "Report")
+
+## We can also generate all factsheets in a loop for 2022
+
+# region <-  refugees::population |>
+#   dplyr::distinct(coa_region) |>
+#   dplyr::filter(!(is.na(coa_region))) |>
+#   dplyr::pull()
+#
+# for( reg in region) {
+#   unhcrviz::template_RegFactsheet(year = 2024,
+#                         region = reg, lag = 10,
+#                         folder = "Report")
+# }
+```
+
+### Regional Presentation
+
+``` r
+# template_RegPrez(year = 2024, region = "Americas", lag = 10,   folder = "Report")
+
+# # Generate for a specific region
+# region <- "Americas"
+# year <- 2024
+# library(tidyverse)
+# ## get all countries with more than 1000 Reported individuals
+# ctr <- refugees::population |>
+#         filter(year == year &
+#                 coa_region == region ) |>
+#         group_by( coa_name, coa_iso   ) |>
+#         summarise(Value = sum(refugees, asylum_seekers, idps, oip, stateless, others_of_concern, na.rm=TRUE) ) |>
+#         ungroup() |>
+#         filter( Value  > 1000 )
+#
+#   for ( i in (1:nrow(ctr))) {
+#     # i <- 1
+#     country_asylum_iso3c = as.character(ctr[i ,2 ])
+#     cat(paste0(country_asylum_iso3c, "\n"))
+#     unhcrviz::template_CtryPrez(year = 2024,
+#                                   country_asylum_iso3c = country_asylum_iso3c,
+#                                   folder = "Report")
+#   }
+```
+
+## Refresh package

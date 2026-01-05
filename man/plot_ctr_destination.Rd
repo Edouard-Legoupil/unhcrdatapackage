@@ -5,17 +5,24 @@
 \title{Main Destination from  one specific countr}
 \usage{
 plot_ctr_destination(
-  year = 2021,
+  year = 2024,
   country_origin_iso3c,
-  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")
+  pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+  label_font_size = 4,
+  category_font_size = 10
 )
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Origin}
+\item{country_origin_iso3c}{Character value with the ISO-3 character code
+of the Country of Origin}
 
 \item{pop_type}{Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)}
+
+\item{label_font_size}{Numeric value for label font size, default to 4}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -26,7 +33,7 @@ Main Destination from  one specific countr
 \examples{
 #
 plot_ctr_destination(
-  year = 2021,
+  year = 2024,
   country_origin_iso3c = "COL",
   pop_type = c("REF", "ASY")
 )

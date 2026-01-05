@@ -2,22 +2,32 @@
 % Please edit documentation in R/plot_reg_prop_origin.R
 \name{plot_reg_prop_origin}
 \alias{plot_reg_prop_origin}
-\title{Proportion of the population who are refugees, by country of origin}
+\title{Plot Regional Proportion Origin}
 \usage{
-plot_reg_prop_origin(year = 2024, region = "The Americas")
+plot_reg_prop_origin(
+  year = 2024,
+  region = "The Americas",
+  label_font_size = 6,
+  category_font_size = 10
+)
 }
 \arguments{
 \item{year}{Numeric value of the year (for instance 2020)}
 
-\item{region}{Character value with the related UNHCR bureau - when left null, it will display the whole world}
-}
-\value{
-a ggplot2 object
+\item{region}{Character value including the UNHCR region}
+
+\item{label_font_size}{Numeric value for label font size}
+
+\item{category_font_size}{Numeric value for axis text font size}
 }
 \description{
-The proportion of a country???s population who become refugees is SDG indicator 10.7.4
-it consistutes is a useful way to identify the countries of origin producing the most refugees relative to their number of inhabitants.
+Plot Regional Proportion Origin
 }
 \examples{
-plot_reg_prop_origin(year = 2024, region = "The Americas")
+plot_reg_prop_origin(
+    year = 2024,
+    region = "The Americas",
+    label_font_size = 6,
+    category_font_size = 10
+)
 }

@@ -3,8 +3,11 @@
 #' Main Destination from  one specific countr
 #'
 #' @param year Numeric value of the year (for instance 2020)
-#' @param country_origin_iso3c Character value with the ISO-3 character code of the Country of Origin
+#' @param country_origin_iso3c Character value with the ISO-3 character code
+#'                             of the Country of Origin
 #' @param pop_type Vector of character values. Possible population type (e.g.: REF, IDP, ASY, OIP, OOC, STA)
+#' @param label_font_size Numeric value for label font size, default to 4
+#' @param category_font_size Numeric value for axis text font size, default to 10
 #'
 #' @importFrom ggplot2  ggplot  aes  coord_flip   element_blank element_line
 #'             element_text expansion geom_bar geom_col geom_hline unit stat_summary
@@ -28,14 +31,16 @@
 #' @examples
 #' #
 #' plot_ctr_destination(
-#'   year = 2021,
+#'   year = 2024,
 #'   country_origin_iso3c = "COL",
 #'   pop_type = c("REF", "ASY")
 #' )
 
-plot_ctr_destination <- function(year = 2021,
+plot_ctr_destination <- function(year = 2024,
                                  country_origin_iso3c,
-                                 pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC")) {
+                                 pop_type = c("REF", "ASY", "IDP", "OIP", "STA", "OOC"),
+                                 label_font_size = 4,
+                                 category_font_size = 10) {
   dict_pop_type_label <- c(
     "refugees" = "REF",
     "returned_refugees" = "RETURNED_REF",
@@ -69,10 +74,10 @@ plot_ctr_destination <- function(year = 2021,
     dplyr::filter(Population.type %in% as.vector(pop_type)) |>
     dplyr::rename(CountryAsylumName = coa_name) |>
     dplyr::mutate(
-      CountryAsylumName = str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
-      CountryAsylumName = str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
-      CountryAsylumName = str_replace(CountryAsylumName, "United States of America", "USA"),
-      CountryAsylumName = str_replace(
+      CountryAsylumName = stringr::str_replace(CountryAsylumName, " \\(Bolivarian Republic of\\)", ""),
+      CountryAsylumName = stringr::str_replace(CountryAsylumName, "Iran \\(Islamic Republic of\\)", "Iran"),
+      CountryAsylumName = stringr::str_replace(CountryAsylumName, "United States of America", "USA"),
+      CountryAsylumName = stringr::str_replace(
         CountryAsylumName,
         "United Kingdom of Great Britain and Northern Ireland",
         "UK"
@@ -98,7 +103,7 @@ plot_ctr_destination <- function(year = 2021,
     info <- paste0("There's no recorded Countries of destination \n in ", country_name_text, " for ", year)
     p <- ggplot() +
       annotate(stringr::str_wrap("text", 80),
-        x = 1, y = 1, size = 11,
+        x = 1, y = 1, size = label_font_size,
         label = info
       ) +
       theme_void()
@@ -136,7 +141,7 @@ plot_ctr_destination <- function(year = 2021,
         fill = NA,
         linewidth = NA,
         # family = "Lato",
-        size = 4
+        size = label_font_size
       ) +
       geom_label(
         data = subset(
@@ -154,7 +159,7 @@ plot_ctr_destination <- function(year = 2021,
         fill = NA,
         label.size = NA,
         # family = "Lato",
-        size = 4
+        size = label_font_size
       ) +
       # Add `coord_flip()` to make your vertical bars horizontal:
       coord_flip() +
@@ -178,7 +183,10 @@ plot_ctr_destination <- function(year = 2021,
         axis = "y",
         axis_title = FALSE,
         axis_text = "y"
+      ) +
+      theme(
+        axis.text = element_text(size = category_font_size)
       )
   }
-  return(p) # print(p)
+  p
 }

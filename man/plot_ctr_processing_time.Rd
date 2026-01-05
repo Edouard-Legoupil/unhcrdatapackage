@@ -8,7 +8,11 @@ plot_ctr_processing_time(
   year = 2024,
   country_asylum_iso3c = country_asylum_iso3,
   country_origin_iso3c = NULL,
-  procedureType = NULL
+  procedureType = NULL,
+  lag = 10,
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
 )
 }
 \arguments{
@@ -19,6 +23,14 @@ plot_ctr_processing_time(
 \item{country_origin_iso3c}{Character value with the ISO-3 character code of the Country of Asylum - if NUL then all countries are included}
 
 \item{procedureType}{indicates whether "G" (Government) "J" (Joint) "U" (UNHCR)}
+
+\item{lag}{Numeric value for the time window to display, default to 10 years}
+
+\item{label_font_size}{Numeric value for label font size, default to 4}
+
+\item{category_font_size}{Numeric value for axis text font size, default to 10}
+
+\item{legend_font_size}{Numeric value for legend font size, default to 10}
 }
 \value{
 a ggplot2 object
@@ -34,6 +46,33 @@ A prolonged waiting period during the status determination procedure is an impor
  (RBM Outcome Indicator 2.1) - see [UNHCR Intranet](https://intranet.unhcr.org/content/dam/unhcr/intranet/protection-operations/compass/en/guidance/3/coreindicatorsmetadata/2.0%20Core%20Indicator%20Metadata%2004%2010%202021.pdf#page=67) - Credit to Hisham Galal for the chart initial idea and script
 }
 \examples{
+plot_ctr_processing_time(
+  year = 2024,
+  country_asylum_iso3c = "ARG",
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
+)
+
+
+plot_ctr_processing_time(
+  year = 2024,
+  country_asylum_iso3c = "USA",
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
+)
+
+## Display a filtered version of the chart for a specific country and procedure
+plot_ctr_processing_time(
+  year = 2024,
+  country_asylum_iso3c = "EGY",
+  country_origin_iso3c = "ERI",
+  procedureType = "U",
+  label_font_size = 4,
+  category_font_size = 10,
+  legend_font_size = 10
+)
 plot_ctr_processing_time(
   year = 2024,
   country_asylum_iso3c = "ARG"
