@@ -9,12 +9,9 @@ Authors@R: c(
     person("Hisham", "Galal", , "galalh@unhcr.org", role = "ctb")
   )
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
-Description: This is a data package with all frames organised and
-    reshapped for easy consumptions in R. For more information, please see
-    consult [https://www.unhcr.org/refugee-statistics/]
-    (https://www.unhcr.org/refugee-statistics).  The packages also
-    includes a series of plotting functions both at country and regional
-    level together with Rmd Templates.
+Description: This  package use  [UNHCR Forced Displacement Statistics](https://www.unhcr.org/refugee-statistics/)
+    (https://www.unhcr.org/refugee-statistics)to provide a series of plotting 
+    functions both at country and regional level together with Rmd Templates.
 License: MIT + file LICENSE
 URL: https://edouard-legoupil.github.io/unhcrviz/docs/
 BugReports: https://github.com/edouard-legoupil/unhcrviz/issues
@@ -27,12 +24,10 @@ Imports:
     fontawesome,
     forcats,
     ggalluvial,
-    ggbraid,
     ggforce,
     ggplot2,
     ggrepel,
     ggspatial,
-    ggsvg,
     ggtext,
     golem,
     graphics,

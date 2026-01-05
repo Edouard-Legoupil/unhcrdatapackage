@@ -61,5 +61,4 @@ plot_reg_population_type_per_year(
 #>   "unhcr.region")`.
 #> Caused by warning:
 #> ! Some values were not matched unambiguously: UNK
-#> Error in plot_reg_population_type_per_year(year = 2024, region = "The Americas",     label_font_size = 4, category_font_size = 10, legend_font_size = 10): object 'cols_poptype_abbr' not found
 ```

@@ -25,10 +25,10 @@ Charts adressing questions at country level
   specific country
 - [`plot_ctr_population_type_abs()`](plot_ctr_population_type_abs.md) :
   Main country of origin - Absolute value
-- [`plot_ctr_population_type_perc()`](plot_ctr_population_type_perc.md)
-  : Main country of origin - Percentage
 - [`plot_ctr_population_type_per_year()`](plot_ctr_population_type_per_year.md)
   : Graph of Population Type Over year
+- [`plot_ctr_population_type_perc()`](plot_ctr_population_type_perc.md)
+  : Main country of origin - Percentage
 - [`plot_ctr_process()`](plot_ctr_process.md) : Asylum Processing
 - [`plot_ctr_processing_time()`](plot_ctr_processing_time.md) : Plot
   Average processing time from registration to first instance asylum

@@ -1,7 +1,7 @@
 # [`{unhcrviz}`](https://edouard-legoupil.github.io/unhcrviz): A Chart Library on Forced Displacement
 
-> \[!IMPORTANT\] This package was formerly known as `unhcrdatapackage`.
-> It has been renamed to `unhcrviz`.
+> This package (formerly `unhcrdatapackage`) has been renamed `unhcrviz`
+> as the data are pulled from the dedicated package `refugees`.
 
 > “**Numbers have an important story to tell. They rely on YOU to give
 > them a voice!**”
